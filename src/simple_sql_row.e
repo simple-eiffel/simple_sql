@@ -58,7 +58,9 @@ feature -- Status report
 			until
 				i > columns.count or Result
 			loop
-				Result := Result or columns.i_th (i).same_string_general (a_name)
+				if columns.i_th (i) ~ a_name then
+					Result := True
+				end
 				i := i + 1
 			end
 		end
