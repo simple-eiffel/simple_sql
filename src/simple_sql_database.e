@@ -286,7 +286,102 @@ feature -- Prepared Statements
 			result_attached: Result /= Void
 		end
 
-feature {SIMPLE_SQL_BACKUP, SIMPLE_SQL_RESULT, SIMPLE_SQL_PREPARED_STATEMENT} -- Implementation
+feature -- Query Builders
+
+	select_builder: SIMPLE_SQL_SELECT_BUILDER
+			-- Create SELECT query builder for this database
+		require
+			is_open: is_open
+		do
+			create Result.make_with_database (Current)
+		ensure
+			result_attached: Result /= Void
+			database_set: Result.database = Current
+		end
+
+	insert_builder: SIMPLE_SQL_INSERT_BUILDER
+			-- Create INSERT query builder for this database
+		require
+			is_open: is_open
+		do
+			create Result.make_with_database (Current)
+		ensure
+			result_attached: Result /= Void
+			database_set: Result.database = Current
+		end
+
+	update_builder: SIMPLE_SQL_UPDATE_BUILDER
+			-- Create UPDATE query builder for this database
+		require
+			is_open: is_open
+		do
+			create Result.make_with_database (Current)
+		ensure
+			result_attached: Result /= Void
+			database_set: Result.database = Current
+		end
+
+	delete_builder: SIMPLE_SQL_DELETE_BUILDER
+			-- Create DELETE query builder for this database
+		require
+			is_open: is_open
+		do
+			create Result.make_with_database (Current)
+		ensure
+			result_attached: Result /= Void
+			database_set: Result.database = Current
+		end
+
+feature -- Schema Introspection
+
+	schema: SIMPLE_SQL_SCHEMA
+			-- Create schema inspector for this database
+		require
+			is_open: is_open
+		do
+			create Result.make (Current)
+		ensure
+			result_attached: Result /= Void
+		end
+
+feature -- Additional Accessors
+
+	last_insert_rowid: INTEGER_64
+			-- Row ID of last inserted row
+		require
+			is_open: is_open
+		local
+			l_result: SIMPLE_SQL_RESULT
+		do
+			create l_result.make ("SELECT last_insert_rowid();", internal_db)
+			if not l_result.rows.is_empty and then attached l_result.rows.first as l_row then
+				if attached {INTEGER_64} l_row.item (1) as l_id then
+					Result := l_id
+				end
+			end
+		end
+
+	commit_transaction
+			-- Commit current transaction (alias for commit)
+		require
+			is_open: is_open
+			in_transaction: is_in_transaction
+		do
+			clear_error
+			internal_db.commit
+		end
+
+	rollback_transaction
+			-- Rollback current transaction (alias for rollback)
+		require
+			is_open: is_open
+			in_transaction: is_in_transaction
+		do
+			clear_error
+			internal_db.rollback
+		end
+
+feature {SIMPLE_SQL_BACKUP, SIMPLE_SQL_RESULT, SIMPLE_SQL_PREPARED_STATEMENT, SIMPLE_SQL_SCHEMA} -- Implementation
 
 	internal_db: SQLITE_DATABASE
 			-- Underlying sqlite3 database connection

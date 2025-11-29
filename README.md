@@ -6,7 +6,7 @@ A production-quality, easy-to-use wrapper around the Eiffel SQLite3 library, pro
 
 ## Features
 
-### ✅ Implemented (v0.2)
+### ✅ Implemented (v0.3)
 
 **Core Database Operations:**
 - Simple database creation (file-based and in-memory)
@@ -47,12 +47,36 @@ A production-quality, easy-to-use wrapper around the Eiffel SQLite3 library, pro
 - Foreign key enforcement
 - Memory-mapped I/O configuration
 
-**Batch Operations (NEW):**
+**Batch Operations:**
 - Automatic transaction wrapping for bulk operations
 - `insert_many()` for bulk inserts
 - `execute_many()` for multiple SQL statements
 - Individual `insert()`, `update()`, `delete()` with auto-commit control
 - Manual transaction control with `begin()`, `commit()`, `rollback()`
+
+**Fluent Query Builder (NEW):**
+- Chainable SELECT, INSERT, UPDATE, DELETE builders
+- Type-safe value binding with automatic escaping
+- WHERE clauses with AND/OR chaining
+- JOIN support (INNER, LEFT, CROSS)
+- GROUP BY, HAVING, ORDER BY, LIMIT, OFFSET
+- Raw SQL expressions for complex cases
+- Direct execution or SQL string generation
+
+**Schema Introspection (NEW):**
+- Query table/view names and existence
+- Column metadata (name, type, nullability, default, primary key)
+- Index information (columns, uniqueness, origin)
+- Foreign key constraints with ON UPDATE/DELETE actions
+- PRAGMA user_version for migration tracking
+
+**Migration System (NEW):**
+- Version-controlled schema changes via PRAGMA user_version
+- Up/down migration support
+- Automatic transaction wrapping per migration
+- Rollback on failure
+- Migrate to specific version or latest
+- Reset capability (rollback all, migrate all)
 
 **Advanced Features:**
 - Memory ↔ File backup utilities
@@ -181,6 +205,175 @@ batch.update ("users", "last_login = ?", <<"2025-01-15">>, "id = 1")
 batch.commit
 ```
 
+## Fluent Query Builder
+
+```eiffel
+-- SELECT with fluent API
+result := db.select_builder
+    .select_columns (<<"name", "age", "email">>)
+    .from_table ("users")
+    .where_equals ("status", "active")
+    .and_where ("age > 18")
+    .order_by ("name")
+    .limit (10)
+    .execute
+
+-- Complex SELECT with joins
+result := db.select_builder
+    .select_column ("u.name")
+    .select_column_as ("COUNT(o.id)", "order_count")
+    .from_table_as ("users", "u")
+    .left_join ("orders o", "o.user_id = u.id")
+    .group_by ("u.id")
+    .having ("COUNT(o.id) > 5")
+    .execute
+
+-- INSERT with builder
+rows := db.insert_builder
+    .into ("users")
+    .columns_list (<<"name", "age", "email">>)
+    .values (<<"Alice", 30, "alice@example.com">>)
+    .execute
+
+-- Get last inserted ID
+id := db.insert_builder
+    .into ("users")
+    .set ("name", "Bob")
+    .set ("age", 25)
+    .execute_returning_id
+
+-- UPDATE with builder
+count := db.update_builder
+    .table ("users")
+    .set ("status", "inactive")
+    .set ("updated_at", "2025-01-15")
+    .where_equals ("last_login", Void)  -- WHERE last_login IS NULL
+    .execute
+
+-- Increment/decrement
+count := db.update_builder
+    .table ("products")
+    .decrement_by ("stock", 1)
+    .where_id (product_id)
+    .execute
+
+-- DELETE with builder
+count := db.delete_builder
+    .from_table ("sessions")
+    .where ("expires_at < datetime('now')")
+    .execute
+
+-- Generate SQL without executing
+sql := db.select_builder
+    .select_all
+    .from_table ("users")
+    .where_in ("id", <<1, 2, 3>>)
+    .to_sql
+-- Result: "SELECT * FROM users WHERE id IN (1, 2, 3)"
+```
+
+## Schema Introspection
+
+```eiffel
+-- Get all tables
+schema := db.schema
+across schema.tables as t loop
+    print (t)
+end
+
+-- Check if table exists
+if schema.table_exists ("users") then
+    -- Get detailed table info
+    if attached schema.table_info ("users") as info then
+        print ("Table: " + info.name + " (" + info.column_count.out + " columns)")
+
+        -- Inspect columns
+        across info.columns as col loop
+            print ("  " + col.description)
+            -- Output: "id INTEGER PRIMARY KEY NOT NULL"
+            --         "name TEXT"
+            --         "age INTEGER DEFAULT 0"
+        end
+
+        -- Check primary key
+        across info.primary_key_columns as pk loop
+            print ("Primary key: " + pk.name)
+        end
+
+        -- Inspect indexes
+        across info.indexes as idx loop
+            print ("Index: " + idx.description)
+        end
+
+        -- Inspect foreign keys
+        across info.foreign_keys as fk loop
+            print ("FK: " + fk.description)
+        end
+    end
+end
+
+-- Get column names only
+columns := schema.column_names ("users")
+
+-- Check schema version (for migrations)
+print ("Current version: " + schema.user_version.out)
+```
+
+## Migration System
+
+```eiffel
+-- Define a migration
+class MY_MIGRATION_001
+inherit SIMPLE_SQL_MIGRATION
+
+feature
+    version: INTEGER = 1
+    description: STRING_8 = "Create users table"
+
+    up (db: SIMPLE_SQL_DATABASE)
+        do
+            db.execute ("CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT NOT NULL)")
+            db.execute ("CREATE INDEX idx_users_name ON users (name)")
+        end
+
+    down (db: SIMPLE_SQL_DATABASE)
+        do
+            db.execute ("DROP INDEX idx_users_name")
+            db.execute ("DROP TABLE users")
+        end
+end
+
+-- Run migrations
+create runner.make (db)
+runner.add (create {MY_MIGRATION_001})
+runner.add (create {MY_MIGRATION_002})
+runner.add (create {MY_MIGRATION_003})
+
+-- Check status
+print ("Current version: " + runner.current_version.out)
+print ("Latest version: " + runner.latest_version.out)
+print ("Pending: " + runner.pending_migrations.count.out)
+
+-- Migrate to latest
+if runner.migrate then
+    print ("Migration successful!")
+else
+    print ("Migration failed: " + runner.last_error)
+end
+
+-- Migrate to specific version
+runner.migrate_to (2)
+
+-- Rollback last migration
+runner.rollback
+
+-- Rollback all
+runner.rollback_all
+
+-- Fresh start (rollback all, then migrate all)
+runner.reset
+```
+
 ## JSON Integration
 
 ```eiffel
@@ -219,6 +412,11 @@ SIMPLE_SQL_DATABASE           -- Main database interface
     ├── execute()              -- Command execution
     ├── query()                -- Query with results
     ├── prepare()              -- Create prepared statement
+    ├── select_builder()       -- Create SELECT builder (NEW)
+    ├── insert_builder()       -- Create INSERT builder (NEW)
+    ├── update_builder()       -- Create UPDATE builder (NEW)
+    ├── delete_builder()       -- Create DELETE builder (NEW)
+    ├── schema()               -- Schema introspection (NEW)
     ├── begin_transaction()
     ├── commit()
     ├── rollback()
@@ -238,7 +436,68 @@ SIMPLE_SQL_ROW                -- Individual row
     ├── is_null()
     └── item([index])          -- Generic access
 
-SIMPLE_SQL_PREPARED_STATEMENT -- Parameterized queries (NEW)
+SIMPLE_SQL_SELECT_BUILDER     -- Fluent SELECT (NEW)
+    ├── select_column()        -- Add column
+    ├── from_table()           -- Set table
+    ├── where() / and_where()  -- Conditions
+    ├── join() / left_join()   -- Joins
+    ├── group_by() / having()  -- Grouping
+    ├── order_by() / limit()   -- Ordering
+    ├── execute()              -- Run query
+    └── to_sql()               -- Generate SQL
+
+SIMPLE_SQL_INSERT_BUILDER     -- Fluent INSERT (NEW)
+    ├── into()                 -- Set table
+    ├── columns_list()         -- Set columns
+    ├── values()               -- Add row values
+    ├── set()                  -- Column-value pair
+    ├── execute()              -- Run insert
+    └── execute_returning_id() -- Get last ID
+
+SIMPLE_SQL_UPDATE_BUILDER     -- Fluent UPDATE (NEW)
+    ├── table()                -- Set table
+    ├── set()                  -- Column = value
+    ├── set_expression()       -- Raw SQL expression
+    ├── increment() / decrement()
+    ├── where() / and_where()
+    └── execute()
+
+SIMPLE_SQL_DELETE_BUILDER     -- Fluent DELETE (NEW)
+    ├── from_table()           -- Set table
+    ├── where() / and_where()
+    └── execute()
+
+SIMPLE_SQL_SCHEMA             -- Schema introspection (NEW)
+    ├── tables() / views()     -- List names
+    ├── table_exists()         -- Check existence
+    ├── table_info()           -- Full table details
+    ├── columns()              -- Column list
+    ├── indexes()              -- Index list
+    ├── foreign_keys()         -- FK list
+    └── user_version           -- Migration version
+
+SIMPLE_SQL_TABLE_INFO         -- Table metadata (NEW)
+    ├── name / table_type
+    ├── columns                -- SIMPLE_SQL_COLUMN_INFO list
+    ├── indexes                -- SIMPLE_SQL_INDEX_INFO list
+    ├── foreign_keys           -- SIMPLE_SQL_FOREIGN_KEY_INFO list
+    └── sql                    -- Original CREATE statement
+
+SIMPLE_SQL_MIGRATION          -- Migration base class (NEW)
+    ├── version                -- Migration number
+    ├── description            -- Human-readable
+    ├── up()                   -- Apply changes
+    └── down()                 -- Revert changes
+
+SIMPLE_SQL_MIGRATION_RUNNER   -- Migration executor (NEW)
+    ├── add()                  -- Register migration
+    ├── migrate()              -- Run all pending
+    ├── migrate_to()           -- Target version
+    ├── rollback()             -- Undo last
+    ├── rollback_all()         -- Undo all
+    └── reset()                -- Fresh start
+
+SIMPLE_SQL_PREPARED_STATEMENT -- Parameterized queries
     ├── bind_integer()         -- Bind by index
     ├── bind_text()
     ├── bind_real()
@@ -247,26 +506,26 @@ SIMPLE_SQL_PREPARED_STATEMENT -- Parameterized queries (NEW)
     ├── execute()
     └── reset()                -- Reuse statement
 
-SIMPLE_SQL_BATCH              -- Bulk operations (NEW)
+SIMPLE_SQL_BATCH              -- Bulk operations
     ├── insert_many()          -- Bulk insert
     ├── execute_many()         -- Multiple statements
     ├── begin() / commit()     -- Transaction control
     └── rollback()
 
-SIMPLE_SQL_ERROR              -- Structured error (NEW)
+SIMPLE_SQL_ERROR              -- Structured error
     ├── code / extended_code   -- Error codes
     ├── message / sql          -- Context
     ├── is_constraint_violation
     ├── is_unique_violation
     └── full_description()
 
-SIMPLE_SQL_ERROR_CODE         -- Error constants (NEW)
+SIMPLE_SQL_ERROR_CODE         -- Error constants
     ├── ok, error, busy, locked
     ├── constraint, readonly
     ├── constraint_unique      -- Extended codes
     └── name()                 -- Human-readable
 
-SIMPLE_SQL_PRAGMA_CONFIG      -- Configuration (NEW)
+SIMPLE_SQL_PRAGMA_CONFIG      -- Configuration
     ├── make_wal               -- WAL mode preset
     ├── make_performance       -- Performance preset
     ├── make_safe              -- Safety preset
@@ -310,36 +569,28 @@ All tests include proper setup/teardown with `on_prepare`/`on_clean` for isolate
 - Multiple statement execution
 - Transaction control
 
-### Phase 2: Developer Experience (Next)
+### ✅ Phase 2: Developer Experience (COMPLETE)
 
-**Schema Migration Framework**
+**Fluent Query Builder** ✅
+- Chainable SELECT/INSERT/UPDATE/DELETE builders
+- Type-safe value binding with automatic escaping
+- WHERE, JOIN, GROUP BY, ORDER BY, LIMIT support
+- Raw SQL expressions for complex cases
+
+**Schema Introspection** ✅
+- Table/view listing and existence checking
+- Column metadata (name, type, constraints)
+- Index and foreign key introspection
+- PRAGMA user_version access
+
+**Migration System** ✅
 - Version-controlled schema changes
 - Up/down migration support
-- Automatic rollback on failure
-- Schema diffing tools
+- Automatic transaction wrapping
+- Rollback on failure
+- Migrate to specific version or latest
 
-**Query Builder API**
-```eiffel
-query_builder.select(["name", "age"])
-    .from("users")
-    .where("age > ?", [25])
-    .order_by("name")
-    .limit(10)
-    .execute(db)
-```
-
-**ORM-Like Features**
-- Object-to-table mapping
-- Automatic CRUD generation
-- Relationship handling (1:1, 1:N, N:M)
-- Lazy loading of related objects
-
-**Connection Pooling**
-- Multi-threaded database access
-- Connection lifecycle management
-- Pool size configuration
-
-### Phase 3: Advanced Features (Specialized)
+### Phase 3: Advanced Features (Next)
 
 **Full-Text Search Integration**
 - FTS5 module integration
@@ -438,7 +689,7 @@ Contributions welcome! Please ensure:
 
 ## Status
 
-**Current Version:** 0.2
+**Current Version:** 0.3
 **Stability:** Beta - Core API stable
 **Production Ready:** Core features production-ready, advanced features in development
 
