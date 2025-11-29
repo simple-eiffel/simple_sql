@@ -20,11 +20,16 @@ feature {NONE} -- Initialization
 			-- Create empty select builder
 		do
 			create columns.make (10)
+			columns.compare_objects
 			create tables.make (5)
+			tables.compare_objects
 			create joins.make (5)
+			joins.compare_objects
 			create where_clauses.make (10)
 			create group_columns.make (5)
+			group_columns.compare_objects
 			create order_columns.make (5)
+			order_columns.compare_objects
 			create having_clauses.make (5)
 			is_distinct := False
 			limit_value := -1

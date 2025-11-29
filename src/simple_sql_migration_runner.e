@@ -232,7 +232,6 @@ feature {NONE} -- Implementation
 			-- Revert migrations down to target version
 		local
 			l_current, i: INTEGER
-			l_migration: detachable SIMPLE_SQL_MIGRATION
 		do
 			Result := True
 			l_current := current_version
@@ -255,7 +254,11 @@ feature {NONE} -- Implementation
 			a_migration.up (database)
 			if database.has_error then
 				database.rollback_transaction
-				last_error := "Migration " + a_migration.version.out + " failed: " + database.last_error_message.to_string_8
+				if attached database.last_error_message as l_msg then
+					last_error := "Migration " + a_migration.version.out + " failed: " + l_msg.to_string_8
+				else
+					last_error := "Migration " + a_migration.version.out + " failed"
+				end
 				Result := False
 			else
 				schema.set_user_version (a_migration.version)
@@ -283,7 +286,11 @@ feature {NONE} -- Implementation
 			a_migration.down (database)
 			if database.has_error then
 				database.rollback_transaction
-				last_error := "Rollback of migration " + a_migration.version.out + " failed: " + database.last_error_message.to_string_8
+				if attached database.last_error_message as l_msg then
+					last_error := "Rollback of migration " + a_migration.version.out + " failed: " + l_msg.to_string_8
+				else
+					last_error := "Rollback of migration " + a_migration.version.out + " failed"
+				end
 				Result := False
 			else
 				schema.set_user_version (l_previous_version)

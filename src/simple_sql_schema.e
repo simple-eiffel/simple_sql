@@ -35,6 +35,7 @@ feature -- Table Queries
 			l_name: STRING_32
 		do
 			create Result.make (20)
+			Result.compare_objects
 			if attached database.query ("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name") as l_result then
 				across l_result.rows as ic loop
 					l_name := ic.string_value ("name")
@@ -51,6 +52,7 @@ feature -- Table Queries
 			l_name: STRING_32
 		do
 			create Result.make (10)
+			Result.compare_objects
 			if attached database.query ("SELECT name FROM sqlite_master WHERE type='view' ORDER BY name") as l_result then
 				across l_result.rows as ic loop
 					l_name := ic.string_value ("name")
@@ -139,6 +141,7 @@ feature -- Column Queries
 			l_name: STRING_32
 		do
 			create Result.make (10)
+			Result.compare_objects
 			if attached database.query ("PRAGMA table_info('" + a_table.to_string_8 + "')") as l_result then
 				across l_result.rows as ic loop
 					l_name := ic.string_value ("name")

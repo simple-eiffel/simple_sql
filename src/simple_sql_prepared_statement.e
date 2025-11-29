@@ -344,6 +344,8 @@ feature {NONE} -- Implementation
 				Result := l_int32.out
 			elseif attached {REAL_64} a_value as l_real then
 				Result := l_real.out
+			elseif attached {REAL_32} a_value as l_real32 then
+				Result := l_real32.out
 			elseif attached {READABLE_STRING_GENERAL} a_value as l_string then
 				Result := escaped_string (l_string)
 			else
@@ -381,36 +383,27 @@ feature {NONE} -- Implementation
 	execute_query (a_sql: STRING_8)
 			-- Execute as SELECT query
 		local
-			l_statement: SQLITE_QUERY_STATEMENT
+			l_sql: STRING_8
 		do
-			create l_statement.make (a_sql, database)
-			create last_result.make (a_sql, database)
-		rescue
-			if attached database.last_exception as l_ex then
-				if attached l_ex.description as l_desc then
-					create last_error.make_with_sql (l_ex.result_code, l_desc, a_sql)
-				else
-					create last_error.make_with_sql (l_ex.result_code, "Unknown error", a_sql)
-				end
+			create l_sql.make_from_string (a_sql)
+			if not l_sql.ends_with (";") then
+				l_sql.append_character (';')
 			end
-			create last_result.make_empty
+			create last_result.make (l_sql, database)
 		end
 
 	execute_modify (a_sql: STRING_8)
 			-- Execute as INSERT/UPDATE/DELETE
 		local
 			l_statement: SQLITE_MODIFY_STATEMENT
+			l_sql: STRING_8
 		do
-			create l_statement.make (a_sql, database)
-			l_statement.execute
-		rescue
-			if attached database.last_exception as l_ex then
-				if attached l_ex.description as l_desc then
-					create last_error.make_with_sql (l_ex.result_code, l_desc, a_sql)
-				else
-					create last_error.make_with_sql (l_ex.result_code, "Unknown error", a_sql)
-				end
+			create l_sql.make_from_string (a_sql)
+			if not l_sql.ends_with (";") then
+				l_sql.append_character (';')
 			end
+			create l_statement.make (l_sql, database)
+			l_statement.execute
 		end
 
 feature {NONE} -- Constants
