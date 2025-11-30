@@ -31,12 +31,12 @@ Before ending, update:
 
 ## Current State
 
-**Phases 1-3 Complete. Phase 4 Partially Complete (FTS5).** The library now includes:
-- **SIMPLE_SQL_DATABASE**: Full CRUD, transactions, streaming, error handling
-- **SIMPLE_SQL_RESULT/ROW**: Query results with typed accessors
+**Phases 1-3 Complete. Phase 4 Partially Complete (FTS5, BLOB, JSON1).** The library now includes:
+- **SIMPLE_SQL_DATABASE**: Full CRUD, transactions, streaming, error handling, BLOB utilities
+- **SIMPLE_SQL_RESULT/ROW**: Query results with typed accessors, BLOB support
 - **SIMPLE_SQL_CURSOR**: Lazy row-by-row iteration (NEW in Phase 3)
 - **SIMPLE_SQL_RESULT_STREAM**: Callback-based streaming (NEW in Phase 3)
-- **SIMPLE_SQL_PREPARED_STATEMENT**: Parameterized queries with streaming
+- **SIMPLE_SQL_PREPARED_STATEMENT**: Parameterized queries with streaming, BLOB/hex encoding, named parameters
 - **SIMPLE_SQL_QUERY_BUILDER**: Fluent SELECT/INSERT/UPDATE/DELETE
 - **SIMPLE_SQL_SCHEMA**: Schema introspection
 - **SIMPLE_SQL_MIGRATION_RUNNER**: Version-controlled migrations
@@ -46,8 +46,9 @@ Before ending, update:
 - **SIMPLE_SQL_ERROR**: Structured error handling
 - **SIMPLE_SQL_FTS5**: Full-text search with BM25 ranking (NEW in Phase 4)
 - **SIMPLE_SQL_FTS5_QUERY**: Fluent FTS5 query builder (NEW in Phase 4)
+- **SIMPLE_SQL_JSON**: JSON1 extension with validation, path queries, modification, aggregation (NEW in Phase 4)
 
-**All 181 tests passing. Production-ready for core features and FTS5.**
+**All 210 tests passing. Production-ready for core features, FTS5, BLOB handling, and JSON1.**
 
 ---
 
@@ -83,6 +84,8 @@ Before ending, update:
 | Feature | Description | Status |
 |---------|-------------|--------|
 | **FTS5 Full-Text Search** | Virtual table setup, MATCH queries, BM25 ranking, Boolean queries, special character handling | ✅ |
+| **BLOB Handling** | File I/O utilities, hex encoding, named parameter binding, large binary data support | ✅ |
+| **JSON1 Extension** | JSON validation, path queries, modification (set/insert/replace/remove), creation, aggregation | ✅ |
 | **Audit/Change Tracking** | Auto-generate triggers, change log table, JSON diff logging | 📋 Next |
 | **Repository Pattern** | Generic repository with find_all, find_by_id, find_where | 📋 Future |
 

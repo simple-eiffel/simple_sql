@@ -89,10 +89,11 @@ A production-quality, easy-to-use wrapper around the Eiffel SQLite3 library, pro
 **Advanced Features:**
 - Memory ↔ File backup utilities
 - JSON integration with SIMPLE_JSON library
+- **JSON1 Extension Support** with validation, path queries, modification, aggregation (NEW)
 - Change tracking (affected row counts)
-- **FTS5 Full-Text Search** with BM25 ranking, Boolean queries, and special character handling (NEW)
-- **BLOB Handling** with file I/O, hex encoding, and named parameter binding (NEW)
-- Comprehensive test suite with 189 tests (8 new BLOB/debug tests)
+- **FTS5 Full-Text Search** with BM25 ranking, Boolean queries, and special character handling
+- **BLOB Handling** with file I/O, hex encoding, and named parameter binding
+- Comprehensive test suite with 210 tests (21 new JSON1 tests)
 
 **Design Principles:**
 - Command-Query Separation throughout
@@ -429,6 +430,8 @@ db.select_builder
 
 ## JSON Integration
 
+### Basic JSON Storage (SIMPLE_JSON library)
+
 ```eiffel
 -- Store JSON documents
 create json_obj.make
@@ -442,6 +445,78 @@ db.execute ("INSERT INTO profiles VALUES ('" + json_obj.to_json_string + "')")
 result := db.query ("SELECT data FROM profiles")
 value := (create {SIMPLE_JSON}).parse (result.first.string_value ("data"))
 name := value.as_object.item ("name").as_string_32
+```
+
+### Advanced JSON Operations (SQLite JSON1 Extension)
+
+The JSON1 extension provides powerful JSON manipulation directly in SQL:
+
+```eiffel
+-- Get JSON helper
+json := db.json
+
+-- Validation
+if json.is_valid_json ("{%"name%":%"Alice%"}") then
+    print ("Valid JSON%N")
+end
+
+-- Type checking
+json_type := json.json_type ("{%"age%":30}", "$.age")  -- Returns "integer"
+
+-- Path extraction
+l_json := "{%"user%":{%"name%":%"Alice%",%"age%":30}}"
+name := json.extract (l_json, "$.user.name")           -- Returns "Alice"
+age := json.extract (l_json, "$.user.age")             -- Returns "30"
+
+-- Extract array elements
+l_json := "{%"colors%\":[%\"red%\",%\"green%\",%\"blue%\"]}"
+color := json.extract (l_json, "$.colors[0]")          -- Returns "red"
+
+-- Modification operations
+l_json := "{%\"a%\":1}"
+l_json := json.json_set (l_json, "$.b", 2)             -- {" a":1,"b":2}
+l_json := json.json_insert (l_json, "$.c", 3)          -- {" a":1,"b":2,"c":3}
+l_json := json.json_replace (l_json, "$.a", 99)        -- {" a":99,"b":2,"c":3}
+l_json := json.json_remove (l_json, "$.c")             -- {" a":99,"b":2}
+
+-- Create JSON from Eiffel values
+l_array := json.json_array_from_values (<<1, "two", 3.0>>)
+-- Returns: [1,"two",3.0]
+
+l_object := json.json_object_from_pairs (<<
+    ["name", "Alice"],
+    ["age", 30]
+>>)
+-- Returns: {"name":"Alice","age":30}
+
+-- Aggregate database values to JSON
+db.execute ("CREATE TABLE users (name TEXT, age INTEGER)")
+db.execute ("INSERT INTO users VALUES ('Alice', 30)")
+db.execute ("INSERT INTO users VALUES ('Bob', 25)")
+
+-- Create JSON array from column
+l_names := json.aggregate_to_array ("users", "name", Void)
+-- Returns: ["Alice","Bob"]
+
+-- Create JSON array with WHERE clause
+l_adult_names := json.aggregate_to_array ("users", "name", "age >= 18")
+
+-- Create JSON object from key-value columns
+db.execute ("CREATE TABLE settings (key TEXT, value TEXT)")
+db.execute ("INSERT INTO settings VALUES ('theme', 'dark')")
+db.execute ("INSERT INTO settings VALUES ('lang', 'en')")
+l_settings := json.aggregate_to_object ("settings", "key", "value", Void)
+-- Returns: {"theme":"dark","lang":"en"}
+
+-- Use JSON functions in queries
+db.execute ("CREATE TABLE documents (data TEXT)")
+db.execute ("INSERT INTO documents VALUES ('{%\"user%\":{%\"name%\":%\"Alice%\"}}')\" )
+
+result := db.query ("SELECT json_extract(data, '$.user.name') as name FROM documents")
+name := result.first.string_value ("name")  -- "Alice"
+
+-- Modify JSON in UPDATE statements
+db.execute ("UPDATE documents SET data = json_set(data, '$.user.age', 30)")
 ```
 
 ## FTS5 Full-Text Search

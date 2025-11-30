@@ -399,6 +399,18 @@ feature -- Full-Text Search
 			result_attached: Result /= Void
 		end
 
+feature -- JSON Support
+
+	json: SIMPLE_SQL_JSON
+			-- Create JSON helper for advanced JSON operations (JSON1 extension)
+		require
+			is_open: is_open
+		do
+			create Result.make (Current)
+		ensure
+			result_attached: Result /= Void
+		end
+
 feature -- BLOB Utilities
 
 	read_blob_from_file (a_file_path: STRING_32): detachable MANAGED_POINTER
@@ -471,7 +483,7 @@ feature -- Additional Accessors
 			internal_db.rollback
 		end
 
-feature {SIMPLE_SQL_BACKUP, SIMPLE_SQL_RESULT, SIMPLE_SQL_PREPARED_STATEMENT, SIMPLE_SQL_SCHEMA} -- Implementation
+feature {SIMPLE_SQL_BACKUP, SIMPLE_SQL_RESULT, SIMPLE_SQL_PREPARED_STATEMENT, SIMPLE_SQL_SCHEMA, SIMPLE_SQL_JSON, SIMPLE_SQL_FTS5} -- Implementation
 
 	internal_db: SQLITE_DATABASE
 			-- Underlying sqlite3 database connection
