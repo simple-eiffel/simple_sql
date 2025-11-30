@@ -733,25 +733,33 @@ All tests include proper setup/teardown with `on_prepare`/`on_clean` for isolate
 - Full `across` loop integration
 - Prepared statement and query builder integration
 
-### Phase 4: Advanced Features (Next)
+### ✅ Phase 4: Advanced Features (PARTIALLY COMPLETE)
 
-**Full-Text Search Integration**
-- FTS5 module integration
-- Index management
-- Relevance ranking
-- Highlight/snippet generation
+**Full-Text Search Integration** ✅
+- FTS5 module integration ✅
+- Boolean queries (AND, OR, NOT) ✅
+- BM25 relevance ranking ✅
+- Special character handling (apostrophes) ✅
+- Query builder with fluent API ✅
+- Highlight/snippet generation (future enhancement)
 
-**BLOB Handling**
+**BLOB Handling** (Next)
 - Streaming large binary data
 - Incremental read/write
 - Memory-efficient processing
 - Direct file ↔ BLOB operations
 
-**Advanced JSON Support**
+**Advanced JSON Support** (Next)
 - JSON path queries (leveraging SQLite json_extract)
 - JSON aggregation functions
 - Schema validation integration
 - Partial updates with JSON Patch/Merge Patch
+
+**Audit/Change Tracking** (Next)
+- Auto-generate triggers
+- Change log table with JSON diffs
+- Before/after snapshots
+- Timestamp and user tracking
 
 ### Phase 5: Enterprise Features (Future)
 
