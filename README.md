@@ -1565,6 +1565,46 @@ All tests include proper setup/teardown with `on_prepare`/`on_clean` for isolate
 
 MIT License - See LICENSE file for details
 
+## Documentation
+
+SIMPLE_SQL includes comprehensive HTML documentation with EiffelStudio EIS integration:
+
+```
+docs/
+├── index.html              -- Main entry point
+├── getting-started.html    -- Quick start guide
+├── css/style.css           -- Professional styling
+├── api/                    -- API reference
+│   ├── database.html       -- SIMPLE_SQL_DATABASE
+│   ├── select-builder.html -- Query builder with soft delete scopes
+│   ├── eager-loader.html   -- N+1 prevention
+│   ├── paginator.html      -- Cursor-based pagination
+│   └── query-monitor.html  -- N+1 detection
+├── tutorials/              -- How-to guides
+│   ├── soft-deletes.html   -- Soft delete patterns
+│   └── eager-loading.html  -- Preventing N+1 queries
+└── mock-apps/              -- Mock application docs
+    ├── todo.html           -- Basic CRUD patterns
+    ├── cpm.html            -- Parameterized queries
+    ├── habit-tracker.html  -- Time-series data
+    └── dms.html            -- Enterprise patterns
+```
+
+### EIS Integration
+
+Press **F1** in EiffelStudio on any SIMPLE_SQL class to open its documentation. Key classes have EIS annotations:
+
+```eiffel
+note
+    EIS: "name=API Reference", "src=../docs/api/database.html", "protocol=URI", "tag=documentation"
+```
+
+HTML documentation includes links back to EiffelStudio:
+
+```html
+<a class="eis-link" href="eiffel:?class=SIMPLE_SQL_DATABASE&feature=query">View Source</a>
+```
+
 ## Contributing
 
 Contributions welcome! Please ensure:

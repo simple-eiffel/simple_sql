@@ -247,8 +247,45 @@ SIMPLE_SQL_PAGINATOR ✅ NEW (cursor-based pagination)
 
 ---
 
+## Documentation
+
+**HTML Documentation with EIS Integration** ✅ COMPLETE
+
+Comprehensive HTML-based documentation with EiffelStudio integration via EIS (Eiffel Information System):
+
+```
+docs/
+├── index.html              -- Main entry point with feature overview
+├── getting-started.html    -- Quick start tutorial
+├── css/style.css           -- Professional styling
+├── api/                    -- API reference for all major classes
+├── tutorials/              -- How-to guides (soft deletes, eager loading, pagination)
+└── mock-apps/              -- Documentation for all 4 mock applications
+```
+
+**Key Features:**
+- Press **F1** in EiffelStudio to open documentation for any annotated class
+- HTML links navigate back to EiffelStudio: `eiffel:?class=SIMPLE_SQL_DATABASE&feature=query`
+- Syntax-highlighted Eiffel code examples
+- Feature cards, callout boxes, and responsive design
+- Mock app documentation explaining which friction points drove which API improvements
+
+**EIS Syntax in Eiffel Classes:**
+```eiffel
+note
+    EIS: "name=API Reference", "src=../docs/api/database.html", "protocol=URI", "tag=documentation"
+```
+
+**EIS Links in HTML (back to EiffelStudio):**
+```html
+<a class="eis-link" href="eiffel:?class=SIMPLE_SQL_DATABASE&feature=query">View Source</a>
+```
+
+---
+
 ## Notes
 
 - All development follows Eiffel Design by Contract principles
 - Classes use ECMA-367 standard Eiffel
 - Testing via EiffelStudio AutoTest framework
+- Documentation via HTML with EIS integration for F1 help
