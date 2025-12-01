@@ -279,6 +279,123 @@ feature -- Test routines: Column Info Details
 			l_db.close
 		end
 
+feature -- Test routines: Edge Cases (Priority 4)
+
+	test_schema_after_alter
+			-- Test introspection after ALTER TABLE
+		note
+			testing: "covers/{SIMPLE_SQL_SCHEMA}.columns"
+			testing: "edge_case"
+		local
+			l_db: SIMPLE_SQL_DATABASE
+			l_schema: SIMPLE_SQL_SCHEMA
+			l_columns: ARRAYED_LIST [STRING_8]
+		do
+			create l_db.make_memory
+			l_db.execute ("CREATE TABLE test (id INTEGER, name TEXT)")
+
+			create l_schema.make (l_db)
+			l_columns := l_schema.column_names ("test")
+			assert_equal ("two_columns", 2, l_columns.count)
+
+			-- Add a column with ALTER TABLE
+			l_db.execute ("ALTER TABLE test ADD COLUMN email TEXT")
+
+			-- Re-introspect - should see new column
+			l_columns := l_schema.column_names ("test")
+			assert_equal ("three_columns", 3, l_columns.count)
+			assert_true ("has_email", l_columns.has ("email"))
+
+			l_db.close
+		end
+
+	test_schema_foreign_keys_introspection
+			-- Test FK relationships introspection with full details
+		note
+			testing: "covers/{SIMPLE_SQL_SCHEMA}.foreign_keys"
+			testing: "edge_case"
+		local
+			l_db: SIMPLE_SQL_DATABASE
+			l_schema: SIMPLE_SQL_SCHEMA
+			l_fks: ARRAYED_LIST [SIMPLE_SQL_FOREIGN_KEY_INFO]
+		do
+			create l_db.make_memory
+			l_db.execute ("PRAGMA foreign_keys = ON")
+			l_db.execute ("CREATE TABLE parent (id INTEGER PRIMARY KEY, name TEXT)")
+			l_db.execute ("CREATE TABLE child (id INTEGER PRIMARY KEY, parent_id INTEGER REFERENCES parent(id) ON DELETE SET NULL ON UPDATE CASCADE)")
+
+			create l_schema.make (l_db)
+			l_fks := l_schema.foreign_keys ("child")
+
+			assert_equal ("one_fk", 1, l_fks.count)
+			if not l_fks.is_empty then
+				assert_strings_equal ("fk_table", "parent", l_fks.first.to_table)
+				assert_strings_equal ("on_delete", "SET NULL", l_fks.first.on_delete)
+				assert_strings_equal ("on_update", "CASCADE", l_fks.first.on_update)
+			end
+
+			l_db.close
+		end
+
+	test_schema_indexes_introspection
+			-- Test detailed index introspection
+		note
+			testing: "covers/{SIMPLE_SQL_SCHEMA}.indexes"
+			testing: "edge_case"
+		local
+			l_db: SIMPLE_SQL_DATABASE
+			l_schema: SIMPLE_SQL_SCHEMA
+			l_indexes: ARRAYED_LIST [SIMPLE_SQL_INDEX_INFO]
+			l_found_unique: BOOLEAN
+		do
+			create l_db.make_memory
+			l_db.execute ("CREATE TABLE test (id INTEGER, name TEXT, email TEXT UNIQUE)")
+			l_db.execute ("CREATE INDEX idx_name ON test (name)")
+			l_db.execute ("CREATE UNIQUE INDEX idx_id_name ON test (id, name)")
+
+			create l_schema.make (l_db)
+			l_indexes := l_schema.indexes ("test")
+
+			-- Should have at least the indexes we created
+			assert_true ("has_indexes", l_indexes.count >= 2)
+
+			-- Find the unique composite index
+			across l_indexes as ic loop
+				if ic.name.same_string ("idx_id_name") then
+					assert_true ("is_unique", ic.is_unique)
+					l_found_unique := True
+				end
+			end
+			assert_true ("found_unique_idx", l_found_unique)
+
+			l_db.close
+		end
+
+	test_schema_views_introspection
+			-- Test VIEW introspection
+		note
+			testing: "covers/{SIMPLE_SQL_SCHEMA}.views"
+			testing: "edge_case"
+		local
+			l_db: SIMPLE_SQL_DATABASE
+			l_schema: SIMPLE_SQL_SCHEMA
+			l_views: ARRAYED_LIST [STRING_8]
+		do
+			create l_db.make_memory
+			l_db.execute ("CREATE TABLE users (id INTEGER, name TEXT, active INTEGER)")
+			l_db.execute ("CREATE VIEW active_users AS SELECT * FROM users WHERE active = 1")
+			l_db.execute ("CREATE VIEW user_names AS SELECT name FROM users")
+
+			create l_schema.make (l_db)
+			l_views := l_schema.views
+
+			assert_equal ("two_views", 2, l_views.count)
+			assert_true ("has_active_users", l_views.has ("active_users"))
+			assert_true ("has_user_names", l_views.has ("user_names"))
+
+			l_db.close
+		end
+
 note
 	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"

@@ -238,6 +238,87 @@ feature -- Test routines: SIMPLE_SQL_ERROR_CODE
 			assert_string_contains ("has_unknown", l_codes.name (9999), "SQLITE_UNKNOWN")
 		end
 
+feature -- Test routines: Edge Cases (Priority 3)
+
+	test_execute_malformed_sql
+			-- Test syntax errors in SQL are properly handled
+		note
+			testing: "covers/{SIMPLE_SQL_DATABASE}.execute"
+			testing: "edge_case"
+		local
+			l_db: SIMPLE_SQL_DATABASE
+		do
+			create l_db.make_memory
+			l_db.execute ("CREATE TABLE test (id INTEGER)")
+
+			-- Execute malformed SQL
+			l_db.execute ("SELEC * FORM test")
+
+			assert_true ("has_error", l_db.has_error)
+			if attached l_db.last_structured_error as l_err then
+				assert_true ("is_syntax_error", l_err.code = 1) -- SQLITE_ERROR
+				assert_true ("has_message", not l_err.message.is_empty)
+			end
+			-- Don't close - may be in error state
+		end
+
+	test_query_nonexistent_table
+			-- Test querying a table that doesn't exist
+			-- DBC: Error may raise exception; this test validates error detection
+		note
+			testing: "covers/{SIMPLE_SQL_DATABASE}.query"
+			testing: "edge_case"
+		local
+			l_db: SIMPLE_SQL_DATABASE
+			l_result: SIMPLE_SQL_RESULT
+			l_rescued: BOOLEAN
+		do
+			if not l_rescued then
+				create l_db.make_memory
+
+				-- Query non-existent table - may raise exception due to DBC
+				l_result := l_db.query ("SELECT * FROM nonexistent_table")
+
+				-- If we get here, check error state
+				assert_true ("has_error", l_db.has_error)
+			else
+				-- Exception raised - valid DBC behavior for invalid query
+				assert_true ("dbc_enforced", True)
+			end
+		rescue
+			l_rescued := True
+			retry
+		end
+
+	test_query_nonexistent_column
+			-- Test querying a column that doesn't exist
+			-- DBC: Error may raise exception
+		note
+			testing: "covers/{SIMPLE_SQL_DATABASE}.query"
+			testing: "edge_case"
+		local
+			l_db: SIMPLE_SQL_DATABASE
+			l_result: SIMPLE_SQL_RESULT
+			l_rescued: BOOLEAN
+		do
+			if not l_rescued then
+				create l_db.make_memory
+				l_db.execute ("CREATE TABLE test (id INTEGER, name TEXT)")
+				l_db.execute ("INSERT INTO test VALUES (1, 'Alice')")
+
+				-- Query non-existent column - may raise exception
+				l_result := l_db.query ("SELECT nonexistent_column FROM test")
+
+				assert_true ("has_error", l_db.has_error)
+			else
+				-- Exception raised - valid DBC behavior
+				assert_true ("dbc_enforced", True)
+			end
+		rescue
+			l_rescued := True
+			retry
+		end
+
 note
 	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"

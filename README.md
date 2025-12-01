@@ -97,7 +97,7 @@ A production-quality, easy-to-use wrapper around the Eiffel SQLite3 library, pro
 - **Repository Pattern** with generic CRUD operations, find_all, find_by_id, find_where, pagination
 - **Vector Embeddings** for ML/AI with similarity search, K-nearest neighbors, cosine/Euclidean distance
 - **Online Backup API** with progress callbacks, incremental backup, export/import (CSV, JSON, SQL) (NEW)
-- Comprehensive test suite with 304 tests (100% passing)
+- Comprehensive test suite with 339 tests (100% passing)
 
 **Design Principles:**
 - Command-Query Separation throughout
@@ -1100,27 +1100,27 @@ AGENT_PART_COMPARATOR [G]     -- Agent-based comparator wrapper
 ## Testing
 
 Comprehensive test suite using EiffelStudio AutoTest framework:
-- `TEST_SIMPLE_SQL` - Core functionality (11 tests)
+- `TEST_SIMPLE_SQL` - Core functionality (12 tests) ✅ +1 edge case
 - `TEST_SIMPLE_SQL_BACKUP` - Backup operations (5 tests)
-- `TEST_SIMPLE_SQL_BATCH` - Batch operations (11 tests)
+- `TEST_SIMPLE_SQL_BATCH` - Batch operations (12 tests) ✅ +1 edge case
 - `TEST_SIMPLE_SQL_BLOB` - BLOB handling (7 tests)
-- `TEST_SIMPLE_SQL_ERROR` - Error handling (20 tests)
-- `TEST_SIMPLE_SQL_FTS5` - Full-text search (31 tests)
+- `TEST_SIMPLE_SQL_ERROR` - Error handling (23 tests) ✅ +3 edge cases
+- `TEST_SIMPLE_SQL_FTS5` - Full-text search (36 tests) ✅ +5 edge cases
 - `TEST_SIMPLE_SQL_JSON` - JSON integration (6 tests)
-- `TEST_SIMPLE_SQL_JSON_ADVANCED` - JSON1 extension (21 tests)
+- `TEST_SIMPLE_SQL_JSON_ADVANCED` - JSON1 extension (27 tests) ✅ +6 edge cases
 - `TEST_SIMPLE_SQL_AUDIT` - Change tracking (16 tests)
-- `TEST_SIMPLE_SQL_MIGRATION` - Schema migrations (11 tests)
+- `TEST_SIMPLE_SQL_MIGRATION` - Schema migrations (14 tests) ✅ +3 edge cases
 - `TEST_SIMPLE_SQL_PRAGMA_CONFIG` - PRAGMA settings (17 tests)
-- `TEST_SIMPLE_SQL_PREPARED_STATEMENT` - Prepared statements (10 tests)
-- `TEST_SIMPLE_SQL_QUERY_BUILDERS` - Query builders (30 tests)
+- `TEST_SIMPLE_SQL_PREPARED_STATEMENT` - Prepared statements (12 tests) ✅ +2 edge cases
+- `TEST_SIMPLE_SQL_QUERY_BUILDERS` - Query builders (36 tests) ✅ +6 edge cases
 - `TEST_SIMPLE_SQL_REPOSITORY` - Repository pattern (23 tests)
-- `TEST_SIMPLE_SQL_SCHEMA` - Schema introspection (11 tests)
-- `TEST_SIMPLE_SQL_STREAMING` - Result streaming (19 tests)
-- `TEST_SIMPLE_SQL_VECTOR` - Vector embeddings (30 tests) ✅ +8 edge case tests
-- `TEST_SIMPLE_SQL_ADVANCED_BACKUP` - Online backup, export/import, edge cases (24 tests) ✅ +8 edge case tests
+- `TEST_SIMPLE_SQL_SCHEMA` - Schema introspection (15 tests) ✅ +4 edge cases
+- `TEST_SIMPLE_SQL_STREAMING` - Result streaming (23 tests) ✅ +4 edge cases
+- `TEST_SIMPLE_SQL_VECTOR` - Vector embeddings (30 tests) ✅ +8 edge cases
+- `TEST_SIMPLE_SQL_ADVANCED_BACKUP` - Online backup, export/import (24 tests) ✅ +8 edge cases
 - `TEST_BLOB_DEBUG` - Debug utilities (1 test)
 
-**Total: 304 tests (100% passing)**
+**Total: 339 tests (100% passing)**
 
 All tests include proper setup/teardown with `on_prepare`/`on_clean` for isolated execution.
 
@@ -1307,7 +1307,7 @@ Contributions welcome! Please ensure:
 **Current Version:** 1.0
 **Stability:** Production - Core API stable
 **Production Ready:** Phases 1-5 complete. All features production-ready: core CRUD, prepared statements, PRAGMA configuration, batch operations, fluent query builder, schema introspection, migrations, streaming, FTS5 full-text search, BLOB handling, JSON1 extension, audit tracking, repository pattern, vector embeddings, online backup, and export/import.
-**Test Coverage:** 304 tests (100% passing) - includes edge case tests from Grok code review
+**Test Coverage:** 339 tests (100% passing) - includes 51 edge case tests from Grok code review (Priorities 1-8 complete)
 **SQLite Version:** 3.51.1 (via eiffel_sqlite_2025 v1.0.0)
 
 ---

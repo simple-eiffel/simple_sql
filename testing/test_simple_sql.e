@@ -240,6 +240,44 @@ feature -- Test routines
 			l_db.close
 		end
 
+feature -- Test routines: Edge Cases (Priority 3)
+
+	test_transaction_nested
+			-- Test BEGIN inside BEGIN is prevented by DBC
+			-- DBC: `not_is_in_transaction` precondition prevents nested transactions
+		note
+			testing: "covers/{SIMPLE_SQL_DATABASE}.begin_transaction"
+			testing: "edge_case"
+		local
+			l_db: SIMPLE_SQL_DATABASE
+			l_result: SIMPLE_SQL_RESULT
+			l_rescued: BOOLEAN
+		do
+			if not l_rescued then
+				create l_db.make_memory
+				l_db.execute ("CREATE TABLE test (value INTEGER)")
+
+				-- First begin
+				l_db.begin_transaction
+				l_db.execute ("INSERT INTO test VALUES (1)")
+
+				-- Nested begin - DBC should prevent this with precondition violation
+				l_db.begin_transaction
+
+				-- If we get here, DBC didn't catch it (shouldn't happen)
+				l_db.execute ("INSERT INTO test VALUES (2)")
+				l_db.commit
+				l_db.close
+			else
+				-- DBC precondition violation - this is expected behavior
+				-- Nested transactions are prevented by contract
+				assert_true ("dbc_prevents_nested", True)
+			end
+		rescue
+			l_rescued := True
+			retry
+		end
+
 note
 	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"

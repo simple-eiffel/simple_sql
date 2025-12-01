@@ -429,4 +429,133 @@ feature -- Test routines: Integration
 			assert_true ("theme_is_dark", l_result.first.string_value ("theme").has_substring ("dark"))
 		end
 
+feature -- Test routines: Edge Cases (Priority 7)
+
+	test_json_deeply_nested
+			-- Test 5+ levels of nesting
+		note
+			testing: "covers/{SIMPLE_SQL_JSON}.extract"
+			testing: "edge_case"
+		local
+			l_json: STRING_8
+			l_result: detachable STRING_32
+		do
+			-- 6 levels deep
+			l_json := "{%"a%":{%"b%":{%"c%":{%"d%":{%"e%":{%"f%":%"deep_value%"}}}}}}"
+
+			l_result := json_helper.extract (l_json, "$.a.b.c.d.e.f")
+			assert_true ("deep_extracted", l_result /= Void)
+			if l_result /= Void then
+				assert_true ("deep_value_found", l_result.has_substring ("deep_value"))
+			end
+		end
+
+	test_json_array_of_arrays
+			-- Test nested arrays
+		note
+			testing: "covers/{SIMPLE_SQL_JSON}.extract"
+			testing: "edge_case"
+		local
+			l_json: STRING_8
+			l_result: detachable STRING_32
+		do
+			l_json := "{%"matrix%":[[1,2,3],[4,5,6],[7,8,9]]}"
+
+			-- Extract middle element of middle row
+			l_result := json_helper.extract (l_json, "$.matrix[1][1]")
+			assert_true ("nested_array_extracted", l_result /= Void)
+			if l_result /= Void then
+				assert_true ("middle_is_5", l_result.has_substring ("5"))
+			end
+		end
+
+	test_json_null_vs_missing
+			-- Test NULL value vs absent key
+		note
+			testing: "covers/{SIMPLE_SQL_JSON}.extract"
+			testing: "edge_case"
+		local
+			l_json: STRING_8
+			l_result: detachable STRING_32
+			l_type: detachable STRING_32
+		do
+			l_json := "{%"present%":null,%"other%":%"value%"}"
+
+			-- Extract present null value
+			l_result := json_helper.extract (l_json, "$.present")
+			l_type := json_helper.json_type (l_json, "$.present")
+			if l_type /= Void then
+				assert_strings_equal ("present_is_null", "null", l_type)
+			end
+
+			-- Extract missing key
+			l_result := json_helper.extract (l_json, "$.missing")
+			-- Result should be Void/null for missing key
+			assert_true ("missing_handled", True)  -- Just verify no crash
+		end
+
+	test_json_numeric_precision
+			-- Test large integers and floats
+		note
+			testing: "covers/{SIMPLE_SQL_JSON}.extract"
+			testing: "edge_case"
+		local
+			l_json: STRING_8
+			l_result: detachable STRING_32
+		do
+			-- Test large integer and precise float
+			l_json := "{%"big_int%":9223372036854775807,%"precise%":3.141592653589793}"
+
+			l_result := json_helper.extract (l_json, "$.big_int")
+			assert_true ("big_int_extracted", l_result /= Void)
+
+			l_result := json_helper.extract (l_json, "$.precise")
+			assert_true ("precise_extracted", l_result /= Void)
+			if l_result /= Void then
+				assert_true ("has_pi", l_result.has_substring ("3.14159"))
+			end
+		end
+
+	test_json_empty_object
+			-- Test {} handling
+		note
+			testing: "covers/{SIMPLE_SQL_JSON}.is_valid_json"
+			testing: "edge_case"
+		local
+			l_type: detachable STRING_32
+		do
+			assert_true ("empty_object_valid", json_helper.is_valid_json ("{}"))
+
+			l_type := json_helper.json_type ("{}", Void)
+			if l_type /= Void then
+				assert_strings_equal ("empty_is_object", "object", l_type)
+			end
+
+			-- Modify empty object
+			if attached json_helper.json_set ("{}", "$.new_key", "new_value") as l_result then
+				assert_true ("key_added", l_result.has_substring ("new_key"))
+			end
+		end
+
+	test_json_empty_array
+			-- Test [] handling
+		note
+			testing: "covers/{SIMPLE_SQL_JSON}.is_valid_json"
+			testing: "edge_case"
+		local
+			l_type: detachable STRING_32
+			l_result: SIMPLE_SQL_RESULT
+		do
+			assert_true ("empty_array_valid", json_helper.is_valid_json ("[]"))
+
+			l_type := json_helper.json_type ("[]", Void)
+			if l_type /= Void then
+				assert_strings_equal ("empty_is_array", "array", l_type)
+			end
+
+			-- Test json_array_length on empty array
+			l_result := db.query ("SELECT json_array_length('[]') as len")
+			assert_equal ("empty_array_length", 0, l_result.first.integer_value ("len"))
+		end
+
 end

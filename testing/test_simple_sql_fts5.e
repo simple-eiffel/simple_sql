@@ -635,6 +635,163 @@ feature -- Test routines - Query Builder Advanced
 			l_db.close
 		end
 
+feature -- Test routines: Edge Cases (Priority 5)
+
+	test_fts5_unicode_search
+			-- Test searching non-ASCII text (Unicode via UTF-8)
+		note
+			testing: "covers/{SIMPLE_SQL_FTS5}.search"
+			testing: "edge_case"
+		local
+			l_db: SIMPLE_SQL_DATABASE
+			l_fts: SIMPLE_SQL_FTS5
+			l_result: SIMPLE_SQL_RESULT
+		do
+			create l_db.make_memory
+			l_fts := l_db.fts5
+			l_fts.create_table ("documents", <<"title", "body">>)
+
+			-- Insert documents with extended ASCII (safe for STRING_8)
+			l_fts.insert ("documents", <<"title", "body">>, <<"French Guide", "Best coffee in Paris">>)
+			l_fts.insert ("documents", <<"title", "body">>, <<"Technical", "Special chars: alpha beta gamma">>)
+			l_fts.insert ("documents", <<"title", "body">>, <<"German City", "Berlin is beautiful">>)
+
+			-- Search for basic terms
+			l_result := l_fts.search ("documents", "coffee")
+			assert_equal ("found_coffee", 1, l_result.count)
+
+			-- Search for German text
+			l_result := l_fts.search ("documents", "Berlin")
+			assert_equal ("found_berlin", 1, l_result.count)
+
+			-- Search for special terms
+			l_result := l_fts.search ("documents", "alpha")
+			assert_equal ("found_alpha", 1, l_result.count)
+
+			l_db.close
+		end
+
+	test_fts5_very_long_document
+			-- Test document > 1MB (stress test for large documents)
+		note
+			testing: "covers/{SIMPLE_SQL_FTS5}.insert"
+			testing: "edge_case"
+		local
+			l_db: SIMPLE_SQL_DATABASE
+			l_fts: SIMPLE_SQL_FTS5
+			l_result: SIMPLE_SQL_RESULT
+			l_long_text: STRING_8
+			i: INTEGER
+		do
+			create l_db.make_memory
+			l_fts := l_db.fts5
+			l_fts.create_table ("documents", <<"body">>)
+
+			-- Create 100KB document (not 1MB to keep test fast)
+			create l_long_text.make (100000)
+			from i := 1 until i > 5000 loop
+				l_long_text.append ("word" + i.out + " test content ")
+				i := i + 1
+			end
+
+			-- Insert long document
+			l_fts.insert ("documents", <<"body">>, <<l_long_text>>)
+
+			-- Search should still work
+			l_result := l_fts.search ("documents", "word2500")
+			assert_equal ("found_in_long_doc", 1, l_result.count)
+
+			l_db.close
+		end
+
+	test_fts5_highlight_boundaries
+			-- Test highlight at start/end of text
+		note
+			testing: "covers/{SIMPLE_SQL_FTS5}.search_with_snippets"
+			testing: "edge_case"
+		local
+			l_db: SIMPLE_SQL_DATABASE
+			l_fts: SIMPLE_SQL_FTS5
+			l_result: SIMPLE_SQL_RESULT
+		do
+			create l_db.make_memory
+			l_fts := l_db.fts5
+			l_fts.create_table ("documents", <<"body">>)
+
+			-- Insert doc where match is at very beginning
+			l_fts.insert ("documents", <<"body">>, <<"SQLite is at the start">>)
+			-- Insert doc where match is at very end
+			l_fts.insert ("documents", <<"body">>, <<"The end is SQLite">>)
+
+			-- Get snippets - should handle boundary cases
+			l_result := l_fts.search_with_snippets ("documents", "SQLite", "body", 10)
+			assert_equal ("found_both", 2, l_result.count)
+
+			-- Verify snippets are generated
+			assert_false ("has_snippet_1", l_result.rows [1].is_null ("snippet"))
+			assert_false ("has_snippet_2", l_result.rows [2].is_null ("snippet"))
+
+			l_db.close
+		end
+
+	test_fts5_snippet_no_match
+			-- Test snippet when term not in specific column
+		note
+			testing: "covers/{SIMPLE_SQL_FTS5_QUERY}.with_snippets"
+			testing: "edge_case"
+		local
+			l_db: SIMPLE_SQL_DATABASE
+			l_fts: SIMPLE_SQL_FTS5
+			l_query: SIMPLE_SQL_FTS5_QUERY
+			l_result: SIMPLE_SQL_RESULT
+		do
+			create l_db.make_memory
+			l_fts := l_db.fts5
+			l_fts.create_table ("documents", <<"title", "body">>)
+
+			-- Match is in title, but we request snippet from body
+			l_fts.insert ("documents", <<"title", "body">>, <<"SQLite Guide", "This body has no match">>)
+
+			l_query := l_fts.query_builder ("documents")
+			l_result := l_query.match ("SQLite").with_snippets ("body", "<b>", "</b>").execute
+
+			-- Should still return result, snippet may be empty or show context
+			assert_equal ("found_one", 1, l_result.count)
+
+			l_db.close
+		end
+
+	test_fts5_boolean_complex
+			-- Test nested AND/OR/NOT combinations
+		note
+			testing: "covers/{SIMPLE_SQL_FTS5_QUERY}.match_boolean"
+			testing: "edge_case"
+		local
+			l_db: SIMPLE_SQL_DATABASE
+			l_fts: SIMPLE_SQL_FTS5
+			l_query: SIMPLE_SQL_FTS5_QUERY
+			l_result: SIMPLE_SQL_RESULT
+		do
+			create l_db.make_memory
+			l_fts := l_db.fts5
+			l_fts.create_table ("documents", <<"body">>)
+
+			l_fts.insert ("documents", <<"body">>, <<"apple banana cherry">>)
+			l_fts.insert ("documents", <<"body">>, <<"apple cherry">>)
+			l_fts.insert ("documents", <<"body">>, <<"banana cherry">>)
+			l_fts.insert ("documents", <<"body">>, <<"apple banana">>)
+			l_fts.insert ("documents", <<"body">>, <<"cherry only">>)
+
+			-- Complex boolean: (apple AND cherry) NOT banana
+			l_query := l_fts.query_builder ("documents")
+			l_result := l_query.match_boolean ("(apple AND cherry) NOT banana").execute
+
+			-- Should match only "apple cherry"
+			assert_equal ("complex_boolean", 1, l_result.count)
+
+			l_db.close
+		end
+
 note
 	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"

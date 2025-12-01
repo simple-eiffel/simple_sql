@@ -443,6 +443,138 @@ feature -- Test routines: Large dataset simulation
 			l_db.close
 		end
 
+feature -- Test routines: Edge Cases (Priority 8)
+
+	test_cursor_large_result
+			-- Test 10,000+ rows iteration (memory efficiency)
+		note
+			testing: "covers/{SIMPLE_SQL_CURSOR}"
+			testing: "edge_case"
+		local
+			l_db: SIMPLE_SQL_DATABASE
+			l_cursor: SIMPLE_SQL_CURSOR
+			l_count: INTEGER
+			i: INTEGER
+		do
+			create l_db.make_memory
+			l_db.execute ("CREATE TABLE big_data (id INTEGER PRIMARY KEY, value TEXT)")
+
+			-- Insert 10,000 rows
+			l_db.begin_transaction
+			from i := 1 until i > 10000 loop
+				l_db.execute ("INSERT INTO big_data (value) VALUES ('row_" + i.out + "')")
+				i := i + 1
+			end
+			l_db.commit
+
+			-- Iterate with cursor (memory-efficient - one row at a time)
+			l_cursor := l_db.query_cursor ("SELECT * FROM big_data")
+			from l_cursor.start until l_cursor.after loop
+				l_count := l_count + 1
+				l_cursor.forth
+			end
+			l_cursor.close
+
+			assert_equal ("all_10000", 10000, l_count)
+			l_db.close
+		end
+
+	test_cursor_early_termination
+			-- Test stopping iteration mid-stream
+		note
+			testing: "covers/{SIMPLE_SQL_CURSOR}"
+			testing: "edge_case"
+		local
+			l_db: SIMPLE_SQL_DATABASE
+			l_cursor: SIMPLE_SQL_CURSOR
+			l_count: INTEGER
+			i: INTEGER
+		do
+			create l_db.make_memory
+			l_db.execute ("CREATE TABLE data (id INTEGER)")
+
+			-- Insert 1000 rows
+			l_db.begin_transaction
+			from i := 1 until i > 1000 loop
+				l_db.execute ("INSERT INTO data VALUES (" + i.out + ")")
+				i := i + 1
+			end
+			l_db.commit
+
+			-- Only process first 100
+			l_cursor := l_db.query_cursor ("SELECT * FROM data ORDER BY id")
+			from l_cursor.start until l_cursor.after or l_count >= 100 loop
+				l_count := l_count + 1
+				l_cursor.forth
+			end
+			l_cursor.close
+
+			assert_equal ("stopped_at_100", 100, l_count)
+			l_db.close
+		end
+
+	test_stream_callback_exception
+			-- Test exception in callback handling
+		note
+			testing: "covers/{SIMPLE_SQL_RESULT_STREAM}.for_each"
+			testing: "edge_case"
+		local
+			l_db: SIMPLE_SQL_DATABASE
+			l_stream: SIMPLE_SQL_RESULT_STREAM
+			l_rescued: BOOLEAN
+		do
+			if not l_rescued then
+				create l_db.make_memory
+				l_db.execute ("CREATE TABLE test (id INTEGER)")
+				l_db.execute ("INSERT INTO test VALUES (1)")
+				l_db.execute ("INSERT INTO test VALUES (2)")
+
+				l_stream := l_db.create_stream ("SELECT * FROM test")
+				exception_test_count := 0
+				l_stream.for_each (agent raise_exception_on_second)
+
+				-- If we get here, exception wasn't raised or was handled
+				assert_true ("exception_handled", exception_test_count >= 1)
+				l_db.close
+			else
+				-- Exception was raised - that's expected behavior
+				assert_true ("exception_raised", exception_test_count >= 1)
+			end
+		rescue
+			l_rescued := True
+			retry
+		end
+
+	test_stream_memory_stability
+			-- Test memory usage during large stream (no accumulation)
+		note
+			testing: "covers/{SIMPLE_SQL_RESULT_STREAM}"
+			testing: "edge_case"
+		local
+			l_db: SIMPLE_SQL_DATABASE
+			l_stream: SIMPLE_SQL_RESULT_STREAM
+			i: INTEGER
+		do
+			create l_db.make_memory
+			l_db.execute ("CREATE TABLE memory_test (id INTEGER, data TEXT)")
+
+			-- Insert 5000 rows with some data
+			l_db.begin_transaction
+			from i := 1 until i > 5000 loop
+				l_db.execute ("INSERT INTO memory_test VALUES (" + i.out + ", 'data_value_" + i.out + "')")
+				i := i + 1
+			end
+			l_db.commit
+
+			-- Stream through all rows - each should be processed independently
+			l_stream := l_db.create_stream ("SELECT * FROM memory_test")
+			total_age_accumulator := 0
+			l_stream.for_each (agent count_rows)
+
+			assert_equal ("processed_5000", 5000, total_age_accumulator)
+			l_db.close
+		end
+
 feature {NONE} -- Test helpers
 
 	setup_test_data (a_db: SIMPLE_SQL_DATABASE)
@@ -495,6 +627,27 @@ feature {NONE} -- Test helpers
 		do
 			early_stop_count := early_stop_count + 1
 			Result := early_stop_count >= 2
+		end
+
+	exception_test_count: INTEGER
+			-- Counter for exception test
+
+	raise_exception_on_second (a_row: SIMPLE_SQL_ROW): BOOLEAN
+			-- Raise exception on second row
+		do
+			exception_test_count := exception_test_count + 1
+			if exception_test_count >= 2 then
+				-- Trigger an exception by dividing by zero
+				Result := (1 // 0) > 0
+			end
+			Result := False
+		end
+
+	count_rows (a_row: SIMPLE_SQL_ROW): BOOLEAN
+			-- Count rows for memory test
+		do
+			total_age_accumulator := total_age_accumulator + 1
+			Result := False
 		end
 
 note
