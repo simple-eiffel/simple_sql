@@ -1,0 +1,19 @@
+note
+	description: "Test application root class for DMS tests"
+	date: "$Date$"
+	revision: "$Revision$"
+
+class
+	APPLICATION
+
+create
+	make
+
+feature -- Initialization
+
+	make
+			-- Run application.
+		do
+		end
+
+end

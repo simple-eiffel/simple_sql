@@ -169,6 +169,99 @@ feature -- Conversion
 			Result := column_value (a_name) = Void
 		end
 
+feature -- Nullable Accessors
+
+	string_value_or_void (a_name: STRING_8): detachable STRING_8
+			-- String value for column, or Void if null.
+			-- Convenience method for nullable string columns.
+		require
+			has_column: has_column (a_name)
+		do
+			if not is_null (a_name) then
+				Result := string_value (a_name).to_string_8
+			end
+		end
+
+	integer_value_or_void (a_name: STRING_8): detachable INTEGER_REF
+			-- Integer value for column, or Void if null.
+			-- Convenience method for nullable integer columns.
+		require
+			has_column: has_column (a_name)
+		do
+			if not is_null (a_name) then
+				Result := integer_value (a_name)
+			end
+		end
+
+	integer_64_value_or_void (a_name: STRING_8): detachable INTEGER_64_REF
+			-- Integer_64 value for column, or Void if null.
+			-- Convenience method for nullable integer columns.
+		require
+			has_column: has_column (a_name)
+		do
+			if not is_null (a_name) then
+				Result := integer_64_value (a_name)
+			end
+		end
+
+	real_value_or_void (a_name: STRING_8): detachable REAL_64_REF
+			-- Real value for column, or Void if null.
+			-- Convenience method for nullable real columns.
+		require
+			has_column: has_column (a_name)
+		do
+			if not is_null (a_name) then
+				Result := real_value (a_name)
+			end
+		end
+
+	string_value_or_default (a_name: STRING_8; a_default: STRING_8): STRING_8
+			-- String value for column, or default if null.
+		require
+			has_column: has_column (a_name)
+		do
+			if is_null (a_name) then
+				Result := a_default
+			else
+				Result := string_value (a_name).to_string_8
+			end
+		ensure
+			result_not_void: Result /= Void
+		end
+
+	integer_value_or_default (a_name: STRING_8; a_default: INTEGER): INTEGER
+			-- Integer value for column, or default if null.
+		require
+			has_column: has_column (a_name)
+		do
+			if is_null (a_name) then
+				Result := a_default
+			else
+				Result := integer_value (a_name)
+			end
+		end
+
+	integer_64_value_or_default (a_name: STRING_8; a_default: INTEGER_64): INTEGER_64
+			-- Integer_64 value for column, or default if null.
+		require
+			has_column: has_column (a_name)
+		do
+			if is_null (a_name) then
+				Result := a_default
+			else
+				Result := integer_64_value (a_name)
+			end
+		end
+
+	boolean_value (a_name: STRING_8): BOOLEAN
+			-- Boolean value for column (treats 0 as False, non-zero as True).
+			-- Commonly used for SQLite INTEGER columns storing boolean values.
+		require
+			has_column: has_column (a_name)
+		do
+			Result := integer_value (a_name) /= 0
+		end
+
 feature {SIMPLE_SQL_RESULT, SIMPLE_SQL_CURSOR, SIMPLE_SQL_RESULT_STREAM} -- Element change
 
 	add_column (a_name: STRING_8; a_value: detachable ANY)

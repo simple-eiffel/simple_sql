@@ -366,6 +366,48 @@ feature -- Ordering
 			Result := Current
 		end
 
+feature -- Soft Delete Scopes
+
+	active_only: like Current
+			-- Filter to only active (non-deleted) records.
+			-- Assumes table has `deleted_at` column (NULL = active).
+		do
+			soft_delete_mode := Soft_delete_active_only
+			Result := Current
+		ensure
+			active_mode: soft_delete_mode = Soft_delete_active_only
+		end
+
+	deleted_only: like Current
+			-- Filter to only soft-deleted records.
+			-- Assumes table has `deleted_at` column (NOT NULL = deleted).
+		do
+			soft_delete_mode := Soft_delete_deleted_only
+			Result := Current
+		ensure
+			deleted_mode: soft_delete_mode = Soft_delete_deleted_only
+		end
+
+	with_deleted: like Current
+			-- Include all records regardless of soft delete status.
+		do
+			soft_delete_mode := Soft_delete_all
+			Result := Current
+		ensure
+			all_mode: soft_delete_mode = Soft_delete_all
+		end
+
+	set_soft_delete_column (a_column: READABLE_STRING_8)
+			-- Set custom column name for soft delete filtering.
+			-- Default is "deleted_at".
+		require
+			column_not_empty: not a_column.is_empty
+		do
+			soft_delete_column := a_column.to_string_8
+		ensure
+			column_set: attached soft_delete_column as c and then c.same_string (a_column)
+		end
+
 feature -- Limiting
 
 	limit (a_limit: INTEGER): like Current
@@ -510,9 +552,12 @@ feature -- Reset
 			is_distinct := False
 			limit_value := -1
 			offset_value := -1
+			soft_delete_mode := Soft_delete_all
+			soft_delete_column := Void
 		ensure
 			columns_empty: columns.is_empty
 			tables_empty: tables.is_empty
+			soft_delete_reset: soft_delete_mode = Soft_delete_all
 		end
 
 feature -- Output
@@ -561,9 +606,24 @@ feature -- Output
 				Result.append (ic)
 			end
 
-			-- WHERE
-			if not where_clauses.is_empty then
+			-- WHERE (with soft delete scoping)
+			if not where_clauses.is_empty or soft_delete_mode /= Soft_delete_all then
 				Result.append (" WHERE ")
+				-- Soft delete condition first
+				if soft_delete_mode = Soft_delete_active_only then
+					Result.append (effective_soft_delete_column)
+					Result.append (" IS NULL")
+					if not where_clauses.is_empty then
+						Result.append (" AND ")
+					end
+				elseif soft_delete_mode = Soft_delete_deleted_only then
+					Result.append (effective_soft_delete_column)
+					Result.append (" IS NOT NULL")
+					if not where_clauses.is_empty then
+						Result.append (" AND ")
+					end
+				end
+				-- User-specified WHERE conditions
 				from i := 1 until i > where_clauses.count loop
 					if i > 1 and then not where_clauses [i].connector.is_empty then
 						Result.append (" ")
@@ -657,6 +717,31 @@ feature {NONE} -- Implementation
 
 	offset_value: INTEGER
 			-- OFFSET value (-1 means not set)
+
+	soft_delete_mode: INTEGER
+			-- Soft delete filtering mode (0 = none, 1 = active only, 2 = deleted only)
+
+	soft_delete_column: detachable STRING_8
+			-- Column name for soft delete (default: "deleted_at")
+
+	Soft_delete_all: INTEGER = 0
+			-- Include all records (no soft delete filtering)
+
+	Soft_delete_active_only: INTEGER = 1
+			-- Only active (non-deleted) records
+
+	Soft_delete_deleted_only: INTEGER = 2
+			-- Only soft-deleted records
+
+	effective_soft_delete_column: STRING_8
+			-- Column name to use for soft delete filtering.
+		do
+			if attached soft_delete_column as c then
+				Result := c
+			else
+				Result := "deleted_at"
+			end
+		end
 
 invariant
 	limit_valid: limit_value >= -1

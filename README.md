@@ -32,10 +32,22 @@ The `src/` directory contains mock applications that serve dual purposes:
 1. **Demonstrate** how to use SIMPLE_SQL in realistic scenarios
 2. **Stress-test** the API to expose friction and drive improvements
 
-| Mock App | Domain | Activities | What It Tests |
-|----------|--------|------------|---------------|
-| `todo_app` | Task management | CRUD, queries | Basic patterns |
-| `cpm_app` | Project scheduling | 51 activities, 65 dependencies, CPM algorithm | Complex relationships, parameterized queries |
+| Mock App | Domain | Scale | Key Friction Exposed | API Improvements Driven |
+|----------|--------|-------|---------------------|------------------------|
+| `todo_app` | Task management | Basic CRUD | Query builder basics, result handling | Initial patterns, fluent API |
+| `cpm_app` | Project scheduling | 51 activities, 65 dependencies | Complex relationships, repeated queries | `execute_with_args`, `query_with_args` |
+| `habit_tracker` | Time-series data | Daily tracking, streaks, analytics | Aggregations, date handling, soft deletes | Streaming cursors, date utilities |
+| `dms` | Document management | Hierarchical folders, versioning, FTS | N+1 queries, pagination, audit trails | **Eager loading**, **soft delete scopes**, **pagination builder**, **N+1 detection** |
+
+### What Each Mock App Teaches
+
+**TODO App** - Start here. Shows basic CRUD patterns: creating tables, inserting data, querying with the fluent builder, handling results.
+
+**CPM App** - Complex relationships. A real Critical Path Method scheduler with 51 construction activities and 65 dependencies. Demonstrates parameterized queries, transaction handling, and graph algorithms over relational data.
+
+**Habit Tracker** - Time-series patterns. Daily habit tracking with streak calculations, completion rates, and trend analysis. Shows aggregation queries, date handling, and soft delete patterns.
+
+**DMS (Document Management System)** - Enterprise patterns. Hierarchical folders, document versioning, comments, tags (many-to-many), sharing permissions, FTS5 search, cursor-based pagination, and full audit trails. This mock exposed the most API friction and drove the most improvements.
 
 Each mock application has its own test suite. When we add API improvements based on mock app friction, we add tests for both the new API *and* verify the mock app benefits.
 
@@ -137,8 +149,12 @@ Each mock application has its own test suite. When we add API improvements based
 - **Automatic Audit/Change Tracking** with trigger-based change capture and JSON storage
 - **Repository Pattern** with generic CRUD operations, find_all, find_by_id, find_where, pagination
 - **Vector Embeddings** for ML/AI with similarity search, K-nearest neighbors, cosine/Euclidean distance
-- **Online Backup API** with progress callbacks, incremental backup, export/import (CSV, JSON, SQL) (NEW)
-- Comprehensive test suite with 346+ tests (100% passing)
+- **Online Backup API** with progress callbacks, incremental backup, export/import (CSV, JSON, SQL)
+- **Eager Loading** to eliminate N+1 query problems with `.include()` API (NEW)
+- **Soft Delete Scopes** with `.active_only`, `.deleted_only`, `.with_deleted` (NEW)
+- **Pagination Builder** for cursor-based pagination (NEW)
+- **N+1 Query Detection** with runtime monitoring and warnings (NEW)
+- Comprehensive test suite with 460+ tests (100% passing)
 
 **Design Principles:**
 - Command-Query Separation throughout
@@ -676,6 +692,154 @@ audit.drop_audit_table ("users")
 - Query by record, operation type, or time range
 - Immutable audit trail
 
+## Eager Loading (N+1 Query Prevention)
+
+Eliminate the N+1 query problem with declarative eager loading:
+
+```eiffel
+-- WITHOUT eager loading: N+1 problem
+-- 1 query for documents + N queries for comments = disaster
+docs := db.query ("SELECT * FROM documents WHERE owner_id = 1")
+across docs.rows as doc loop
+    comments := db.query ("SELECT * FROM comments WHERE document_id = " + doc.integer_64_value ("id").out)
+    -- Process comments...
+end
+
+-- WITH eager loading: 2 queries total regardless of N
+results := db.eager_loader
+    .from_table ("documents")
+    .include ("comments", "document_id", "id")           -- Direct FK relationship
+    .include_many_to_many ("tags", "document_tags", "document_id", "tag_id")  -- M:M via junction
+    .where ("owner_id = 1")
+    .order_by ("updated_at")
+    .limit (20)
+    .execute
+
+-- Access main rows
+across results.main_rows as doc loop
+    print (doc.string_value ("title"))
+
+    -- Access related data - already loaded!
+    across results.related_for ("comments", doc.integer_64_value ("id")) as comment loop
+        print ("  Comment: " + comment.string_value ("body"))
+    end
+end
+
+-- Check counts
+print ("Total documents: " + results.main_count.out)
+print ("Total comments loaded: " + results.related_count ("comments").out)
+```
+
+## Soft Delete Scopes
+
+Automatically filter soft-deleted records without boilerplate:
+
+```eiffel
+-- Old way: Easy to forget, clutters every query
+db.select_builder.from_table ("documents")
+    .where ("deleted_at IS NULL")  -- Must remember this EVERY time
+    .and_where ("owner_id = 1")
+    .execute
+
+-- New way: Declarative scopes
+db.select_builder.from_table ("documents")
+    .active_only                    -- Only non-deleted records
+    .where ("owner_id = 1")
+    .execute
+
+-- Query deleted records (trash view)
+db.select_builder.from_table ("documents")
+    .deleted_only                   -- Only soft-deleted records
+    .execute
+
+-- Admin view: all records regardless of status
+db.select_builder.from_table ("documents")
+    .with_deleted                   -- Include all records
+    .execute
+
+-- Custom soft delete column (default is "deleted_at")
+db.select_builder.from_table ("archived_items")
+    .set_soft_delete_column ("archived_at")
+    .active_only
+    .execute
+```
+
+## Pagination Builder
+
+Clean cursor-based pagination for large datasets:
+
+```eiffel
+-- Create paginator
+paginator := db.paginator ("documents")
+    .order_by (<<"updated_at", "id">>)  -- Must include unique column for stable ordering
+    .page_size (20)
+    .active_only                         -- Integrates with soft delete
+    .where ("owner_id = 1")
+
+-- Get first page
+page := paginator.first_page
+across page.items as doc loop
+    print (doc.string_value ("title"))
+end
+
+-- Check for more pages
+if page.has_more then
+    print ("Next cursor: " + page.next_cursor)
+end
+
+-- Get next page using cursor
+next_page := paginator.after (page.next_cursor)
+
+-- Page information
+print ("Items on page: " + page.count.out)
+print ("Is last page: " + page.is_last_page.out)
+```
+
+## N+1 Query Detection
+
+Catch N+1 problems during development:
+
+```eiffel
+-- Enable monitoring
+db.enable_query_monitor
+
+-- Run your code (e.g., render a page)
+render_document_list (db)
+
+-- Check for N+1 warnings
+if attached db.query_monitor as m then
+    if m.has_warnings then
+        print ("!!! N+1 DETECTED !!!")
+        across m.warnings as w loop
+            print (w)
+        end
+    end
+
+    -- Get detailed report
+    print (m.report)
+    -- Output:
+    -- === Query Monitor Report ===
+    -- Total queries: 21
+    -- Unique patterns: 2
+    --
+    -- !!! N+1 WARNINGS !!!
+    --   - N+1 detected: Query pattern executed 20+ times: SELECT * FROM comments WHERE document_id = ?
+    --
+    -- Top repeated patterns:
+    --   20x: SELECT * FROM comments WHERE document_id = ?
+    --   1x: SELECT * FROM documents WHERE owner_id = ?
+end
+
+-- Configure sensitivity
+db.query_monitor.set_threshold (3)  -- Warn after 3 similar queries (default: 5)
+
+-- Reset between tests
+db.reset_query_monitor
+
+-- Disable when done
+db.disable_query_monitor
+```
+
 ## Repository Pattern
 
 Generic repository pattern for type-safe CRUD operations:
@@ -1148,13 +1312,46 @@ SIMPLE_SQL_VECTOR_STORE       -- Vector storage and search (NEW)
     ├── update() / delete()    -- CRUD operations
     └── count() / exists()     -- Queries
 
-SIMPLE_SQL_SIMILARITY         -- Distance/similarity metrics (NEW)
+SIMPLE_SQL_SIMILARITY         -- Distance/similarity metrics
     ├── cosine_similarity()    -- Angle-based (-1 to 1)
     ├── euclidean_distance()   -- L2 distance
     ├── manhattan_distance()   -- L1 distance
     ├── angular_distance()     -- 1 - cosine
     ├── is_similar()           -- Threshold check
     └── find_most_similar()    -- Best match in array
+
+SIMPLE_SQL_EAGER_LOADER       -- N+1 query prevention (NEW)
+    ├── from_table()           -- Set main table
+    ├── include()              -- Add direct FK relationship
+    ├── include_many_to_many() -- Add M:M via junction table
+    ├── where() / limit()      -- Filter main query
+    └── execute()              -- Returns SIMPLE_SQL_EAGER_RESULT
+
+SIMPLE_SQL_EAGER_RESULT       -- Eager loading results (NEW)
+    ├── main_rows              -- Main query results
+    ├── related()              -- All related rows for table
+    ├── related_for()          -- Related rows for specific ID
+    └── related_count()        -- Count related items
+
+SIMPLE_SQL_PAGINATOR          -- Cursor-based pagination (NEW)
+    ├── order_by()             -- Set ordering columns
+    ├── page_size()            -- Items per page
+    ├── where() / active_only()-- Filtering
+    ├── first_page()           -- Get first page
+    └── after()                -- Get page after cursor
+
+SIMPLE_SQL_PAGE               -- Pagination result (NEW)
+    ├── items                  -- Rows for this page
+    ├── next_cursor            -- Cursor for next page
+    ├── has_more               -- More pages available?
+    └── is_last_page           -- Final page?
+
+SIMPLE_SQL_QUERY_MONITOR      -- N+1 detection (NEW)
+    ├── record_query()         -- Track query execution
+    ├── warnings               -- N+1 warnings detected
+    ├── report()               -- Summary report
+    ├── set_threshold()        -- Configure sensitivity
+    └── reset()                -- Clear tracking data
 
 AGENT_PART_COMPARATOR [G]     -- Agent-based comparator wrapper
     ├── make()                 -- Create with comparison agent
@@ -1190,8 +1387,11 @@ Comprehensive test suite using EiffelStudio AutoTest framework:
 - `TEST_TODO_APP` - TODO application (36 tests)
 - `TEST_CPM_APP` - CPM scheduler basic tests (20 tests)
 - `TEST_CPM_APP_STRESS` - CPM stress tests with 51-activity construction project (7 tests)
+- `TEST_HABIT_TRACKER` - Habit tracking with streaks, analytics (25 tests)
+- `TEST_DMS_APP` - Document management system (40 tests)
+- `TEST_DMS_STRESS` - DMS stress tests with N+1 detection, pagination, audit (24 tests)
 
-**Total: 400+ tests (100% passing)**
+**Total: 460+ tests (100% passing)**
 
 All tests include proper setup/teardown with `on_prepare`/`on_clean` for isolated execution.
 
@@ -1375,11 +1575,12 @@ Contributions welcome! Please ensure:
 
 ## Status
 
-**Current Version:** 1.0
+**Current Version:** 1.1
 **Stability:** Production - Core API stable
-**Production Ready:** Phases 1-5 complete. All features production-ready: core CRUD, prepared statements, PRAGMA configuration, batch operations, fluent query builder, schema introspection, migrations, streaming, FTS5 full-text search, BLOB handling, JSON1 extension, audit tracking, repository pattern, vector embeddings, online backup, and export/import.
-**Test Coverage:** 400+ tests (100% passing) - includes 51 edge case tests from Grok code review + mock application integration tests
+**Production Ready:** Phases 1-5 complete plus new DMS-driven improvements. All features production-ready: core CRUD, prepared statements, PRAGMA configuration, batch operations, fluent query builder, schema introspection, migrations, streaming, FTS5 full-text search, BLOB handling, JSON1 extension, audit tracking, repository pattern, vector embeddings, online backup, export/import, **eager loading**, **soft delete scopes**, **pagination builder**, and **N+1 detection**.
+**Test Coverage:** 460+ tests (100% passing) - includes edge case tests from code review + 4 comprehensive mock application test suites
 **SQLite Version:** 3.51.1 (via eiffel_sqlite_2025 v1.0.0)
+**Mock Apps:** 4 (TODO, CPM, Habit Tracker, DMS) - demonstrating real-world usage patterns
 
 ---
 

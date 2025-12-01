@@ -42,10 +42,12 @@ SIMPLE_SQL is developed using **Mock-Driven Development** - building realistic c
 
 ### Current Mock Applications
 
-| Target | Domain | Complexity | API Improvements Driven |
-|--------|--------|------------|------------------------|
-| `todo_app` | Task management | Basic CRUD | Initial patterns |
-| `cpm_app` | Project scheduling | 51 activities, 65 dependencies, CPM algorithm | `execute_with_args`, `query_with_args` |
+| Target | Domain | Complexity | Key Friction Exposed | API Improvements Driven |
+|--------|--------|------------|---------------------|------------------------|
+| `todo_app` | Task management | Basic CRUD | Query builder basics | Initial patterns, fluent API |
+| `cpm_app` | Project scheduling | 51 activities, 65 dependencies | Parameterized queries | `execute_with_args`, `query_with_args` |
+| `habit_tracker` | Time-series data | Daily tracking, streaks | Aggregations, soft deletes | Streaming cursors, date utilities |
+| `dms` | Document management | Hierarchical folders, versioning, FTS, audit | **N+1 queries, pagination, boilerplate** | **Eager loading, soft delete scopes, pagination builder, N+1 detection** |
 
 ### The Process
 
@@ -59,23 +61,34 @@ SIMPLE_SQL is developed using **Mock-Driven Development** - building realistic c
 7. Repeat with next domain
 ```
 
-### Planned Future Mocks
+### Lessons Learned from Each Mock
 
-- **Document Store** - Heavy JSON storage, complex queries
-- **Reporting App** - Complex aggregations, exports
-- **Audit System** - Change tracking, history queries
+**TODO App:** Basic patterns work well. Fluent query builder is intuitive.
+
+**CPM App:** Parameterized queries eliminate SQL injection risk and make code cleaner. Heavy relationship traversal needs thought.
+
+**Habit Tracker:** Time-series queries benefit from streaming cursors. Soft delete pattern is common but repetitive.
+
+**DMS:** The N+1 problem is real and insidious. Cursor-based pagination is complex to implement correctly. Soft delete boilerplate clutters every query. Audit trails need trigger-based approach.
+
+### Potential Future Mocks
+
+- **Reporting Dashboard** - Complex aggregations, window functions, exports
+- **Inventory System** - Stock movements, audit trail queries, concurrent updates
+- **Chat Application** - Real-time patterns, message threading, read receipts
 
 ---
 
 ## Current State
 
-**Phases 1-5 Complete.** The library now includes:
-- **SIMPLE_SQL_DATABASE**: Full CRUD, transactions, streaming, error handling, BLOB utilities
+**Phases 1-5 Complete + DMS-Driven Improvements.** The library now includes:
+- **SIMPLE_SQL_DATABASE**: Full CRUD, transactions, streaming, error handling, BLOB utilities, query monitoring
 - **SIMPLE_SQL_RESULT/ROW**: Query results with typed accessors, BLOB support
 - **SIMPLE_SQL_CURSOR**: Lazy row-by-row iteration
 - **SIMPLE_SQL_RESULT_STREAM**: Callback-based streaming
 - **SIMPLE_SQL_PREPARED_STATEMENT**: Parameterized queries with streaming, BLOB/hex encoding, named parameters
-- **SIMPLE_SQL_QUERY_BUILDER**: Fluent SELECT/INSERT/UPDATE/DELETE
+- **SIMPLE_SQL_SELECT_BUILDER**: Fluent SELECT with soft delete scopes (`.active_only`, `.deleted_only`, `.with_deleted`)
+- **SIMPLE_SQL_INSERT/UPDATE/DELETE_BUILDER**: Fluent DML builders
 - **SIMPLE_SQL_SCHEMA**: Schema introspection
 - **SIMPLE_SQL_MIGRATION_RUNNER**: Version-controlled migrations
 - **SIMPLE_SQL_PRAGMA_CONFIG**: Database configuration
@@ -90,11 +103,16 @@ SIMPLE_SQL is developed using **Mock-Driven Development** - building realistic c
 - **SIMPLE_SQL_VECTOR**: Vector embeddings with math operations
 - **SIMPLE_SQL_VECTOR_STORE**: Vector storage with KNN search
 - **SIMPLE_SQL_SIMILARITY**: Distance and similarity metrics
-- **SIMPLE_SQL_ONLINE_BACKUP**: SQLite Online Backup API with progress callbacks (NEW)
-- **SIMPLE_SQL_EXPORT**: Export to CSV, JSON, SQL dump formats (NEW)
-- **SIMPLE_SQL_IMPORT**: Import from CSV, JSON, SQL formats (NEW)
+- **SIMPLE_SQL_ONLINE_BACKUP**: SQLite Online Backup API with progress callbacks
+- **SIMPLE_SQL_EXPORT**: Export to CSV, JSON, SQL dump formats
+- **SIMPLE_SQL_IMPORT**: Import from CSV, JSON, SQL formats
+- **SIMPLE_SQL_EAGER_LOADER**: N+1 query prevention with `.include()` API (NEW)
+- **SIMPLE_SQL_EAGER_RESULT**: Eager loading result container (NEW)
+- **SIMPLE_SQL_PAGINATOR**: Cursor-based pagination builder (NEW)
+- **SIMPLE_SQL_PAGE**: Pagination result with cursor management (NEW)
+- **SIMPLE_SQL_QUERY_MONITOR**: N+1 query detection and warnings (NEW)
 
-**400+ tests (100% passing). Production-ready for all Phase 1-5 features.**
+**460+ tests (100% passing). Production-ready for all features. 4 mock applications demonstrate real-world usage.**
 
 Test expansion complete based on Grok code review (see `D:/prod/reference_docs/eiffel/SIMPLE_SQL_TEST_EXPANSION_PLAN.md`):
 - ✅ Priority 1: Backup/Import/Export Edge Cases (8 tests)
@@ -156,15 +174,16 @@ Test expansion complete based on Grok code review (see `D:/prod/reference_docs/e
 
 ---
 
-## Proposed Class Structure
+## Class Structure
 
 ```
-SIMPLE_SQL_DATABASE (enhanced)
+SIMPLE_SQL_DATABASE (core)
 +-- SIMPLE_SQL_PREPARED_STATEMENT
 +-- SIMPLE_SQL_PRAGMA_CONFIG
++-- SIMPLE_SQL_QUERY_MONITOR ✅ NEW (N+1 detection)
 
 SIMPLE_SQL_QUERY_BUILDER
-+-- SIMPLE_SQL_SELECT_BUILDER
++-- SIMPLE_SQL_SELECT_BUILDER (with soft delete scopes)
 +-- SIMPLE_SQL_INSERT_BUILDER
 +-- SIMPLE_SQL_UPDATE_BUILDER
 +-- SIMPLE_SQL_DELETE_BUILDER
@@ -175,14 +194,14 @@ SIMPLE_SQL_SCHEMA
 +-- SIMPLE_SQL_TABLE_INFO
 +-- SIMPLE_SQL_COLUMN_INFO
 
-SIMPLE_SQL_FTS5 ✅ IMPLEMENTED
-+-- SIMPLE_SQL_FTS5_QUERY ✅ IMPLEMENTED
+SIMPLE_SQL_FTS5
++-- SIMPLE_SQL_FTS5_QUERY
 
-SIMPLE_SQL_AUDIT ✅ IMPLEMENTED
+SIMPLE_SQL_AUDIT
     (Auto-generate INSERT/UPDATE/DELETE triggers)
     (Query change history, detect changed fields)
 
-SIMPLE_SQL_REPOSITORY [G] ✅ IMPLEMENTED
+SIMPLE_SQL_REPOSITORY [G]
     (Generic deferred class for CRUD operations)
     (find_all, find_by_id, find_where, pagination, ordering)
     (insert, update, save, delete, count, exists)
@@ -195,15 +214,21 @@ SIMPLE_SQL_VECTOR
 SIMPLE_SQL_RESULT (eager loading)
 +-- SIMPLE_SQL_ROW
 
-SIMPLE_SQL_CURSOR (lazy iteration) ✅ NEW
+SIMPLE_SQL_CURSOR (lazy iteration)
 +-- SIMPLE_SQL_CURSOR_ITERATOR
 
-SIMPLE_SQL_RESULT_STREAM (callback streaming) ✅ NEW
+SIMPLE_SQL_RESULT_STREAM (callback streaming)
 
-SIMPLE_SQL_BACKUP (enhanced) ✅ IMPLEMENTED
-+-- SIMPLE_SQL_ONLINE_BACKUP ✅ IMPLEMENTED
-+-- SIMPLE_SQL_EXPORT ✅ IMPLEMENTED
-+-- SIMPLE_SQL_IMPORT ✅ IMPLEMENTED
+SIMPLE_SQL_BACKUP
++-- SIMPLE_SQL_ONLINE_BACKUP
++-- SIMPLE_SQL_EXPORT
++-- SIMPLE_SQL_IMPORT
+
+SIMPLE_SQL_EAGER_LOADER ✅ NEW (N+1 query prevention)
++-- SIMPLE_SQL_EAGER_RESULT ✅ NEW
+
+SIMPLE_SQL_PAGINATOR ✅ NEW (cursor-based pagination)
++-- SIMPLE_SQL_PAGE ✅ NEW
 ```
 
 ---

@@ -179,6 +179,10 @@ feature -- Basic operations
 			l_sql: STRING_8
 		do
 			clear_error
+			-- Record query for N+1 detection
+			if attached query_monitor as m and then m.is_enabled then
+				m.record_query (a_sql)
+			end
 			create l_sql.make_from_string (a_sql)
 			if not l_sql.ends_with (";") then
 				l_sql.append_character (';')
@@ -366,6 +370,27 @@ feature -- Query Builders
 			database_set: Result.database = Current
 		end
 
+	eager_loader: SIMPLE_SQL_EAGER_LOADER
+			-- Create eager loader to prevent N+1 queries.
+		require
+			is_open: is_open
+		do
+			create Result.make (Current)
+		ensure
+			result_attached: Result /= Void
+		end
+
+	paginator (a_table: READABLE_STRING_8): SIMPLE_SQL_PAGINATOR
+			-- Create paginator for cursor-based pagination.
+		require
+			is_open: is_open
+			table_not_empty: not a_table.is_empty
+		do
+			create Result.make (Current, a_table)
+		ensure
+			result_attached: Result /= Void
+		end
+
 feature -- Streaming and Cursor Queries
 
 	query_cursor (a_sql: READABLE_STRING_8): SIMPLE_SQL_CURSOR
@@ -527,6 +552,40 @@ feature -- Additional Accessors
 		do
 			clear_error
 			internal_db.rollback
+		end
+
+feature -- Query Monitoring (N+1 Detection)
+
+	query_monitor: detachable SIMPLE_SQL_QUERY_MONITOR
+			-- Query monitor for N+1 detection (Void when disabled).
+
+	enable_query_monitor
+			-- Enable N+1 query detection.
+		do
+			if query_monitor = Void then
+				create query_monitor.make
+			end
+			if attached query_monitor as m then
+				m.enable
+			end
+		ensure
+			enabled: attached query_monitor as m and then m.is_enabled
+		end
+
+	disable_query_monitor
+			-- Disable N+1 query detection.
+		do
+			if attached query_monitor as m then
+				m.disable
+			end
+		end
+
+	reset_query_monitor
+			-- Reset all monitoring data.
+		do
+			if attached query_monitor as m then
+				m.reset
+			end
 		end
 
 feature {SIMPLE_SQL_BACKUP, SIMPLE_SQL_ONLINE_BACKUP, SIMPLE_SQL_RESULT, SIMPLE_SQL_PREPARED_STATEMENT, SIMPLE_SQL_SCHEMA, SIMPLE_SQL_JSON, SIMPLE_SQL_FTS5, SIMPLE_SQL_AUDIT} -- Implementation

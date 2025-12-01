@@ -19,6 +19,8 @@
 			<file_rule>
 				<exclude>/todo_app$</exclude>
 				<exclude>/cpm_app$</exclude>
+				<exclude>/habit_tracker$</exclude>
+				<exclude>/dms$</exclude>
 			</file_rule>
 		</cluster>
 	</target>
@@ -34,6 +36,8 @@
 			<file_rule>
 				<exclude>/todo_app$</exclude>
 				<exclude>/cpm_app$</exclude>
+				<exclude>/habit_tracker$</exclude>
+				<exclude>/dms$</exclude>
 			</file_rule>
 		</cluster>
 	</target>
@@ -64,5 +68,33 @@
 		<library name="testing" location="$ISE_LIBRARY\library\testing\testing.ecf"/>
 		<library name="testing_ext" location="D:\prod\testing_ext\testing_ext.ecf"/>
 		<cluster name="cpm_app_test" location=".\testing\cpm_app\" recursive="true"/>
+	</target>
+	<target name="habit_tracker" extends="simple_sql">
+		<root class="HABIT_TRACKER_APP" feature="make"/>
+		<option warning="warning">
+			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
+		</option>
+		<setting name="console_application" value="true"/>
+		<cluster name="habit_tracker_src" location=".\src\habit_tracker\" recursive="true"/>
+	</target>
+	<target name="habit_tracker_tests" extends="habit_tracker">
+		<root class="APPLICATION" feature="make"/>
+		<library name="testing" location="$ISE_LIBRARY\library\testing\testing.ecf"/>
+		<library name="testing_ext" location="D:\prod\testing_ext\testing_ext.ecf"/>
+		<cluster name="habit_tracker_test" location=".\testing\habit_tracker\" recursive="true"/>
+	</target>
+	<target name="dms" extends="simple_sql">
+		<root class="DMS_APP" feature="make"/>
+		<option warning="warning">
+			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
+		</option>
+		<setting name="console_application" value="true"/>
+		<cluster name="dms_src" location=".\src\dms\" recursive="true"/>
+	</target>
+	<target name="dms_tests" extends="dms">
+		<root class="APPLICATION" feature="make"/>
+		<library name="testing" location="$ISE_LIBRARY\library\testing\testing.ecf"/>
+		<library name="testing_ext" location="D:\prod\testing_ext\testing_ext.ecf"/>
+		<cluster name="dms_test" location=".\testing\dms\" recursive="true"/>
 	</target>
 </system>
