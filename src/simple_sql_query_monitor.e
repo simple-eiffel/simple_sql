@@ -11,6 +11,7 @@ note
 			warnings := db.query_monitor.warnings
 			db.disable_query_monitor
 	]"
+	EIS: "name=API Reference", "src=../docs/api/query-monitor.html", "protocol=URI", "tag=documentation"
 	date: "$Date$"
 	revision: "$Revision$"
 

@@ -1,5 +1,7 @@
 note
-	description: "Fluent builder for SELECT queries"
+	description: "Fluent builder for SELECT queries with soft delete scopes"
+	EIS: "name=API Reference", "src=../docs/api/select-builder.html", "protocol=URI", "tag=documentation"
+	EIS: "name=Soft Deletes Tutorial", "src=../docs/tutorials/soft-deletes.html", "protocol=URI", "tag=tutorial"
 	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"

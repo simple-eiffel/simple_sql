@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMPLE_SQL_DATABASE - API Reference</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="../index.html">Overview</a></li>
+                    <li><a href="../getting-started.html">Quick Start</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Core API</h3>
+                <ul>
+                    <li><a href="database.html" class="active">SIMPLE_SQL_DATABASE</a></li>
+                    <li><a href="result.html">SIMPLE_SQL_RESULT</a></li>
+                    <li><a href="row.html">SIMPLE_SQL_ROW</a></li>
+                    <li><a href="prepared-statement.html">SIMPLE_SQL_PREPARED_STATEMENT</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Query Builders</h3>
+                <ul>
+                    <li><a href="select-builder.html">SIMPLE_SQL_SELECT_BUILDER</a></li>
+                    <li><a href="insert-builder.html">SIMPLE_SQL_INSERT_BUILDER</a></li>
+                    <li><a href="update-builder.html">SIMPLE_SQL_UPDATE_BUILDER</a></li>
+                    <li><a href="delete-builder.html">SIMPLE_SQL_DELETE_BUILDER</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Advanced Features</h3>
+                <ul>
+                    <li><a href="eager-loader.html">Eager Loading (N+1)</a></li>
+                    <li><a href="paginator.html">Pagination</a></li>
+                    <li><a href="query-monitor.html">Query Monitor</a></li>
+                    <li><a href="fts5.html">Full-Text Search</a></li>
+                    <li><a href="json.html">JSON Support</a></li>
+                    <li><a href="audit.html">Audit Tracking</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">Home</a> <span>›</span> <a href="../index.html#api">API</a> <span>›</span> SIMPLE_SQL_DATABASE
+            </div>
+
+            <h1>SIMPLE_SQL_DATABASE</h1>
+            <p>The core database connection class. Provides query execution, transactions, and factory methods for builders.</p>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_DATABASE">View Source</a></p>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Creation Procedures</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">make (a_path: READABLE_STRING_GENERAL)</div>
+                        <div class="api-feature-desc">Create database connection to file at <code>a_path</code>. Creates file if it doesn't exist.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">make_in_memory</div>
+                        <div class="api-feature-desc">Create an in-memory database. Data is lost when connection closes.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">make_with_flags (a_path: READABLE_STRING_GENERAL; a_flags: INTEGER)</div>
+                        <div class="api-feature-desc">Create connection with custom SQLite flags (SQLITE_OPEN_READONLY, etc.).</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Query Execution</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">execute (a_sql: READABLE_STRING_8)</div>
+                        <div class="api-feature-desc">Execute SQL that doesn't return results (DDL, INSERT, UPDATE, DELETE).</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">query (a_sql: READABLE_STRING_8): SIMPLE_SQL_RESULT</div>
+                        <div class="api-feature-desc">Execute SQL that returns results (SELECT). Returns all rows in memory.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">execute_with_args (a_sql: READABLE_STRING_8; a_args: ARRAY [detachable ANY])</div>
+                        <div class="api-feature-desc">Execute parameterized SQL with positional arguments. Use <code>?</code> placeholders.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">query_with_args (a_sql: READABLE_STRING_8; a_args: ARRAY [detachable ANY]): SIMPLE_SQL_RESULT</div>
+                        <div class="api-feature-desc">Query with positional arguments. Prevents SQL injection.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Fluent Query Builders</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">select_from (a_table: READABLE_STRING_8): SIMPLE_SQL_SELECT_BUILDER</div>
+                        <div class="api-feature-desc">Start building a SELECT query. Chain <code>.columns()</code>, <code>.where()</code>, <code>.order_by()</code>, etc.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">insert_into (a_table: READABLE_STRING_8): SIMPLE_SQL_INSERT_BUILDER</div>
+                        <div class="api-feature-desc">Start building an INSERT query. Chain <code>.value()</code> calls.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">update (a_table: READABLE_STRING_8): SIMPLE_SQL_UPDATE_BUILDER</div>
+                        <div class="api-feature-desc">Start building an UPDATE query. Chain <code>.set()</code> and <code>.where()</code> calls.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">delete_from (a_table: READABLE_STRING_8): SIMPLE_SQL_DELETE_BUILDER</div>
+                        <div class="api-feature-desc">Start building a DELETE query. Chain <code>.where()</code> call.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Advanced Builders</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">eager_loader: SIMPLE_SQL_EAGER_LOADER</div>
+                        <div class="api-feature-desc">Create an eager loader to prevent N+1 queries. Use <code>.from_table().include().execute</code>.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">paginator (a_table: READABLE_STRING_8): SIMPLE_SQL_PAGINATOR</div>
+                        <div class="api-feature-desc">Create a cursor-based paginator. Use <code>.order_by().page_size().first_page</code>.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Transactions</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">begin_transaction</div>
+                        <div class="api-feature-desc">Start a transaction. All subsequent operations are grouped until commit/rollback.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">commit</div>
+                        <div class="api-feature-desc">Commit the current transaction. Makes all changes permanent.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">rollback</div>
+                        <div class="api-feature-desc">Rollback the current transaction. Discards all changes since begin_transaction.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">in_transaction: BOOLEAN</div>
+                        <div class="api-feature-desc">Is there an active transaction?</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Query Monitoring</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">query_monitor: detachable SIMPLE_SQL_QUERY_MONITOR</div>
+                        <div class="api-feature-desc">The active query monitor (if enabled). Use to detect N+1 patterns.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">enable_query_monitor</div>
+                        <div class="api-feature-desc">Enable query monitoring. All queries are recorded for N+1 detection.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">disable_query_monitor</div>
+                        <div class="api-feature-desc">Disable query monitoring and clear recorded queries.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Streaming</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">query_cursor (a_sql: READABLE_STRING_8): SIMPLE_SQL_CURSOR</div>
+                        <div class="api-feature-desc">Execute query returning a lazy cursor. Rows fetched one-at-a-time. Memory efficient.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">query_stream (a_sql: READABLE_STRING_8; a_callback: PROCEDURE [SIMPLE_SQL_ROW])</div>
+                        <div class="api-feature-desc">Execute query with callback for each row. Rows not held in memory.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Metadata</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">last_insert_rowid: INTEGER_64</div>
+                        <div class="api-feature-desc">The rowid of the most recently inserted row.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">changes: INTEGER</div>
+                        <div class="api-feature-desc">Number of rows affected by the most recent INSERT, UPDATE, or DELETE.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">is_open: BOOLEAN</div>
+                        <div class="api-feature-desc">Is the database connection open?</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">path: READABLE_STRING_GENERAL</div>
+                        <div class="api-feature-desc">Path to the database file (or ":memory:" for in-memory).</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Lifecycle</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">close</div>
+                        <div class="api-feature-desc">Close the database connection. Always call when done.</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Examples</h2>
+
+            <h3>Basic Usage</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    db: <span class="class-name">SIMPLE_SQL_DATABASE</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> db.make (<span class="string">"app.db"</span>)
+    db.execute (<span class="string">"CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT)"</span>)
+    db.insert_into (<span class="string">"users"</span>).value (<span class="string">"name"</span>, <span class="string">"Alice"</span>).execute
+    print (<span class="string">"Inserted ID: "</span> + db.last_insert_rowid.out)
+    db.close
+<span class="keyword">end</span></code></pre>
+
+            <h3>Parameterized Query</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    result: <span class="class-name">SIMPLE_SQL_RESULT</span>
+<span class="keyword">do</span>
+    result := db.query_with_args (<span class="string">"SELECT * FROM users WHERE name LIKE ? AND active = ?"</span>, &lt;&lt;<span class="string">"%Alice%"</span>, 1&gt;&gt;)
+    <span class="keyword">across</span> result <span class="keyword">as</span> row <span class="keyword">loop</span>
+        print (row.string_value (<span class="string">"name"</span>))
+    <span class="keyword">end</span>
+<span class="keyword">end</span></code></pre>
+
+            <h3>Transaction with Error Handling</h3>
+            <pre><code class="eiffel">db.begin_transaction
+<span class="keyword">if</span> <span class="keyword">attached</span> attempt_operation <span class="keyword">as</span> err <span class="keyword">then</span>
+    db.rollback
+    print (<span class="string">"Error: "</span> + err)
+<span class="keyword">else</span>
+    db.commit
+<span class="keyword">end</span></code></pre>
+
+            <div class="callout info">
+                <div class="callout-title">Design by Contract</div>
+                <p>All features have preconditions and postconditions. For example, <code>query</code> requires <code>is_open</code>.
+                Check the source code for full contract specifications.</p>
+            </div>
+
+            <div class="doc-footer">
+                <p><a href="../index.html">← Back to Overview</a> | <a href="result.html">Next: SIMPLE_SQL_RESULT →</a></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

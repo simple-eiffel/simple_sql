@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPM Scheduler Mock - SIMPLE_SQL</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="../index.html">Overview</a></li>
+                    <li><a href="../getting-started.html">Quick Start</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Mock Applications</h3>
+                <ul>
+                    <li><a href="todo.html">TODO App</a></li>
+                    <li><a href="cpm.html" class="active">CPM Scheduler</a></li>
+                    <li><a href="habit-tracker.html">Habit Tracker</a></li>
+                    <li><a href="dms.html">Document Management</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">Home</a> <span>›</span> <a href="../index.html#mock-apps">Mock Apps</a> <span>›</span> CPM Scheduler
+            </div>
+
+            <h1>CPM Project Scheduler</h1>
+            <p>A Critical Path Method implementation for project scheduling. This mock stressed parameterized queries and relationship traversal, driving the <code>execute_with_args</code> and <code>query_with_args</code> features.</p>
+
+            <div class="mock-app-card" style="background: linear-gradient(135deg, #fd79a8 0%, #e84393 100%);">
+                <h3>CPM Scheduler Statistics</h3>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value">51</div>
+                        <div class="stat-label">Activities</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">65</div>
+                        <div class="stat-label">Dependencies</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">Graphs</div>
+                        <div class="stat-label">Focus Area</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Domain Overview</h2>
+            <p>The CPM (Critical Path Method) scheduler implements project management concepts:</p>
+            <ul>
+                <li><strong>Projects</strong> - Top-level container with start/end dates</li>
+                <li><strong>Activities</strong> - Tasks with duration and effort estimates</li>
+                <li><strong>Dependencies</strong> - Predecessor relationships between activities</li>
+                <li><strong>Critical Path</strong> - Longest path determining minimum project duration</li>
+                <li><strong>Slack/Float</strong> - Available delay time for non-critical activities</li>
+            </ul>
+
+            <h2>Schema</h2>
+            <pre><code>projects (id, name, start_date, end_date, status)
+activities (id, project_id, name, duration, early_start, early_finish, late_start, late_finish, slack)
+dependencies (id, predecessor_id, successor_id, dependency_type)</code></pre>
+
+            <h2>Friction Points & Solutions</h2>
+
+            <h3>Parameterized Queries</h3>
+            <p>Building dependency graphs required many queries with different parameters. String concatenation was error-prone:</p>
+            <pre><code class="eiffel"><span class="comment">-- Before: String concatenation (error-prone, SQL injection risk)</span>
+db.query (<span class="string">"SELECT * FROM activities WHERE project_id = "</span> + proj_id.out)
+
+<span class="comment">-- After: Parameterized (safe, clean)</span>
+db.query_with_args (<span class="string">"SELECT * FROM activities WHERE project_id = ?"</span>, &lt;&lt;proj_id&gt;&gt;)</code></pre>
+
+            <h3>Dependency Graph Traversal</h3>
+            <pre><code class="eiffel">predecessors (a_activity_id: <span class="class-name">INTEGER_64</span>): <span class="class-name">SIMPLE_SQL_RESULT</span>
+        <span class="comment">-- All activities that must complete before this one</span>
+    <span class="keyword">do</span>
+        Result := db.query_with_args (<span class="string">"[
+            SELECT a.* FROM activities a
+            JOIN dependencies d ON d.predecessor_id = a.id
+            WHERE d.successor_id = ?
+        ]"</span>, &lt;&lt;a_activity_id&gt;&gt;)
+    <span class="keyword">end</span>
+
+successors (a_activity_id: <span class="class-name">INTEGER_64</span>): <span class="class-name">SIMPLE_SQL_RESULT</span>
+        <span class="comment">-- All activities that depend on this one</span>
+    <span class="keyword">do</span>
+        Result := db.query_with_args (<span class="string">"[
+            SELECT a.* FROM activities a
+            JOIN dependencies d ON d.successor_id = a.id
+            WHERE d.predecessor_id = ?
+        ]"</span>, &lt;&lt;a_activity_id&gt;&gt;)
+    <span class="keyword">end</span></code></pre>
+
+            <h2>CPM Algorithm Implementation</h2>
+
+            <h3>Forward Pass (Early Start/Finish)</h3>
+            <pre><code class="eiffel">forward_pass (a_project_id: <span class="class-name">INTEGER_64</span>)
+        <span class="comment">-- Calculate early start and finish for all activities</span>
+    <span class="keyword">local</span>
+        activities: <span class="class-name">SIMPLE_SQL_RESULT</span>
+        max_predecessor_finish: <span class="class-name">INTEGER</span>
+    <span class="keyword">do</span>
+        <span class="comment">-- Process in topological order</span>
+        activities := db.query_with_args (<span class="string">"SELECT * FROM activities WHERE project_id = ? ORDER BY id"</span>, &lt;&lt;a_project_id&gt;&gt;)
+
+        <span class="keyword">across</span> activities <span class="keyword">as</span> act <span class="keyword">loop</span>
+            <span class="comment">-- Early start = max(early_finish of all predecessors)</span>
+            max_predecessor_finish := max_predecessor_early_finish (act.integer_64_value (<span class="string">"id"</span>))
+
+            db.update (<span class="string">"activities"</span>)
+                .set (<span class="string">"early_start"</span>, max_predecessor_finish)
+                .set (<span class="string">"early_finish"</span>, max_predecessor_finish + act.integer_value (<span class="string">"duration"</span>))
+                .where (<span class="string">"id = ?"</span>, act.integer_64_value (<span class="string">"id"</span>))
+                .execute
+        <span class="keyword">end</span>
+    <span class="keyword">end</span></code></pre>
+
+            <h3>Backward Pass (Late Start/Finish)</h3>
+            <pre><code class="eiffel">backward_pass (a_project_id: <span class="class-name">INTEGER_64</span>)
+        <span class="comment">-- Calculate late start and finish, then slack</span>
+    <span class="keyword">local</span>
+        activities: <span class="class-name">SIMPLE_SQL_RESULT</span>
+        min_successor_start, slack: <span class="class-name">INTEGER</span>
+    <span class="keyword">do</span>
+        <span class="comment">-- Process in reverse topological order</span>
+        activities := db.query_with_args (<span class="string">"SELECT * FROM activities WHERE project_id = ? ORDER BY id DESC"</span>, &lt;&lt;a_project_id&gt;&gt;)
+
+        <span class="keyword">across</span> activities <span class="keyword">as</span> act <span class="keyword">loop</span>
+            <span class="comment">-- Late finish = min(late_start of all successors)</span>
+            min_successor_start := min_successor_late_start (act.integer_64_value (<span class="string">"id"</span>))
+
+            slack := min_successor_start - act.integer_value (<span class="string">"duration"</span>) - act.integer_value (<span class="string">"early_start"</span>)
+
+            db.update (<span class="string">"activities"</span>)
+                .set (<span class="string">"late_finish"</span>, min_successor_start)
+                .set (<span class="string">"late_start"</span>, min_successor_start - act.integer_value (<span class="string">"duration"</span>))
+                .set (<span class="string">"slack"</span>, slack)
+                .where (<span class="string">"id = ?"</span>, act.integer_64_value (<span class="string">"id"</span>))
+                .execute
+        <span class="keyword">end</span>
+    <span class="keyword">end</span></code></pre>
+
+            <h3>Critical Path Extraction</h3>
+            <pre><code class="eiffel">critical_path (a_project_id: <span class="class-name">INTEGER_64</span>): <span class="class-name">SIMPLE_SQL_RESULT</span>
+        <span class="comment">-- Activities with zero slack (on critical path)</span>
+    <span class="keyword">do</span>
+        Result := db.query_with_args (<span class="string">"SELECT * FROM activities WHERE project_id = ? AND slack = 0 ORDER BY early_start"</span>, &lt;&lt;a_project_id&gt;&gt;)
+    <span class="keyword">end</span>
+
+project_duration (a_project_id: <span class="class-name">INTEGER_64</span>): <span class="class-name">INTEGER</span>
+        <span class="comment">-- Total project duration (max early_finish)</span>
+    <span class="keyword">do</span>
+        Result := db.query_with_args (<span class="string">"SELECT MAX(early_finish) as duration FROM activities WHERE project_id = ?"</span>, &lt;&lt;a_project_id&gt;&gt;).first.integer_value (<span class="string">"duration"</span>)
+    <span class="keyword">end</span></code></pre>
+
+            <h2>Lessons Learned</h2>
+
+            <div class="callout success">
+                <div class="callout-title">Parameterized Queries</div>
+                <ul>
+                    <li>Essential for graphs with many relationship lookups</li>
+                    <li>Prevents SQL injection in user-provided data</li>
+                    <li>Cleaner code than string concatenation</li>
+                    <li>Better performance (query plan caching)</li>
+                </ul>
+            </div>
+
+            <div class="callout warning">
+                <div class="callout-title">Early N+1 Warning Signs</div>
+                <p>The CPM algorithm's graph traversal showed early signs of N+1 issues. Each activity queried its predecessors/successors individually. This pattern was later addressed with eager loading in the DMS mock.</p>
+            </div>
+
+            <h2>Test Data</h2>
+            <p>The CPM mock includes a realistic project with:</p>
+            <ul>
+                <li>51 activities across multiple phases</li>
+                <li>65 dependency relationships</li>
+                <li>Multiple parallel paths</li>
+                <li>Clear critical path for validation</li>
+            </ul>
+
+            <h2>Source Code</h2>
+            <ul>
+                <li><a class="eis-link" href="eiffel:?class=CPM_DATABASE">CPM_DATABASE</a></li>
+                <li><a class="eis-link" href="eiffel:?class=CPM_PROJECT_SERVICE">CPM_PROJECT_SERVICE</a></li>
+                <li><a class="eis-link" href="eiffel:?class=CPM_CALCULATOR">CPM_CALCULATOR</a></li>
+            </ul>
+
+            <div class="doc-footer">
+                <p><a href="todo.html">← TODO App</a> | <a href="habit-tracker.html">Habit Tracker →</a></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

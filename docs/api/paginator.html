@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMPLE_SQL_PAGINATOR - API Reference</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="../index.html">Overview</a></li>
+                    <li><a href="../getting-started.html">Quick Start</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Advanced Features</h3>
+                <ul>
+                    <li><a href="eager-loader.html">Eager Loading (N+1)</a></li>
+                    <li><a href="paginator.html" class="active">Pagination</a></li>
+                    <li><a href="query-monitor.html">Query Monitor</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Tutorials</h3>
+                <ul>
+                    <li><a href="../tutorials/pagination.html">Pagination Guide</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">Home</a> <span>›</span> <a href="../index.html#api">API</a> <span>›</span> SIMPLE_SQL_PAGINATOR
+            </div>
+
+            <h1>SIMPLE_SQL_PAGINATOR</h1>
+            <p>Cursor-based pagination builder for efficient traversal of large datasets. Unlike offset pagination, performance doesn't degrade as page numbers increase.</p>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_PAGINATOR">View Source</a></p>
+
+            <div class="callout info">
+                <div class="callout-title">Cursor vs Offset Pagination</div>
+                <p><strong>Offset</strong> (<code>LIMIT 20 OFFSET 1000</code>): SQLite scans and discards 1000 rows. Slow for large offsets.<br>
+                <strong>Cursor</strong> (<code>WHERE id > 1000 LIMIT 20</code>): Uses index to jump directly. Constant time regardless of position.</p>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Configuration</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">columns (a_columns: READABLE_STRING_8): like Current</div>
+                        <div class="api-feature-desc">Columns to select. Default is <code>*</code>.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">where (a_condition: READABLE_STRING_8): like Current</div>
+                        <div class="api-feature-desc">Filter condition applied to all pages.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">order_by (a_column: READABLE_STRING_8): like Current</div>
+                        <div class="api-feature-desc">Column to order and paginate by. Required. Default direction is ASC.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">order_by_desc (a_column: READABLE_STRING_8): like Current</div>
+                        <div class="api-feature-desc">Order by column descending. Use for "newest first" pagination.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">page_size (a_size: INTEGER): like Current</div>
+                        <div class="api-feature-desc">Number of items per page. Default is 20.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Navigation</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">first_page: SIMPLE_SQL_PAGE</div>
+                        <div class="api-feature-desc">Get the first page of results.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">after (a_cursor: READABLE_STRING_8): SIMPLE_SQL_PAGE</div>
+                        <div class="api-feature-desc">Get page after the given cursor. Use <code>next_cursor</code> from previous page.</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>SIMPLE_SQL_PAGE</h2>
+            <p>A single page of results with cursor information.</p>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_PAGE">View Source</a></p>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Access</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">items: SIMPLE_SQL_RESULT</div>
+                        <div class="api-feature-desc">The rows on this page.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">next_cursor: detachable STRING_8</div>
+                        <div class="api-feature-desc">Cursor for the next page. Void if no more pages.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">has_more: BOOLEAN</div>
+                        <div class="api-feature-desc">Are there more pages after this one?</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">count: INTEGER</div>
+                        <div class="api-feature-desc">Number of items on this page (may be less than page_size on last page).</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Examples</h2>
+
+            <h3>Basic Pagination</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    paginator: <span class="class-name">SIMPLE_SQL_PAGINATOR</span>
+    page: <span class="class-name">SIMPLE_SQL_PAGE</span>
+<span class="keyword">do</span>
+    paginator := db.paginator (<span class="string">"users"</span>)
+        .columns (<span class="string">"id, name, email"</span>)
+        .order_by (<span class="string">"id"</span>)
+        .page_size (20)
+
+    <span class="comment">-- Get first page</span>
+    page := paginator.first_page
+    <span class="keyword">across</span> page.items <span class="keyword">as</span> user <span class="keyword">loop</span>
+        print (user.string_value (<span class="string">"name"</span>) + <span class="string">"%N"</span>)
+    <span class="keyword">end</span>
+
+    <span class="comment">-- Get next page if available</span>
+    <span class="keyword">if</span> page.has_more <span class="keyword">and</span> <span class="keyword">attached</span> page.next_cursor <span class="keyword">as</span> cursor <span class="keyword">then</span>
+        page := paginator.after (cursor)
+        <span class="comment">-- Process next page...</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span></code></pre>
+
+            <h3>Iterate All Pages</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    paginator: <span class="class-name">SIMPLE_SQL_PAGINATOR</span>
+    page: <span class="class-name">SIMPLE_SQL_PAGE</span>
+    cursor: <span class="keyword">detachable</span> <span class="class-name">STRING_8</span>
+    page_num: <span class="class-name">INTEGER</span>
+<span class="keyword">do</span>
+    paginator := db.paginator (<span class="string">"documents"</span>)
+        .where (<span class="string">"deleted_at IS NULL"</span>)
+        .order_by (<span class="string">"id"</span>)
+        .page_size (100)
+
+    <span class="keyword">from</span>
+        page := paginator.first_page
+        page_num := 1
+    <span class="keyword">until</span>
+        <span class="keyword">not</span> page.has_more
+    <span class="keyword">loop</span>
+        print (<span class="string">"Page "</span> + page_num.out + <span class="string">": "</span> + page.count.out + <span class="string">" items%N"</span>)
+
+        <span class="comment">-- Process page items...</span>
+        <span class="keyword">across</span> page.items <span class="keyword">as</span> doc <span class="keyword">loop</span>
+            <span class="comment">-- ...</span>
+        <span class="keyword">end</span>
+
+        <span class="comment">-- Get next page</span>
+        cursor := page.next_cursor
+        <span class="keyword">if</span> <span class="keyword">attached</span> cursor <span class="keyword">then</span>
+            page := paginator.after (cursor)
+            page_num := page_num + 1
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span></code></pre>
+
+            <h3>Descending Order (Newest First)</h3>
+            <pre><code class="eiffel">paginator := db.paginator (<span class="string">"posts"</span>)
+    .columns (<span class="string">"id, title, created_at"</span>)
+    .order_by_desc (<span class="string">"created_at"</span>)
+    .page_size (10)
+
+page := paginator.first_page
+<span class="comment">-- Returns 10 most recent posts</span></code></pre>
+
+            <h3>With Filtering</h3>
+            <pre><code class="eiffel">paginator := db.paginator (<span class="string">"orders"</span>)
+    .columns (<span class="string">"id, customer_id, total, status"</span>)
+    .where (<span class="string">"status = 'pending' AND total > 100"</span>)
+    .order_by (<span class="string">"id"</span>)
+    .page_size (50)</code></pre>
+
+            <div class="callout warning">
+                <div class="callout-title">Order Column Requirement</div>
+                <p>The <code>order_by</code> column must be unique or have a secondary unique column (like id) for stable pagination.
+                Non-unique ordering may cause items to appear on multiple pages or be skipped.</p>
+            </div>
+
+            <h3>Storing Cursor for Later</h3>
+            <pre><code class="eiffel"><span class="comment">-- Save cursor to resume pagination later</span>
+<span class="keyword">if</span> <span class="keyword">attached</span> page.next_cursor <span class="keyword">as</span> c <span class="keyword">then</span>
+    <span class="comment">-- Store in session, URL parameter, etc.</span>
+    session.put (<span class="string">"documents_cursor"</span>, c)
+<span class="keyword">end</span>
+
+<span class="comment">-- Later: resume from stored cursor</span>
+<span class="keyword">if</span> <span class="keyword">attached</span> session.item (<span class="string">"documents_cursor"</span>) <span class="keyword">as</span> stored_cursor <span class="keyword">then</span>
+    page := paginator.after (stored_cursor)
+<span class="keyword">else</span>
+    page := paginator.first_page
+<span class="keyword">end</span></code></pre>
+
+            <div class="doc-footer">
+                <p><a href="eager-loader.html">← Eager Loader</a> | <a href="query-monitor.html">Query Monitor →</a></p>
+                <p>See also: <a href="../tutorials/pagination.html">Pagination Tutorial</a></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

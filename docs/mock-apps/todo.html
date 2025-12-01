@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TODO App Mock - SIMPLE_SQL</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="../index.html">Overview</a></li>
+                    <li><a href="../getting-started.html">Quick Start</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Mock Applications</h3>
+                <ul>
+                    <li><a href="todo.html" class="active">TODO App</a></li>
+                    <li><a href="cpm.html">CPM Scheduler</a></li>
+                    <li><a href="habit-tracker.html">Habit Tracker</a></li>
+                    <li><a href="dms.html">Document Management</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">Home</a> <span>›</span> <a href="../index.html#mock-apps">Mock Apps</a> <span>›</span> TODO App
+            </div>
+
+            <h1>TODO App</h1>
+            <p>The first mock application - a simple task management app that established SIMPLE_SQL's core patterns and fluent API design.</p>
+
+            <div class="mock-app-card" style="background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);">
+                <h3>TODO App Statistics</h3>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value">Basic</div>
+                        <div class="stat-label">Complexity</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">Tables</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">CRUD</div>
+                        <div class="stat-label">Focus Area</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Domain Overview</h2>
+            <p>The TODO app implements classic task management:</p>
+            <ul>
+                <li><strong>Tasks</strong> - Items with title, description, status, due date</li>
+                <li><strong>Categories</strong> - Organize tasks into groups</li>
+                <li><strong>Filtering</strong> - By status, category, due date</li>
+                <li><strong>Ordering</strong> - By priority, due date, name</li>
+            </ul>
+
+            <h2>Schema</h2>
+            <pre><code>categories (id, name, color)
+tasks (id, title, description, category_id, status, priority, due_date, created_at)</code></pre>
+
+            <h2>Patterns Established</h2>
+
+            <h3>Fluent Query Builder</h3>
+            <p>The TODO app drove the design of SIMPLE_SQL's chainable query API:</p>
+            <pre><code class="eiffel"><span class="comment">-- Clean, readable query construction</span>
+result := db.select_from (<span class="string">"tasks"</span>)
+    .columns (<span class="string">"id, title, status, due_date"</span>)
+    .where (<span class="string">"status = ?"</span>, <span class="string">"pending"</span>)
+    .order_by (<span class="string">"due_date ASC, priority DESC"</span>)
+    .execute</code></pre>
+
+            <h3>Basic CRUD Operations</h3>
+            <pre><code class="eiffel"><span class="comment">-- Create</span>
+db.insert_into (<span class="string">"tasks"</span>)
+    .value (<span class="string">"title"</span>, <span class="string">"Buy groceries"</span>)
+    .value (<span class="string">"category_id"</span>, 1)
+    .value (<span class="string">"priority"</span>, 2)
+    .execute
+
+<span class="comment">-- Read</span>
+task := db.select_from (<span class="string">"tasks"</span>).where (<span class="string">"id = ?"</span>, task_id).execute.first
+
+<span class="comment">-- Update</span>
+db.update (<span class="string">"tasks"</span>)
+    .set (<span class="string">"status"</span>, <span class="string">"completed"</span>)
+    .where (<span class="string">"id = ?"</span>, task_id)
+    .execute
+
+<span class="comment">-- Delete</span>
+db.delete_from (<span class="string">"tasks"</span>).where (<span class="string">"id = ?"</span>, task_id).execute</code></pre>
+
+            <h3>Transaction Usage</h3>
+            <pre><code class="eiffel"><span class="comment">-- Batch insert with transaction</span>
+db.begin_transaction
+db.insert_into (<span class="string">"tasks"</span>).value (<span class="string">"title"</span>, <span class="string">"Task 1"</span>).execute
+db.insert_into (<span class="string">"tasks"</span>).value (<span class="string">"title"</span>, <span class="string">"Task 2"</span>).execute
+db.insert_into (<span class="string">"tasks"</span>).value (<span class="string">"title"</span>, <span class="string">"Task 3"</span>).execute
+db.commit</code></pre>
+
+            <h2>Lessons Learned</h2>
+
+            <div class="callout success">
+                <div class="callout-title">What Worked Well</div>
+                <ul>
+                    <li>Fluent API is intuitive and reduces errors</li>
+                    <li>Method chaining makes queries self-documenting</li>
+                    <li>Result iteration with <code>across</code> is natural</li>
+                </ul>
+            </div>
+
+            <div class="callout info">
+                <div class="callout-title">Insights for Future Mocks</div>
+                <ul>
+                    <li>Basic patterns scale well to more complex domains</li>
+                    <li>Transaction wrapper is essential for batch operations</li>
+                    <li>Result metadata (last_insert_rowid, changes) is frequently needed</li>
+                </ul>
+            </div>
+
+            <h2>Example: Task Manager Class</h2>
+            <pre><code class="eiffel"><span class="keyword">class</span> <span class="class-name">TASK_MANAGER</span>
+
+<span class="keyword">feature</span> <span class="comment">-- Queries</span>
+
+    pending_tasks: <span class="class-name">SIMPLE_SQL_RESULT</span>
+        <span class="keyword">do</span>
+            Result := db.select_from (<span class="string">"tasks"</span>)
+                .where (<span class="string">"status = 'pending'"</span>)
+                .order_by (<span class="string">"due_date"</span>)
+                .execute
+        <span class="keyword">end</span>
+
+    tasks_due_today: <span class="class-name">SIMPLE_SQL_RESULT</span>
+        <span class="keyword">do</span>
+            Result := db.select_from (<span class="string">"tasks"</span>)
+                .where (<span class="string">"due_date = date('now') AND status != 'completed'"</span>)
+                .order_by (<span class="string">"priority DESC"</span>)
+                .execute
+        <span class="keyword">end</span>
+
+    tasks_in_category (a_category_id: <span class="class-name">INTEGER</span>): <span class="class-name">SIMPLE_SQL_RESULT</span>
+        <span class="keyword">do</span>
+            Result := db.select_from (<span class="string">"tasks"</span>)
+                .where (<span class="string">"category_id = ?"</span>, a_category_id)
+                .order_by (<span class="string">"title"</span>)
+                .execute
+        <span class="keyword">end</span>
+
+<span class="keyword">feature</span> <span class="comment">-- Commands</span>
+
+    add_task (a_title: <span class="class-name">STRING</span>; a_category: <span class="class-name">INTEGER</span>; a_due: <span class="keyword">detachable</span> <span class="class-name">DATE</span>)
+        <span class="keyword">local</span>
+            builder: <span class="class-name">SIMPLE_SQL_INSERT_BUILDER</span>
+        <span class="keyword">do</span>
+            builder := db.insert_into (<span class="string">"tasks"</span>)
+                .value (<span class="string">"title"</span>, a_title)
+                .value (<span class="string">"category_id"</span>, a_category)
+                .value (<span class="string">"status"</span>, <span class="string">"pending"</span>)
+
+            <span class="keyword">if</span> <span class="keyword">attached</span> a_due <span class="keyword">as</span> due <span class="keyword">then</span>
+                builder.value (<span class="string">"due_date"</span>, due.formatted_out (<span class="string">"yyyy-mm-dd"</span>))
+            <span class="keyword">end</span>
+
+            builder.execute
+        <span class="keyword">end</span>
+
+    complete_task (a_id: <span class="class-name">INTEGER</span>)
+        <span class="keyword">do</span>
+            db.update (<span class="string">"tasks"</span>)
+                .set (<span class="string">"status"</span>, <span class="string">"completed"</span>)
+                .where (<span class="string">"id = ?"</span>, a_id)
+                .execute
+        <span class="keyword">end</span>
+
+<span class="keyword">end</span></code></pre>
+
+            <h2>Source Code</h2>
+            <ul>
+                <li><a class="eis-link" href="eiffel:?class=TODO_DATABASE">TODO_DATABASE</a> - Schema setup</li>
+                <li><a class="eis-link" href="eiffel:?class=TODO_TASK_SERVICE">TODO_TASK_SERVICE</a> - Task operations</li>
+            </ul>
+
+            <div class="doc-footer">
+                <p><a href="../index.html">← Overview</a> | <a href="cpm.html">CPM Scheduler →</a></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -16,6 +16,8 @@ note
 			-- results.main_rows has documents
 			-- results.related ("comments") has all comments for those documents
 	]"
+	EIS: "name=API Reference", "src=../docs/api/eager-loader.html", "protocol=URI", "tag=documentation"
+	EIS: "name=Eager Loading Tutorial", "src=../docs/tutorials/eager-loading.html", "protocol=URI", "tag=tutorial"
 	date: "$Date$"
 	revision: "$Revision$"
 

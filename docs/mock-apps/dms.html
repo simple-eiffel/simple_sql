@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMS Mock App - SIMPLE_SQL</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="../index.html">Overview</a></li>
+                    <li><a href="../getting-started.html">Quick Start</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Mock Applications</h3>
+                <ul>
+                    <li><a href="todo.html">TODO App</a></li>
+                    <li><a href="cpm.html">CPM Scheduler</a></li>
+                    <li><a href="habit-tracker.html">Habit Tracker</a></li>
+                    <li><a href="dms.html" class="active">Document Management</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Features Driven</h3>
+                <ul>
+                    <li><a href="../api/eager-loader.html">Eager Loading</a></li>
+                    <li><a href="../api/paginator.html">Pagination</a></li>
+                    <li><a href="../api/query-monitor.html">Query Monitor</a></li>
+                    <li><a href="../tutorials/soft-deletes.html">Soft Deletes</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">Home</a> <span>›</span> <a href="../index.html#mock-apps">Mock Apps</a> <span>›</span> Document Management System
+            </div>
+
+            <h1>Document Management System (DMS)</h1>
+            <p>An enterprise-grade document management mock application that drove the development of SIMPLE_SQL's most advanced features: eager loading, cursor-based pagination, N+1 detection, and soft delete scopes.</p>
+
+            <div class="mock-app-card">
+                <h3>DMS Statistics</h3>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value">64</div>
+                        <div class="stat-label">Tests</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">8</div>
+                        <div class="stat-label">Tables</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">Features Driven</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">FTS5</div>
+                        <div class="stat-label">Full-Text Search</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Domain Overview</h2>
+            <p>The DMS implements a realistic document management system with:</p>
+            <ul>
+                <li><strong>Hierarchical Folders</strong> - Nested folder structure with path tracking</li>
+                <li><strong>Document Versioning</strong> - Version history with content diffs</li>
+                <li><strong>Comments</strong> - Threaded comments on documents</li>
+                <li><strong>Tags</strong> - Many-to-many tagging system</li>
+                <li><strong>Sharing Permissions</strong> - User access control per document</li>
+                <li><strong>Full-Text Search</strong> - FTS5 integration for content search</li>
+                <li><strong>Audit Trail</strong> - Automatic change logging via triggers</li>
+                <li><strong>Soft Deletes</strong> - Trash/restore functionality</li>
+            </ul>
+
+            <h2>Schema</h2>
+            <pre><code>-- Core tables
+folders (id, name, parent_id, path, deleted_at)
+documents (id, name, folder_id, content, version, created_by, deleted_at)
+document_versions (id, document_id, version_number, content, created_at)
+
+-- Relationships
+comments (id, document_id, user_id, content, parent_id)
+tags (id, name)
+document_tags (document_id, tag_id)  -- Many-to-many
+shares (id, document_id, user_id, permission)
+
+-- Search & Audit
+documents_fts (FTS5 virtual table)
+audit_log (id, table_name, row_id, action, old_data, new_data, timestamp)</code></pre>
+
+            <h2>Friction Points Discovered</h2>
+            <p>Building the DMS exposed several pain points that led to new SIMPLE_SQL features:</p>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>1. N+1 Query Problem</h2>
+                </div>
+                <div class="api-class-body">
+                    <p><strong>Friction:</strong> Listing documents with their folders, authors, and tags required separate queries for each document.</p>
+                    <pre><code class="eiffel"><span class="comment">-- Before: 301 queries for 100 documents with 3 relations</span>
+<span class="keyword">across</span> documents <span class="keyword">as</span> doc <span class="keyword">loop</span>
+    folder := query_folder (doc.folder_id)    <span class="comment">-- Query!</span>
+    author := query_user (doc.created_by)      <span class="comment">-- Query!</span>
+    tags := query_tags_for (doc.id)            <span class="comment">-- Query!</span>
+<span class="keyword">end</span></code></pre>
+                    <p><strong>Solution:</strong> <a href="../api/eager-loader.html">SIMPLE_SQL_EAGER_LOADER</a></p>
+                    <pre><code class="eiffel"><span class="comment">-- After: 4 queries total</span>
+result := db.eager_loader
+    .from_table (<span class="string">"documents"</span>)
+    .include (<span class="string">"folder"</span>, <span class="string">"folders"</span>, <span class="string">"folder_id"</span>, <span class="string">"id"</span>)
+    .include (<span class="string">"author"</span>, <span class="string">"users"</span>, <span class="string">"created_by"</span>, <span class="string">"id"</span>)
+    .include_many_to_many (<span class="string">"tags"</span>, <span class="string">"tags"</span>, <span class="string">"document_tags"</span>, <span class="string">"document_id"</span>, <span class="string">"tag_id"</span>)
+    .execute</code></pre>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>2. Soft Delete Boilerplate</h2>
+                </div>
+                <div class="api-class-body">
+                    <p><strong>Friction:</strong> Every query needed <code>WHERE deleted_at IS NULL</code> to filter out deleted records.</p>
+                    <pre><code class="eiffel"><span class="comment">-- Before: Repetitive and error-prone</span>
+db.select_from (<span class="string">"documents"</span>).where (<span class="string">"folder_id = ? AND deleted_at IS NULL"</span>, id).execute
+db.select_from (<span class="string">"folders"</span>).where (<span class="string">"parent_id = ? AND deleted_at IS NULL"</span>, id).execute
+<span class="comment">-- Easy to forget the filter!</span></code></pre>
+                    <p><strong>Solution:</strong> <a href="../tutorials/soft-deletes.html">Soft Delete Scopes</a></p>
+                    <pre><code class="eiffel"><span class="comment">-- After: Clear intent, can't forget</span>
+db.select_from (<span class="string">"documents"</span>).active_only.where (<span class="string">"folder_id = ?"</span>, id).execute
+db.select_from (<span class="string">"folders"</span>).active_only.where (<span class="string">"parent_id = ?"</span>, id).execute</code></pre>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>3. Pagination Performance</h2>
+                </div>
+                <div class="api-class-body">
+                    <p><strong>Friction:</strong> Offset-based pagination became slow for large datasets (thousands of documents).</p>
+                    <pre><code class="eiffel"><span class="comment">-- Before: OFFSET 10000 scans 10000 rows</span>
+db.select_from (<span class="string">"documents"</span>).limit (20).offset (10000).execute</code></pre>
+                    <p><strong>Solution:</strong> <a href="../api/paginator.html">SIMPLE_SQL_PAGINATOR</a></p>
+                    <pre><code class="eiffel"><span class="comment">-- After: Cursor jumps directly via index</span>
+page := db.paginator (<span class="string">"documents"</span>)
+    .order_by (<span class="string">"id"</span>)
+    .page_size (20)
+    .after (cursor)  <span class="comment">-- Instant seek, not scan</span></code></pre>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>4. Finding N+1 Issues</h2>
+                </div>
+                <div class="api-class-body">
+                    <p><strong>Friction:</strong> N+1 problems were invisible until performance testing.</p>
+                    <p><strong>Solution:</strong> <a href="../api/query-monitor.html">SIMPLE_SQL_QUERY_MONITOR</a></p>
+                    <pre><code class="eiffel">db.enable_query_monitor
+load_documents_page
+<span class="keyword">if</span> <span class="keyword">attached</span> db.query_monitor <span class="keyword">as</span> mon <span class="keyword">and then</span> mon.has_warnings <span class="keyword">then</span>
+    print (mon.report)  <span class="comment">-- Shows repeated query patterns</span>
+<span class="keyword">end</span></code></pre>
+                </div>
+            </div>
+
+            <h2>Key Implementation Patterns</h2>
+
+            <h3>Document Service with Eager Loading</h3>
+            <pre><code class="eiffel"><span class="keyword">feature</span> <span class="comment">-- Document queries</span>
+
+    documents_in_folder (a_folder_id: <span class="class-name">INTEGER_64</span>): <span class="class-name">SIMPLE_SQL_EAGER_RESULT</span>
+            <span class="comment">-- Documents with tags and author, excludes deleted</span>
+        <span class="keyword">do</span>
+            Result := db.eager_loader
+                .from_table (<span class="string">"documents"</span>)
+                .columns (<span class="string">"id, name, version, created_by, created_at"</span>)
+                .include (<span class="string">"author"</span>, <span class="string">"users"</span>, <span class="string">"created_by"</span>, <span class="string">"id"</span>)
+                .include_many_to_many (<span class="string">"tags"</span>, <span class="string">"tags"</span>, <span class="string">"document_tags"</span>, <span class="string">"document_id"</span>, <span class="string">"tag_id"</span>)
+                .where (<span class="string">"folder_id = ? AND deleted_at IS NULL"</span>)
+                .order_by (<span class="string">"name"</span>)
+                .execute
+        <span class="keyword">end</span></code></pre>
+
+            <h3>Paginated Document List</h3>
+            <pre><code class="eiffel"><span class="keyword">feature</span> <span class="comment">-- Pagination</span>
+
+    recent_documents (a_cursor: <span class="keyword">detachable</span> <span class="class-name">STRING_8</span>): <span class="class-name">SIMPLE_SQL_PAGE</span>
+            <span class="comment">-- Most recently modified documents, paginated</span>
+        <span class="keyword">local</span>
+            paginator: <span class="class-name">SIMPLE_SQL_PAGINATOR</span>
+        <span class="keyword">do</span>
+            paginator := db.paginator (<span class="string">"documents"</span>)
+                .columns (<span class="string">"id, name, updated_at"</span>)
+                .where (<span class="string">"deleted_at IS NULL"</span>)
+                .order_by_desc (<span class="string">"updated_at"</span>)
+                .page_size (25)
+
+            <span class="keyword">if</span> <span class="keyword">attached</span> a_cursor <span class="keyword">then</span>
+                Result := paginator.after (a_cursor)
+            <span class="keyword">else</span>
+                Result := paginator.first_page
+            <span class="keyword">end</span>
+        <span class="keyword">end</span></code></pre>
+
+            <h3>Full-Text Search</h3>
+            <pre><code class="eiffel"><span class="keyword">feature</span> <span class="comment">-- Search</span>
+
+    search_documents (a_query: <span class="class-name">STRING_8</span>): <span class="class-name">SIMPLE_SQL_RESULT</span>
+            <span class="comment">-- FTS5 search with BM25 ranking</span>
+        <span class="keyword">do</span>
+            Result := db.query_with_args (<span class="string">"[
+                SELECT d.id, d.name, snippet(documents_fts, 1, '<b>', '</b>', '...', 32) as excerpt,
+                       bm25(documents_fts) as rank
+                FROM documents_fts
+                JOIN documents d ON d.id = documents_fts.rowid
+                WHERE documents_fts MATCH ?
+                  AND d.deleted_at IS NULL
+                ORDER BY rank
+                LIMIT 50
+            ]"</span>, &lt;&lt;a_query&gt;&gt;)
+        <span class="keyword">end</span></code></pre>
+
+            <h2>Test Coverage</h2>
+            <p>The DMS includes 64 tests covering:</p>
+            <ul>
+                <li>CRUD operations on all entities</li>
+                <li>Folder hierarchy and path calculations</li>
+                <li>Document versioning</li>
+                <li>Tag management (many-to-many)</li>
+                <li>Full-text search with ranking</li>
+                <li>Soft delete and restore</li>
+                <li>Sharing permissions</li>
+                <li>Audit trail verification</li>
+                <li><strong>N+1 detection stress tests</strong></li>
+                <li><strong>Pagination performance tests</strong></li>
+            </ul>
+
+            <h2>Source Code</h2>
+            <p>Explore the DMS implementation:</p>
+            <ul>
+                <li><a class="eis-link" href="eiffel:?class=DMS_DATABASE">DMS_DATABASE</a> - Schema and setup</li>
+                <li><a class="eis-link" href="eiffel:?class=DMS_DOCUMENT_SERVICE">DMS_DOCUMENT_SERVICE</a> - Document operations</li>
+                <li><a class="eis-link" href="eiffel:?class=DMS_FOLDER_SERVICE">DMS_FOLDER_SERVICE</a> - Folder hierarchy</li>
+                <li><a class="eis-link" href="eiffel:?class=DMS_SEARCH_SERVICE">DMS_SEARCH_SERVICE</a> - FTS5 search</li>
+            </ul>
+
+            <div class="callout tip">
+                <div class="callout-title">Mock-Driven Development</div>
+                <p>The DMS mock app demonstrates SIMPLE_SQL's most advanced features. Every feature was added because the DMS needed it, not because it might be useful someday. This is the power of mock-driven development.</p>
+            </div>
+
+            <div class="doc-footer">
+                <p><a href="habit-tracker.html">← Habit Tracker</a> | <a href="../index.html">Back to Overview</a></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

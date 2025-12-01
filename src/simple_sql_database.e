@@ -10,6 +10,8 @@ note
 			- `last_error_message`: Quick access to error message string
 			- `error_codes`: Access to SIMPLE_SQL_ERROR_CODE for comparisons
 	]"
+	EIS: "name=API Reference", "src=../docs/api/database.html", "protocol=URI", "tag=documentation"
+	EIS: "name=Getting Started", "src=../docs/getting-started.html", "protocol=URI", "tag=tutorial"
 	date: "$Date$"
 	revision: "$Revision$"
 

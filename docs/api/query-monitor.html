@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMPLE_SQL_QUERY_MONITOR - API Reference</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="../index.html">Overview</a></li>
+                    <li><a href="../getting-started.html">Quick Start</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Advanced Features</h3>
+                <ul>
+                    <li><a href="eager-loader.html">Eager Loading (N+1)</a></li>
+                    <li><a href="paginator.html">Pagination</a></li>
+                    <li><a href="query-monitor.html" class="active">Query Monitor</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">Home</a> <span>›</span> <a href="../index.html#api">API</a> <span>›</span> SIMPLE_SQL_QUERY_MONITOR
+            </div>
+
+            <h1>SIMPLE_SQL_QUERY_MONITOR</h1>
+            <p>Runtime N+1 query detection. Records executed queries and identifies patterns that suggest N+1 problems. Enable during development/testing to catch performance issues before production.</p>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_QUERY_MONITOR">View Source</a></p>
+
+            <div class="callout warning">
+                <div class="callout-title">Development Tool</div>
+                <p>Query monitoring adds overhead. Enable it during development and testing to detect N+1 patterns, then disable in production. Use <a href="eager-loader.html">eager loading</a> to fix detected issues.</p>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Enable/Disable</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">db.enable_query_monitor</div>
+                        <div class="api-feature-desc">Start recording queries. All subsequent queries via <code>db.query</code> are tracked.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">db.disable_query_monitor</div>
+                        <div class="api-feature-desc">Stop recording and clear all recorded data.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">db.query_monitor: detachable SIMPLE_SQL_QUERY_MONITOR</div>
+                        <div class="api-feature-desc">Access the active monitor (Void if disabled).</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Configuration</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">set_threshold (a_count: INTEGER)</div>
+                        <div class="api-feature-desc">Set warning threshold. A query pattern executed more than this many times triggers a warning. Default is 5.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">threshold: INTEGER</div>
+                        <div class="api-feature-desc">Current warning threshold.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Recording</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">record_query (a_sql: READABLE_STRING_8)</div>
+                        <div class="api-feature-desc">Record a query execution. Called automatically by <code>db.query</code> when monitoring is enabled.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">reset</div>
+                        <div class="api-feature-desc">Clear all recorded queries and warnings. Use between test cases.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Analysis</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">has_warnings: BOOLEAN</div>
+                        <div class="api-feature-desc">Were any N+1 patterns detected?</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">warnings: ARRAYED_LIST [TUPLE [pattern: STRING_8; exec_count: INTEGER]]</div>
+                        <div class="api-feature-desc">List of detected N+1 patterns with execution counts.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">report: STRING_8</div>
+                        <div class="api-feature-desc">Human-readable report of all detected patterns.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">query_count: INTEGER</div>
+                        <div class="api-feature-desc">Total number of queries recorded.</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Examples</h2>
+
+            <h3>Basic Usage</h3>
+            <pre><code class="eiffel"><span class="keyword">do</span>
+    <span class="comment">-- Enable monitoring</span>
+    db.enable_query_monitor
+
+    <span class="comment">-- Run your code that might have N+1 issues</span>
+    load_documents_with_folders
+
+    <span class="comment">-- Check for problems</span>
+    <span class="keyword">if</span> <span class="keyword">attached</span> db.query_monitor <span class="keyword">as</span> monitor <span class="keyword">then</span>
+        <span class="keyword">if</span> monitor.has_warnings <span class="keyword">then</span>
+            print (<span class="string">"N+1 WARNING:%N"</span>)
+            print (monitor.report)
+        <span class="keyword">else</span>
+            print (<span class="string">"No N+1 patterns detected. "</span> + monitor.query_count.out + <span class="string">" queries total.%N"</span>)
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    <span class="comment">-- Disable when done</span>
+    db.disable_query_monitor
+<span class="keyword">end</span></code></pre>
+
+            <h3>In Test Cases</h3>
+            <pre><code class="eiffel"><span class="keyword">class</span> <span class="class-name">TEST_DOCUMENT_LOADING</span>
+
+<span class="keyword">feature</span> <span class="comment">-- Tests</span>
+
+    test_no_n_plus_1_when_loading_documents
+        <span class="keyword">local</span>
+            docs: <span class="class-name">SIMPLE_SQL_RESULT</span>
+        <span class="keyword">do</span>
+            db.enable_query_monitor
+            <span class="keyword">if</span> <span class="keyword">attached</span> db.query_monitor <span class="keyword">as</span> mon <span class="keyword">then</span>
+                mon.set_threshold (3)  <span class="comment">-- Stricter for tests</span>
+            <span class="keyword">end</span>
+
+            <span class="comment">-- Operation under test</span>
+            docs := document_service.load_all_with_folders
+
+            <span class="comment">-- Assert no N+1</span>
+            <span class="keyword">if</span> <span class="keyword">attached</span> db.query_monitor <span class="keyword">as</span> mon <span class="keyword">then</span>
+                assert (<span class="string">"no N+1 queries"</span>, <span class="keyword">not</span> mon.has_warnings)
+                <span class="keyword">if</span> mon.has_warnings <span class="keyword">then</span>
+                    print (mon.report)
+                <span class="keyword">end</span>
+            <span class="keyword">end</span>
+
+            db.disable_query_monitor
+        <span class="keyword">end</span>
+
+<span class="keyword">end</span></code></pre>
+
+            <h3>Detecting the Problem</h3>
+            <pre><code class="eiffel"><span class="comment">-- This code has an N+1 problem:</span>
+<span class="keyword">across</span> db.select_from (<span class="string">"documents"</span>).execute <span class="keyword">as</span> doc <span class="keyword">loop</span>
+    <span class="comment">-- Query per document!</span>
+    folder := db.select_from (<span class="string">"folders"</span>)
+        .where (<span class="string">"id = ?"</span>, doc.integer_value (<span class="string">"folder_id"</span>))
+        .execute.first
+<span class="keyword">end</span>
+
+<span class="comment">-- Query monitor output:</span>
+<span class="comment">-- N+1 Query Warning Report</span>
+<span class="comment">-- ========================</span>
+<span class="comment">-- Pattern: SELECT * FROM folders WHERE id = ?</span>
+<span class="comment">--   Executed: 100 times (threshold: 5)</span>
+<span class="comment">-- </span>
+<span class="comment">-- Total patterns with warnings: 1</span></code></pre>
+
+            <h3>After Fixing with Eager Loading</h3>
+            <pre><code class="eiffel"><span class="comment">-- Fixed version:</span>
+result := db.eager_loader
+    .from_table (<span class="string">"documents"</span>)
+    .include (<span class="string">"folder"</span>, <span class="string">"folders"</span>, <span class="string">"folder_id"</span>, <span class="string">"id"</span>)
+    .execute
+
+<span class="keyword">across</span> result.main_rows <span class="keyword">as</span> doc <span class="keyword">loop</span>
+    folder := result.first_related_for (<span class="string">"folder"</span>, doc.integer_64_value (<span class="string">"id"</span>))
+<span class="keyword">end</span>
+
+<span class="comment">-- Query monitor output:</span>
+<span class="comment">-- No N+1 patterns detected. 2 queries total.</span></code></pre>
+
+            <h3>Adjusting Threshold</h3>
+            <pre><code class="eiffel"><span class="keyword">if</span> <span class="keyword">attached</span> db.query_monitor <span class="keyword">as</span> mon <span class="keyword">then</span>
+    <span class="comment">-- Default threshold is 5</span>
+    <span class="comment">-- Increase for batch operations that legitimately repeat</span>
+    mon.set_threshold (20)
+
+    <span class="comment">-- Or decrease for stricter checking</span>
+    mon.set_threshold (3)
+<span class="keyword">end</span></code></pre>
+
+            <div class="callout tip">
+                <div class="callout-title">Pattern Normalization</div>
+                <p>The monitor normalizes queries to detect patterns. <code>SELECT * FROM users WHERE id = 1</code> and <code>SELECT * FROM users WHERE id = 2</code> are recognized as the same pattern.</p>
+            </div>
+
+            <h3>Resetting Between Operations</h3>
+            <pre><code class="eiffel"><span class="comment">-- Monitor multiple operations separately</span>
+<span class="keyword">if</span> <span class="keyword">attached</span> db.query_monitor <span class="keyword">as</span> mon <span class="keyword">then</span>
+    <span class="comment">-- First operation</span>
+    operation_a
+    print (<span class="string">"Operation A: "</span> + mon.query_count.out + <span class="string">" queries%N"</span>)
+
+    <span class="comment">-- Reset for second operation</span>
+    mon.reset
+
+    <span class="comment">-- Second operation</span>
+    operation_b
+    print (<span class="string">"Operation B: "</span> + mon.query_count.out + <span class="string">" queries%N"</span>)
+<span class="keyword">end</span></code></pre>
+
+            <div class="doc-footer">
+                <p><a href="paginator.html">← Paginator</a> | <a href="fts5.html">Full-Text Search →</a></p>
+                <p>See also: <a href="eager-loader.html">Eager Loader</a> (to fix detected N+1 issues)</p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

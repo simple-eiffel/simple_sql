@@ -19,6 +19,7 @@ note
 			-- Next page
 			page := paginator.after (previous_cursor)
 	]"
+	EIS: "name=API Reference", "src=../docs/api/paginator.html", "protocol=URI", "tag=documentation"
 	date: "$Date$"
 	revision: "$Revision$"
 

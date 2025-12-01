@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMPLE_SQL_SELECT_BUILDER - API Reference</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="../index.html">Overview</a></li>
+                    <li><a href="../getting-started.html">Quick Start</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Core API</h3>
+                <ul>
+                    <li><a href="database.html">SIMPLE_SQL_DATABASE</a></li>
+                    <li><a href="result.html">SIMPLE_SQL_RESULT</a></li>
+                    <li><a href="row.html">SIMPLE_SQL_ROW</a></li>
+                    <li><a href="prepared-statement.html">SIMPLE_SQL_PREPARED_STATEMENT</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Query Builders</h3>
+                <ul>
+                    <li><a href="select-builder.html" class="active">SIMPLE_SQL_SELECT_BUILDER</a></li>
+                    <li><a href="insert-builder.html">SIMPLE_SQL_INSERT_BUILDER</a></li>
+                    <li><a href="update-builder.html">SIMPLE_SQL_UPDATE_BUILDER</a></li>
+                    <li><a href="delete-builder.html">SIMPLE_SQL_DELETE_BUILDER</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Advanced Features</h3>
+                <ul>
+                    <li><a href="eager-loader.html">Eager Loading (N+1)</a></li>
+                    <li><a href="paginator.html">Pagination</a></li>
+                    <li><a href="query-monitor.html">Query Monitor</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Tutorials</h3>
+                <ul>
+                    <li><a href="../tutorials/query-builder.html">Query Builder Guide</a></li>
+                    <li><a href="../tutorials/soft-deletes.html">Soft Deletes</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">Home</a> <span>›</span> <a href="../index.html#api">API</a> <span>›</span> SIMPLE_SQL_SELECT_BUILDER
+            </div>
+
+            <h1>SIMPLE_SQL_SELECT_BUILDER</h1>
+            <p>Fluent builder for SELECT queries. Chain methods to construct complex queries without string concatenation.</p>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_SELECT_BUILDER">View Source</a></p>
+
+            <div class="callout tip">
+                <div class="callout-title">Fluent API</div>
+                <p>All builder methods return <code>like Current</code>, allowing method chaining:
+                <code>db.select_from("users").columns("name").where("active = 1").limit(10).execute</code></p>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Column Selection</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">columns (a_columns: READABLE_STRING_8): like Current</div>
+                        <div class="api-feature-desc">Set columns to select. Comma-separated list. Default is <code>*</code>.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">distinct: like Current</div>
+                        <div class="api-feature-desc">Add DISTINCT keyword to eliminate duplicate rows.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Filtering (WHERE)</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">where (a_condition: READABLE_STRING_8): like Current</div>
+                        <div class="api-feature-desc">Add WHERE clause. Can include <code>?</code> placeholders.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">where (a_condition: READABLE_STRING_8; a_value: detachable ANY): like Current</div>
+                        <div class="api-feature-desc">Add WHERE with single parameter binding.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">and_where (a_condition: READABLE_STRING_8): like Current</div>
+                        <div class="api-feature-desc">Add additional AND condition to WHERE clause.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">or_where (a_condition: READABLE_STRING_8): like Current</div>
+                        <div class="api-feature-desc">Add additional OR condition to WHERE clause.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Soft Delete Scopes</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">active_only: like Current</div>
+                        <div class="api-feature-desc">Filter to non-deleted records (WHERE deleted_at IS NULL). Most common scope.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">deleted_only: like Current</div>
+                        <div class="api-feature-desc">Filter to soft-deleted records only (WHERE deleted_at IS NOT NULL).</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">with_deleted: like Current</div>
+                        <div class="api-feature-desc">Include all records regardless of deletion status. No filter added.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">set_soft_delete_column (a_column: READABLE_STRING_8)</div>
+                        <div class="api-feature-desc">Configure column name for soft delete detection. Default: <code>deleted_at</code>.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="callout info">
+                <div class="callout-title">Soft Delete Convention</div>
+                <p>By default, soft delete scopes look for a <code>deleted_at</code> column (nullable timestamp).
+                Use <code>set_soft_delete_column</code> if your schema uses a different column name.</p>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Joins</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">join (a_table: READABLE_STRING_8; a_condition: READABLE_STRING_8): like Current</div>
+                        <div class="api-feature-desc">Add INNER JOIN.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">left_join (a_table: READABLE_STRING_8; a_condition: READABLE_STRING_8): like Current</div>
+                        <div class="api-feature-desc">Add LEFT OUTER JOIN.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Ordering</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">order_by (a_columns: READABLE_STRING_8): like Current</div>
+                        <div class="api-feature-desc">Add ORDER BY clause. Supports multiple columns and ASC/DESC.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Grouping</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">group_by (a_columns: READABLE_STRING_8): like Current</div>
+                        <div class="api-feature-desc">Add GROUP BY clause for aggregations.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">having (a_condition: READABLE_STRING_8): like Current</div>
+                        <div class="api-feature-desc">Add HAVING clause for filtering grouped results.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Pagination</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">limit (a_count: INTEGER): like Current</div>
+                        <div class="api-feature-desc">Limit number of rows returned.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">offset (a_count: INTEGER): like Current</div>
+                        <div class="api-feature-desc">Skip first N rows. Use with limit for pagination.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="callout warning">
+                <div class="callout-title">Offset Pagination Performance</div>
+                <p>Using <code>offset</code> with large values is slow because SQLite must scan all skipped rows.
+                For large datasets, use <a href="paginator.html">cursor-based pagination</a> instead.</p>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Execution</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">execute: SIMPLE_SQL_RESULT</div>
+                        <div class="api-feature-desc">Execute the query and return all results in memory.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">to_sql: STRING_8</div>
+                        <div class="api-feature-desc">Generate SQL string without executing. Useful for debugging.</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Examples</h2>
+
+            <h3>Basic Select</h3>
+            <pre><code class="eiffel">result := db.select_from (<span class="string">"users"</span>)
+    .columns (<span class="string">"id, name, email"</span>)
+    .where (<span class="string">"active = 1"</span>)
+    .execute</code></pre>
+
+            <h3>With Soft Deletes</h3>
+            <pre><code class="eiffel"><span class="comment">-- Only active (non-deleted) records</span>
+result := db.select_from (<span class="string">"documents"</span>)
+    .active_only
+    .order_by (<span class="string">"created_at DESC"</span>)
+    .execute
+
+<span class="comment">-- Only deleted records (trash view)</span>
+result := db.select_from (<span class="string">"documents"</span>)
+    .deleted_only
+    .execute
+
+<span class="comment">-- All records including deleted (admin view)</span>
+result := db.select_from (<span class="string">"documents"</span>)
+    .with_deleted
+    .execute</code></pre>
+
+            <h3>Complex Query with Join</h3>
+            <pre><code class="eiffel">result := db.select_from (<span class="string">"orders"</span>)
+    .columns (<span class="string">"orders.id, orders.total, users.name"</span>)
+    .left_join (<span class="string">"users"</span>, <span class="string">"users.id = orders.user_id"</span>)
+    .where (<span class="string">"orders.status = ?"</span>, <span class="string">"pending"</span>)
+    .order_by (<span class="string">"orders.created_at DESC"</span>)
+    .limit (20)
+    .execute</code></pre>
+
+            <h3>Aggregation</h3>
+            <pre><code class="eiffel">result := db.select_from (<span class="string">"orders"</span>)
+    .columns (<span class="string">"user_id, COUNT(*) as order_count, SUM(total) as total_spent"</span>)
+    .group_by (<span class="string">"user_id"</span>)
+    .having (<span class="string">"order_count > 5"</span>)
+    .order_by (<span class="string">"total_spent DESC"</span>)
+    .execute</code></pre>
+
+            <h3>Debug SQL</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    builder: <span class="class-name">SIMPLE_SQL_SELECT_BUILDER</span>
+<span class="keyword">do</span>
+    builder := db.select_from (<span class="string">"users"</span>).where (<span class="string">"active = 1"</span>).limit (10)
+    print (<span class="string">"SQL: "</span> + builder.to_sql)
+    <span class="comment">-- Output: SELECT * FROM users WHERE active = 1 LIMIT 10</span>
+<span class="keyword">end</span></code></pre>
+
+            <div class="doc-footer">
+                <p><a href="database.html">← SIMPLE_SQL_DATABASE</a> | <a href="insert-builder.html">SIMPLE_SQL_INSERT_BUILDER →</a></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

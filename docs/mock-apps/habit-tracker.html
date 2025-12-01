@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habit Tracker Mock - SIMPLE_SQL</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="../index.html">Overview</a></li>
+                    <li><a href="../getting-started.html">Quick Start</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Mock Applications</h3>
+                <ul>
+                    <li><a href="todo.html">TODO App</a></li>
+                    <li><a href="cpm.html">CPM Scheduler</a></li>
+                    <li><a href="habit-tracker.html" class="active">Habit Tracker</a></li>
+                    <li><a href="dms.html">Document Management</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">Home</a> <span>›</span> <a href="../index.html#mock-apps">Mock Apps</a> <span>›</span> Habit Tracker
+            </div>
+
+            <h1>Habit Tracker</h1>
+            <p>A daily habit tracking application that stressed time-series data patterns, aggregations, and soft delete functionality.</p>
+
+            <div class="mock-app-card" style="background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);">
+                <h3>Habit Tracker Statistics</h3>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value">25</div>
+                        <div class="stat-label">Tests</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">Tables</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">Time-Series</div>
+                        <div class="stat-label">Focus Area</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Domain Overview</h2>
+            <ul>
+                <li><strong>Habits</strong> - Behaviors to track (exercise, reading, etc.)</li>
+                <li><strong>Categories</strong> - Organize habits by type</li>
+                <li><strong>Completions</strong> - Daily check-ins with notes</li>
+                <li><strong>Achievements</strong> - Unlockable badges for streaks</li>
+                <li><strong>Streaks</strong> - Consecutive day calculations</li>
+            </ul>
+
+            <h2>Schema</h2>
+            <pre><code>categories (id, name, deleted_at)
+habits (id, name, category_id, frequency, deleted_at, created_at)
+completions (id, habit_id, completed_date, notes)
+achievements (id, name, description, requirement, badge_icon)</code></pre>
+
+            <h2>Friction Points & Solutions</h2>
+
+            <h3>Streak Calculations</h3>
+            <p>Calculating consecutive completion days required complex date logic:</p>
+            <pre><code class="eiffel"><span class="comment">-- Current streak for a habit</span>
+current_streak (a_habit_id: <span class="class-name">INTEGER_64</span>): <span class="class-name">INTEGER</span>
+    <span class="keyword">local</span>
+        result: <span class="class-name">SIMPLE_SQL_RESULT</span>
+    <span class="keyword">do</span>
+        result := db.query_with_args (<span class="string">"[
+            WITH RECURSIVE dates AS (
+                SELECT date('now') as d
+                UNION ALL
+                SELECT date(d, '-1 day') FROM dates
+                WHERE EXISTS (
+                    SELECT 1 FROM completions
+                    WHERE habit_id = ?
+                    AND completed_date = date(d, '-1 day')
+                )
+            )
+            SELECT COUNT(*) as streak FROM dates
+            WHERE EXISTS (
+                SELECT 1 FROM completions
+                WHERE habit_id = ? AND completed_date = dates.d
+            )
+        ]"</span>, &lt;&lt;a_habit_id, a_habit_id&gt;&gt;)
+        Result := result.first.integer_value (<span class="string">"streak"</span>)
+    <span class="keyword">end</span></code></pre>
+
+            <h3>Time-Series Aggregations</h3>
+            <pre><code class="eiffel"><span class="comment">-- Completions per week</span>
+weekly_stats (a_habit_id: <span class="class-name">INTEGER_64</span>): <span class="class-name">SIMPLE_SQL_RESULT</span>
+    <span class="keyword">do</span>
+        Result := db.query_with_args (<span class="string">"[
+            SELECT strftime('%Y-W%W', completed_date) as week,
+                   COUNT(*) as completions
+            FROM completions
+            WHERE habit_id = ?
+            GROUP BY week
+            ORDER BY week DESC
+            LIMIT 12
+        ]"</span>, &lt;&lt;a_habit_id&gt;&gt;)
+    <span class="keyword">end</span></code></pre>
+
+            <h3>Soft Delete Pattern (Pre-Scopes)</h3>
+            <p>This mock revealed the repetitive nature of soft delete filtering, which later drove the <code>active_only</code> scope feature:</p>
+            <pre><code class="eiffel"><span class="comment">-- Before scopes: manual filtering everywhere</span>
+db.select_from (<span class="string">"habits"</span>)
+    .where (<span class="string">"category_id = ? AND deleted_at IS NULL"</span>, cat_id)
+    .execute
+
+<span class="comment">-- After scopes (added in DMS phase)</span>
+db.select_from (<span class="string">"habits"</span>)
+    .active_only
+    .where (<span class="string">"category_id = ?"</span>, cat_id)
+    .execute</code></pre>
+
+            <h2>Key Patterns</h2>
+
+            <h3>Achievement System</h3>
+            <pre><code class="eiffel">check_achievements (a_user_id: <span class="class-name">INTEGER_64</span>)
+        <span class="comment">-- Check and unlock earned achievements</span>
+    <span class="keyword">local</span>
+        streak: <span class="class-name">INTEGER</span>
+    <span class="keyword">do</span>
+        <span class="keyword">across</span> active_habits (a_user_id) <span class="keyword">as</span> habit <span class="keyword">loop</span>
+            streak := current_streak (habit.integer_64_value (<span class="string">"id"</span>))
+
+            <span class="keyword">if</span> streak >= 7 <span class="keyword">then</span>
+                unlock_achievement (a_user_id, <span class="string">"week_warrior"</span>)
+            <span class="keyword">end</span>
+
+            <span class="keyword">if</span> streak >= 30 <span class="keyword">then</span>
+                unlock_achievement (a_user_id, <span class="string">"monthly_master"</span>)
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span></code></pre>
+
+            <h3>Date-Based Queries</h3>
+            <pre><code class="eiffel">completions_today: <span class="class-name">SIMPLE_SQL_RESULT</span>
+    <span class="keyword">do</span>
+        Result := db.select_from (<span class="string">"completions"</span>)
+            .columns (<span class="string">"c.*, h.name as habit_name"</span>)
+            .join (<span class="string">"habits h"</span>, <span class="string">"h.id = c.habit_id"</span>)
+            .where (<span class="string">"c.completed_date = date('now')"</span>)
+            .execute
+    <span class="keyword">end</span>
+
+habits_not_completed_today: <span class="class-name">SIMPLE_SQL_RESULT</span>
+    <span class="keyword">do</span>
+        Result := db.query (<span class="string">"[
+            SELECT h.* FROM habits h
+            WHERE h.deleted_at IS NULL
+            AND NOT EXISTS (
+                SELECT 1 FROM completions c
+                WHERE c.habit_id = h.id
+                AND c.completed_date = date('now')
+            )
+        ]"</span>)
+    <span class="keyword">end</span></code></pre>
+
+            <h2>Lessons Learned</h2>
+
+            <div class="callout success">
+                <div class="callout-title">Time-Series Insights</div>
+                <ul>
+                    <li>SQLite's date functions are powerful for aggregations</li>
+                    <li>Recursive CTEs enable streak calculations</li>
+                    <li>Proper indexing on date columns is critical</li>
+                </ul>
+            </div>
+
+            <div class="callout info">
+                <div class="callout-title">Soft Delete Pain</div>
+                <p>Every query in the Habit Tracker needed <code>AND deleted_at IS NULL</code>. This friction directly led to the soft delete scopes feature added during DMS development.</p>
+            </div>
+
+            <h2>Source Code</h2>
+            <ul>
+                <li><a class="eis-link" href="eiffel:?class=HABIT_TRACKER_DATABASE">HABIT_TRACKER_DATABASE</a></li>
+                <li><a class="eis-link" href="eiffel:?class=HABIT_SERVICE">HABIT_SERVICE</a></li>
+                <li><a class="eis-link" href="eiffel:?class=ACHIEVEMENT_SERVICE">ACHIEVEMENT_SERVICE</a></li>
+            </ul>
+
+            <div class="doc-footer">
+                <p><a href="cpm.html">← CPM Scheduler</a> | <a href="dms.html">Document Management →</a></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

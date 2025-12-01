@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eager Loading Tutorial - SIMPLE_SQL</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="../index.html">Overview</a></li>
+                    <li><a href="../getting-started.html">Quick Start</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Tutorials</h3>
+                <ul>
+                    <li><a href="basic-crud.html">Basic CRUD</a></li>
+                    <li><a href="query-builder.html">Query Builder</a></li>
+                    <li><a href="soft-deletes.html">Soft Deletes</a></li>
+                    <li><a href="eager-loading.html" class="active">Eager Loading</a></li>
+                    <li><a href="pagination.html">Pagination</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>API Reference</h3>
+                <ul>
+                    <li><a href="../api/eager-loader.html">SIMPLE_SQL_EAGER_LOADER</a></li>
+                    <li><a href="../api/query-monitor.html">SIMPLE_SQL_QUERY_MONITOR</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">Home</a> <span>›</span> <a href="../index.html#tutorials">Tutorials</a> <span>›</span> Eager Loading
+            </div>
+
+            <h1>Preventing N+1 Queries with Eager Loading</h1>
+            <p>The N+1 query problem is one of the most common performance issues in database applications. This tutorial shows you how to identify and fix N+1 problems using SIMPLE_SQL's eager loading API.</p>
+
+            <h2>What is the N+1 Problem?</h2>
+            <p>When you load a list of items and then query related data for each item individually, you end up with N+1 queries: 1 for the list + N for each related record.</p>
+
+            <div class="mock-app-card" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);">
+                <h3>The Problem</h3>
+                <p>Loading 100 documents with their folders:</p>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value">101</div>
+                        <div class="stat-label">Queries (N+1)</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">~500ms</div>
+                        <div class="stat-label">Response Time</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>N+1 Code Example</h3>
+            <pre><code class="eiffel"><span class="comment">-- BAD: This causes N+1 queries!</span>
+<span class="keyword">across</span> db.select_from (<span class="string">"documents"</span>).execute <span class="keyword">as</span> doc <span class="keyword">loop</span>
+    <span class="comment">-- This query runs ONCE PER DOCUMENT</span>
+    folder := db.select_from (<span class="string">"folders"</span>)
+        .where (<span class="string">"id = ?"</span>, doc.integer_value (<span class="string">"folder_id"</span>))
+        .execute.first
+
+    print (doc.string_value (<span class="string">"name"</span>) + <span class="string">" in "</span> + folder.string_value (<span class="string">"name"</span>))
+<span class="keyword">end</span></code></pre>
+
+            <h2>The Solution: Eager Loading</h2>
+            <p>Eager loading fetches all related data in a single additional query per relationship.</p>
+
+            <div class="mock-app-card" style="background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);">
+                <h3>The Solution</h3>
+                <p>Same 100 documents with folders using eager loading:</p>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">Queries</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">~10ms</div>
+                        <div class="stat-label">Response Time</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">50x</div>
+                        <div class="stat-label">Faster</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Eager Loading Code Example</h3>
+            <pre><code class="eiffel"><span class="comment">-- GOOD: Only 2 queries total!</span>
+result := db.eager_loader
+    .from_table (<span class="string">"documents"</span>)
+    .include (<span class="string">"folder"</span>, <span class="string">"folders"</span>, <span class="string">"folder_id"</span>, <span class="string">"id"</span>)
+    .execute
+
+<span class="keyword">across</span> result.main_rows <span class="keyword">as</span> doc <span class="keyword">loop</span>
+    doc_id := doc.integer_64_value (<span class="string">"id"</span>)
+
+    <span class="comment">-- No additional query - data is already loaded!</span>
+    <span class="keyword">if</span> <span class="keyword">attached</span> result.first_related_for (<span class="string">"folder"</span>, doc_id) <span class="keyword">as</span> folder <span class="keyword">then</span>
+        print (doc.string_value (<span class="string">"name"</span>) + <span class="string">" in "</span> + folder.string_value (<span class="string">"name"</span>))
+    <span class="keyword">end</span>
+<span class="keyword">end</span></code></pre>
+
+            <h2>Understanding the Include Pattern</h2>
+            <p>The <code>include</code> method takes four parameters:</p>
+            <pre><code class="eiffel">include (relation_name, related_table, foreign_key, primary_key)</code></pre>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>relation_name</code></td>
+                        <td>Name you use to access the related data</td>
+                        <td><code>"folder"</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>related_table</code></td>
+                        <td>Table containing related records</td>
+                        <td><code>"folders"</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>foreign_key</code></td>
+                        <td>Column on main table pointing to related</td>
+                        <td><code>"folder_id"</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>primary_key</code></td>
+                        <td>Column on related table being referenced</td>
+                        <td><code>"id"</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Common Relationship Types</h2>
+
+            <h3>Belongs-To (N:1)</h3>
+            <p>Document belongs to a folder (many documents per folder):</p>
+            <pre><code class="eiffel"><span class="comment">-- documents.folder_id → folders.id</span>
+.include (<span class="string">"folder"</span>, <span class="string">"folders"</span>, <span class="string">"folder_id"</span>, <span class="string">"id"</span>)</code></pre>
+
+            <h3>Has-One (1:1)</h3>
+            <p>User has one profile:</p>
+            <pre><code class="eiffel"><span class="comment">-- profiles.user_id → users.id</span>
+<span class="comment">-- Note: FK is on related table, so we query from profiles</span>
+result := db.eager_loader
+    .from_table (<span class="string">"users"</span>)
+    .include (<span class="string">"profile"</span>, <span class="string">"profiles"</span>, <span class="string">"id"</span>, <span class="string">"user_id"</span>)
+    .execute</code></pre>
+
+            <h3>Many-to-Many</h3>
+            <p>Documents have many tags through a join table:</p>
+            <pre><code class="eiffel"><span class="comment">-- documents ↔ document_tags ↔ tags</span>
+result := db.eager_loader
+    .from_table (<span class="string">"documents"</span>)
+    .include_many_to_many (<span class="string">"tags"</span>, <span class="string">"tags"</span>, <span class="string">"document_tags"</span>, <span class="string">"document_id"</span>, <span class="string">"tag_id"</span>)
+    .execute
+
+<span class="comment">-- Access tags for each document</span>
+<span class="keyword">across</span> result.main_rows <span class="keyword">as</span> doc <span class="keyword">loop</span>
+    tags := result.related_for (<span class="string">"tags"</span>, doc.integer_64_value (<span class="string">"id"</span>))
+    <span class="comment">-- tags is a list of all tags for this document</span>
+<span class="keyword">end</span></code></pre>
+
+            <h2>Multiple Relationships</h2>
+            <p>Load several relationships in one eager load:</p>
+            <pre><code class="eiffel">result := db.eager_loader
+    .from_table (<span class="string">"documents"</span>)
+    .columns (<span class="string">"id, name, folder_id, created_by"</span>)
+    .include (<span class="string">"folder"</span>, <span class="string">"folders"</span>, <span class="string">"folder_id"</span>, <span class="string">"id"</span>)
+    .include (<span class="string">"author"</span>, <span class="string">"users"</span>, <span class="string">"created_by"</span>, <span class="string">"id"</span>)
+    .include_many_to_many (<span class="string">"tags"</span>, <span class="string">"tags"</span>, <span class="string">"document_tags"</span>, <span class="string">"document_id"</span>, <span class="string">"tag_id"</span>)
+    .where (<span class="string">"documents.deleted_at IS NULL"</span>)
+    .order_by (<span class="string">"documents.created_at DESC"</span>)
+    .limit (50)
+    .execute
+
+<span class="comment">-- 4 queries total: documents + folders + users + tags</span>
+<span class="comment">-- NOT 50 + 50 + 50 = 151 queries!</span></code></pre>
+
+            <h2>Detecting N+1 Problems</h2>
+            <p>Use the query monitor to find N+1 patterns in your code:</p>
+            <pre><code class="eiffel"><span class="comment">-- Enable monitoring</span>
+db.enable_query_monitor
+
+<span class="comment">-- Run your code</span>
+display_documents_with_folders
+
+<span class="comment">-- Check for warnings</span>
+<span class="keyword">if</span> <span class="keyword">attached</span> db.query_monitor <span class="keyword">as</span> mon <span class="keyword">then</span>
+    <span class="keyword">if</span> mon.has_warnings <span class="keyword">then</span>
+        print (<span class="string">"N+1 WARNING DETECTED:%N"</span>)
+        print (mon.report)
+    <span class="keyword">else</span>
+        print (<span class="string">"OK: "</span> + mon.query_count.out + <span class="string">" queries%N"</span>)
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+db.disable_query_monitor</code></pre>
+
+            <h3>Sample Warning Output</h3>
+            <pre><code>N+1 Query Warning Report
+========================
+Pattern: SELECT * FROM folders WHERE id = ?
+  Executed: 100 times (threshold: 5)
+
+Total patterns with warnings: 1</code></pre>
+
+            <h2>Accessing Eager-Loaded Data</h2>
+
+            <h3>Single Related Record (Belongs-To)</h3>
+            <pre><code class="eiffel"><span class="comment">-- Use first_related_for for belongs-to/has-one</span>
+<span class="keyword">if</span> <span class="keyword">attached</span> result.first_related_for (<span class="string">"folder"</span>, doc_id) <span class="keyword">as</span> folder <span class="keyword">then</span>
+    print (folder.string_value (<span class="string">"name"</span>))
+<span class="keyword">end</span></code></pre>
+
+            <h3>Multiple Related Records (Has-Many)</h3>
+            <pre><code class="eiffel"><span class="comment">-- Use related_for for has-many relationships</span>
+<span class="keyword">across</span> result.related_for (<span class="string">"tags"</span>, doc_id) <span class="keyword">as</span> tag <span class="keyword">loop</span>
+    print (tag.string_value (<span class="string">"name"</span>) + <span class="string">" "</span>)
+<span class="keyword">end</span></code></pre>
+
+            <h3>Count Related Records</h3>
+            <pre><code class="eiffel">tag_count := result.related_count (<span class="string">"tags"</span>, doc_id)
+print (<span class="string">"Document has "</span> + tag_count.out + <span class="string">" tags"</span>)</code></pre>
+
+            <h2>Best Practices</h2>
+
+            <div class="callout success">
+                <div class="callout-title">Do</div>
+                <ul>
+                    <li>Use eager loading when displaying lists with related data</li>
+                    <li>Enable query monitoring during development</li>
+                    <li>Add N+1 detection assertions to your test suite</li>
+                    <li>Combine filtering and ordering in the eager loader</li>
+                </ul>
+            </div>
+
+            <div class="callout warning">
+                <div class="callout-title">Don't</div>
+                <ul>
+                    <li>Eager load data you don't need (over-fetching)</li>
+                    <li>Query in a loop when you can eager load</li>
+                    <li>Leave query monitoring enabled in production</li>
+                </ul>
+            </div>
+
+            <h2>Performance Impact</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Scenario</th>
+                        <th>N+1 Queries</th>
+                        <th>Eager Loaded</th>
+                        <th>Improvement</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>100 items, 1 relation</td>
+                        <td>101</td>
+                        <td>2</td>
+                        <td>50x fewer</td>
+                    </tr>
+                    <tr>
+                        <td>100 items, 3 relations</td>
+                        <td>301</td>
+                        <td>4</td>
+                        <td>75x fewer</td>
+                    </tr>
+                    <tr>
+                        <td>1000 items, 1 relation</td>
+                        <td>1001</td>
+                        <td>2</td>
+                        <td>500x fewer</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="doc-footer">
+                <p><a href="soft-deletes.html">← Soft Deletes</a> | <a href="pagination.html">Pagination →</a></p>
+                <p>API Reference: <a class="eis-link" href="eiffel:?class=SIMPLE_SQL_EAGER_LOADER">SIMPLE_SQL_EAGER_LOADER</a></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

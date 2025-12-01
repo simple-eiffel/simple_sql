@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getting Started - SIMPLE_SQL</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="index.html">Overview</a></li>
+                    <li><a href="getting-started.html" class="active">Quick Start</a></li>
+                    <li><a href="installation.html">Installation</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Core API</h3>
+                <ul>
+                    <li><a href="api/database.html">SIMPLE_SQL_DATABASE</a></li>
+                    <li><a href="api/result.html">SIMPLE_SQL_RESULT</a></li>
+                    <li><a href="api/row.html">SIMPLE_SQL_ROW</a></li>
+                    <li><a href="api/prepared-statement.html">SIMPLE_SQL_PREPARED_STATEMENT</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Query Builders</h3>
+                <ul>
+                    <li><a href="api/select-builder.html">SIMPLE_SQL_SELECT_BUILDER</a></li>
+                    <li><a href="api/insert-builder.html">SIMPLE_SQL_INSERT_BUILDER</a></li>
+                    <li><a href="api/update-builder.html">SIMPLE_SQL_UPDATE_BUILDER</a></li>
+                    <li><a href="api/delete-builder.html">SIMPLE_SQL_DELETE_BUILDER</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Tutorials</h3>
+                <ul>
+                    <li><a href="tutorials/basic-crud.html">Basic CRUD</a></li>
+                    <li><a href="tutorials/query-builder.html">Query Builder</a></li>
+                    <li><a href="tutorials/transactions.html">Transactions</a></li>
+                    <li><a href="tutorials/soft-deletes.html">Soft Deletes</a></li>
+                    <li><a href="tutorials/eager-loading.html">Eager Loading</a></li>
+                    <li><a href="tutorials/pagination.html">Pagination</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Mock Applications</h3>
+                <ul>
+                    <li><a href="mock-apps/todo.html">TODO App</a></li>
+                    <li><a href="mock-apps/cpm.html">CPM Scheduler</a></li>
+                    <li><a href="mock-apps/habit-tracker.html">Habit Tracker</a></li>
+                    <li><a href="mock-apps/dms.html">Document Management</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="index.html">Home</a> <span>›</span> Getting Started
+            </div>
+
+            <h1>Getting Started</h1>
+            <p>Get up and running with SIMPLE_SQL in minutes.</p>
+
+            <h2>1. Add to Your Project</h2>
+            <p>Add SIMPLE_SQL to your ECF file:</p>
+            <pre><code>&lt;library name="simple_sql" location="$SIMPLE_SQL/simple_sql.ecf"/&gt;</code></pre>
+
+            <div class="callout tip">
+                <div class="callout-title">Environment Variable</div>
+                <p>Set <code>SIMPLE_SQL</code> to point to the library location, or use an absolute path.</p>
+            </div>
+
+            <h2>2. Open a Database</h2>
+            <p>Create a database connection:</p>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    db: <span class="class-name">SIMPLE_SQL_DATABASE</span>
+<span class="keyword">do</span>
+    <span class="comment">-- File-based database</span>
+    <span class="keyword">create</span> db.make (<span class="string">"myapp.db"</span>)
+
+    <span class="comment">-- Or in-memory database</span>
+    <span class="keyword">create</span> db.make_in_memory
+
+    <span class="comment">-- Always close when done</span>
+    db.close
+<span class="keyword">end</span></code></pre>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_DATABASE&feature=make">View make</a>
+            <a class="eis-link" href="eiffel:?class=SIMPLE_SQL_DATABASE&feature=make_in_memory">View make_in_memory</a></p>
+
+            <h2>3. Create Tables</h2>
+            <p>Execute DDL statements:</p>
+            <pre><code class="eiffel">db.execute (<span class="string">"CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT NOT NULL, email TEXT UNIQUE, created_at TEXT DEFAULT CURRENT_TIMESTAMP)"</span>)</code></pre>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_DATABASE&feature=execute">View execute</a></p>
+
+            <h2>4. Insert Data</h2>
+            <p>Use the fluent insert builder:</p>
+            <pre><code class="eiffel"><span class="comment">-- Simple insert</span>
+db.insert_into (<span class="string">"users"</span>)
+    .value (<span class="string">"name"</span>, <span class="string">"Alice"</span>)
+    .value (<span class="string">"email"</span>, <span class="string">"alice@example.com"</span>)
+    .execute
+
+<span class="comment">-- Get the inserted ID</span>
+print (<span class="string">"Inserted user ID: "</span> + db.last_insert_rowid.out)</code></pre>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_DATABASE&feature=insert_into">View insert_into</a>
+            <a class="eis-link" href="eiffel:?class=SIMPLE_SQL_INSERT_BUILDER">View SIMPLE_SQL_INSERT_BUILDER</a></p>
+
+            <h2>5. Query Data</h2>
+            <p>Use the fluent select builder:</p>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    result: <span class="class-name">SIMPLE_SQL_RESULT</span>
+<span class="keyword">do</span>
+    result := db.select_from (<span class="string">"users"</span>)
+        .columns (<span class="string">"id, name, email"</span>)
+        .where (<span class="string">"name LIKE ?"</span>, <span class="string">"A%"</span>)
+        .order_by (<span class="string">"name"</span>)
+        .execute
+
+    <span class="keyword">across</span> result <span class="keyword">as</span> row <span class="keyword">loop</span>
+        print (row.integer_value (<span class="string">"id"</span>).out + <span class="string">": "</span> + row.string_value (<span class="string">"name"</span>) + <span class="string">"%N"</span>)
+    <span class="keyword">end</span>
+<span class="keyword">end</span></code></pre>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_DATABASE&feature=select_from">View select_from</a>
+            <a class="eis-link" href="eiffel:?class=SIMPLE_SQL_SELECT_BUILDER">View SIMPLE_SQL_SELECT_BUILDER</a></p>
+
+            <h2>6. Update Data</h2>
+            <pre><code class="eiffel">db.update (<span class="string">"users"</span>)
+    .set (<span class="string">"email"</span>, <span class="string">"alice.new@example.com"</span>)
+    .where (<span class="string">"id = ?"</span>, 1)
+    .execute</code></pre>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_DATABASE&feature=update">View update</a>
+            <a class="eis-link" href="eiffel:?class=SIMPLE_SQL_UPDATE_BUILDER">View SIMPLE_SQL_UPDATE_BUILDER</a></p>
+
+            <h2>7. Delete Data</h2>
+            <pre><code class="eiffel">db.delete_from (<span class="string">"users"</span>)
+    .where (<span class="string">"id = ?"</span>, 1)
+    .execute</code></pre>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_DATABASE&feature=delete_from">View delete_from</a>
+            <a class="eis-link" href="eiffel:?class=SIMPLE_SQL_DELETE_BUILDER">View SIMPLE_SQL_DELETE_BUILDER</a></p>
+
+            <h2>8. Use Transactions</h2>
+            <p>Wrap multiple operations in a transaction:</p>
+            <pre><code class="eiffel">db.begin_transaction
+db.insert_into (<span class="string">"users"</span>).value (<span class="string">"name"</span>, <span class="string">"Bob"</span>).execute
+db.insert_into (<span class="string">"users"</span>).value (<span class="string">"name"</span>, <span class="string">"Carol"</span>).execute
+db.commit
+
+<span class="comment">-- Or rollback on error</span>
+db.begin_transaction
+db.insert_into (<span class="string">"users"</span>).value (<span class="string">"name"</span>, <span class="string">"Dave"</span>).execute
+db.rollback  <span class="comment">-- Undo the insert</span></code></pre>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_DATABASE&feature=begin_transaction">View begin_transaction</a>
+            <a class="eis-link" href="eiffel:?class=SIMPLE_SQL_DATABASE&feature=commit">View commit</a>
+            <a class="eis-link" href="eiffel:?class=SIMPLE_SQL_DATABASE&feature=rollback">View rollback</a></p>
+
+            <h2>Complete Example</h2>
+            <pre><code class="eiffel"><span class="keyword">class</span> <span class="class-name">SIMPLE_SQL_DEMO</span>
+
+<span class="keyword">create</span>
+    make
+
+<span class="keyword">feature</span> {<span class="class-name">NONE</span>} <span class="comment">-- Initialization</span>
+
+    make
+        <span class="keyword">local</span>
+            db: <span class="class-name">SIMPLE_SQL_DATABASE</span>
+            result: <span class="class-name">SIMPLE_SQL_RESULT</span>
+        <span class="keyword">do</span>
+            <span class="comment">-- Create database</span>
+            <span class="keyword">create</span> db.make_in_memory
+
+            <span class="comment">-- Create table</span>
+            db.execute (<span class="string">"CREATE TABLE tasks (id INTEGER PRIMARY KEY, title TEXT, done INTEGER DEFAULT 0)"</span>)
+
+            <span class="comment">-- Insert tasks</span>
+            db.begin_transaction
+            db.insert_into (<span class="string">"tasks"</span>).value (<span class="string">"title"</span>, <span class="string">"Learn SIMPLE_SQL"</span>).execute
+            db.insert_into (<span class="string">"tasks"</span>).value (<span class="string">"title"</span>, <span class="string">"Build something awesome"</span>).execute
+            db.insert_into (<span class="string">"tasks"</span>).value (<span class="string">"title"</span>, <span class="string">"Ship it!"</span>).execute
+            db.commit
+
+            <span class="comment">-- Query incomplete tasks</span>
+            result := db.select_from (<span class="string">"tasks"</span>)
+                .columns (<span class="string">"id, title"</span>)
+                .where (<span class="string">"done = 0"</span>)
+                .execute
+
+            print (<span class="string">"Pending tasks:%N"</span>)
+            <span class="keyword">across</span> result <span class="keyword">as</span> row <span class="keyword">loop</span>
+                print (<span class="string">"  - "</span> + row.string_value (<span class="string">"title"</span>) + <span class="string">"%N"</span>)
+            <span class="keyword">end</span>
+
+            <span class="comment">-- Mark first task done</span>
+            db.update (<span class="string">"tasks"</span>).set (<span class="string">"done"</span>, 1).where (<span class="string">"id = ?"</span>, 1).execute
+
+            db.close
+        <span class="keyword">end</span>
+
+<span class="keyword">end</span></code></pre>
+
+            <h2>Next Steps</h2>
+            <ul>
+                <li><a href="tutorials/query-builder.html">Master the Query Builder</a> - Deep dive into fluent queries</li>
+                <li><a href="tutorials/eager-loading.html">Prevent N+1 Queries</a> - Load related data efficiently</li>
+                <li><a href="tutorials/soft-deletes.html">Implement Soft Deletes</a> - Archive without destroying</li>
+                <li><a href="mock-apps/todo.html">Explore the TODO App</a> - See SIMPLE_SQL in action</li>
+            </ul>
+
+            <div class="doc-footer">
+                <p>SIMPLE_SQL Documentation • <a href="index.html">Back to Overview</a></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
