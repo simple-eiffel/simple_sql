@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMPLE_SQL_IMPORT - API Reference</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="../index.html">Overview</a></li>
+                    <li><a href="../getting-started.html">Quick Start</a></li>
+                    <li><a href="../installation.html">Installation</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Core API</h3>
+                <ul>
+                    <li><a href="database.html">SIMPLE_SQL_DATABASE</a></li>
+                    <li><a href="result.html">SIMPLE_SQL_RESULT</a></li>
+                    <li><a href="row.html">SIMPLE_SQL_ROW</a></li>
+                    <li><a href="prepared-statement.html">SIMPLE_SQL_PREPARED_STATEMENT</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Backup & Export</h3>
+                <ul>
+                    <li><a href="backup.html">SIMPLE_SQL_BACKUP</a></li>
+                    <li><a href="export.html">SIMPLE_SQL_EXPORT</a></li>
+                    <li><a href="import.html" class="active">SIMPLE_SQL_IMPORT</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Advanced Features</h3>
+                <ul>
+                    <li><a href="eager-loader.html">Eager Loading (N+1)</a></li>
+                    <li><a href="paginator.html">Pagination</a></li>
+                    <li><a href="query-monitor.html">Query Monitor</a></li>
+                    <li><a href="fts5.html">Full-Text Search</a></li>
+                    <li><a href="json.html">JSON Support</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Mock Applications</h3>
+                <ul>
+                    <li><a href="../mock-apps/todo.html">TODO App</a></li>
+                    <li><a href="../mock-apps/cpm.html">CPM Scheduler</a></li>
+                    <li><a href="../mock-apps/habit-tracker.html">Habit Tracker</a></li>
+                    <li><a href="../mock-apps/dms.html">Document Management</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">Home</a> <span>&rsaquo;</span> <a href="../index.html#api">API</a> <span>&rsaquo;</span> SIMPLE_SQL_IMPORT
+            </div>
+
+            <h1>SIMPLE_SQL_IMPORT</h1>
+            <p>Import data from CSV, JSON, or SQL files into database tables.</p>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_IMPORT">View Source</a></p>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Creation</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">make (a_db: SIMPLE_SQL_DATABASE)</div>
+                        <div class="api-feature-desc">Create importer attached to database.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>CSV Import</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">from_csv (a_table: READABLE_STRING_8; a_csv: READABLE_STRING_GENERAL)</div>
+                        <div class="api-feature-desc">Import CSV string into table. First row must be headers.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">from_csv_file (a_table: READABLE_STRING_8; a_path: READABLE_STRING_GENERAL)</div>
+                        <div class="api-feature-desc">Import CSV file into table.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">from_csv_with_options (a_table: READABLE_STRING_8; a_csv: READABLE_STRING_GENERAL; a_delimiter: CHARACTER; a_has_headers: BOOLEAN)</div>
+                        <div class="api-feature-desc">Import with custom delimiter and header option.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>JSON Import</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">from_json (a_table: READABLE_STRING_8; a_json: READABLE_STRING_GENERAL)</div>
+                        <div class="api-feature-desc">Import JSON array of objects into table.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">from_json_file (a_table: READABLE_STRING_8; a_path: READABLE_STRING_GENERAL)</div>
+                        <div class="api-feature-desc">Import JSON file into table.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>SQL Import</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">from_sql (a_sql: READABLE_STRING_GENERAL)</div>
+                        <div class="api-feature-desc">Execute SQL statements (CREATE, INSERT, etc.).</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">from_sql_file (a_path: READABLE_STRING_GENERAL)</div>
+                        <div class="api-feature-desc">Execute SQL file.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Import Status</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">rows_imported: INTEGER</div>
+                        <div class="api-feature-desc">Number of rows imported in last operation.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">last_error: detachable STRING_8</div>
+                        <div class="api-feature-desc">Error message if import failed.</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Examples</h2>
+
+            <h3>Import CSV</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    import: <span class="class-name">SIMPLE_SQL_IMPORT</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> import.make (db)
+
+    <span class="comment">-- Create target table first</span>
+    db.execute (<span class="string">"CREATE TABLE IF NOT EXISTS users (name TEXT, email TEXT)"</span>)
+
+    <span class="comment">-- Import from CSV string</span>
+    import.from_csv (<span class="string">"users"</span>, <span class="string">"name,email%NAlice,alice@example.com%NBob,bob@example.com"</span>)
+    print (<span class="string">"Imported "</span> + import.rows_imported.out + <span class="string">" rows%N"</span>)
+
+    <span class="comment">-- Or from file</span>
+    import.from_csv_file (<span class="string">"users"</span>, <span class="string">"users_data.csv"</span>)
+<span class="keyword">end</span></code></pre>
+
+            <h3>Import JSON</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    import: <span class="class-name">SIMPLE_SQL_IMPORT</span>
+    json: <span class="class-name">STRING_8</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> import.make (db)
+
+    json := <span class="string">"[{%"name%":%"Alice%",%"email%":%"alice@example.com%"},{%"name%":%"Bob%",%"email%":%"bob@example.com%"}]"</span>
+    import.from_json (<span class="string">"users"</span>, json)
+
+    print (<span class="string">"Imported "</span> + import.rows_imported.out + <span class="string">" rows%N"</span>)
+<span class="keyword">end</span></code></pre>
+
+            <h3>Restore from SQL Dump</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    import: <span class="class-name">SIMPLE_SQL_IMPORT</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> import.make (db)
+
+    <span class="comment">-- Restore from previously exported dump</span>
+    import.from_sql_file (<span class="string">"full_backup.sql"</span>)
+
+    <span class="keyword">if</span> <span class="keyword">attached</span> import.last_error <span class="keyword">as</span> err <span class="keyword">then</span>
+        print (<span class="string">"Import error: "</span> + err + <span class="string">"%N"</span>)
+    <span class="keyword">else</span>
+        print (<span class="string">"Import successful%N"</span>)
+    <span class="keyword">end</span>
+<span class="keyword">end</span></code></pre>
+
+            <h3>Import with Transaction</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    import: <span class="class-name">SIMPLE_SQL_IMPORT</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> import.make (db)
+
+    <span class="comment">-- Wrap large import in transaction for better performance</span>
+    db.begin_transaction
+    import.from_csv_file (<span class="string">"logs"</span>, <span class="string">"large_log_file.csv"</span>)
+
+    <span class="keyword">if</span> <span class="keyword">attached</span> import.last_error <span class="keyword">then</span>
+        db.rollback
+        print (<span class="string">"Import failed, rolled back%N"</span>)
+    <span class="keyword">else</span>
+        db.commit
+        print (<span class="string">"Imported "</span> + import.rows_imported.out + <span class="string">" rows%N"</span>)
+    <span class="keyword">end</span>
+<span class="keyword">end</span></code></pre>
+
+            <div class="callout warning">
+                <div class="callout-title">Table Must Exist</div>
+                <p>CSV and JSON imports require the target table to exist with matching column names. SQL imports can create tables via CREATE statements.</p>
+            </div>
+
+            <div class="callout tip">
+                <div class="callout-title">Performance Tip</div>
+                <p>Wrap large imports in a transaction (<code>db.begin_transaction</code> / <code>db.commit</code>) for significantly better performance.</p>
+            </div>
+
+            <div class="doc-footer">
+                <p><a href="export.html">&larr; Export</a> | <a href="../index.html">Back to Overview</a></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

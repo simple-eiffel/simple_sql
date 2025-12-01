@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMPLE_SQL_PREPARED_STATEMENT - API Reference</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="../index.html">Overview</a></li>
+                    <li><a href="../getting-started.html">Quick Start</a></li>
+                    <li><a href="../installation.html">Installation</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Core API</h3>
+                <ul>
+                    <li><a href="database.html">SIMPLE_SQL_DATABASE</a></li>
+                    <li><a href="result.html">SIMPLE_SQL_RESULT</a></li>
+                    <li><a href="row.html">SIMPLE_SQL_ROW</a></li>
+                    <li><a href="prepared-statement.html" class="active">SIMPLE_SQL_PREPARED_STATEMENT</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Query Builders</h3>
+                <ul>
+                    <li><a href="select-builder.html">SIMPLE_SQL_SELECT_BUILDER</a></li>
+                    <li><a href="insert-builder.html">SIMPLE_SQL_INSERT_BUILDER</a></li>
+                    <li><a href="update-builder.html">SIMPLE_SQL_UPDATE_BUILDER</a></li>
+                    <li><a href="delete-builder.html">SIMPLE_SQL_DELETE_BUILDER</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Advanced Features</h3>
+                <ul>
+                    <li><a href="eager-loader.html">Eager Loading (N+1)</a></li>
+                    <li><a href="paginator.html">Pagination</a></li>
+                    <li><a href="query-monitor.html">Query Monitor</a></li>
+                    <li><a href="fts5.html">Full-Text Search</a></li>
+                    <li><a href="json.html">JSON Support</a></li>
+                    <li><a href="audit.html">Audit Tracking</a></li>
+                    <li><a href="vector.html">Vector Embeddings</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Mock Applications</h3>
+                <ul>
+                    <li><a href="../mock-apps/todo.html">TODO App</a></li>
+                    <li><a href="../mock-apps/cpm.html">CPM Scheduler</a></li>
+                    <li><a href="../mock-apps/habit-tracker.html">Habit Tracker</a></li>
+                    <li><a href="../mock-apps/dms.html">Document Management</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">Home</a> <span>&rsaquo;</span> <a href="../index.html#api">API</a> <span>&rsaquo;</span> SIMPLE_SQL_PREPARED_STATEMENT
+            </div>
+
+            <h1>SIMPLE_SQL_PREPARED_STATEMENT</h1>
+            <p>Pre-compiled SQL statement with parameter binding. Provides security against SQL injection and improved performance for repeated queries.</p>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_PREPARED_STATEMENT">View Source</a></p>
+
+            <div class="callout tip">
+                <div class="callout-title">When to Use</div>
+                <p>Use prepared statements when executing the same query multiple times with different parameters,
+                or when handling user input to prevent SQL injection.</p>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Creation</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">make (a_db: SIMPLE_SQL_DATABASE; a_sql: READABLE_STRING_8)</div>
+                        <div class="api-feature-desc">Create prepared statement. SQL can contain <code>?</code> placeholders.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">make_with_named_params (a_db: SIMPLE_SQL_DATABASE; a_sql: READABLE_STRING_8)</div>
+                        <div class="api-feature-desc">Create with named parameters using <code>:name</code> or <code>@name</code> syntax.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Parameter Binding (positional)</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">bind_integer (a_index: INTEGER; a_value: INTEGER_64)</div>
+                        <div class="api-feature-desc">Bind integer value at 1-based position.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">bind_real (a_index: INTEGER; a_value: REAL_64)</div>
+                        <div class="api-feature-desc">Bind floating-point value.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">bind_text (a_index: INTEGER; a_value: READABLE_STRING_GENERAL)</div>
+                        <div class="api-feature-desc">Bind text value (properly escaped).</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">bind_blob (a_index: INTEGER; a_value: MANAGED_POINTER)</div>
+                        <div class="api-feature-desc">Bind binary data.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">bind_null (a_index: INTEGER)</div>
+                        <div class="api-feature-desc">Bind NULL value.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Parameter Binding (named)</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">bind_named_integer (a_name: READABLE_STRING_8; a_value: INTEGER_64)</div>
+                        <div class="api-feature-desc">Bind integer to named parameter.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">bind_named_text (a_name: READABLE_STRING_8; a_value: READABLE_STRING_GENERAL)</div>
+                        <div class="api-feature-desc">Bind text to named parameter.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">bind_named_real (a_name: READABLE_STRING_8; a_value: REAL_64)</div>
+                        <div class="api-feature-desc">Bind real to named parameter.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">bind_named_blob (a_name: READABLE_STRING_8; a_value: MANAGED_POINTER)</div>
+                        <div class="api-feature-desc">Bind blob to named parameter.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Execution</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">execute</div>
+                        <div class="api-feature-desc">Execute statement (for INSERT, UPDATE, DELETE).</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">execute_query: SIMPLE_SQL_RESULT</div>
+                        <div class="api-feature-desc">Execute and return results (for SELECT).</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">execute_cursor: SIMPLE_SQL_CURSOR</div>
+                        <div class="api-feature-desc">Execute and return lazy cursor.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">reset</div>
+                        <div class="api-feature-desc">Reset statement for re-execution with new parameters.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">clear_bindings</div>
+                        <div class="api-feature-desc">Clear all bound parameter values.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Lifecycle</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">finalize</div>
+                        <div class="api-feature-desc">Release SQLite resources. Always call when done.</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Examples</h2>
+
+            <h3>Positional Parameters</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    stmt: <span class="class-name">SIMPLE_SQL_PREPARED_STATEMENT</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> stmt.make (db, <span class="string">"INSERT INTO users (name, email) VALUES (?, ?)"</span>)
+
+    stmt.bind_text (1, <span class="string">"Alice"</span>)
+    stmt.bind_text (2, <span class="string">"alice@example.com"</span>)
+    stmt.execute
+
+    <span class="comment">-- Reuse for another insert</span>
+    stmt.reset
+    stmt.bind_text (1, <span class="string">"Bob"</span>)
+    stmt.bind_text (2, <span class="string">"bob@example.com"</span>)
+    stmt.execute
+
+    stmt.finalize
+<span class="keyword">end</span></code></pre>
+
+            <h3>Named Parameters</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    stmt: <span class="class-name">SIMPLE_SQL_PREPARED_STATEMENT</span>
+    result: <span class="class-name">SIMPLE_SQL_RESULT</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> stmt.make_with_named_params (db, <span class="string">"SELECT * FROM orders WHERE user_id = :user AND status = :status"</span>)
+
+    stmt.bind_named_integer (<span class="string">"user"</span>, 42)
+    stmt.bind_named_text (<span class="string">"status"</span>, <span class="string">"pending"</span>)
+    result := stmt.execute_query
+
+    <span class="keyword">across</span> result <span class="keyword">as</span> row <span class="keyword">loop</span>
+        print (row.integer_value (<span class="string">"id"</span>).out + <span class="string">"%N"</span>)
+    <span class="keyword">end</span>
+
+    stmt.finalize
+<span class="keyword">end</span></code></pre>
+
+            <h3>Bulk Insert with Transaction</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    stmt: <span class="class-name">SIMPLE_SQL_PREPARED_STATEMENT</span>
+    i: <span class="class-name">INTEGER</span>
+<span class="keyword">do</span>
+    db.begin_transaction
+    <span class="keyword">create</span> stmt.make (db, <span class="string">"INSERT INTO logs (message, level) VALUES (?, ?)"</span>)
+
+    <span class="keyword">from</span> i := 1 <span class="keyword">until</span> i > 1000 <span class="keyword">loop</span>
+        stmt.reset
+        stmt.bind_text (1, <span class="string">"Log message "</span> + i.out)
+        stmt.bind_integer (2, (i \\ 3) + 1)  <span class="comment">-- Levels 1-3</span>
+        stmt.execute
+        i := i + 1
+    <span class="keyword">end</span>
+
+    stmt.finalize
+    db.commit
+<span class="keyword">end</span></code></pre>
+
+            <div class="callout warning">
+                <div class="callout-title">Resource Management</div>
+                <p>Always call <code>finalize</code> when done with a prepared statement to release SQLite resources.</p>
+            </div>
+
+            <div class="doc-footer">
+                <p><a href="row.html">&larr; SIMPLE_SQL_ROW</a> | <a href="select-builder.html">SIMPLE_SQL_SELECT_BUILDER &rarr;</a></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

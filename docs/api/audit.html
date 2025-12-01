@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMPLE_SQL_AUDIT - API Reference</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="../index.html">Overview</a></li>
+                    <li><a href="../getting-started.html">Quick Start</a></li>
+                    <li><a href="../installation.html">Installation</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Core API</h3>
+                <ul>
+                    <li><a href="database.html">SIMPLE_SQL_DATABASE</a></li>
+                    <li><a href="result.html">SIMPLE_SQL_RESULT</a></li>
+                    <li><a href="row.html">SIMPLE_SQL_ROW</a></li>
+                    <li><a href="prepared-statement.html">SIMPLE_SQL_PREPARED_STATEMENT</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Query Builders</h3>
+                <ul>
+                    <li><a href="select-builder.html">SIMPLE_SQL_SELECT_BUILDER</a></li>
+                    <li><a href="insert-builder.html">SIMPLE_SQL_INSERT_BUILDER</a></li>
+                    <li><a href="update-builder.html">SIMPLE_SQL_UPDATE_BUILDER</a></li>
+                    <li><a href="delete-builder.html">SIMPLE_SQL_DELETE_BUILDER</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Advanced Features</h3>
+                <ul>
+                    <li><a href="eager-loader.html">Eager Loading (N+1)</a></li>
+                    <li><a href="paginator.html">Pagination</a></li>
+                    <li><a href="query-monitor.html">Query Monitor</a></li>
+                    <li><a href="fts5.html">Full-Text Search</a></li>
+                    <li><a href="json.html">JSON Support</a></li>
+                    <li><a href="audit.html" class="active">Audit Tracking</a></li>
+                    <li><a href="vector.html">Vector Embeddings</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Mock Applications</h3>
+                <ul>
+                    <li><a href="../mock-apps/todo.html">TODO App</a></li>
+                    <li><a href="../mock-apps/cpm.html">CPM Scheduler</a></li>
+                    <li><a href="../mock-apps/habit-tracker.html">Habit Tracker</a></li>
+                    <li><a href="../mock-apps/dms.html">Document Management</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">Home</a> <span>&rsaquo;</span> <a href="../index.html#api">API</a> <span>&rsaquo;</span> SIMPLE_SQL_AUDIT
+            </div>
+
+            <h1>SIMPLE_SQL_AUDIT</h1>
+            <p>Automatic audit trail for database changes. Generates triggers to log all INSERT, UPDATE, DELETE operations with JSON diffs.</p>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_AUDIT">View Source</a></p>
+
+            <div class="callout info">
+                <div class="callout-title">Trigger-Based Auditing</div>
+                <p>SIMPLE_SQL_AUDIT creates SQLite triggers that automatically log changes. No application code changes needed after setup.</p>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Creation</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">make (a_db: SIMPLE_SQL_DATABASE)</div>
+                        <div class="api-feature-desc">Create audit helper attached to database.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Setup</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">create_audit_table</div>
+                        <div class="api-feature-desc">Create the audit_log table to store change history.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">enable_audit (a_table: READABLE_STRING_8)</div>
+                        <div class="api-feature-desc">Generate INSERT/UPDATE/DELETE triggers for table.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">disable_audit (a_table: READABLE_STRING_8)</div>
+                        <div class="api-feature-desc">Remove audit triggers from table.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Querying History</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">history (a_table: READABLE_STRING_8; a_row_id: INTEGER_64): SIMPLE_SQL_RESULT</div>
+                        <div class="api-feature-desc">Get all changes for a specific row.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">history_since (a_table: READABLE_STRING_8; a_timestamp: READABLE_STRING_8): SIMPLE_SQL_RESULT</div>
+                        <div class="api-feature-desc">Get all changes since timestamp.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">changes_by_user (a_user_id: READABLE_STRING_GENERAL): SIMPLE_SQL_RESULT</div>
+                        <div class="api-feature-desc">Get all changes made by specific user (if user tracking enabled).</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>User Tracking</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">set_current_user (a_user_id: READABLE_STRING_GENERAL)</div>
+                        <div class="api-feature-desc">Set current user for audit entries (stored in app-defined table).</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Audit Log Schema</h2>
+            <pre><code>CREATE TABLE audit_log (
+    id INTEGER PRIMARY KEY,
+    table_name TEXT NOT NULL,
+    row_id INTEGER NOT NULL,
+    operation TEXT NOT NULL,     -- 'INSERT', 'UPDATE', 'DELETE'
+    old_values TEXT,             -- JSON of old row (UPDATE, DELETE)
+    new_values TEXT,             -- JSON of new row (INSERT, UPDATE)
+    changed_fields TEXT,         -- JSON array of modified fields (UPDATE)
+    timestamp TEXT DEFAULT (datetime('now')),
+    user_id TEXT                 -- Optional user tracking
+)</code></pre>
+
+            <h2>Examples</h2>
+
+            <h3>Enable Auditing</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    audit: <span class="class-name">SIMPLE_SQL_AUDIT</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> audit.make (db)
+
+    <span class="comment">-- Create audit log table</span>
+    audit.create_audit_table
+
+    <span class="comment">-- Enable auditing for tables</span>
+    audit.enable_audit (<span class="string">"documents"</span>)
+    audit.enable_audit (<span class="string">"users"</span>)
+
+    <span class="comment">-- Now all changes to these tables are logged automatically</span>
+<span class="keyword">end</span></code></pre>
+
+            <h3>Query Change History</h3>
+            <pre><code class="eiffel"><span class="comment">-- Get history for specific document</span>
+result := audit.history (<span class="string">"documents"</span>, 42)
+
+<span class="keyword">across</span> result <span class="keyword">as</span> entry <span class="keyword">loop</span>
+    print (entry.string_value (<span class="string">"operation"</span>) + <span class="string">" at "</span> + entry.string_value (<span class="string">"timestamp"</span>) + <span class="string">"%N"</span>)
+    <span class="keyword">if</span> <span class="keyword">attached</span> entry.string_value_or_void (<span class="string">"changed_fields"</span>) <span class="keyword">as</span> fields <span class="keyword">then</span>
+        print (<span class="string">"  Changed: "</span> + fields + <span class="string">"%N"</span>)
+    <span class="keyword">end</span>
+<span class="keyword">end</span></code></pre>
+
+            <h3>View Recent Changes</h3>
+            <pre><code class="eiffel"><span class="comment">-- Get all changes in last 24 hours</span>
+result := audit.history_since (<span class="string">"documents"</span>, <span class="string">"datetime('now', '-24 hours')"</span>)
+
+print (<span class="string">"Recent changes: "</span> + result.count.out + <span class="string">"%N"</span>)</code></pre>
+
+            <h3>Examine JSON Diff</h3>
+            <pre><code class="eiffel"><span class="comment">-- The old_values and new_values columns contain full JSON snapshots</span>
+<span class="comment">-- For an UPDATE, you can see exactly what changed:</span>
+
+result := db.query (<span class="string">"SELECT * FROM audit_log WHERE table_name = 'users' AND operation = 'UPDATE' ORDER BY timestamp DESC LIMIT 1"</span>)
+
+<span class="keyword">if</span> <span class="keyword">attached</span> result.first <span class="keyword">as</span> entry <span class="keyword">then</span>
+    print (<span class="string">"Before: "</span> + entry.string_value (<span class="string">"old_values"</span>) + <span class="string">"%N"</span>)
+    print (<span class="string">"After: "</span> + entry.string_value (<span class="string">"new_values"</span>) + <span class="string">"%N"</span>)
+    print (<span class="string">"Changed: "</span> + entry.string_value (<span class="string">"changed_fields"</span>) + <span class="string">"%N"</span>)
+<span class="keyword">end</span></code></pre>
+
+            <div class="callout tip">
+                <div class="callout-title">Performance Consideration</div>
+                <p>Audit triggers add overhead to write operations. For high-write tables, consider auditing only critical tables or using periodic cleanup of old audit entries.</p>
+            </div>
+
+            <div class="doc-footer">
+                <p><a href="json.html">&larr; JSON Support</a> | <a href="vector.html">Vector Embeddings &rarr;</a></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

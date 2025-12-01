@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full-Text Search - SIMPLE_SQL Tutorial</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="../index.html">Overview</a></li>
+                    <li><a href="../getting-started.html">Quick Start</a></li>
+                    <li><a href="../installation.html">Installation</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Tutorials</h3>
+                <ul>
+                    <li><a href="basic-crud.html">Basic CRUD</a></li>
+                    <li><a href="query-builder.html">Query Builder</a></li>
+                    <li><a href="transactions.html">Transactions</a></li>
+                    <li><a href="soft-deletes.html">Soft Deletes</a></li>
+                    <li><a href="eager-loading.html">Eager Loading</a></li>
+                    <li><a href="pagination.html">Pagination</a></li>
+                    <li><a href="full-text-search.html" class="active">Full-Text Search</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Mock Applications</h3>
+                <ul>
+                    <li><a href="../mock-apps/todo.html">TODO App</a></li>
+                    <li><a href="../mock-apps/cpm.html">CPM Scheduler</a></li>
+                    <li><a href="../mock-apps/habit-tracker.html">Habit Tracker</a></li>
+                    <li><a href="../mock-apps/dms.html">Document Management</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">Home</a> <span>&rsaquo;</span> <a href="../index.html#tutorials">Tutorials</a> <span>&rsaquo;</span> Full-Text Search
+            </div>
+
+            <h1>Full-Text Search with FTS5</h1>
+            <p>Implement powerful text search using SQLite's FTS5 extension with BM25 ranking.</p>
+
+            <h2>What is FTS5?</h2>
+            <p>FTS5 (Full-Text Search 5) is SQLite's built-in full-text search engine. It provides:</p>
+            <ul>
+                <li>Fast text searching across millions of documents</li>
+                <li>BM25 relevance ranking</li>
+                <li>Phrase matching and boolean queries</li>
+                <li>Highlighting and snippets</li>
+            </ul>
+
+            <h2>Setting Up FTS5</h2>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    fts: <span class="class-name">SIMPLE_SQL_FTS5</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> fts.make (db)
+
+    <span class="comment">-- Create FTS5 virtual table</span>
+    fts.create_table (<span class="string">"articles_fts"</span>, &lt;&lt;<span class="string">"title"</span>, <span class="string">"content"</span>&gt;&gt;)
+<span class="keyword">end</span></code></pre>
+
+            <h2>Indexing Content</h2>
+            <pre><code class="eiffel"><span class="comment">-- Add documents to the index</span>
+fts.insert (<span class="string">"articles_fts"</span>, &lt;&lt;<span class="string">"Getting Started with Eiffel"</span>, <span class="string">"Eiffel is a programming language..."</span>&gt;&gt;)
+fts.insert (<span class="string">"articles_fts"</span>, &lt;&lt;<span class="string">"Advanced Eiffel Patterns"</span>, <span class="string">"This article covers advanced topics..."</span>&gt;&gt;)
+fts.insert (<span class="string">"articles_fts"</span>, &lt;&lt;<span class="string">"Database Access in Eiffel"</span>, <span class="string">"Learn how to use SIMPLE_SQL..."</span>&gt;&gt;)</code></pre>
+
+            <h2>Basic Search</h2>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    result: <span class="class-name">SIMPLE_SQL_RESULT</span>
+<span class="keyword">do</span>
+    <span class="comment">-- Simple search</span>
+    result := fts.search (<span class="string">"articles_fts"</span>, <span class="string">"eiffel"</span>)
+
+    <span class="keyword">across</span> result <span class="keyword">as</span> row <span class="keyword">loop</span>
+        print (row.string_value (<span class="string">"title"</span>) + <span class="string">"%N"</span>)
+    <span class="keyword">end</span>
+<span class="keyword">end</span></code></pre>
+
+            <h2>Query Syntax</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Query</th>
+                        <th>Meaning</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>word</code></td>
+                        <td>Documents containing "word"</td>
+                    </tr>
+                    <tr>
+                        <td><code>word1 word2</code></td>
+                        <td>Documents containing both words (AND)</td>
+                    </tr>
+                    <tr>
+                        <td><code>word1 OR word2</code></td>
+                        <td>Documents containing either word</td>
+                    </tr>
+                    <tr>
+                        <td><code>"exact phrase"</code></td>
+                        <td>Documents containing the exact phrase</td>
+                    </tr>
+                    <tr>
+                        <td><code>word*</code></td>
+                        <td>Prefix matching (word, words, wording...)</td>
+                    </tr>
+                    <tr>
+                        <td><code>title:word</code></td>
+                        <td>Search only in title column</td>
+                    </tr>
+                    <tr>
+                        <td><code>NOT word</code></td>
+                        <td>Exclude documents containing word</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Example Queries</h3>
+            <pre><code class="eiffel"><span class="comment">-- Phrase search</span>
+result := fts.search (<span class="string">"articles_fts"</span>, <span class="string">"%"getting started%""</span>)
+
+<span class="comment">-- Boolean OR</span>
+result := fts.search (<span class="string">"articles_fts"</span>, <span class="string">"eiffel OR database"</span>)
+
+<span class="comment">-- Prefix search</span>
+result := fts.search (<span class="string">"articles_fts"</span>, <span class="string">"prog*"</span>)  <span class="comment">-- programming, program, etc.</span>
+
+<span class="comment">-- Exclude term</span>
+result := fts.search (<span class="string">"articles_fts"</span>, <span class="string">"eiffel NOT advanced"</span>)
+
+<span class="comment">-- Search specific column</span>
+result := fts.search (<span class="string">"articles_fts"</span>, <span class="string">"title:database"</span>)</code></pre>
+
+            <h2>Highlighted Results</h2>
+            <pre><code class="eiffel"><span class="comment">-- Get results with highlighted matches</span>
+result := fts.search_with_highlights (<span class="string">"articles_fts"</span>, <span class="string">"eiffel"</span>, 1, <span class="string">"&lt;mark&gt;"</span>, <span class="string">"&lt;/mark&gt;"</span>)
+
+<span class="keyword">across</span> result <span class="keyword">as</span> row <span class="keyword">loop</span>
+    <span class="comment">-- Content will have &lt;mark&gt;Eiffel&lt;/mark&gt; around matches</span>
+    print (row.string_value (<span class="string">"content"</span>) + <span class="string">"%N"</span>)
+<span class="keyword">end</span></code></pre>
+
+            <h2>Snippets (Context Around Matches)</h2>
+            <pre><code class="eiffel"><span class="comment">-- Get snippets with context</span>
+result := fts.search_with_snippets (<span class="string">"articles_fts"</span>, <span class="string">"eiffel"</span>, 1, <span class="string">"&lt;b&gt;"</span>, <span class="string">"&lt;/b&gt;"</span>, 20)
+
+<span class="comment">-- Result: "...programming language. &lt;b&gt;Eiffel&lt;/b&gt; is known for..."</span></code></pre>
+
+            <h2>External Content Tables</h2>
+            <p>Index an existing table without duplicating data:</p>
+            <pre><code class="eiffel"><span class="comment">-- Create FTS index linked to existing 'documents' table</span>
+fts.create_content_table (<span class="string">"documents_fts"</span>, <span class="string">"documents"</span>, &lt;&lt;<span class="string">"title"</span>, <span class="string">"body"</span>&gt;&gt;)
+
+<span class="comment">-- Rebuild index after data changes</span>
+fts.rebuild (<span class="string">"documents_fts"</span>)</code></pre>
+
+            <h2>Handling Special Characters</h2>
+            <div class="callout warning">
+                <div class="callout-title">Apostrophes in Queries</div>
+                <p>Apostrophes need special handling. Wrap terms with apostrophes in double quotes:</p>
+            </div>
+
+            <pre><code class="eiffel"><span class="comment">-- WRONG: apostrophe breaks query</span>
+result := fts.search (<span class="string">"articles_fts"</span>, <span class="string">"O'Brien"</span>)  <span class="comment">-- Error!</span>
+
+<span class="comment">-- CORRECT: wrap in double quotes</span>
+result := fts.search (<span class="string">"articles_fts"</span>, <span class="string">"%"O'Brien%""</span>)</code></pre>
+
+            <h2>Complete Search Feature</h2>
+            <pre><code class="eiffel"><span class="keyword">class</span> <span class="class-name">DOCUMENT_SEARCH</span>
+
+<span class="keyword">feature</span>
+
+    db: <span class="class-name">SIMPLE_SQL_DATABASE</span>
+    fts: <span class="class-name">SIMPLE_SQL_FTS5</span>
+
+    setup
+        <span class="keyword">do</span>
+            <span class="keyword">create</span> fts.make (db)
+            fts.create_content_table (<span class="string">"docs_fts"</span>, <span class="string">"documents"</span>, &lt;&lt;<span class="string">"title"</span>, <span class="string">"content"</span>&gt;&gt;)
+        <span class="keyword">end</span>
+
+    search (a_query: STRING): ARRAYED_LIST [TUPLE [id: INTEGER_64; title: STRING_32; snippet: STRING_32]]
+        <span class="keyword">local</span>
+            result: <span class="class-name">SIMPLE_SQL_RESULT</span>
+            escaped_query: <span class="class-name">STRING</span>
+        <span class="keyword">do</span>
+            <span class="keyword">create</span> Result.make (10)
+
+            <span class="comment">-- Escape special characters</span>
+            escaped_query := escape_query (a_query)
+
+            <span class="comment">-- Search with snippets</span>
+            result := fts.search_with_snippets (<span class="string">"docs_fts"</span>, escaped_query, 1, <span class="string">"&lt;mark&gt;"</span>, <span class="string">"&lt;/mark&gt;"</span>, 50)
+
+            <span class="keyword">across</span> result <span class="keyword">as</span> row <span class="keyword">loop</span>
+                Result.extend ([
+                    row.integer_value (<span class="string">"rowid"</span>),
+                    row.string_value (<span class="string">"title"</span>),
+                    row.string_value (<span class="string">"snippet"</span>)
+                ])
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+
+    escape_query (a_query: STRING): STRING
+        <span class="keyword">do</span>
+            Result := a_query.twin
+            <span class="comment">-- Wrap in quotes if contains special chars</span>
+            <span class="keyword">if</span> Result.has (''') <span class="keyword">then</span>
+                Result := <span class="string">"%""</span> + Result + <span class="string">"%""</span>
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+
+<span class="keyword">end</span></code></pre>
+
+            <h2>Next Steps</h2>
+            <ul>
+                <li><a href="../api/fts5.html">API Reference</a> - Full FTS5 documentation</li>
+                <li><a href="../mock-apps/dms.html">DMS Mock App</a> - See FTS5 in action</li>
+            </ul>
+
+            <div class="doc-footer">
+                <p><a href="pagination.html">&larr; Pagination</a> | <a href="../index.html">Back to Overview</a></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

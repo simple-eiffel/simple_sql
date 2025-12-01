@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMPLE_SQL_UPDATE_BUILDER - API Reference</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="../index.html">Overview</a></li>
+                    <li><a href="../getting-started.html">Quick Start</a></li>
+                    <li><a href="../installation.html">Installation</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Core API</h3>
+                <ul>
+                    <li><a href="database.html">SIMPLE_SQL_DATABASE</a></li>
+                    <li><a href="result.html">SIMPLE_SQL_RESULT</a></li>
+                    <li><a href="row.html">SIMPLE_SQL_ROW</a></li>
+                    <li><a href="prepared-statement.html">SIMPLE_SQL_PREPARED_STATEMENT</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Query Builders</h3>
+                <ul>
+                    <li><a href="select-builder.html">SIMPLE_SQL_SELECT_BUILDER</a></li>
+                    <li><a href="insert-builder.html">SIMPLE_SQL_INSERT_BUILDER</a></li>
+                    <li><a href="update-builder.html" class="active">SIMPLE_SQL_UPDATE_BUILDER</a></li>
+                    <li><a href="delete-builder.html">SIMPLE_SQL_DELETE_BUILDER</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Advanced Features</h3>
+                <ul>
+                    <li><a href="eager-loader.html">Eager Loading (N+1)</a></li>
+                    <li><a href="paginator.html">Pagination</a></li>
+                    <li><a href="query-monitor.html">Query Monitor</a></li>
+                    <li><a href="fts5.html">Full-Text Search</a></li>
+                    <li><a href="json.html">JSON Support</a></li>
+                    <li><a href="audit.html">Audit Tracking</a></li>
+                    <li><a href="vector.html">Vector Embeddings</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Mock Applications</h3>
+                <ul>
+                    <li><a href="../mock-apps/todo.html">TODO App</a></li>
+                    <li><a href="../mock-apps/cpm.html">CPM Scheduler</a></li>
+                    <li><a href="../mock-apps/habit-tracker.html">Habit Tracker</a></li>
+                    <li><a href="../mock-apps/dms.html">Document Management</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">Home</a> <span>&rsaquo;</span> <a href="../index.html#api">API</a> <span>&rsaquo;</span> SIMPLE_SQL_UPDATE_BUILDER
+            </div>
+
+            <h1>SIMPLE_SQL_UPDATE_BUILDER</h1>
+            <p>Fluent builder for UPDATE statements. Chain <code>.set()</code> and <code>.where()</code> calls.</p>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_UPDATE_BUILDER">View Source</a></p>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Value Setting</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">set (a_column: READABLE_STRING_8; a_value: detachable ANY): like Current</div>
+                        <div class="api-feature-desc">Set column to value. Can be called multiple times for multiple columns.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">set_raw (a_column: READABLE_STRING_8; a_sql_expr: READABLE_STRING_8): like Current</div>
+                        <div class="api-feature-desc">Set column to raw SQL expression (e.g., "count + 1").</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Filtering</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">where (a_condition: READABLE_STRING_8): like Current</div>
+                        <div class="api-feature-desc">Add WHERE clause to limit which rows are updated.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">where (a_condition: READABLE_STRING_8; a_value: detachable ANY): like Current</div>
+                        <div class="api-feature-desc">WHERE with single parameter binding.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="callout warning">
+                <div class="callout-title">Always Use WHERE</div>
+                <p>Without a WHERE clause, UPDATE affects ALL rows in the table. Always specify conditions unless you intend to update every row.</p>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Execution</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">execute</div>
+                        <div class="api-feature-desc">Execute the UPDATE statement.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">to_sql: STRING_8</div>
+                        <div class="api-feature-desc">Generate SQL without executing.</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Examples</h2>
+
+            <h3>Basic Update</h3>
+            <pre><code class="eiffel">db.update (<span class="string">"users"</span>)
+    .set (<span class="string">"name"</span>, <span class="string">"Alice Smith"</span>)
+    .set (<span class="string">"email"</span>, <span class="string">"alice.smith@example.com"</span>)
+    .where (<span class="string">"id = ?"</span>, 42)
+    .execute
+
+print (<span class="string">"Updated "</span> + db.changes.out + <span class="string">" rows%N"</span>)</code></pre>
+
+            <h3>Increment Counter</h3>
+            <pre><code class="eiffel">db.update (<span class="string">"articles"</span>)
+    .set_raw (<span class="string">"view_count"</span>, <span class="string">"view_count + 1"</span>)
+    .where (<span class="string">"id = ?"</span>, article_id)
+    .execute</code></pre>
+
+            <h3>Soft Delete (set deleted_at)</h3>
+            <pre><code class="eiffel">db.update (<span class="string">"documents"</span>)
+    .set_raw (<span class="string">"deleted_at"</span>, <span class="string">"datetime('now')"</span>)
+    .where (<span class="string">"id = ?"</span>, doc_id)
+    .execute</code></pre>
+
+            <h3>Set to NULL</h3>
+            <pre><code class="eiffel">db.update (<span class="string">"users"</span>)
+    .set (<span class="string">"reset_token"</span>, <span class="keyword">Void</span>)  <span class="comment">-- Sets to NULL</span>
+    .set (<span class="string">"password_changed"</span>, 1)
+    .where (<span class="string">"id = ?"</span>, user_id)
+    .execute</code></pre>
+
+            <h3>Batch Update with Condition</h3>
+            <pre><code class="eiffel"><span class="comment">-- Mark all old sessions as expired</span>
+db.update (<span class="string">"sessions"</span>)
+    .set (<span class="string">"expired"</span>, 1)
+    .where (<span class="string">"last_activity < datetime('now', '-24 hours')"</span>)
+    .execute
+
+print (<span class="string">"Expired "</span> + db.changes.out + <span class="string">" sessions%N"</span>)</code></pre>
+
+            <div class="callout tip">
+                <div class="callout-title">Checking Affected Rows</div>
+                <p>Use <code>db.changes</code> after executing to see how many rows were actually modified.</p>
+            </div>
+
+            <div class="doc-footer">
+                <p><a href="insert-builder.html">&larr; SIMPLE_SQL_INSERT_BUILDER</a> | <a href="delete-builder.html">SIMPLE_SQL_DELETE_BUILDER &rarr;</a></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

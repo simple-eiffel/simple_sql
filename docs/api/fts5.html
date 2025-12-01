@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMPLE_SQL_FTS5 - API Reference</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="../index.html">Overview</a></li>
+                    <li><a href="../getting-started.html">Quick Start</a></li>
+                    <li><a href="../installation.html">Installation</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Core API</h3>
+                <ul>
+                    <li><a href="database.html">SIMPLE_SQL_DATABASE</a></li>
+                    <li><a href="result.html">SIMPLE_SQL_RESULT</a></li>
+                    <li><a href="row.html">SIMPLE_SQL_ROW</a></li>
+                    <li><a href="prepared-statement.html">SIMPLE_SQL_PREPARED_STATEMENT</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Query Builders</h3>
+                <ul>
+                    <li><a href="select-builder.html">SIMPLE_SQL_SELECT_BUILDER</a></li>
+                    <li><a href="insert-builder.html">SIMPLE_SQL_INSERT_BUILDER</a></li>
+                    <li><a href="update-builder.html">SIMPLE_SQL_UPDATE_BUILDER</a></li>
+                    <li><a href="delete-builder.html">SIMPLE_SQL_DELETE_BUILDER</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Advanced Features</h3>
+                <ul>
+                    <li><a href="eager-loader.html">Eager Loading (N+1)</a></li>
+                    <li><a href="paginator.html">Pagination</a></li>
+                    <li><a href="query-monitor.html">Query Monitor</a></li>
+                    <li><a href="fts5.html" class="active">Full-Text Search</a></li>
+                    <li><a href="json.html">JSON Support</a></li>
+                    <li><a href="audit.html">Audit Tracking</a></li>
+                    <li><a href="vector.html">Vector Embeddings</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Mock Applications</h3>
+                <ul>
+                    <li><a href="../mock-apps/todo.html">TODO App</a></li>
+                    <li><a href="../mock-apps/cpm.html">CPM Scheduler</a></li>
+                    <li><a href="../mock-apps/habit-tracker.html">Habit Tracker</a></li>
+                    <li><a href="../mock-apps/dms.html">Document Management</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">Home</a> <span>&rsaquo;</span> <a href="../index.html#api">API</a> <span>&rsaquo;</span> SIMPLE_SQL_FTS5
+            </div>
+
+            <h1>SIMPLE_SQL_FTS5</h1>
+            <p>Full-text search using SQLite's FTS5 extension. Create virtual tables, index content, and search with BM25 ranking.</p>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_FTS5">View Source</a></p>
+
+            <div class="callout info">
+                <div class="callout-title">FTS5 Requirements</div>
+                <p>FTS5 must be enabled in the SQLite build. SIMPLE_SQL's bundled SQLite includes FTS5 support.</p>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Creation</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">make (a_db: SIMPLE_SQL_DATABASE)</div>
+                        <div class="api-feature-desc">Create FTS5 helper attached to database.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Table Management</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">create_table (a_name: READABLE_STRING_8; a_columns: ARRAY [READABLE_STRING_8])</div>
+                        <div class="api-feature-desc">Create FTS5 virtual table with specified columns.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">create_content_table (a_name, a_content_table: READABLE_STRING_8; a_columns: ARRAY [READABLE_STRING_8])</div>
+                        <div class="api-feature-desc">Create external content FTS5 table linked to existing table.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">drop_table (a_name: READABLE_STRING_8)</div>
+                        <div class="api-feature-desc">Drop FTS5 virtual table.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Indexing</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">insert (a_table: READABLE_STRING_8; a_values: ARRAY [READABLE_STRING_GENERAL])</div>
+                        <div class="api-feature-desc">Insert content into FTS5 table.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">delete_by_rowid (a_table: READABLE_STRING_8; a_rowid: INTEGER_64)</div>
+                        <div class="api-feature-desc">Remove content from index by rowid.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">rebuild (a_table: READABLE_STRING_8)</div>
+                        <div class="api-feature-desc">Rebuild entire FTS5 index (for content tables).</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Searching</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">search (a_table: READABLE_STRING_8; a_query: READABLE_STRING_8): SIMPLE_SQL_RESULT</div>
+                        <div class="api-feature-desc">Search FTS5 table. Returns matches with BM25 ranking.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">search_with_highlights (a_table, a_query: READABLE_STRING_8; a_column: INTEGER; a_before, a_after: READABLE_STRING_8): SIMPLE_SQL_RESULT</div>
+                        <div class="api-feature-desc">Search with highlighted snippets (e.g., &lt;b&gt;match&lt;/b&gt;).</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">search_with_snippets (a_table, a_query: READABLE_STRING_8; a_column: INTEGER; a_before, a_after: READABLE_STRING_8; a_max_tokens: INTEGER): SIMPLE_SQL_RESULT</div>
+                        <div class="api-feature-desc">Search with contextual snippets around matches.</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Query Syntax</h2>
+            <p>FTS5 supports various query operators:</p>
+            <ul>
+                <li><code>word</code> - Match documents containing "word"</li>
+                <li><code>word1 word2</code> - Match documents containing both words (AND)</li>
+                <li><code>word1 OR word2</code> - Match documents containing either word</li>
+                <li><code>"exact phrase"</code> - Match exact phrase</li>
+                <li><code>word*</code> - Prefix matching</li>
+                <li><code>column:word</code> - Search specific column</li>
+                <li><code>NOT word</code> - Exclude documents containing word</li>
+            </ul>
+
+            <h2>Examples</h2>
+
+            <h3>Create and Populate FTS5 Table</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    fts: <span class="class-name">SIMPLE_SQL_FTS5</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> fts.make (db)
+
+    <span class="comment">-- Create FTS5 table</span>
+    fts.create_table (<span class="string">"docs_fts"</span>, &lt;&lt;<span class="string">"title"</span>, <span class="string">"content"</span>&gt;&gt;)
+
+    <span class="comment">-- Index documents</span>
+    fts.insert (<span class="string">"docs_fts"</span>, &lt;&lt;<span class="string">"Getting Started Guide"</span>, <span class="string">"This guide covers installation and basic usage..."</span>&gt;&gt;)
+    fts.insert (<span class="string">"docs_fts"</span>, &lt;&lt;<span class="string">"API Reference"</span>, <span class="string">"Complete reference for all classes and features..."</span>&gt;&gt;)
+<span class="keyword">end</span></code></pre>
+
+            <h3>Search with Ranking</h3>
+            <pre><code class="eiffel">result := fts.search (<span class="string">"docs_fts"</span>, <span class="string">"installation guide"</span>)
+
+<span class="keyword">across</span> result <span class="keyword">as</span> row <span class="keyword">loop</span>
+    print (row.string_value (<span class="string">"title"</span>) + <span class="string">"%N"</span>)
+<span class="keyword">end</span></code></pre>
+
+            <h3>Search with Highlights</h3>
+            <pre><code class="eiffel">result := fts.search_with_highlights (<span class="string">"docs_fts"</span>, <span class="string">"installation"</span>, 1, <span class="string">"&lt;b&gt;"</span>, <span class="string">"&lt;/b&gt;"</span>)
+
+<span class="keyword">across</span> result <span class="keyword">as</span> row <span class="keyword">loop</span>
+    <span class="comment">-- Content will have &lt;b&gt;installation&lt;/b&gt; wrapped around matches</span>
+    print (row.string_value (<span class="string">"content"</span>) + <span class="string">"%N"</span>)
+<span class="keyword">end</span></code></pre>
+
+            <h3>External Content Table</h3>
+            <pre><code class="eiffel"><span class="comment">-- Index content from existing 'documents' table</span>
+fts.create_content_table (<span class="string">"documents_fts"</span>, <span class="string">"documents"</span>, &lt;&lt;<span class="string">"title"</span>, <span class="string">"body"</span>&gt;&gt;)
+
+<span class="comment">-- Rebuild index after data changes</span>
+fts.rebuild (<span class="string">"documents_fts"</span>)</code></pre>
+
+            <div class="callout warning">
+                <div class="callout-title">Special Characters</div>
+                <p>Apostrophes and special characters in queries need proper escaping. See the <a href="../tutorials/full-text-search.html">FTS5 Tutorial</a> for details.</p>
+            </div>
+
+            <div class="doc-footer">
+                <p><a href="query-monitor.html">&larr; Query Monitor</a> | <a href="json.html">JSON Support &rarr;</a></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

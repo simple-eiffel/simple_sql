@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMPLE_SQL_EXPORT - API Reference</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="../index.html">Overview</a></li>
+                    <li><a href="../getting-started.html">Quick Start</a></li>
+                    <li><a href="../installation.html">Installation</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Core API</h3>
+                <ul>
+                    <li><a href="database.html">SIMPLE_SQL_DATABASE</a></li>
+                    <li><a href="result.html">SIMPLE_SQL_RESULT</a></li>
+                    <li><a href="row.html">SIMPLE_SQL_ROW</a></li>
+                    <li><a href="prepared-statement.html">SIMPLE_SQL_PREPARED_STATEMENT</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Backup & Export</h3>
+                <ul>
+                    <li><a href="backup.html">SIMPLE_SQL_BACKUP</a></li>
+                    <li><a href="export.html" class="active">SIMPLE_SQL_EXPORT</a></li>
+                    <li><a href="import.html">SIMPLE_SQL_IMPORT</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Advanced Features</h3>
+                <ul>
+                    <li><a href="eager-loader.html">Eager Loading (N+1)</a></li>
+                    <li><a href="paginator.html">Pagination</a></li>
+                    <li><a href="query-monitor.html">Query Monitor</a></li>
+                    <li><a href="fts5.html">Full-Text Search</a></li>
+                    <li><a href="json.html">JSON Support</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Mock Applications</h3>
+                <ul>
+                    <li><a href="../mock-apps/todo.html">TODO App</a></li>
+                    <li><a href="../mock-apps/cpm.html">CPM Scheduler</a></li>
+                    <li><a href="../mock-apps/habit-tracker.html">Habit Tracker</a></li>
+                    <li><a href="../mock-apps/dms.html">Document Management</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">Home</a> <span>&rsaquo;</span> <a href="../index.html#api">API</a> <span>&rsaquo;</span> SIMPLE_SQL_EXPORT
+            </div>
+
+            <h1>SIMPLE_SQL_EXPORT</h1>
+            <p>Export database tables to CSV, JSON, or SQL dump formats.</p>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_EXPORT">View Source</a></p>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Creation</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">make (a_db: SIMPLE_SQL_DATABASE)</div>
+                        <div class="api-feature-desc">Create exporter attached to database.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>CSV Export</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">to_csv (a_table: READABLE_STRING_8): STRING_32</div>
+                        <div class="api-feature-desc">Export table to CSV string.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">to_csv_file (a_table: READABLE_STRING_8; a_path: READABLE_STRING_GENERAL)</div>
+                        <div class="api-feature-desc">Export table to CSV file.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">query_to_csv (a_sql: READABLE_STRING_8): STRING_32</div>
+                        <div class="api-feature-desc">Export query results to CSV string.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>JSON Export</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">to_json (a_table: READABLE_STRING_8): STRING_32</div>
+                        <div class="api-feature-desc">Export table to JSON array of objects.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">to_json_file (a_table: READABLE_STRING_8; a_path: READABLE_STRING_GENERAL)</div>
+                        <div class="api-feature-desc">Export table to JSON file.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">query_to_json (a_sql: READABLE_STRING_8): STRING_32</div>
+                        <div class="api-feature-desc">Export query results to JSON.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>SQL Dump</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">to_sql (a_table: READABLE_STRING_8): STRING_32</div>
+                        <div class="api-feature-desc">Export table as CREATE TABLE + INSERT statements.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">dump_schema: STRING_32</div>
+                        <div class="api-feature-desc">Export all CREATE TABLE statements.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">dump_all: STRING_32</div>
+                        <div class="api-feature-desc">Full database dump (schema + data).</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">dump_to_file (a_path: READABLE_STRING_GENERAL)</div>
+                        <div class="api-feature-desc">Write full dump to file.</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Examples</h2>
+
+            <h3>Export to CSV</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    export: <span class="class-name">SIMPLE_SQL_EXPORT</span>
+    csv: <span class="class-name">STRING_32</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> export.make (db)
+
+    <span class="comment">-- Export entire table</span>
+    csv := export.to_csv (<span class="string">"users"</span>)
+    <span class="comment">-- Result: "id,name,email\n1,Alice,alice@example.com\n2,Bob,..."</span>
+
+    <span class="comment">-- Or save directly to file</span>
+    export.to_csv_file (<span class="string">"users"</span>, <span class="string">"users_export.csv"</span>)
+<span class="keyword">end</span></code></pre>
+
+            <h3>Export Query Results</h3>
+            <pre><code class="eiffel"><span class="comment">-- Export filtered/transformed data</span>
+csv := export.query_to_csv (<span class="string">"SELECT name, email FROM users WHERE active = 1 ORDER BY name"</span>)
+
+json := export.query_to_json (<span class="string">"SELECT id, title, created_at FROM posts WHERE published = 1"</span>)</code></pre>
+
+            <h3>Export to JSON</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    export: <span class="class-name">SIMPLE_SQL_EXPORT</span>
+    json: <span class="class-name">STRING_32</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> export.make (db)
+    json := export.to_json (<span class="string">"users"</span>)
+    <span class="comment">-- Result: [{"id":1,"name":"Alice","email":"alice@example.com"},...]</span>
+
+    export.to_json_file (<span class="string">"settings"</span>, <span class="string">"settings_backup.json"</span>)
+<span class="keyword">end</span></code></pre>
+
+            <h3>Full Database Dump</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    export: <span class="class-name">SIMPLE_SQL_EXPORT</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> export.make (db)
+
+    <span class="comment">-- Export schema only</span>
+    print (export.dump_schema)
+    <span class="comment">-- Result: CREATE TABLE users (...); CREATE TABLE posts (...); ...</span>
+
+    <span class="comment">-- Full dump to file</span>
+    export.dump_to_file (<span class="string">"full_backup.sql"</span>)
+<span class="keyword">end</span></code></pre>
+
+            <h3>Export Single Table to SQL</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    export: <span class="class-name">SIMPLE_SQL_EXPORT</span>
+    sql: <span class="class-name">STRING_32</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> export.make (db)
+    sql := export.to_sql (<span class="string">"users"</span>)
+    <span class="comment">-- Result:</span>
+    <span class="comment">-- CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT, email TEXT);</span>
+    <span class="comment">-- INSERT INTO users VALUES (1, 'Alice', 'alice@example.com');</span>
+    <span class="comment">-- INSERT INTO users VALUES (2, 'Bob', 'bob@example.com');</span>
+    <span class="comment">-- ...</span>
+<span class="keyword">end</span></code></pre>
+
+            <div class="callout tip">
+                <div class="callout-title">Large Exports</div>
+                <p>For very large tables, use file-based exports (<code>to_csv_file</code>, etc.) to avoid memory issues.</p>
+            </div>
+
+            <div class="doc-footer">
+                <p><a href="backup.html">&larr; Backup</a> | <a href="import.html">Import &rarr;</a></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

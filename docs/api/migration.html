@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMPLE_SQL_MIGRATION_RUNNER - API Reference</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="../index.html">Overview</a></li>
+                    <li><a href="../getting-started.html">Quick Start</a></li>
+                    <li><a href="../installation.html">Installation</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Core API</h3>
+                <ul>
+                    <li><a href="database.html">SIMPLE_SQL_DATABASE</a></li>
+                    <li><a href="result.html">SIMPLE_SQL_RESULT</a></li>
+                    <li><a href="row.html">SIMPLE_SQL_ROW</a></li>
+                    <li><a href="prepared-statement.html">SIMPLE_SQL_PREPARED_STATEMENT</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Schema & Migration</h3>
+                <ul>
+                    <li><a href="schema.html">SIMPLE_SQL_SCHEMA</a></li>
+                    <li><a href="migration.html" class="active">SIMPLE_SQL_MIGRATION_RUNNER</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Advanced Features</h3>
+                <ul>
+                    <li><a href="eager-loader.html">Eager Loading (N+1)</a></li>
+                    <li><a href="paginator.html">Pagination</a></li>
+                    <li><a href="query-monitor.html">Query Monitor</a></li>
+                    <li><a href="fts5.html">Full-Text Search</a></li>
+                    <li><a href="json.html">JSON Support</a></li>
+                    <li><a href="audit.html">Audit Tracking</a></li>
+                    <li><a href="vector.html">Vector Embeddings</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Mock Applications</h3>
+                <ul>
+                    <li><a href="../mock-apps/todo.html">TODO App</a></li>
+                    <li><a href="../mock-apps/cpm.html">CPM Scheduler</a></li>
+                    <li><a href="../mock-apps/habit-tracker.html">Habit Tracker</a></li>
+                    <li><a href="../mock-apps/dms.html">Document Management</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">Home</a> <span>&rsaquo;</span> <a href="../index.html#api">API</a> <span>&rsaquo;</span> SIMPLE_SQL_MIGRATION_RUNNER
+            </div>
+
+            <h1>SIMPLE_SQL_MIGRATION_RUNNER</h1>
+            <p>Version-controlled database migrations using SQLite's user_version PRAGMA. Apply schema changes in order and track migration state.</p>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_MIGRATION_RUNNER">View Source</a></p>
+
+            <div class="callout info">
+                <div class="callout-title">How It Works</div>
+                <p>Migrations are numbered starting from 1. The current version is stored in SQLite's <code>user_version</code> PRAGMA. Only migrations newer than the current version are applied.</p>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Creation</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">make (a_db: SIMPLE_SQL_DATABASE)</div>
+                        <div class="api-feature-desc">Create migration runner attached to database.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Adding Migrations</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">add_migration (a_version: INTEGER; a_sql: READABLE_STRING_8)</div>
+                        <div class="api-feature-desc">Add SQL migration at version number.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">add_migration_with_name (a_version: INTEGER; a_name: READABLE_STRING_8; a_sql: READABLE_STRING_8)</div>
+                        <div class="api-feature-desc">Add named migration for better logging.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Running Migrations</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">migrate</div>
+                        <div class="api-feature-desc">Run all pending migrations in order.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">migrate_to (a_version: INTEGER)</div>
+                        <div class="api-feature-desc">Run migrations up to specific version.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Version Queries</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">current_version: INTEGER</div>
+                        <div class="api-feature-desc">Get current schema version.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">latest_version: INTEGER</div>
+                        <div class="api-feature-desc">Get highest registered migration version.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">pending_count: INTEGER</div>
+                        <div class="api-feature-desc">Number of migrations not yet applied.</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Examples</h2>
+
+            <h3>Define and Run Migrations</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    runner: <span class="class-name">SIMPLE_SQL_MIGRATION_RUNNER</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> runner.make (db)
+
+    <span class="comment">-- Version 1: Create users table</span>
+    runner.add_migration_with_name (1, <span class="string">"create_users"</span>,
+        <span class="string">"CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT NOT NULL, email TEXT UNIQUE)"</span>)
+
+    <span class="comment">-- Version 2: Add created_at column</span>
+    runner.add_migration_with_name (2, <span class="string">"add_created_at"</span>,
+        <span class="string">"ALTER TABLE users ADD COLUMN created_at TEXT DEFAULT CURRENT_TIMESTAMP"</span>)
+
+    <span class="comment">-- Version 3: Create sessions table</span>
+    runner.add_migration_with_name (3, <span class="string">"create_sessions"</span>,
+        <span class="string">"CREATE TABLE sessions (id INTEGER PRIMARY KEY, user_id INTEGER REFERENCES users(id), token TEXT NOT NULL, expires_at TEXT)"</span>)
+
+    <span class="comment">-- Run all pending migrations</span>
+    print (<span class="string">"Current version: "</span> + runner.current_version.out + <span class="string">"%N"</span>)
+    print (<span class="string">"Pending migrations: "</span> + runner.pending_count.out + <span class="string">"%N"</span>)
+
+    runner.migrate
+
+    print (<span class="string">"Migrated to version: "</span> + runner.current_version.out + <span class="string">"%N"</span>)
+<span class="keyword">end</span></code></pre>
+
+            <h3>Multi-Statement Migration</h3>
+            <pre><code class="eiffel"><span class="comment">-- Migrations can contain multiple SQL statements</span>
+runner.add_migration (4,
+    <span class="string">"CREATE INDEX idx_sessions_user ON sessions(user_id); CREATE INDEX idx_sessions_token ON sessions(token)"</span>)</code></pre>
+
+            <h3>Check Version Before Operations</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    runner: <span class="class-name">SIMPLE_SQL_MIGRATION_RUNNER</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> runner.make (db)
+
+    <span class="comment">-- Ensure database is at expected version</span>
+    <span class="keyword">if</span> runner.current_version < 3 <span class="keyword">then</span>
+        print (<span class="string">"Database needs migration. Run migrate command first.%N"</span>)
+    <span class="keyword">else</span>
+        <span class="comment">-- Safe to proceed with operations that require v3 schema</span>
+        run_application
+    <span class="keyword">end</span>
+<span class="keyword">end</span></code></pre>
+
+            <h3>Incremental Migration</h3>
+            <pre><code class="eiffel"><span class="comment">-- Only migrate to version 2 (skip later migrations)</span>
+runner.migrate_to (2)
+
+<span class="comment">-- Check what's pending</span>
+print (<span class="string">"Still pending: "</span> + runner.pending_count.out + <span class="string">"%N"</span>)</code></pre>
+
+            <div class="callout warning">
+                <div class="callout-title">Migration Best Practices</div>
+                <ul>
+                    <li>Never modify an existing migration after it's been deployed</li>
+                    <li>Each migration should be self-contained and idempotent where possible</li>
+                    <li>Use IF NOT EXISTS / IF EXISTS clauses for safety</li>
+                    <li>Back up database before running migrations in production</li>
+                </ul>
+            </div>
+
+            <div class="callout tip">
+                <div class="callout-title">SQLite Limitations</div>
+                <p>SQLite has limited ALTER TABLE support. For complex changes (rename column, change type), create a new table and migrate data:</p>
+                <pre><code>CREATE TABLE users_new (...);
+INSERT INTO users_new SELECT ... FROM users;
+DROP TABLE users;
+ALTER TABLE users_new RENAME TO users;</code></pre>
+            </div>
+
+            <div class="doc-footer">
+                <p><a href="schema.html">&larr; Schema</a> | <a href="backup.html">Backup &rarr;</a></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

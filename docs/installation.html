@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Installation - SIMPLE_SQL</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="index.html">Overview</a></li>
+                    <li><a href="getting-started.html">Quick Start</a></li>
+                    <li><a href="installation.html" class="active">Installation</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Core API</h3>
+                <ul>
+                    <li><a href="api/database.html">SIMPLE_SQL_DATABASE</a></li>
+                    <li><a href="api/result.html">SIMPLE_SQL_RESULT</a></li>
+                    <li><a href="api/row.html">SIMPLE_SQL_ROW</a></li>
+                    <li><a href="api/prepared-statement.html">SIMPLE_SQL_PREPARED_STATEMENT</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Tutorials</h3>
+                <ul>
+                    <li><a href="tutorials/basic-crud.html">Basic CRUD</a></li>
+                    <li><a href="tutorials/query-builder.html">Query Builder</a></li>
+                    <li><a href="tutorials/transactions.html">Transactions</a></li>
+                    <li><a href="tutorials/soft-deletes.html">Soft Deletes</a></li>
+                    <li><a href="tutorials/eager-loading.html">Eager Loading</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Mock Applications</h3>
+                <ul>
+                    <li><a href="mock-apps/todo.html">TODO App</a></li>
+                    <li><a href="mock-apps/cpm.html">CPM Scheduler</a></li>
+                    <li><a href="mock-apps/habit-tracker.html">Habit Tracker</a></li>
+                    <li><a href="mock-apps/dms.html">Document Management</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="index.html">Home</a> <span>&rsaquo;</span> Installation
+            </div>
+
+            <h1>Installation</h1>
+            <p>Get SIMPLE_SQL set up in your Eiffel project.</p>
+
+            <h2>Prerequisites</h2>
+            <ul>
+                <li>EiffelStudio 23.09 or later</li>
+                <li>eiffel_sqlite_2025 library (SQLite 3.51.1 with FTS5)</li>
+            </ul>
+
+            <h2>Step 1: Get the Library</h2>
+            <p>Clone or download SIMPLE_SQL to your development environment:</p>
+            <pre><code>git clone https://github.com/yourorg/simple_sql.git D:/prod/simple_sql</code></pre>
+
+            <h2>Step 2: Set Environment Variable</h2>
+            <p>Set the <code>SIMPLE_SQL</code> environment variable to point to the library location:</p>
+
+            <h3>Windows</h3>
+            <pre><code>setx SIMPLE_SQL "D:\prod\simple_sql"</code></pre>
+
+            <h3>Linux/macOS</h3>
+            <pre><code>export SIMPLE_SQL="/path/to/simple_sql"</code></pre>
+
+            <h2>Step 3: Add to Your ECF File</h2>
+            <p>Add SIMPLE_SQL as a library in your project's ECF file:</p>
+            <pre><code>&lt;system name="my_app" xmlns="..."&gt;
+    ...
+    &lt;library name="simple_sql" location="$SIMPLE_SQL/simple_sql.ecf"/&gt;
+    ...
+&lt;/system&gt;</code></pre>
+
+            <div class="callout tip">
+                <div class="callout-title">Alternative: Absolute Path</div>
+                <p>If you prefer not to use environment variables, you can use an absolute path:</p>
+                <pre><code>&lt;library name="simple_sql" location="D:/prod/simple_sql/simple_sql.ecf"/&gt;</code></pre>
+            </div>
+
+            <h2>Step 4: Verify Installation</h2>
+            <p>Create a simple test to verify everything works:</p>
+            <pre><code class="eiffel"><span class="keyword">class</span> <span class="class-name">TEST_SIMPLE_SQL</span>
+
+<span class="keyword">create</span>
+    make
+
+<span class="keyword">feature</span>
+
+    make
+        <span class="keyword">local</span>
+            db: <span class="class-name">SIMPLE_SQL_DATABASE</span>
+        <span class="keyword">do</span>
+            <span class="keyword">create</span> db.make_memory
+            db.execute (<span class="string">"CREATE TABLE test (id INTEGER PRIMARY KEY, value TEXT)"</span>)
+            db.insert_into (<span class="string">"test"</span>).value (<span class="string">"value"</span>, <span class="string">"Hello SIMPLE_SQL!"</span>).execute
+            print (<span class="string">"SIMPLE_SQL installed successfully!%N"</span>)
+            db.close
+        <span class="keyword">end</span>
+
+<span class="keyword">end</span></code></pre>
+
+            <h2>SQLite Dependencies</h2>
+            <p>SIMPLE_SQL depends on <strong>eiffel_sqlite_2025</strong>, which bundles SQLite 3.51.1 with these extensions enabled:</p>
+            <ul>
+                <li><strong>FTS5</strong> - Full-text search</li>
+                <li><strong>JSON1</strong> - JSON functions</li>
+                <li><strong>RTREE</strong> - R-tree spatial indexing</li>
+            </ul>
+
+            <h2>Project Structure</h2>
+            <pre><code>simple_sql/
+├── simple_sql.ecf          -- Library configuration
+├── src/                    -- Source files
+│   ├── simple_sql_database.e
+│   ├── simple_sql_result.e
+│   ├── simple_sql_row.e
+│   └── ...
+├── testing/                -- Test suite
+├── docs/                   -- Documentation (you're reading it!)
+└── README.md</code></pre>
+
+            <h2>Troubleshooting</h2>
+
+            <h3>Library Not Found</h3>
+            <p>If EiffelStudio can't find the library:</p>
+            <ol>
+                <li>Verify the <code>SIMPLE_SQL</code> environment variable is set</li>
+                <li>Restart EiffelStudio after setting environment variables</li>
+                <li>Check that the path contains <code>simple_sql.ecf</code></li>
+            </ol>
+
+            <h3>SQLite Linker Errors</h3>
+            <p>If you see linker errors related to SQLite:</p>
+            <ol>
+                <li>Ensure eiffel_sqlite_2025 is properly installed</li>
+                <li>On Windows: verify Visual Studio C++ compiler is accessible</li>
+                <li>Try "Compile from scratch" to rebuild all C components</li>
+            </ol>
+
+            <h2>Next Steps</h2>
+            <ul>
+                <li><a href="getting-started.html">Quick Start Guide</a> - Your first queries</li>
+                <li><a href="tutorials/basic-crud.html">Basic CRUD Tutorial</a> - Learn the fundamentals</li>
+                <li><a href="api/database.html">API Reference</a> - Explore the full API</li>
+            </ul>
+
+            <div class="doc-footer">
+                <p><a href="getting-started.html">&larr; Quick Start</a> | <a href="tutorials/basic-crud.html">Basic CRUD &rarr;</a></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMPLE_SQL_VECTOR - API Reference</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="../index.html">Overview</a></li>
+                    <li><a href="../getting-started.html">Quick Start</a></li>
+                    <li><a href="../installation.html">Installation</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Core API</h3>
+                <ul>
+                    <li><a href="database.html">SIMPLE_SQL_DATABASE</a></li>
+                    <li><a href="result.html">SIMPLE_SQL_RESULT</a></li>
+                    <li><a href="row.html">SIMPLE_SQL_ROW</a></li>
+                    <li><a href="prepared-statement.html">SIMPLE_SQL_PREPARED_STATEMENT</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Query Builders</h3>
+                <ul>
+                    <li><a href="select-builder.html">SIMPLE_SQL_SELECT_BUILDER</a></li>
+                    <li><a href="insert-builder.html">SIMPLE_SQL_INSERT_BUILDER</a></li>
+                    <li><a href="update-builder.html">SIMPLE_SQL_UPDATE_BUILDER</a></li>
+                    <li><a href="delete-builder.html">SIMPLE_SQL_DELETE_BUILDER</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Advanced Features</h3>
+                <ul>
+                    <li><a href="eager-loader.html">Eager Loading (N+1)</a></li>
+                    <li><a href="paginator.html">Pagination</a></li>
+                    <li><a href="query-monitor.html">Query Monitor</a></li>
+                    <li><a href="fts5.html">Full-Text Search</a></li>
+                    <li><a href="json.html">JSON Support</a></li>
+                    <li><a href="audit.html">Audit Tracking</a></li>
+                    <li><a href="vector.html" class="active">Vector Embeddings</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Mock Applications</h3>
+                <ul>
+                    <li><a href="../mock-apps/todo.html">TODO App</a></li>
+                    <li><a href="../mock-apps/cpm.html">CPM Scheduler</a></li>
+                    <li><a href="../mock-apps/habit-tracker.html">Habit Tracker</a></li>
+                    <li><a href="../mock-apps/dms.html">Document Management</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">Home</a> <span>&rsaquo;</span> <a href="../index.html#api">API</a> <span>&rsaquo;</span> Vector Embeddings
+            </div>
+
+            <h1>Vector Embeddings</h1>
+            <p>Store and search vector embeddings in SQLite. Useful for semantic search, recommendations, and AI applications.</p>
+
+            <div class="callout info">
+                <div class="callout-title">Classes</div>
+                <p><strong>SIMPLE_SQL_VECTOR</strong> - Vector data structure<br>
+                <strong>SIMPLE_SQL_VECTOR_STORE</strong> - Storage and retrieval<br>
+                <strong>SIMPLE_SQL_SIMILARITY</strong> - Distance metrics</p>
+            </div>
+
+            <h2>SIMPLE_SQL_VECTOR</h2>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_VECTOR">View Source</a></p>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Creation</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">make (a_dimensions: INTEGER)</div>
+                        <div class="api-feature-desc">Create zero vector with specified dimensions.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">make_from_array (a_values: ARRAY [REAL_64])</div>
+                        <div class="api-feature-desc">Create vector from array of values.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">make_from_blob (a_blob: MANAGED_POINTER)</div>
+                        <div class="api-feature-desc">Deserialize vector from BLOB.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Operations</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">add (other: SIMPLE_SQL_VECTOR): SIMPLE_SQL_VECTOR</div>
+                        <div class="api-feature-desc">Add two vectors element-wise.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">subtract (other: SIMPLE_SQL_VECTOR): SIMPLE_SQL_VECTOR</div>
+                        <div class="api-feature-desc">Subtract vectors element-wise.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">scale (a_factor: REAL_64): SIMPLE_SQL_VECTOR</div>
+                        <div class="api-feature-desc">Multiply all elements by factor.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">normalize: SIMPLE_SQL_VECTOR</div>
+                        <div class="api-feature-desc">Return unit vector (magnitude = 1).</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">dot_product (other: SIMPLE_SQL_VECTOR): REAL_64</div>
+                        <div class="api-feature-desc">Compute dot product.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">magnitude: REAL_64</div>
+                        <div class="api-feature-desc">Compute Euclidean length.</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>SIMPLE_SQL_VECTOR_STORE</h2>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_VECTOR_STORE">View Source</a></p>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Setup</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">make (a_db: SIMPLE_SQL_DATABASE; a_table: READABLE_STRING_8; a_dimensions: INTEGER)</div>
+                        <div class="api-feature-desc">Create vector store with specified dimensions.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">create_table</div>
+                        <div class="api-feature-desc">Create storage table if not exists.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Storage</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">insert (a_id: READABLE_STRING_GENERAL; a_vector: SIMPLE_SQL_VECTOR)</div>
+                        <div class="api-feature-desc">Store vector with string ID.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">insert_with_metadata (a_id: READABLE_STRING_GENERAL; a_vector: SIMPLE_SQL_VECTOR; a_metadata: READABLE_STRING_GENERAL)</div>
+                        <div class="api-feature-desc">Store vector with JSON metadata.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">get (a_id: READABLE_STRING_GENERAL): detachable SIMPLE_SQL_VECTOR</div>
+                        <div class="api-feature-desc">Retrieve vector by ID.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">delete (a_id: READABLE_STRING_GENERAL)</div>
+                        <div class="api-feature-desc">Remove vector by ID.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Search</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">knn_search (a_query: SIMPLE_SQL_VECTOR; k: INTEGER): ARRAYED_LIST [TUPLE [id: STRING_32; distance: REAL_64]]</div>
+                        <div class="api-feature-desc">Find k nearest neighbors using Euclidean distance.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">cosine_search (a_query: SIMPLE_SQL_VECTOR; k: INTEGER): ARRAYED_LIST [TUPLE [id: STRING_32; similarity: REAL_64]]</div>
+                        <div class="api-feature-desc">Find k most similar vectors using cosine similarity.</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>SIMPLE_SQL_SIMILARITY</h2>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_SIMILARITY">View Source</a></p>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Distance Metrics</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">euclidean_distance (a, b: SIMPLE_SQL_VECTOR): REAL_64</div>
+                        <div class="api-feature-desc">L2 distance (shorter = more similar).</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">cosine_similarity (a, b: SIMPLE_SQL_VECTOR): REAL_64</div>
+                        <div class="api-feature-desc">Cosine of angle between vectors (1.0 = identical, 0.0 = orthogonal).</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">manhattan_distance (a, b: SIMPLE_SQL_VECTOR): REAL_64</div>
+                        <div class="api-feature-desc">L1 distance (sum of absolute differences).</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Examples</h2>
+
+            <h3>Store Document Embeddings</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    store: <span class="class-name">SIMPLE_SQL_VECTOR_STORE</span>
+    embedding: <span class="class-name">SIMPLE_SQL_VECTOR</span>
+<span class="keyword">do</span>
+    <span class="comment">-- Create store for 384-dimensional embeddings</span>
+    <span class="keyword">create</span> store.make (db, <span class="string">"document_vectors"</span>, 384)
+    store.create_table
+
+    <span class="comment">-- Store embeddings (e.g., from a sentence transformer)</span>
+    <span class="keyword">create</span> embedding.make_from_array (get_embedding (<span class="string">"Hello world"</span>))
+    store.insert_with_metadata (<span class="string">"doc1"</span>, embedding, <span class="string">"{%"title%":%"Greeting%"}"</span>)
+<span class="keyword">end</span></code></pre>
+
+            <h3>Semantic Search</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    query_vec: <span class="class-name">SIMPLE_SQL_VECTOR</span>
+    results: <span class="class-name">ARRAYED_LIST</span> [<span class="class-name">TUPLE</span> [id: <span class="class-name">STRING_32</span>; similarity: <span class="class-name">REAL_64</span>]]
+<span class="keyword">do</span>
+    <span class="comment">-- Get embedding for search query</span>
+    <span class="keyword">create</span> query_vec.make_from_array (get_embedding (<span class="string">"How to say hello"</span>))
+
+    <span class="comment">-- Find 5 most similar documents</span>
+    results := store.cosine_search (query_vec, 5)
+
+    <span class="keyword">across</span> results <span class="keyword">as</span> r <span class="keyword">loop</span>
+        print (r.id + <span class="string">": similarity = "</span> + r.similarity.out + <span class="string">"%N"</span>)
+    <span class="keyword">end</span>
+<span class="keyword">end</span></code></pre>
+
+            <h3>Vector Math</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    v1, v2, avg: <span class="class-name">SIMPLE_SQL_VECTOR</span>
+    sim: <span class="class-name">SIMPLE_SQL_SIMILARITY</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> v1.make_from_array (&lt;&lt;1.0, 2.0, 3.0&gt;&gt;)
+    <span class="keyword">create</span> v2.make_from_array (&lt;&lt;4.0, 5.0, 6.0&gt;&gt;)
+
+    <span class="comment">-- Average of two vectors</span>
+    avg := v1.add (v2).scale (0.5)
+
+    <span class="comment">-- Similarity</span>
+    <span class="keyword">create</span> sim
+    print (<span class="string">"Cosine similarity: "</span> + sim.cosine_similarity (v1, v2).out + <span class="string">"%N"</span>)
+    print (<span class="string">"Euclidean distance: "</span> + sim.euclidean_distance (v1, v2).out + <span class="string">"%N"</span>)
+<span class="keyword">end</span></code></pre>
+
+            <div class="callout warning">
+                <div class="callout-title">Performance Note</div>
+                <p>Vector search scans all rows. For large datasets (100k+ vectors), consider approximate nearest neighbor solutions or batch queries.</p>
+            </div>
+
+            <div class="doc-footer">
+                <p><a href="audit.html">&larr; Audit Tracking</a> | <a href="schema.html">Schema &rarr;</a></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

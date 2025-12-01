@@ -34,16 +34,6 @@
             </div>
 
             <div class="nav-section">
-                <h3>Query Builders</h3>
-                <ul>
-                    <li><a href="api/select-builder.html">SIMPLE_SQL_SELECT_BUILDER</a></li>
-                    <li><a href="api/insert-builder.html">SIMPLE_SQL_INSERT_BUILDER</a></li>
-                    <li><a href="api/update-builder.html">SIMPLE_SQL_UPDATE_BUILDER</a></li>
-                    <li><a href="api/delete-builder.html">SIMPLE_SQL_DELETE_BUILDER</a></li>
-                </ul>
-            </div>
-
-            <div class="nav-section">
                 <h3>Tutorials</h3>
                 <ul>
                     <li><a href="tutorials/basic-crud.html">Basic CRUD</a></li>
@@ -52,6 +42,7 @@
                     <li><a href="tutorials/soft-deletes.html">Soft Deletes</a></li>
                     <li><a href="tutorials/eager-loading.html">Eager Loading</a></li>
                     <li><a href="tutorials/pagination.html">Pagination</a></li>
+                    <li><a href="tutorials/full-text-search.html">Full-Text Search</a></li>
                 </ul>
             </div>
 
@@ -92,13 +83,13 @@
     <span class="keyword">create</span> db.make (<span class="string">"myapp.db"</span>)
 
     <span class="comment">-- Or in-memory database</span>
-    <span class="keyword">create</span> db.make_in_memory
+    <span class="keyword">create</span> db.make_memory
 
     <span class="comment">-- Always close when done</span>
     db.close
 <span class="keyword">end</span></code></pre>
             <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_DATABASE&feature=make">View make</a>
-            <a class="eis-link" href="eiffel:?class=SIMPLE_SQL_DATABASE&feature=make_in_memory">View make_in_memory</a></p>
+            <a class="eis-link" href="eiffel:?class=SIMPLE_SQL_DATABASE&feature=make_memory">View make_memory</a></p>
 
             <h2>3. Create Tables</h2>
             <p>Execute DDL statements:</p>
@@ -180,7 +171,7 @@ db.rollback  <span class="comment">-- Undo the insert</span></code></pre>
             result: <span class="class-name">SIMPLE_SQL_RESULT</span>
         <span class="keyword">do</span>
             <span class="comment">-- Create database</span>
-            <span class="keyword">create</span> db.make_in_memory
+            <span class="keyword">create</span> db.make_memory
 
             <span class="comment">-- Create table</span>
             db.execute (<span class="string">"CREATE TABLE tasks (id INTEGER PRIMARY KEY, title TEXT, done INTEGER DEFAULT 0)"</span>)
@@ -213,9 +204,9 @@ db.rollback  <span class="comment">-- Undo the insert</span></code></pre>
 
             <h2>Next Steps</h2>
             <ul>
+                <li><a href="tutorials/basic-crud.html">Basic CRUD Operations</a> - Learn the fundamentals</li>
                 <li><a href="tutorials/query-builder.html">Master the Query Builder</a> - Deep dive into fluent queries</li>
                 <li><a href="tutorials/eager-loading.html">Prevent N+1 Queries</a> - Load related data efficiently</li>
-                <li><a href="tutorials/soft-deletes.html">Implement Soft Deletes</a> - Archive without destroying</li>
                 <li><a href="mock-apps/todo.html">Explore the TODO App</a> - See SIMPLE_SQL in action</li>
             </ul>
 

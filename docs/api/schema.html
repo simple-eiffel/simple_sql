@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMPLE_SQL_SCHEMA - API Reference</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="../index.html">Overview</a></li>
+                    <li><a href="../getting-started.html">Quick Start</a></li>
+                    <li><a href="../installation.html">Installation</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Core API</h3>
+                <ul>
+                    <li><a href="database.html">SIMPLE_SQL_DATABASE</a></li>
+                    <li><a href="result.html">SIMPLE_SQL_RESULT</a></li>
+                    <li><a href="row.html">SIMPLE_SQL_ROW</a></li>
+                    <li><a href="prepared-statement.html">SIMPLE_SQL_PREPARED_STATEMENT</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Schema & Migration</h3>
+                <ul>
+                    <li><a href="schema.html" class="active">SIMPLE_SQL_SCHEMA</a></li>
+                    <li><a href="migration.html">SIMPLE_SQL_MIGRATION_RUNNER</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Advanced Features</h3>
+                <ul>
+                    <li><a href="eager-loader.html">Eager Loading (N+1)</a></li>
+                    <li><a href="paginator.html">Pagination</a></li>
+                    <li><a href="query-monitor.html">Query Monitor</a></li>
+                    <li><a href="fts5.html">Full-Text Search</a></li>
+                    <li><a href="json.html">JSON Support</a></li>
+                    <li><a href="audit.html">Audit Tracking</a></li>
+                    <li><a href="vector.html">Vector Embeddings</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Mock Applications</h3>
+                <ul>
+                    <li><a href="../mock-apps/todo.html">TODO App</a></li>
+                    <li><a href="../mock-apps/cpm.html">CPM Scheduler</a></li>
+                    <li><a href="../mock-apps/habit-tracker.html">Habit Tracker</a></li>
+                    <li><a href="../mock-apps/dms.html">Document Management</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">Home</a> <span>&rsaquo;</span> <a href="../index.html#api">API</a> <span>&rsaquo;</span> SIMPLE_SQL_SCHEMA
+            </div>
+
+            <h1>SIMPLE_SQL_SCHEMA</h1>
+            <p>Schema introspection for examining database structure. Query tables, columns, indexes, and foreign keys.</p>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_SCHEMA">View Source</a></p>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Creation</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">make (a_db: SIMPLE_SQL_DATABASE)</div>
+                        <div class="api-feature-desc">Create schema inspector attached to database.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Tables</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">tables: ARRAYED_LIST [STRING_8]</div>
+                        <div class="api-feature-desc">List of all table names.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">table_exists (a_name: READABLE_STRING_8): BOOLEAN</div>
+                        <div class="api-feature-desc">Check if table exists.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">table_info (a_table: READABLE_STRING_8): SIMPLE_SQL_TABLE_INFO</div>
+                        <div class="api-feature-desc">Get detailed table information.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Columns</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">columns (a_table: READABLE_STRING_8): ARRAYED_LIST [SIMPLE_SQL_COLUMN_INFO]</div>
+                        <div class="api-feature-desc">Get column definitions for table.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">column_names (a_table: READABLE_STRING_8): ARRAYED_LIST [STRING_8]</div>
+                        <div class="api-feature-desc">Get just column names.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">primary_key (a_table: READABLE_STRING_8): detachable STRING_8</div>
+                        <div class="api-feature-desc">Get primary key column name(s).</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Indexes</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">indexes (a_table: READABLE_STRING_8): ARRAYED_LIST [STRING_8]</div>
+                        <div class="api-feature-desc">List index names for table.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">index_columns (a_index: READABLE_STRING_8): ARRAYED_LIST [STRING_8]</div>
+                        <div class="api-feature-desc">Get columns in an index.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Foreign Keys</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">foreign_keys (a_table: READABLE_STRING_8): SIMPLE_SQL_RESULT</div>
+                        <div class="api-feature-desc">Get foreign key definitions.</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>SIMPLE_SQL_TABLE_INFO</h2>
+
+            <div class="api-class">
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">name: STRING_8</div>
+                        <div class="api-feature-desc">Table name.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">columns: ARRAYED_LIST [SIMPLE_SQL_COLUMN_INFO]</div>
+                        <div class="api-feature-desc">Column definitions.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">row_count: INTEGER_64</div>
+                        <div class="api-feature-desc">Number of rows.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">sql: STRING_8</div>
+                        <div class="api-feature-desc">CREATE TABLE statement.</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>SIMPLE_SQL_COLUMN_INFO</h2>
+
+            <div class="api-class">
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">name: STRING_8</div>
+                        <div class="api-feature-desc">Column name.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">data_type: STRING_8</div>
+                        <div class="api-feature-desc">SQLite type (TEXT, INTEGER, REAL, BLOB).</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">is_nullable: BOOLEAN</div>
+                        <div class="api-feature-desc">Can column contain NULL?</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">is_primary_key: BOOLEAN</div>
+                        <div class="api-feature-desc">Is this the primary key?</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">default_value: detachable STRING_8</div>
+                        <div class="api-feature-desc">Default value expression.</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Examples</h2>
+
+            <h3>List All Tables</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    schema: <span class="class-name">SIMPLE_SQL_SCHEMA</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> schema.make (db)
+
+    print (<span class="string">"Tables in database:%N"</span>)
+    <span class="keyword">across</span> schema.tables <span class="keyword">as</span> t <span class="keyword">loop</span>
+        print (<span class="string">"  - "</span> + t + <span class="string">"%N"</span>)
+    <span class="keyword">end</span>
+<span class="keyword">end</span></code></pre>
+
+            <h3>Examine Table Structure</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    schema: <span class="class-name">SIMPLE_SQL_SCHEMA</span>
+    info: <span class="class-name">SIMPLE_SQL_TABLE_INFO</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> schema.make (db)
+    info := schema.table_info (<span class="string">"users"</span>)
+
+    print (<span class="string">"Table: "</span> + info.name + <span class="string">"%N"</span>)
+    print (<span class="string">"Rows: "</span> + info.row_count.out + <span class="string">"%N"</span>)
+    print (<span class="string">"Columns:%N"</span>)
+
+    <span class="keyword">across</span> info.columns <span class="keyword">as</span> col <span class="keyword">loop</span>
+        print (<span class="string">"  "</span> + col.name + <span class="string">": "</span> + col.data_type)
+        <span class="keyword">if</span> col.is_primary_key <span class="keyword">then</span>
+            print (<span class="string">" [PK]"</span>)
+        <span class="keyword">end</span>
+        <span class="keyword">if</span> <span class="keyword">not</span> col.is_nullable <span class="keyword">then</span>
+            print (<span class="string">" NOT NULL"</span>)
+        <span class="keyword">end</span>
+        print (<span class="string">"%N"</span>)
+    <span class="keyword">end</span>
+<span class="keyword">end</span></code></pre>
+
+            <h3>Check for Required Tables</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    schema: <span class="class-name">SIMPLE_SQL_SCHEMA</span>
+    required: <span class="class-name">ARRAY</span> [<span class="class-name">STRING_8</span>]
+<span class="keyword">do</span>
+    <span class="keyword">create</span> schema.make (db)
+    required := &lt;&lt;<span class="string">"users"</span>, <span class="string">"sessions"</span>, <span class="string">"settings"</span>&gt;&gt;
+
+    <span class="keyword">across</span> required <span class="keyword">as</span> table <span class="keyword">loop</span>
+        <span class="keyword">if</span> <span class="keyword">not</span> schema.table_exists (table) <span class="keyword">then</span>
+            print (<span class="string">"Missing table: "</span> + table + <span class="string">"%N"</span>)
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span></code></pre>
+
+            <div class="doc-footer">
+                <p><a href="vector.html">&larr; Vector Embeddings</a> | <a href="migration.html">Migration Runner &rarr;</a></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

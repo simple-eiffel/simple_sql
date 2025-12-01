@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMPLE_SQL_BACKUP - API Reference</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="../index.html">Overview</a></li>
+                    <li><a href="../getting-started.html">Quick Start</a></li>
+                    <li><a href="../installation.html">Installation</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Core API</h3>
+                <ul>
+                    <li><a href="database.html">SIMPLE_SQL_DATABASE</a></li>
+                    <li><a href="result.html">SIMPLE_SQL_RESULT</a></li>
+                    <li><a href="row.html">SIMPLE_SQL_ROW</a></li>
+                    <li><a href="prepared-statement.html">SIMPLE_SQL_PREPARED_STATEMENT</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Backup & Export</h3>
+                <ul>
+                    <li><a href="backup.html" class="active">SIMPLE_SQL_BACKUP</a></li>
+                    <li><a href="export.html">SIMPLE_SQL_EXPORT</a></li>
+                    <li><a href="import.html">SIMPLE_SQL_IMPORT</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Advanced Features</h3>
+                <ul>
+                    <li><a href="eager-loader.html">Eager Loading (N+1)</a></li>
+                    <li><a href="paginator.html">Pagination</a></li>
+                    <li><a href="query-monitor.html">Query Monitor</a></li>
+                    <li><a href="fts5.html">Full-Text Search</a></li>
+                    <li><a href="json.html">JSON Support</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Mock Applications</h3>
+                <ul>
+                    <li><a href="../mock-apps/todo.html">TODO App</a></li>
+                    <li><a href="../mock-apps/cpm.html">CPM Scheduler</a></li>
+                    <li><a href="../mock-apps/habit-tracker.html">Habit Tracker</a></li>
+                    <li><a href="../mock-apps/dms.html">Document Management</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">Home</a> <span>&rsaquo;</span> <a href="../index.html#api">API</a> <span>&rsaquo;</span> SIMPLE_SQL_BACKUP
+            </div>
+
+            <h1>SIMPLE_SQL_BACKUP</h1>
+            <p>Database backup utilities including online backup API with progress callbacks, memory-to-file and file-to-memory copies.</p>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_BACKUP">View Source</a></p>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Creation</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">make (a_db: SIMPLE_SQL_DATABASE)</div>
+                        <div class="api-feature-desc">Create backup helper attached to database.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Simple Backup</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">backup_to_file (a_path: READABLE_STRING_GENERAL)</div>
+                        <div class="api-feature-desc">Create complete backup to file.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">restore_from_file (a_path: READABLE_STRING_GENERAL)</div>
+                        <div class="api-feature-desc">Restore database from backup file.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Memory Operations</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">copy_to_memory: SIMPLE_SQL_DATABASE</div>
+                        <div class="api-feature-desc">Copy file database to in-memory database.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">copy_from_memory (a_memory_db: SIMPLE_SQL_DATABASE)</div>
+                        <div class="api-feature-desc">Copy in-memory database to current file database.</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>SIMPLE_SQL_ONLINE_BACKUP</h2>
+            <p>Online backup with progress tracking for large databases.</p>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_ONLINE_BACKUP">View Source</a></p>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Online Backup</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">make (a_source: SIMPLE_SQL_DATABASE; a_dest_path: READABLE_STRING_GENERAL)</div>
+                        <div class="api-feature-desc">Create online backup to destination file.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">set_progress_callback (a_callback: PROCEDURE [INTEGER, INTEGER])</div>
+                        <div class="api-feature-desc">Set callback receiving (remaining_pages, total_pages).</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">set_page_step (a_count: INTEGER)</div>
+                        <div class="api-feature-desc">Pages to copy per step (default: 100).</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">run</div>
+                        <div class="api-feature-desc">Execute backup with progress callbacks.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">is_complete: BOOLEAN</div>
+                        <div class="api-feature-desc">Did backup complete successfully?</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Examples</h2>
+
+            <h3>Simple Backup</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    backup: <span class="class-name">SIMPLE_SQL_BACKUP</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> backup.make (db)
+    backup.backup_to_file (<span class="string">"backup_2024-01-15.db"</span>)
+    print (<span class="string">"Backup created%N"</span>)
+<span class="keyword">end</span></code></pre>
+
+            <h3>Online Backup with Progress</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    online_backup: <span class="class-name">SIMPLE_SQL_ONLINE_BACKUP</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> online_backup.make (db, <span class="string">"large_backup.db"</span>)
+
+    <span class="comment">-- Progress callback</span>
+    online_backup.set_progress_callback (
+        <span class="keyword">agent</span> (remaining, total: <span class="class-name">INTEGER</span>)
+            <span class="keyword">local</span>
+                pct: <span class="class-name">REAL_64</span>
+            <span class="keyword">do</span>
+                pct := ((total - remaining) / total) * 100
+                print (<span class="string">"Backup progress: "</span> + pct.truncated_to_integer.out + <span class="string">"%%%N"</span>)
+            <span class="keyword">end</span>
+    )
+
+    online_backup.set_page_step (50)  <span class="comment">-- Smaller steps for more frequent updates</span>
+    online_backup.run
+
+    <span class="keyword">if</span> online_backup.is_complete <span class="keyword">then</span>
+        print (<span class="string">"Backup complete!%N"</span>)
+    <span class="keyword">end</span>
+<span class="keyword">end</span></code></pre>
+
+            <h3>Memory to File</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    mem_db, file_db: <span class="class-name">SIMPLE_SQL_DATABASE</span>
+    backup: <span class="class-name">SIMPLE_SQL_BACKUP</span>
+<span class="keyword">do</span>
+    <span class="comment">-- Work with in-memory database</span>
+    <span class="keyword">create</span> mem_db.make_memory
+    mem_db.execute (<span class="string">"CREATE TABLE test (id INTEGER PRIMARY KEY, value TEXT)"</span>)
+    mem_db.insert_into (<span class="string">"test"</span>).value (<span class="string">"value"</span>, <span class="string">"data"</span>).execute
+
+    <span class="comment">-- Save to file</span>
+    <span class="keyword">create</span> file_db.make (<span class="string">"saved.db"</span>)
+    <span class="keyword">create</span> backup.make (file_db)
+    backup.copy_from_memory (mem_db)
+
+    mem_db.close
+    file_db.close
+<span class="keyword">end</span></code></pre>
+
+            <h3>Load File into Memory</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    file_db, mem_db: <span class="class-name">SIMPLE_SQL_DATABASE</span>
+    backup: <span class="class-name">SIMPLE_SQL_BACKUP</span>
+<span class="keyword">do</span>
+    <span class="comment">-- Load existing database into memory for fast operations</span>
+    <span class="keyword">create</span> file_db.make (<span class="string">"existing.db"</span>)
+    <span class="keyword">create</span> backup.make (file_db)
+    mem_db := backup.copy_to_memory
+
+    <span class="comment">-- Work with fast in-memory copy</span>
+    result := mem_db.query (<span class="string">"SELECT * FROM large_table"</span>)
+
+    mem_db.close
+    file_db.close
+<span class="keyword">end</span></code></pre>
+
+            <div class="callout tip">
+                <div class="callout-title">When to Use Online Backup</div>
+                <p>Use SIMPLE_SQL_ONLINE_BACKUP for large databases where you need progress feedback or want to perform backup while other operations continue.</p>
+            </div>
+
+            <div class="doc-footer">
+                <p><a href="migration.html">&larr; Migration Runner</a> | <a href="export.html">Export &rarr;</a></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMPLE_SQL_JSON - API Reference</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="../index.html">Overview</a></li>
+                    <li><a href="../getting-started.html">Quick Start</a></li>
+                    <li><a href="../installation.html">Installation</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Core API</h3>
+                <ul>
+                    <li><a href="database.html">SIMPLE_SQL_DATABASE</a></li>
+                    <li><a href="result.html">SIMPLE_SQL_RESULT</a></li>
+                    <li><a href="row.html">SIMPLE_SQL_ROW</a></li>
+                    <li><a href="prepared-statement.html">SIMPLE_SQL_PREPARED_STATEMENT</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Query Builders</h3>
+                <ul>
+                    <li><a href="select-builder.html">SIMPLE_SQL_SELECT_BUILDER</a></li>
+                    <li><a href="insert-builder.html">SIMPLE_SQL_INSERT_BUILDER</a></li>
+                    <li><a href="update-builder.html">SIMPLE_SQL_UPDATE_BUILDER</a></li>
+                    <li><a href="delete-builder.html">SIMPLE_SQL_DELETE_BUILDER</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Advanced Features</h3>
+                <ul>
+                    <li><a href="eager-loader.html">Eager Loading (N+1)</a></li>
+                    <li><a href="paginator.html">Pagination</a></li>
+                    <li><a href="query-monitor.html">Query Monitor</a></li>
+                    <li><a href="fts5.html">Full-Text Search</a></li>
+                    <li><a href="json.html" class="active">JSON Support</a></li>
+                    <li><a href="audit.html">Audit Tracking</a></li>
+                    <li><a href="vector.html">Vector Embeddings</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Mock Applications</h3>
+                <ul>
+                    <li><a href="../mock-apps/todo.html">TODO App</a></li>
+                    <li><a href="../mock-apps/cpm.html">CPM Scheduler</a></li>
+                    <li><a href="../mock-apps/habit-tracker.html">Habit Tracker</a></li>
+                    <li><a href="../mock-apps/dms.html">Document Management</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">Home</a> <span>&rsaquo;</span> <a href="../index.html#api">API</a> <span>&rsaquo;</span> SIMPLE_SQL_JSON
+            </div>
+
+            <h1>SIMPLE_SQL_JSON</h1>
+            <p>JSON support using SQLite's JSON1 extension. Validate, query, and modify JSON data stored in columns.</p>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_JSON">View Source</a></p>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Creation</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">make (a_db: SIMPLE_SQL_DATABASE)</div>
+                        <div class="api-feature-desc">Create JSON helper attached to database.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Validation</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">is_valid (a_json: READABLE_STRING_GENERAL): BOOLEAN</div>
+                        <div class="api-feature-desc">Check if string is valid JSON.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">json_type (a_json: READABLE_STRING_GENERAL): STRING_8</div>
+                        <div class="api-feature-desc">Get JSON type: "object", "array", "string", "integer", "real", "true", "false", "null".</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Extraction</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">extract (a_json: READABLE_STRING_GENERAL; a_path: READABLE_STRING_8): detachable STRING_32</div>
+                        <div class="api-feature-desc">Extract value at JSON path (e.g., "$.name", "$.items[0]").</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">extract_integer (a_json: READABLE_STRING_GENERAL; a_path: READABLE_STRING_8): INTEGER_64</div>
+                        <div class="api-feature-desc">Extract integer value at path.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">extract_real (a_json: READABLE_STRING_GENERAL; a_path: READABLE_STRING_8): REAL_64</div>
+                        <div class="api-feature-desc">Extract real value at path.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Modification</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">set (a_json: READABLE_STRING_GENERAL; a_path: READABLE_STRING_8; a_value: detachable ANY): STRING_32</div>
+                        <div class="api-feature-desc">Set or replace value at path. Creates path if needed.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">insert (a_json: READABLE_STRING_GENERAL; a_path: READABLE_STRING_8; a_value: detachable ANY): STRING_32</div>
+                        <div class="api-feature-desc">Insert value at path (fails if path exists).</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">replace (a_json: READABLE_STRING_GENERAL; a_path: READABLE_STRING_8; a_value: detachable ANY): STRING_32</div>
+                        <div class="api-feature-desc">Replace value at path (fails if path doesn't exist).</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">remove (a_json: READABLE_STRING_GENERAL; a_path: READABLE_STRING_8): STRING_32</div>
+                        <div class="api-feature-desc">Remove value at path.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Creation</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">json_object (a_pairs: ARRAY [TUPLE [key: READABLE_STRING_8; value: detachable ANY]]): STRING_32</div>
+                        <div class="api-feature-desc">Create JSON object from key-value pairs.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">json_array (a_values: ARRAY [detachable ANY]): STRING_32</div>
+                        <div class="api-feature-desc">Create JSON array from values.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Aggregation</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">group_array (a_table, a_column: READABLE_STRING_8; a_where: detachable READABLE_STRING_8): STRING_32</div>
+                        <div class="api-feature-desc">Aggregate column values into JSON array.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">group_object (a_table, a_key_column, a_value_column: READABLE_STRING_8): STRING_32</div>
+                        <div class="api-feature-desc">Aggregate into JSON object with key-value pairs.</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Examples</h2>
+
+            <h3>Store and Query JSON</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    json: <span class="class-name">SIMPLE_SQL_JSON</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> json.make (db)
+
+    <span class="comment">-- Store JSON in a column</span>
+    db.insert_into (<span class="string">"settings"</span>)
+        .value (<span class="string">"user_id"</span>, 1)
+        .value (<span class="string">"preferences"</span>, <span class="string">"{%"theme%":%"dark%",%"notifications%":true}"</span>)
+        .execute
+
+    <span class="comment">-- Query JSON path in SQL</span>
+    result := db.query (<span class="string">"SELECT json_extract(preferences, '$.theme') as theme FROM settings WHERE user_id = 1"</span>)
+<span class="keyword">end</span></code></pre>
+
+            <h3>Modify JSON</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    json: <span class="class-name">SIMPLE_SQL_JSON</span>
+    prefs, new_prefs: <span class="class-name">STRING_32</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> json.make (db)
+    prefs := <span class="string">"{%"theme%":%"dark%",%"notifications%":true}"</span>
+
+    <span class="comment">-- Add new field</span>
+    new_prefs := json.set (prefs, <span class="string">"$.language"</span>, <span class="string">"en"</span>)
+    <span class="comment">-- Result: {"theme":"dark","notifications":true,"language":"en"}</span>
+
+    <span class="comment">-- Update existing field</span>
+    new_prefs := json.set (new_prefs, <span class="string">"$.theme"</span>, <span class="string">"light"</span>)
+
+    <span class="comment">-- Remove field</span>
+    new_prefs := json.remove (new_prefs, <span class="string">"$.notifications"</span>)
+<span class="keyword">end</span></code></pre>
+
+            <h3>Create JSON Programmatically</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    json: <span class="class-name">SIMPLE_SQL_JSON</span>
+    obj: <span class="class-name">STRING_32</span>
+<span class="keyword">do</span>
+    <span class="keyword">create</span> json.make (db)
+
+    obj := json.json_object (&lt;&lt;
+        [<span class="string">"name"</span>, <span class="string">"Alice"</span>],
+        [<span class="string">"age"</span>, 30],
+        [<span class="string">"active"</span>, <span class="keyword">True</span>]
+    &gt;&gt;)
+    <span class="comment">-- Result: {"name":"Alice","age":30,"active":true}</span>
+<span class="keyword">end</span></code></pre>
+
+            <h3>Query with JSON Functions in SQL</h3>
+            <pre><code class="eiffel"><span class="comment">-- Find users with dark theme</span>
+result := db.query (<span class="string">"SELECT * FROM settings WHERE json_extract(preferences, '$.theme') = 'dark'"</span>)
+
+<span class="comment">-- Get all unique themes</span>
+result := db.query (<span class="string">"SELECT DISTINCT json_extract(preferences, '$.theme') as theme FROM settings"</span>)</code></pre>
+
+            <div class="callout tip">
+                <div class="callout-title">JSON Path Syntax</div>
+                <p>Use <code>$</code> for root, <code>.key</code> for object access, <code>[n]</code> for array index.<br>
+                Examples: <code>$.name</code>, <code>$.items[0]</code>, <code>$.users[0].email</code></p>
+            </div>
+
+            <div class="doc-footer">
+                <p><a href="fts5.html">&larr; Full-Text Search</a> | <a href="audit.html">Audit Tracking &rarr;</a></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

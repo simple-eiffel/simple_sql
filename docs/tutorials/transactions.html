@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions - SIMPLE_SQL Tutorial</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="../index.html">Overview</a></li>
+                    <li><a href="../getting-started.html">Quick Start</a></li>
+                    <li><a href="../installation.html">Installation</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Tutorials</h3>
+                <ul>
+                    <li><a href="basic-crud.html">Basic CRUD</a></li>
+                    <li><a href="query-builder.html">Query Builder</a></li>
+                    <li><a href="transactions.html" class="active">Transactions</a></li>
+                    <li><a href="soft-deletes.html">Soft Deletes</a></li>
+                    <li><a href="eager-loading.html">Eager Loading</a></li>
+                    <li><a href="pagination.html">Pagination</a></li>
+                    <li><a href="full-text-search.html">Full-Text Search</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Mock Applications</h3>
+                <ul>
+                    <li><a href="../mock-apps/todo.html">TODO App</a></li>
+                    <li><a href="../mock-apps/cpm.html">CPM Scheduler</a></li>
+                    <li><a href="../mock-apps/habit-tracker.html">Habit Tracker</a></li>
+                    <li><a href="../mock-apps/dms.html">Document Management</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">Home</a> <span>&rsaquo;</span> <a href="../index.html#tutorials">Tutorials</a> <span>&rsaquo;</span> Transactions
+            </div>
+
+            <h1>Transactions</h1>
+            <p>Group multiple operations into atomic units. Either all succeed or all fail together.</p>
+
+            <h2>Why Use Transactions?</h2>
+            <ul>
+                <li><strong>Atomicity</strong> - All or nothing execution</li>
+                <li><strong>Consistency</strong> - Database stays valid</li>
+                <li><strong>Isolation</strong> - Operations don't interfere</li>
+                <li><strong>Performance</strong> - Batch writes are faster</li>
+            </ul>
+
+            <h2>Basic Transaction</h2>
+            <pre><code class="eiffel">db.begin_transaction
+
+db.insert_into (<span class="string">"orders"</span>)
+    .value (<span class="string">"user_id"</span>, 1)
+    .value (<span class="string">"total"</span>, 99.99)
+    .execute
+
+db.insert_into (<span class="string">"order_items"</span>)
+    .value (<span class="string">"order_id"</span>, db.last_insert_rowid)
+    .value (<span class="string">"product_id"</span>, 42)
+    .value (<span class="string">"quantity"</span>, 2)
+    .execute
+
+db.commit  <span class="comment">-- Make changes permanent</span></code></pre>
+
+            <h2>Rollback on Error</h2>
+            <pre><code class="eiffel">db.begin_transaction
+
+db.insert_into (<span class="string">"accounts"</span>).value (<span class="string">"balance"</span>, 100).execute
+<span class="keyword">local</span>
+    success: <span class="class-name">BOOLEAN</span>
+<span class="keyword">do</span>
+    success := process_payment
+
+    <span class="keyword">if</span> success <span class="keyword">then</span>
+        db.commit
+    <span class="keyword">else</span>
+        db.rollback  <span class="comment">-- Undo all changes</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span></code></pre>
+
+            <h2>Check Transaction Status</h2>
+            <pre><code class="eiffel"><span class="keyword">if</span> db.in_transaction <span class="keyword">then</span>
+    print (<span class="string">"Transaction is active%N"</span>)
+<span class="keyword">end</span></code></pre>
+
+            <h2>Money Transfer Example</h2>
+            <pre><code class="eiffel">transfer_funds (a_from, a_to: INTEGER; a_amount: REAL_64)
+    <span class="keyword">local</span>
+        from_balance: <span class="class-name">REAL_64</span>
+        result: <span class="class-name">SIMPLE_SQL_RESULT</span>
+    <span class="keyword">do</span>
+        db.begin_transaction
+
+        <span class="comment">-- Check source has enough funds</span>
+        result := db.select_from (<span class="string">"accounts"</span>)
+            .columns (<span class="string">"balance"</span>)
+            .where (<span class="string">"id = ?"</span>, a_from)
+            .execute
+
+        <span class="keyword">if</span> <span class="keyword">attached</span> result.first <span class="keyword">as</span> row <span class="keyword">then</span>
+            from_balance := row.real_value (<span class="string">"balance"</span>)
+
+            <span class="keyword">if</span> from_balance >= a_amount <span class="keyword">then</span>
+                <span class="comment">-- Debit source</span>
+                db.update (<span class="string">"accounts"</span>)
+                    .set_raw (<span class="string">"balance"</span>, <span class="string">"balance - "</span> + a_amount.out)
+                    .where (<span class="string">"id = ?"</span>, a_from)
+                    .execute
+
+                <span class="comment">-- Credit destination</span>
+                db.update (<span class="string">"accounts"</span>)
+                    .set_raw (<span class="string">"balance"</span>, <span class="string">"balance + "</span> + a_amount.out)
+                    .where (<span class="string">"id = ?"</span>, a_to)
+                    .execute
+
+                db.commit
+                print (<span class="string">"Transfer successful%N"</span>)
+            <span class="keyword">else</span>
+                db.rollback
+                print (<span class="string">"Insufficient funds%N"</span>)
+            <span class="keyword">end</span>
+        <span class="keyword">else</span>
+            db.rollback
+            print (<span class="string">"Account not found%N"</span>)
+        <span class="keyword">end</span>
+    <span class="keyword">end</span></code></pre>
+
+            <h2>Bulk Insert Performance</h2>
+            <p>Transactions dramatically improve bulk insert performance.</p>
+            <pre><code class="eiffel">insert_many_records (a_records: ARRAYED_LIST [TUPLE [name: STRING; value: INTEGER]])
+    <span class="keyword">do</span>
+        <span class="comment">-- Without transaction: slow (each insert is a separate transaction)</span>
+        <span class="comment">-- With transaction: fast (all inserts in one transaction)</span>
+
+        db.begin_transaction
+        <span class="keyword">across</span> a_records <span class="keyword">as</span> r <span class="keyword">loop</span>
+            db.insert_into (<span class="string">"data"</span>)
+                .value (<span class="string">"name"</span>, r.name)
+                .value (<span class="string">"value"</span>, r.value)
+                .execute
+        <span class="keyword">end</span>
+        db.commit
+    <span class="keyword">end</span></code></pre>
+
+            <div class="callout tip">
+                <div class="callout-title">Performance Tip</div>
+                <p>Wrapping 1000 inserts in a transaction can be 50x faster than individual inserts. SQLite must sync to disk after each transaction, so fewer transactions = less disk I/O.</p>
+            </div>
+
+            <h2>Savepoints (Nested Transactions)</h2>
+            <p>SQLite supports savepoints for partial rollback within a transaction.</p>
+            <pre><code class="eiffel">db.begin_transaction
+
+db.execute (<span class="string">"SAVEPOINT before_risky_operation"</span>)
+
+<span class="comment">-- Try something that might fail</span>
+<span class="keyword">if</span> risky_operation_failed <span class="keyword">then</span>
+    db.execute (<span class="string">"ROLLBACK TO before_risky_operation"</span>)
+    <span class="comment">-- Continue with rest of transaction</span>
+<span class="keyword">end</span>
+
+db.commit</code></pre>
+
+            <div class="callout warning">
+                <div class="callout-title">Always Close Transactions</div>
+                <p>An unclosed transaction can lock the database. Always ensure <code>commit</code> or <code>rollback</code> is called, even when errors occur.</p>
+            </div>
+
+            <h2>Next Steps</h2>
+            <ul>
+                <li><a href="soft-deletes.html">Soft Deletes</a> - Safe deletion patterns</li>
+                <li><a href="eager-loading.html">Eager Loading</a> - Prevent N+1 queries</li>
+                <li><a href="../api/database.html">API Reference</a> - Transaction features</li>
+            </ul>
+
+            <div class="doc-footer">
+                <p><a href="query-builder.html">&larr; Query Builder</a> | <a href="soft-deletes.html">Soft Deletes &rarr;</a></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Query Builder - SIMPLE_SQL Tutorial</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="../index.html">Overview</a></li>
+                    <li><a href="../getting-started.html">Quick Start</a></li>
+                    <li><a href="../installation.html">Installation</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Tutorials</h3>
+                <ul>
+                    <li><a href="basic-crud.html">Basic CRUD</a></li>
+                    <li><a href="query-builder.html" class="active">Query Builder</a></li>
+                    <li><a href="transactions.html">Transactions</a></li>
+                    <li><a href="soft-deletes.html">Soft Deletes</a></li>
+                    <li><a href="eager-loading.html">Eager Loading</a></li>
+                    <li><a href="pagination.html">Pagination</a></li>
+                    <li><a href="full-text-search.html">Full-Text Search</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Mock Applications</h3>
+                <ul>
+                    <li><a href="../mock-apps/todo.html">TODO App</a></li>
+                    <li><a href="../mock-apps/cpm.html">CPM Scheduler</a></li>
+                    <li><a href="../mock-apps/habit-tracker.html">Habit Tracker</a></li>
+                    <li><a href="../mock-apps/dms.html">Document Management</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">Home</a> <span>&rsaquo;</span> <a href="../index.html#tutorials">Tutorials</a> <span>&rsaquo;</span> Query Builder
+            </div>
+
+            <h1>Query Builder</h1>
+            <p>Build complex SQL queries using the fluent API. Type-safe, readable, and SQL injection-proof.</p>
+
+            <h2>Why Use the Query Builder?</h2>
+            <ul>
+                <li><strong>Readable</strong> - Method names match SQL keywords</li>
+                <li><strong>Type-safe</strong> - Compiler catches errors</li>
+                <li><strong>Secure</strong> - Parameters are automatically escaped</li>
+                <li><strong>Chainable</strong> - Build queries incrementally</li>
+            </ul>
+
+            <h2>SELECT Queries</h2>
+
+            <h3>Basic Select</h3>
+            <pre><code class="eiffel">result := db.select_from (<span class="string">"users"</span>).execute
+<span class="comment">-- SELECT * FROM users</span></code></pre>
+
+            <h3>Select Specific Columns</h3>
+            <pre><code class="eiffel">result := db.select_from (<span class="string">"users"</span>)
+    .columns (<span class="string">"id, name, email"</span>)
+    .execute
+<span class="comment">-- SELECT id, name, email FROM users</span></code></pre>
+
+            <h3>With WHERE Clause</h3>
+            <pre><code class="eiffel">result := db.select_from (<span class="string">"users"</span>)
+    .where (<span class="string">"active = ?"</span>, 1)
+    .execute
+<span class="comment">-- SELECT * FROM users WHERE active = 1</span>
+
+<span class="comment">-- Multiple conditions</span>
+result := db.select_from (<span class="string">"users"</span>)
+    .where (<span class="string">"active = 1"</span>)
+    .and_where (<span class="string">"created_at > ?"</span>, <span class="string">"2024-01-01"</span>)
+    .execute</code></pre>
+
+            <h3>Ordering and Limiting</h3>
+            <pre><code class="eiffel">result := db.select_from (<span class="string">"users"</span>)
+    .order_by (<span class="string">"created_at DESC"</span>)
+    .limit (10)
+    .offset (20)  <span class="comment">-- Skip first 20</span>
+    .execute</code></pre>
+
+            <h3>DISTINCT</h3>
+            <pre><code class="eiffel">result := db.select_from (<span class="string">"orders"</span>)
+    .columns (<span class="string">"customer_id"</span>)
+    .distinct
+    .execute
+<span class="comment">-- SELECT DISTINCT customer_id FROM orders</span></code></pre>
+
+            <h2>JOINs</h2>
+            <pre><code class="eiffel"><span class="comment">-- INNER JOIN</span>
+result := db.select_from (<span class="string">"orders"</span>)
+    .columns (<span class="string">"orders.id, orders.total, users.name"</span>)
+    .join (<span class="string">"users"</span>, <span class="string">"users.id = orders.user_id"</span>)
+    .execute
+
+<span class="comment">-- LEFT JOIN</span>
+result := db.select_from (<span class="string">"users"</span>)
+    .columns (<span class="string">"users.name, COUNT(orders.id) as order_count"</span>)
+    .left_join (<span class="string">"orders"</span>, <span class="string">"orders.user_id = users.id"</span>)
+    .group_by (<span class="string">"users.id"</span>)
+    .execute</code></pre>
+
+            <h2>GROUP BY and HAVING</h2>
+            <pre><code class="eiffel">result := db.select_from (<span class="string">"orders"</span>)
+    .columns (<span class="string">"user_id, COUNT(*) as order_count, SUM(total) as total_spent"</span>)
+    .group_by (<span class="string">"user_id"</span>)
+    .having (<span class="string">"order_count >= 5"</span>)
+    .order_by (<span class="string">"total_spent DESC"</span>)
+    .execute</code></pre>
+
+            <h2>INSERT Queries</h2>
+            <pre><code class="eiffel">db.insert_into (<span class="string">"users"</span>)
+    .value (<span class="string">"name"</span>, <span class="string">"Alice"</span>)
+    .value (<span class="string">"email"</span>, <span class="string">"alice@example.com"</span>)
+    .value (<span class="string">"age"</span>, 30)
+    .execute
+
+<span class="comment">-- INSERT OR REPLACE (upsert)</span>
+db.insert_into (<span class="string">"settings"</span>)
+    .or_replace
+    .value (<span class="string">"key"</span>, <span class="string">"theme"</span>)
+    .value (<span class="string">"value"</span>, <span class="string">"dark"</span>)
+    .execute</code></pre>
+
+            <h2>UPDATE Queries</h2>
+            <pre><code class="eiffel">db.update (<span class="string">"users"</span>)
+    .set (<span class="string">"name"</span>, <span class="string">"Alice Smith"</span>)
+    .set (<span class="string">"updated_at"</span>, <span class="string">"datetime('now')"</span>)
+    .where (<span class="string">"id = ?"</span>, 1)
+    .execute
+
+<span class="comment">-- Increment a counter</span>
+db.update (<span class="string">"articles"</span>)
+    .set_raw (<span class="string">"view_count"</span>, <span class="string">"view_count + 1"</span>)
+    .where (<span class="string">"id = ?"</span>, article_id)
+    .execute</code></pre>
+
+            <h2>DELETE Queries</h2>
+            <pre><code class="eiffel">db.delete_from (<span class="string">"users"</span>)
+    .where (<span class="string">"id = ?"</span>, user_id)
+    .execute
+
+<span class="comment">-- Delete old records</span>
+db.delete_from (<span class="string">"logs"</span>)
+    .where (<span class="string">"created_at < datetime('now', '-30 days')"</span>)
+    .execute</code></pre>
+
+            <h2>Debugging: View Generated SQL</h2>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    builder: <span class="class-name">SIMPLE_SQL_SELECT_BUILDER</span>
+<span class="keyword">do</span>
+    builder := db.select_from (<span class="string">"users"</span>)
+        .columns (<span class="string">"id, name"</span>)
+        .where (<span class="string">"active = 1"</span>)
+        .order_by (<span class="string">"name"</span>)
+        .limit (10)
+
+    <span class="comment">-- See the SQL without executing</span>
+    print (builder.to_sql)
+    <span class="comment">-- Output: SELECT id, name FROM users WHERE active = 1 ORDER BY name LIMIT 10</span>
+
+    <span class="comment">-- Then execute</span>
+    result := builder.execute
+<span class="keyword">end</span></code></pre>
+
+            <h2>Building Queries Dynamically</h2>
+            <pre><code class="eiffel">build_search_query (a_term: detachable STRING; a_category: detachable INTEGER; a_limit: INTEGER): SIMPLE_SQL_RESULT
+    <span class="keyword">local</span>
+        builder: <span class="class-name">SIMPLE_SQL_SELECT_BUILDER</span>
+    <span class="keyword">do</span>
+        builder := db.select_from (<span class="string">"products"</span>)
+            .columns (<span class="string">"id, name, price"</span>)
+
+        <span class="keyword">if</span> <span class="keyword">attached</span> a_term <span class="keyword">as</span> term <span class="keyword">then</span>
+            builder := builder.where (<span class="string">"name LIKE ?"</span>, <span class="string">"%%"</span> + term + <span class="string">"%%"</span>)
+        <span class="keyword">end</span>
+
+        <span class="keyword">if</span> <span class="keyword">attached</span> a_category <span class="keyword">as</span> cat <span class="keyword">then</span>
+            <span class="keyword">if</span> <span class="keyword">attached</span> a_term <span class="keyword">then</span>
+                builder := builder.and_where (<span class="string">"category_id = ?"</span>, cat)
+            <span class="keyword">else</span>
+                builder := builder.where (<span class="string">"category_id = ?"</span>, cat)
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+
+        builder := builder.order_by (<span class="string">"name"</span>).limit (a_limit)
+        Result := builder.execute
+    <span class="keyword">end</span></code></pre>
+
+            <h2>Next Steps</h2>
+            <ul>
+                <li><a href="transactions.html">Transactions</a> - Group operations atomically</li>
+                <li><a href="soft-deletes.html">Soft Deletes</a> - Use soft delete scopes</li>
+                <li><a href="../api/select-builder.html">API Reference</a> - Full SELECT builder documentation</li>
+            </ul>
+
+            <div class="doc-footer">
+                <p><a href="basic-crud.html">&larr; Basic CRUD</a> | <a href="transactions.html">Transactions &rarr;</a></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

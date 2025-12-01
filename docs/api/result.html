@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMPLE_SQL_RESULT - API Reference</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>SIMPLE_SQL</h1>
+                <span class="version">v1.0 - 460+ Tests</span>
+            </div>
+
+            <div class="nav-section">
+                <h3>Getting Started</h3>
+                <ul>
+                    <li><a href="../index.html">Overview</a></li>
+                    <li><a href="../getting-started.html">Quick Start</a></li>
+                    <li><a href="../installation.html">Installation</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Core API</h3>
+                <ul>
+                    <li><a href="database.html">SIMPLE_SQL_DATABASE</a></li>
+                    <li><a href="result.html" class="active">SIMPLE_SQL_RESULT</a></li>
+                    <li><a href="row.html">SIMPLE_SQL_ROW</a></li>
+                    <li><a href="prepared-statement.html">SIMPLE_SQL_PREPARED_STATEMENT</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Query Builders</h3>
+                <ul>
+                    <li><a href="select-builder.html">SIMPLE_SQL_SELECT_BUILDER</a></li>
+                    <li><a href="insert-builder.html">SIMPLE_SQL_INSERT_BUILDER</a></li>
+                    <li><a href="update-builder.html">SIMPLE_SQL_UPDATE_BUILDER</a></li>
+                    <li><a href="delete-builder.html">SIMPLE_SQL_DELETE_BUILDER</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Advanced Features</h3>
+                <ul>
+                    <li><a href="eager-loader.html">Eager Loading (N+1)</a></li>
+                    <li><a href="paginator.html">Pagination</a></li>
+                    <li><a href="query-monitor.html">Query Monitor</a></li>
+                    <li><a href="fts5.html">Full-Text Search</a></li>
+                    <li><a href="json.html">JSON Support</a></li>
+                    <li><a href="audit.html">Audit Tracking</a></li>
+                    <li><a href="vector.html">Vector Embeddings</a></li>
+                </ul>
+            </div>
+
+            <div class="nav-section">
+                <h3>Mock Applications</h3>
+                <ul>
+                    <li><a href="../mock-apps/todo.html">TODO App</a></li>
+                    <li><a href="../mock-apps/cpm.html">CPM Scheduler</a></li>
+                    <li><a href="../mock-apps/habit-tracker.html">Habit Tracker</a></li>
+                    <li><a href="../mock-apps/dms.html">Document Management</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="breadcrumbs">
+                <a href="../index.html">Home</a> <span>&rsaquo;</span> <a href="../index.html#api">API</a> <span>&rsaquo;</span> SIMPLE_SQL_RESULT
+            </div>
+
+            <h1>SIMPLE_SQL_RESULT</h1>
+            <p>Query result container holding all rows in memory. Supports iteration via <code>across</code> loops.</p>
+            <p><a class="eis-link" href="eiffel:?class=SIMPLE_SQL_RESULT">View Source</a></p>
+
+            <div class="callout info">
+                <div class="callout-title">Memory vs Streaming</div>
+                <p>SIMPLE_SQL_RESULT loads all rows into memory. For large result sets, consider using
+                <a href="database.html#streaming">SIMPLE_SQL_CURSOR</a> for lazy iteration or
+                <a href="database.html#streaming">query_stream</a> for callback-based processing.</p>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Access</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">rows: ARRAYED_LIST [SIMPLE_SQL_ROW]</div>
+                        <div class="api-feature-desc">All rows in the result set.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">first: detachable SIMPLE_SQL_ROW</div>
+                        <div class="api-feature-desc">First row in results, or Void if empty.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">column_names: ARRAYED_LIST [STRING_8]</div>
+                        <div class="api-feature-desc">Names of all columns in the result set.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Status</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">is_empty: BOOLEAN</div>
+                        <div class="api-feature-desc">True if no rows were returned.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">count: INTEGER</div>
+                        <div class="api-feature-desc">Number of rows in the result set.</div>
+                    </div>
+                    <div class="api-feature">
+                        <div class="api-feature-sig">column_count: INTEGER</div>
+                        <div class="api-feature-desc">Number of columns in each row.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="api-class">
+                <div class="api-class-header">
+                    <h2>Iteration</h2>
+                </div>
+                <div class="api-class-body">
+                    <div class="api-feature">
+                        <div class="api-feature-sig">new_cursor: ITERATION_CURSOR [SIMPLE_SQL_ROW]</div>
+                        <div class="api-feature-desc">Create cursor for <code>across</code> iteration. Returns rows directly.</div>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Examples</h2>
+
+            <h3>Basic Iteration</h3>
+            <pre><code class="eiffel"><span class="keyword">local</span>
+    result: <span class="class-name">SIMPLE_SQL_RESULT</span>
+<span class="keyword">do</span>
+    result := db.query (<span class="string">"SELECT id, name FROM users"</span>)
+
+    <span class="keyword">across</span> result <span class="keyword">as</span> row <span class="keyword">loop</span>
+        print (row.integer_value (<span class="string">"id"</span>).out + <span class="string">": "</span> + row.string_value (<span class="string">"name"</span>) + <span class="string">"%N"</span>)
+    <span class="keyword">end</span>
+<span class="keyword">end</span></code></pre>
+
+            <h3>Check for Results</h3>
+            <pre><code class="eiffel">result := db.select_from (<span class="string">"users"</span>).where (<span class="string">"email = ?"</span>, <span class="string">"alice@example.com"</span>).execute
+
+<span class="keyword">if</span> result.is_empty <span class="keyword">then</span>
+    print (<span class="string">"User not found%N"</span>)
+<span class="keyword">elseif</span> <span class="keyword">attached</span> result.first <span class="keyword">as</span> user <span class="keyword">then</span>
+    print (<span class="string">"Found: "</span> + user.string_value (<span class="string">"name"</span>) + <span class="string">"%N"</span>)
+<span class="keyword">end</span></code></pre>
+
+            <h3>Access Column Names</h3>
+            <pre><code class="eiffel">result := db.query (<span class="string">"SELECT * FROM users LIMIT 1"</span>)
+
+print (<span class="string">"Columns: "</span>)
+<span class="keyword">across</span> result.column_names <span class="keyword">as</span> col <span class="keyword">loop</span>
+    print (col + <span class="string">", "</span>)
+<span class="keyword">end</span></code></pre>
+
+            <div class="doc-footer">
+                <p><a href="database.html">&larr; SIMPLE_SQL_DATABASE</a> | <a href="row.html">SIMPLE_SQL_ROW &rarr;</a></p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
