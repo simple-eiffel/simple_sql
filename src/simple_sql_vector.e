@@ -1,0 +1,308 @@
+note
+	description: "[
+		Vector representation for embedding storage and similarity calculations.
+
+		Wraps an array of REAL_64 values with serialization to/from BLOB format
+		for SQLite storage. Provides mathematical operations for ML/AI use cases.
+
+		Usage:
+			-- Create from array
+			create vec.make_from_array (<<0.1, 0.2, 0.3, 0.4>>)
+
+			-- Create zero vector
+			create vec.make_zero (384)  -- 384-dimensional zero vector
+
+			-- Access elements
+			val := vec.item (1)  -- 1-based indexing
+			vec.put (0.5, 1)     -- Modify element
+
+			-- Convert to/from BLOB
+			blob := vec.to_blob
+			create vec2.make_from_blob (blob)
+
+			-- Mathematical operations
+			magnitude := vec.magnitude
+			normalized := vec.normalized
+			dot := vec.dot_product (other_vec)
+	]"
+	date: "$Date$"
+	revision: "$Revision$"
+
+class
+	SIMPLE_SQL_VECTOR
+
+inherit
+	ANY
+		redefine
+			is_equal,
+			out
+		end
+
+create
+	make_from_array,
+	make_from_blob,
+	make_zero
+
+feature {NONE} -- Initialization
+
+	make_from_array (a_values: ARRAY [REAL_64])
+			-- Create vector from array of values
+		require
+			values_not_empty: not a_values.is_empty
+		do
+			create values.make_from_array (a_values)
+		ensure
+			dimension_set: dimension = a_values.count
+			values_copied: across 1 |..| dimension as i all item (i) = a_values [a_values.lower + i - 1] end
+		end
+
+	make_from_blob (a_blob: MANAGED_POINTER)
+			-- Create vector from BLOB data (IEEE 754 double-precision format)
+		require
+			blob_not_void: a_blob /= Void
+			blob_valid_size: a_blob.count \\ Real_64_bytes = 0
+			blob_not_empty: a_blob.count > 0
+		local
+			l_count, i: INTEGER
+		do
+			l_count := a_blob.count // Real_64_bytes
+			create values.make_filled (0.0, 1, l_count)
+			from i := 1 until i > l_count loop
+				values [i] := a_blob.read_real_64 ((i - 1) * Real_64_bytes)
+				i := i + 1
+			end
+		ensure
+			dimension_set: dimension = a_blob.count // Real_64_bytes
+		end
+
+	make_zero (a_dimension: INTEGER)
+			-- Create zero vector of given dimension
+		require
+			positive_dimension: a_dimension > 0
+		do
+			create values.make_filled (0.0, 1, a_dimension)
+		ensure
+			dimension_set: dimension = a_dimension
+			all_zero: across 1 |..| dimension as i all item (i) = 0.0 end
+		end
+
+feature -- Access
+
+	dimension: INTEGER
+			-- Number of elements in vector
+		do
+			Result := values.count
+		end
+
+	item alias "[]" (a_index: INTEGER): REAL_64 assign put
+			-- Element at index (1-based)
+		require
+			valid_index: a_index >= 1 and a_index <= dimension
+		do
+			Result := values [a_index]
+		end
+
+	values: ARRAY [REAL_64]
+			-- Underlying array of values
+
+feature -- Element change
+
+	put (a_value: REAL_64; a_index: INTEGER)
+			-- Set element at index
+		require
+			valid_index: a_index >= 1 and a_index <= dimension
+		do
+			values [a_index] := a_value
+		ensure
+			value_set: item (a_index) = a_value
+		end
+
+feature -- Conversion
+
+	to_blob: MANAGED_POINTER
+			-- Convert to BLOB for SQLite storage (IEEE 754 double-precision)
+		local
+			i: INTEGER
+		do
+			create Result.make (dimension * Real_64_bytes)
+			from i := 1 until i > dimension loop
+				Result.put_real_64 (values [i], (i - 1) * Real_64_bytes)
+				i := i + 1
+			end
+		ensure
+			blob_size_correct: Result.count = dimension * Real_64_bytes
+		end
+
+	to_array: ARRAY [REAL_64]
+			-- Copy of values as array
+		do
+			Result := values.twin
+		ensure
+			same_dimension: Result.count = dimension
+			values_match: across 1 |..| dimension as i all Result [i] = item (i) end
+		end
+
+feature -- Mathematical operations
+
+	magnitude: REAL_64
+			-- Euclidean norm (L2 norm) of vector
+		local
+			sum: REAL_64
+			i: INTEGER
+		do
+			from i := 1 until i > dimension loop
+				sum := sum + values [i] * values [i]
+				i := i + 1
+			end
+			Result := {DOUBLE_MATH}.sqrt (sum)
+		ensure
+			non_negative: Result >= 0.0
+		end
+
+	dot_product (a_other: SIMPLE_SQL_VECTOR): REAL_64
+			-- Dot product with another vector
+		require
+			same_dimension: a_other.dimension = dimension
+		local
+			i: INTEGER
+		do
+			from i := 1 until i > dimension loop
+				Result := Result + values [i] * a_other.values [i]
+				i := i + 1
+			end
+		end
+
+	normalized: SIMPLE_SQL_VECTOR
+			-- Unit vector in same direction (magnitude = 1)
+		local
+			mag: REAL_64
+			norm_values: ARRAY [REAL_64]
+			i: INTEGER
+		do
+			mag := magnitude
+			create norm_values.make_filled (0.0, 1, dimension)
+			if mag > 0.0 then
+				from i := 1 until i > dimension loop
+					norm_values [i] := values [i] / mag
+					i := i + 1
+				end
+			end
+			create Result.make_from_array (norm_values)
+		ensure
+			same_dimension: Result.dimension = dimension
+			unit_magnitude_when_nonzero: magnitude > 0.0 implies (Result.magnitude - 1.0).abs < 1.0e-10
+		end
+
+	add (a_other: SIMPLE_SQL_VECTOR): SIMPLE_SQL_VECTOR
+			-- Vector addition
+		require
+			same_dimension: a_other.dimension = dimension
+		local
+			result_values: ARRAY [REAL_64]
+			i: INTEGER
+		do
+			create result_values.make_filled (0.0, 1, dimension)
+			from i := 1 until i > dimension loop
+				result_values [i] := values [i] + a_other.values [i]
+				i := i + 1
+			end
+			create Result.make_from_array (result_values)
+		ensure
+			same_dimension: Result.dimension = dimension
+		end
+
+	subtract (a_other: SIMPLE_SQL_VECTOR): SIMPLE_SQL_VECTOR
+			-- Vector subtraction
+		require
+			same_dimension: a_other.dimension = dimension
+		local
+			result_values: ARRAY [REAL_64]
+			i: INTEGER
+		do
+			create result_values.make_filled (0.0, 1, dimension)
+			from i := 1 until i > dimension loop
+				result_values [i] := values [i] - a_other.values [i]
+				i := i + 1
+			end
+			create Result.make_from_array (result_values)
+		ensure
+			same_dimension: Result.dimension = dimension
+		end
+
+	scale (a_factor: REAL_64): SIMPLE_SQL_VECTOR
+			-- Scalar multiplication
+		local
+			result_values: ARRAY [REAL_64]
+			i: INTEGER
+		do
+			create result_values.make_filled (0.0, 1, dimension)
+			from i := 1 until i > dimension loop
+				result_values [i] := values [i] * a_factor
+				i := i + 1
+			end
+			create Result.make_from_array (result_values)
+		ensure
+			same_dimension: Result.dimension = dimension
+		end
+
+feature -- Comparison
+
+	is_equal (other: like Current): BOOLEAN
+			-- Are vectors equal (within floating point tolerance)?
+		local
+			i: INTEGER
+		do
+			if dimension = other.dimension then
+				Result := True
+				from i := 1 until i > dimension or not Result loop
+					Result := (values [i] - other.values [i]).abs < Tolerance
+					i := i + 1
+				end
+			end
+		end
+
+	is_zero: BOOLEAN
+			-- Is this a zero vector?
+		local
+			i: INTEGER
+		do
+			Result := True
+			from i := 1 until i > dimension or not Result loop
+				Result := values [i].abs < Tolerance
+				i := i + 1
+			end
+		end
+
+feature -- Output
+
+	out: STRING
+			-- String representation
+		local
+			i: INTEGER
+		do
+			create Result.make (dimension * 10)
+			Result.append ("[")
+			from i := 1 until i > dimension loop
+				if i > 1 then
+					Result.append (", ")
+				end
+				Result.append (values [i].out)
+				i := i + 1
+			end
+			Result.append ("]")
+		end
+
+feature {NONE} -- Constants
+
+	Real_64_bytes: INTEGER = 8
+			-- Size of REAL_64 in bytes (IEEE 754 double-precision)
+
+	Tolerance: REAL_64 = 1.0e-10
+			-- Floating point comparison tolerance
+
+invariant
+	values_exist: values /= Void
+	positive_dimension: dimension > 0
+	one_based_array: values.lower = 1
+
+end

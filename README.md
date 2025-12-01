@@ -6,7 +6,7 @@ A production-quality, easy-to-use wrapper around the Eiffel SQLite3 library, pro
 
 ## Features
 
-### ✅ Implemented (v0.8)
+### ✅ Implemented (v0.9)
 
 **Core Database Operations:**
 - Simple database creation (file-based and in-memory)
@@ -94,8 +94,9 @@ A production-quality, easy-to-use wrapper around the Eiffel SQLite3 library, pro
 - **FTS5 Full-Text Search** with BM25 ranking, Boolean queries, and special character handling
 - **BLOB Handling** with file I/O, hex encoding, and named parameter binding
 - **Automatic Audit/Change Tracking** with trigger-based change capture and JSON storage
-- **Repository Pattern** with generic CRUD operations, find_all, find_by_id, find_where, pagination (NEW)
-- Comprehensive test suite with 250 tests (100% passing)
+- **Repository Pattern** with generic CRUD operations, find_all, find_by_id, find_where, pagination
+- **Vector Embeddings** for ML/AI with similarity search, K-nearest neighbors, cosine/Euclidean distance (NEW)
+- Comprehensive test suite with 272 tests (100% passing)
 
 **Design Principles:**
 - Command-Query Separation throughout
@@ -703,6 +704,69 @@ all_deleted := repo.delete_all
 - `exists` check for ID existence
 - Error status via `has_error`, `last_error_message`
 
+## Vector Embeddings
+
+Store and search vector embeddings for ML/AI applications:
+
+```eiffel
+-- Create vector store
+create store.make (db, "embeddings")
+
+-- Create vectors from arrays
+create vec.make_from_array (<<0.1, 0.2, 0.3, 0.4, 0.5>>)
+
+-- Insert with optional metadata (JSON)
+id := store.insert (vec, "{%"source%": %"document.txt%", %"chunk%": 1}")
+
+-- Retrieve by ID
+if attached store.find_by_id (id) as retrieved then
+    print ("Dimension: " + retrieved.dimension.out)
+end
+
+-- K-nearest neighbor search (cosine similarity)
+create query.make_from_array (<<0.15, 0.25, 0.35, 0.45, 0.55>>)
+results := store.find_nearest (query, 10)  -- Top 10 most similar
+across results as ic loop
+    print ("ID: " + ic.id.out + " Score: " + ic.score.out)
+end
+
+-- Find all vectors above similarity threshold
+similar := store.find_within_threshold (query, 0.8)  -- Cosine >= 0.8
+
+-- K-nearest by Euclidean distance
+nearest := store.find_nearest_euclidean (query, 5)
+
+-- Direct similarity calculations
+create sim.make
+cosine := sim.cosine_similarity (vec1, vec2)      -- -1.0 to 1.0
+euclidean := sim.euclidean_distance (vec1, vec2)  -- >= 0
+manhattan := sim.manhattan_distance (vec1, vec2)  -- >= 0
+is_similar := sim.is_similar (vec1, vec2, 0.9)    -- Boolean check
+
+-- Vector math operations
+normalized := vec.normalized       -- Unit vector (magnitude = 1)
+magnitude := vec.magnitude         -- Euclidean norm
+dot := vec.dot_product (other)     -- Inner product
+sum := vec.add (other)             -- Vector addition
+diff := vec.subtract (other)       -- Vector subtraction
+scaled := vec.scale (2.0)          -- Scalar multiplication
+
+-- BLOB serialization for custom storage
+blob := vec.to_blob                -- Convert to MANAGED_POINTER
+create vec2.make_from_blob (blob)  -- Restore from BLOB
+```
+
+**Features:**
+- `SIMPLE_SQL_VECTOR` - Vector representation with math operations
+- `SIMPLE_SQL_VECTOR_STORE` - Persistent storage with CRUD and search
+- `SIMPLE_SQL_SIMILARITY` - Distance and similarity metrics
+- Cosine similarity, Euclidean distance, Manhattan distance
+- K-nearest neighbor search
+- Threshold-based similarity filtering
+- BLOB serialization (IEEE 754 double-precision)
+- Metadata storage (JSON) for each vector
+- Use cases: RAG, semantic search, recommendation systems, ML feature storage
+
 ## BLOB Handling
 
 ```eiffel
@@ -957,7 +1021,7 @@ SIMPLE_SQL_FTS5_QUERY         -- FTS5 query builder
     ├── order_by_rank()        -- Sort by relevance
     └── execute()              -- Run search
 
-SIMPLE_SQL_REPOSITORY [G]     -- Generic repository pattern (NEW)
+SIMPLE_SQL_REPOSITORY [G]     -- Generic repository pattern
     ├── find_all()             -- Get all entities
     ├── find_by_id()           -- Find by primary key
     ├── find_where()           -- Conditional query
@@ -972,6 +1036,33 @@ SIMPLE_SQL_REPOSITORY [G]     -- Generic repository pattern (NEW)
     ├── delete()               -- Remove by ID
     ├── delete_where()         -- Bulk delete
     └── delete_all()           -- Clear table
+
+SIMPLE_SQL_VECTOR             -- Vector embeddings (NEW)
+    ├── make_from_array()      -- Create from REAL_64 array
+    ├── make_from_blob()       -- Create from BLOB data
+    ├── to_blob()              -- Serialize to BLOB
+    ├── magnitude()            -- Euclidean norm
+    ├── normalized()           -- Unit vector
+    ├── dot_product()          -- Inner product
+    ├── add() / subtract()     -- Vector math
+    └── scale()                -- Scalar multiplication
+
+SIMPLE_SQL_VECTOR_STORE       -- Vector storage and search (NEW)
+    ├── insert()               -- Store vector with metadata
+    ├── find_by_id()           -- Retrieve by ID
+    ├── find_nearest()         -- K-NN by cosine similarity
+    ├── find_nearest_euclidean()-- K-NN by Euclidean distance
+    ├── find_within_threshold()-- Similarity threshold filter
+    ├── update() / delete()    -- CRUD operations
+    └── count() / exists()     -- Queries
+
+SIMPLE_SQL_SIMILARITY         -- Distance/similarity metrics (NEW)
+    ├── cosine_similarity()    -- Angle-based (-1 to 1)
+    ├── euclidean_distance()   -- L2 distance
+    ├── manhattan_distance()   -- L1 distance
+    ├── angular_distance()     -- 1 - cosine
+    ├── is_similar()           -- Threshold check
+    └── find_most_similar()    -- Best match in array
 ```
 
 ## Testing
@@ -990,12 +1081,13 @@ Comprehensive test suite using EiffelStudio AutoTest framework:
 - `TEST_SIMPLE_SQL_PRAGMA_CONFIG` - PRAGMA settings (17 tests)
 - `TEST_SIMPLE_SQL_PREPARED_STATEMENT` - Prepared statements (10 tests)
 - `TEST_SIMPLE_SQL_QUERY_BUILDERS` - Query builders (30 tests)
-- `TEST_SIMPLE_SQL_REPOSITORY` - Repository pattern (23 tests) ✅ NEW
+- `TEST_SIMPLE_SQL_REPOSITORY` - Repository pattern (23 tests)
 - `TEST_SIMPLE_SQL_SCHEMA` - Schema introspection (11 tests)
 - `TEST_SIMPLE_SQL_STREAMING` - Result streaming (19 tests)
+- `TEST_SIMPLE_SQL_VECTOR` - Vector embeddings (22 tests) ✅ NEW
 - `TEST_BLOB_DEBUG` - Debug utilities (1 test)
 
-**Total: 250 tests (100% passing)**
+**Total: 272 tests (100% passing)**
 
 All tests include proper setup/teardown with `on_prepare`/`on_clean` for isolated execution.
 
@@ -1093,7 +1185,24 @@ All tests include proper setup/teardown with `on_prepare`/`on_clean` for isolate
 - Bulk update and delete operations
 - Save (insert-or-update) semantics
 
-### Phase 5: Enterprise Features (Future)
+### ✅ Phase 5: Specialized Features (PARTIALLY COMPLETE)
+
+**Vector Embeddings** ✅
+- `SIMPLE_SQL_VECTOR` - Vector representation with math operations
+- `SIMPLE_SQL_VECTOR_STORE` - Persistent storage with CRUD
+- `SIMPLE_SQL_SIMILARITY` - Distance and similarity metrics
+- Cosine similarity, Euclidean distance, Manhattan distance
+- K-nearest neighbor search
+- Threshold-based similarity filtering
+- BLOB serialization (IEEE 754 double-precision)
+- Metadata storage (JSON) for each vector
+
+**Advanced Backup** (Future)
+- Online backup API
+- Incremental backup
+- Export/import formats (CSV, JSON, SQL dump)
+
+### Phase 6: Enterprise Features (Future)
 
 **Multi-Database Support**
 - Database abstraction layer
@@ -1160,10 +1269,10 @@ Contributions welcome! Please ensure:
 
 ## Status
 
-**Current Version:** 0.8
+**Current Version:** 0.9
 **Stability:** Beta - Core API stable
-**Production Ready:** Phases 1-4 complete. Core features, FTS5 full-text search, BLOB handling, JSON1 extension, audit tracking, and repository pattern all production-ready.
-**Test Coverage:** 250 tests (100% passing)
+**Production Ready:** Phases 1-4 complete, Phase 5 partially complete. Core features, FTS5 full-text search, BLOB handling, JSON1 extension, audit tracking, repository pattern, and vector embeddings all production-ready.
+**Test Coverage:** 272 tests (100% passing)
 **SQLite Version:** 3.51.1 (via eiffel_sqlite_2025 v1.0.0)
 
 ---
