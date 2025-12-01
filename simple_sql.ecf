@@ -12,6 +12,7 @@
 		<setting name="console_application" value="true"/>
 		<setting name="dead_code_removal" value="feature"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
+		<library name="base_extension" location="$ISE_LIBRARY\library\base_extension\base_extension.ecf"/>
 		<library name="simple_json" location="D:\prod\simple_json\simple_json.ecf"/>
 		<library name="sqlite" location="D:\prod\eiffel_sqlite_2025\sqlite_2025.ecf"/>
 		<cluster name="src" location=".\src\" recursive="true"/>

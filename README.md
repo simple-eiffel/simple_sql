@@ -1063,6 +1063,10 @@ SIMPLE_SQL_SIMILARITY         -- Distance/similarity metrics (NEW)
     ├── angular_distance()     -- 1 - cosine
     ├── is_similar()           -- Threshold check
     └── find_most_similar()    -- Best match in array
+
+AGENT_PART_COMPARATOR [G]     -- Agent-based comparator wrapper
+    ├── make()                 -- Create with comparison agent
+    └── less_than()            -- PART_COMPARATOR interface
 ```
 
 ## Testing

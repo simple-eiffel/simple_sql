@@ -76,11 +76,14 @@ feature -- Similarity Metrics
 				diff := a_vec1 [i] - a_vec2 [i]
 				sum := sum + diff * diff
 				i := i + 1
+			variant
+				a_vec1.dimension - i + 1
 			end
 			Result := {DOUBLE_MATH}.sqrt (sum)
 		ensure
 			non_negative: Result >= 0.0
 			zero_for_same: a_vec1.is_equal (a_vec2) implies Result < Tolerance
+			symmetric: (Result - euclidean_distance (a_vec2, a_vec1)).abs < Tolerance
 		end
 
 	manhattan_distance (a_vec1, a_vec2: SIMPLE_SQL_VECTOR): REAL_64
@@ -93,9 +96,14 @@ feature -- Similarity Metrics
 			from i := 1 until i > a_vec1.dimension loop
 				Result := Result + (a_vec1 [i] - a_vec2 [i]).abs
 				i := i + 1
+			variant
+				a_vec1.dimension - i + 1
 			end
 		ensure
 			non_negative: Result >= 0.0
+			zero_for_same: a_vec1.is_equal (a_vec2) implies Result < Tolerance
+			symmetric: (Result - manhattan_distance (a_vec2, a_vec1)).abs < Tolerance
+			at_least_euclidean: Result >= euclidean_distance (a_vec1, a_vec2) - Tolerance
 		end
 
 	dot_product (a_vec1, a_vec2: SIMPLE_SQL_VECTOR): REAL_64
@@ -104,6 +112,8 @@ feature -- Similarity Metrics
 			same_dimension: a_vec1.dimension = a_vec2.dimension
 		do
 			Result := a_vec1.dot_product (a_vec2)
+		ensure
+			symmetric: (Result - a_vec2.dot_product (a_vec1)).abs < Tolerance
 		end
 
 feature -- Derived Metrics
@@ -131,9 +141,12 @@ feature -- Derived Metrics
 				diff := a_vec1 [i] - a_vec2 [i]
 				Result := Result + diff * diff
 				i := i + 1
+			variant
+				a_vec1.dimension - i + 1
 			end
 		ensure
 			non_negative: Result >= 0.0
+			consistent_with_euclidean: (Result - euclidean_distance (a_vec1, a_vec2) ^ 2).abs < Tolerance
 		end
 
 feature -- Batch Operations
@@ -239,6 +252,9 @@ feature -- Utility
 			valid_threshold: a_threshold >= -1.0 and a_threshold <= 1.0
 		do
 			Result := cosine_similarity (a_vec1, a_vec2) >= a_threshold
+		ensure
+			definition: Result = (cosine_similarity (a_vec1, a_vec2) >= a_threshold)
+			symmetric: Result = is_similar (a_vec2, a_vec1, a_threshold)
 		end
 
 	is_near (a_vec1, a_vec2: SIMPLE_SQL_VECTOR; a_max_distance: REAL_64): BOOLEAN
@@ -248,36 +264,37 @@ feature -- Utility
 			positive_distance: a_max_distance >= 0.0
 		do
 			Result := euclidean_distance (a_vec1, a_vec2) <= a_max_distance
+		ensure
+			definition: Result = (euclidean_distance (a_vec1, a_vec2) <= a_max_distance)
+			symmetric: Result = is_near (a_vec2, a_vec1, a_max_distance)
 		end
 
 feature {NONE} -- Implementation
 
 	sort_scores_descending (a_list: ARRAYED_LIST [TUPLE [index: INTEGER; score: REAL_64]])
-			-- Sort in place by score descending
+			-- Sort in place by score descending using library quick sort
 		local
-			i, j: INTEGER
-			temp: TUPLE [index: INTEGER; score: REAL_64]
-			swapped: BOOLEAN
+			l_sorter: QUICK_SORTER [TUPLE [index: INTEGER; score: REAL_64]]
+			l_comparator: AGENT_PART_COMPARATOR [TUPLE [index: INTEGER; score: REAL_64]]
 		do
-			from i := 1 until i >= a_list.count loop
-				swapped := False
-				from j := 1 until j > a_list.count - i loop
-					if a_list [j].score < a_list [j + 1].score then
-						temp := a_list [j]
-						a_list [j] := a_list [j + 1]
-						a_list [j + 1] := temp
-						swapped := True
-					end
-					j := j + 1
-				end
-				if not swapped then
-					i := a_list.count
-				end
-				i := i + 1
-			end
+			create l_comparator.make (agent compare_scores_descending)
+			create l_sorter.make (l_comparator)
+			l_sorter.sort (a_list)
+		ensure
+			same_count: a_list.count = old a_list.count
+		end
+
+	compare_scores_descending (a, b: TUPLE [index: INTEGER; score: REAL_64]): BOOLEAN
+			-- Is `a` considered less than `b` for descending sort?
+			-- Returns True if a.score > b.score (higher scores come first)
+		do
+			Result := a.score > b.score
 		end
 
 	Tolerance: REAL_64 = 1.0e-10
 			-- Floating point comparison tolerance
+
+invariant
+	tolerance_positive: Tolerance > 0.0
 
 end

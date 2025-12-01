@@ -121,6 +121,8 @@ feature -- Query
 			if not database.has_error and then l_result.count > 0 then
 				Result := l_result.first.integer_value ("cnt")
 			end
+		ensure
+			non_negative: Result >= 0
 		end
 
 	all_ids: ARRAYED_LIST [INTEGER_64]
@@ -136,6 +138,9 @@ feature -- Query
 					Result.extend (ic.integer_64_value ("id"))
 				end
 			end
+		ensure
+			result_not_void: Result /= Void
+			consistent_with_count: not has_error implies Result.count.to_integer_64 = count
 		end
 
 	find_all: ARRAYED_LIST [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; metadata: detachable STRING_32]]
@@ -155,6 +160,8 @@ feature -- Query
 					end
 				end
 			end
+		ensure
+			result_not_void: Result /= Void
 		end
 
 feature -- Similarity Search
@@ -163,6 +170,7 @@ feature -- Similarity Search
 			-- Find K nearest neighbors by cosine similarity
 		require
 			k_positive: a_k > 0
+			query_valid: a_query.dimension > 0
 		local
 			l_all: ARRAYED_LIST [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; metadata: detachable STRING_32]]
 			l_scored: ARRAYED_LIST [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; score: REAL_64]]
@@ -191,13 +199,16 @@ feature -- Similarity Search
 				end
 			end
 		ensure
+			result_not_void: Result /= Void
 			at_most_k: Result.count <= a_k
+			scores_valid: across Result as ic all ic.score >= -1.0 and ic.score <= 1.0 end
 		end
 
 	find_nearest_euclidean (a_query: SIMPLE_SQL_VECTOR; a_k: INTEGER): ARRAYED_LIST [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; distance: REAL_64]]
 			-- Find K nearest neighbors by Euclidean distance
 		require
 			k_positive: a_k > 0
+			query_valid: a_query.dimension > 0
 		local
 			l_all: ARRAYED_LIST [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; metadata: detachable STRING_32]]
 			l_scored: ARRAYED_LIST [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; distance: REAL_64]]
@@ -226,13 +237,16 @@ feature -- Similarity Search
 				end
 			end
 		ensure
+			result_not_void: Result /= Void
 			at_most_k: Result.count <= a_k
+			distances_non_negative: across Result as ic all ic.distance >= 0.0 end
 		end
 
 	find_within_threshold (a_query: SIMPLE_SQL_VECTOR; a_threshold: REAL_64): ARRAYED_LIST [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; score: REAL_64]]
 			-- Find all vectors with cosine similarity >= threshold
 		require
 			valid_threshold: a_threshold >= -1.0 and a_threshold <= 1.0
+			query_valid: a_query.dimension > 0
 		local
 			l_all: ARRAYED_LIST [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; metadata: detachable STRING_32]]
 			l_score: REAL_64
@@ -252,16 +266,23 @@ feature -- Similarity Search
 
 			-- Sort by score descending
 			sort_by_score_descending (Result)
+		ensure
+			result_not_void: Result /= Void
+			all_above_threshold: across Result as ic all ic.score >= a_threshold end
 		end
 
 feature -- Commands
 
 	insert (a_vector: SIMPLE_SQL_VECTOR; a_metadata: detachable READABLE_STRING_GENERAL): INTEGER_64
 			-- Insert vector with optional metadata, return new ID
+		require
+			vector_valid: a_vector.dimension > 0
 		local
 			l_stmt: SIMPLE_SQL_PREPARED_STATEMENT
 			l_blob: MANAGED_POINTER
+			l_old_count: INTEGER_64
 		do
+			l_old_count := count
 			clear_error
 			l_blob := a_vector.to_blob
 			l_stmt := database.prepare ("INSERT INTO " + table_name + " (vector_data, dimension, metadata) VALUES (?, ?, ?)")
@@ -285,10 +306,15 @@ feature -- Commands
 			end
 		ensure
 			error_or_positive_id: has_error or Result > 0
+			count_increased: not has_error implies count = old count + 1
+			id_exists: not has_error implies exists (Result)
 		end
 
 	update (a_id: INTEGER_64; a_vector: SIMPLE_SQL_VECTOR): BOOLEAN
 			-- Update vector data for existing ID
+		require
+			positive_id: a_id > 0
+			vector_valid: a_vector.dimension > 0
 		local
 			l_stmt: SIMPLE_SQL_PREPARED_STATEMENT
 			l_blob: MANAGED_POINTER
@@ -310,10 +336,14 @@ feature -- Commands
 			else
 				Result := database.changes_count > 0
 			end
+		ensure
+			count_unchanged: count = old count
 		end
 
 	update_metadata (a_id: INTEGER_64; a_metadata: detachable READABLE_STRING_GENERAL): BOOLEAN
 			-- Update metadata for existing ID
+		require
+			positive_id: a_id > 0
 		local
 			l_stmt: SIMPLE_SQL_PREPARED_STATEMENT
 		do
@@ -336,10 +366,14 @@ feature -- Commands
 			else
 				Result := database.changes_count > 0
 			end
+		ensure
+			count_unchanged: count = old count
 		end
 
 	delete (a_id: INTEGER_64): BOOLEAN
 			-- Delete vector by ID
+		require
+			positive_id: a_id > 0
 		local
 			l_sql: STRING_8
 		do
@@ -351,6 +385,9 @@ feature -- Commands
 			else
 				Result := database.changes_count > 0
 			end
+		ensure
+			not_exists_if_deleted: Result implies not exists (a_id)
+			count_decreased_if_deleted: Result implies count = old count - 1
 		end
 
 	delete_all: INTEGER
@@ -366,15 +403,23 @@ feature -- Commands
 			else
 				Result := database.changes_count
 			end
+		ensure
+			non_negative: Result >= 0
+			empty_after: not has_error implies count = 0
+			deleted_count_matches: not has_error implies Result.to_integer_64 = old count
 		end
 
 	exists (a_id: INTEGER_64): BOOLEAN
 			-- Does vector with this ID exist?
+		require
+			positive_id: a_id > 0
 		local
 			l_result: SIMPLE_SQL_RESULT
 		do
 			l_result := database.query ("SELECT 1 FROM " + table_name + " WHERE id = " + a_id.out)
 			Result := not database.has_error and then l_result.count > 0
+		ensure
+			found_implies_retrievable: Result implies find_by_id (a_id) /= Void
 		end
 
 feature {NONE} -- Implementation
@@ -389,53 +434,37 @@ feature {NONE} -- Implementation
 		end
 
 	sort_by_score_descending (a_list: ARRAYED_LIST [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; score: REAL_64]])
-			-- Sort in place by score descending (bubble sort - simple for small lists)
+			-- Sort in place by score descending using library quick sort
 		local
-			i, j: INTEGER
-			temp: TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; score: REAL_64]
-			swapped: BOOLEAN
+			l_sorter: QUICK_SORTER [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; score: REAL_64]]
+			l_comparator: AGENT_PART_COMPARATOR [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; score: REAL_64]]
 		do
-			from i := 1 until i >= a_list.count loop
-				swapped := False
-				from j := 1 until j > a_list.count - i loop
-					if a_list [j].score < a_list [j + 1].score then
-						temp := a_list [j]
-						a_list [j] := a_list [j + 1]
-						a_list [j + 1] := temp
-						swapped := True
-					end
-					j := j + 1
-				end
-				if not swapped then
-					i := a_list.count -- Exit early if sorted
-				end
-				i := i + 1
-			end
+			create l_comparator.make (agent compare_scores_descending)
+			create l_sorter.make (l_comparator)
+			l_sorter.sort (a_list)
 		end
 
 	sort_by_distance_ascending (a_list: ARRAYED_LIST [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; distance: REAL_64]])
-			-- Sort in place by distance ascending (bubble sort)
+			-- Sort in place by distance ascending using library quick sort
 		local
-			i, j: INTEGER
-			temp: TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; distance: REAL_64]
-			swapped: BOOLEAN
+			l_sorter: QUICK_SORTER [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; distance: REAL_64]]
+			l_comparator: AGENT_PART_COMPARATOR [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; distance: REAL_64]]
 		do
-			from i := 1 until i >= a_list.count loop
-				swapped := False
-				from j := 1 until j > a_list.count - i loop
-					if a_list [j].distance > a_list [j + 1].distance then
-						temp := a_list [j]
-						a_list [j] := a_list [j + 1]
-						a_list [j + 1] := temp
-						swapped := True
-					end
-					j := j + 1
-				end
-				if not swapped then
-					i := a_list.count
-				end
-				i := i + 1
-			end
+			create l_comparator.make (agent compare_distances_ascending)
+			create l_sorter.make (l_comparator)
+			l_sorter.sort (a_list)
+		end
+
+	compare_scores_descending (a, b: TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; score: REAL_64]): BOOLEAN
+			-- Is `a` considered less than `b` for descending score sort?
+		do
+			Result := a.score > b.score
+		end
+
+	compare_distances_ascending (a, b: TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; distance: REAL_64]): BOOLEAN
+			-- Is `a` considered less than `b` for ascending distance sort?
+		do
+			Result := a.distance < b.distance
 		end
 
 	clear_error
@@ -461,5 +490,7 @@ feature {NONE} -- Implementation
 invariant
 	database_exists: database /= Void
 	table_name_valid: not table_name.is_empty
+	similarity_exists: similarity /= Void
+	database_open: database.is_open
 
 end
