@@ -17,10 +17,10 @@
 		<library name="sqlite" location="D:\prod\eiffel_sqlite_2025\sqlite_2025.ecf"/>
 		<cluster name="src" location=".\src\" recursive="true">
 			<file_rule>
-				<exclude>/todo_app$</exclude>
 				<exclude>/cpm_app$</exclude>
-				<exclude>/habit_tracker$</exclude>
 				<exclude>/dms$</exclude>
+				<exclude>/habit_tracker$</exclude>
+				<exclude>/todo_app$</exclude>
 				<exclude>/wms$</exclude>
 			</file_rule>
 		</cluster>
@@ -35,10 +35,10 @@
 		<library name="testing_ext" location="D:\prod\testing_ext\testing_ext.ecf"/>
 		<cluster name="test" location=".\testing\" recursive="true">
 			<file_rule>
-				<exclude>/todo_app$</exclude>
 				<exclude>/cpm_app$</exclude>
-				<exclude>/habit_tracker$</exclude>
 				<exclude>/dms$</exclude>
+				<exclude>/habit_tracker$</exclude>
+				<exclude>/todo_app$</exclude>
 				<exclude>/wms$</exclude>
 			</file_rule>
 		</cluster>
@@ -105,12 +105,26 @@
 			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
 		</option>
 		<setting name="console_application" value="true"/>
-		<cluster name="wms_src" location=".\src\wms\" recursive="true"/>
+		<cluster name="wms_src" location=".\src\wms\" recursive="true">
+			<file_rule>
+				<exclude>/profile$</exclude>
+			</file_rule>
+		</cluster>
 	</target>
 	<target name="wms_tests" extends="wms">
 		<root class="ANY" feature="default_create"/>
+		<option warning="warning">
+			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
+		</option>
 		<library name="testing" location="$ISE_LIBRARY\library\testing\testing.ecf"/>
 		<library name="testing_ext" location="D:\prod\testing_ext\testing_ext.ecf"/>
 		<cluster name="wms_test" location=".\testing\wms\" recursive="true"/>
+	</target>
+	<target name="wms_profile" extends="wms">
+		<root class="WMS_PROFILE_APP" feature="make"/>
+		<option warning="warning">
+			<assertions precondition="true" postcondition="true" check="true" invariant="true" loop="true" supplier_precondition="true"/>
+		</option>
+		<cluster name="wms_profile_src" location=".\src\wms\profile\" recursive="true"/>
 	</target>
 </system>

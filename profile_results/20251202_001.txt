@@ -1,0 +1,11 @@
+Eiffel Features	7	0.046875	0.03125	0.078125	166.667
+wms_profile_src	7	0.046875	0.03125	0.078125	166.667
+wms_profile_src.WMS_PROFILE_APP	7	0.046875	0.03125	0.078125	166.667
+wms_profile_src.WMS_PROFILE_APP.make	1	0.015625	0.03125	0.046875	100.0
+wms_profile_src.WMS_PROFILE_APP.run_location_setup	1	    0.0	    0.0	    0.0	 0.0
+wms_profile_src.WMS_PROFILE_APP.run_product_setup	1	    0.0	    0.0	    0.0	 0.0
+wms_profile_src.WMS_PROFILE_APP.run_query_operations	1	0.015625	    0.0	0.015625	33.333
+wms_profile_src.WMS_PROFILE_APP.run_reservation_operations	1	    0.0	    0.0	    0.0	 0.0
+wms_profile_src.WMS_PROFILE_APP.run_stock_operations	1	0.015625	    0.0	0.015625	33.333
+wms_profile_src.WMS_PROFILE_APP.run_warehouse_setup	1	    0.0	    0.0	    0.0	 0.0
+

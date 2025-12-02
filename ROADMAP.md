@@ -6,26 +6,40 @@
 
 **When starting a new conversation, read this file first.**
 
-After reading this file, Claude should:
+### Session Startup
 
-1. **Load additional context**:
-   - `D:/prod/reference_docs/eiffel/CLAUDE_CONTEXT.md` - Eiffel language corrections
-   - `D:/prod/reference_docs/eiffel/CURRENT_WORK.md` - Session state
-   - `D:/prod/reference_docs/eiffel/gotchas.md` - Known issues
-
-2. **Acknowledge**:
-   - Confirm understanding of project state
-   - Note which phase/feature we're working on
-   - Flag any relevant gotchas
-
+1. **Read Eiffel reference docs**: `D:/prod/reference_docs/eiffel/CLAUDE_CONTEXT.md`
+2. **Review this roadmap** for project-specific context
 3. **Ask**: "What would you like to work on this session?"
 
-### End of Session
+### Key Reference Files
 
-Before ending, update:
-- [ ] `D:/prod/reference_docs/eiffel/CURRENT_WORK.md` - Where we left off
-- [ ] `D:/prod/reference_docs/eiffel/gotchas.md` - Any new discoveries
-- [ ] This roadmap if phases/features changed
+| File | Purpose |
+|------|---------|
+| `D:/prod/reference_docs/eiffel/CLAUDE_CONTEXT.md` | Generic Eiffel knowledge |
+| `D:/prod/reference_docs/eiffel/gotchas.md` | Generic Eiffel gotchas |
+| `D:/prod/reference_docs/eiffel/sqlite_gotchas.md` | SQLite-specific gotchas |
+| `D:/prod/reference_docs/eiffel/HATS.md` | Focused work modes |
+| `D:/prod/reference_docs/eiffel/patterns.md` | Verified code patterns |
+
+### Build & Test Commands
+
+```batch
+:: Compile
+ec.exe -batch -config "D:\prod\simple_sql\simple_sql.ecf" -target simple_sql_tests -c_compile -freeze
+
+:: Run tests
+ec.exe -batch -config "D:\prod\simple_sql\simple_sql.ecf" -target simple_sql_tests -tests
+```
+
+### Current Status
+
+**Stable / Maintenance Mode** - 361 tests passing
+
+Primary work now:
+- Contract strengthening (Contracting Hat)
+- Test coverage improvements (Testing Hat)
+- Bug fixes via mock applications (Mock Building Hat)
 
 ---
 
