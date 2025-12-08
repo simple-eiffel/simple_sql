@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="TTEager loading support to prevent N+1 query problems.  TTProvides a declarative way to specify related data to load in a single query TTor with batched queries, rather than lazy loading each related entity.  TTUsage: TTTloader := db.eager_loader TTTloader.from_table (documents) TTTT.include (comments, document_id, id) TTTT.include (tags, document_tags, document_id, tag_id) TTTT.where (owner_id = 1)  TTTresults := loader.execute TTT-- results.main_rows has documents TTT-- results.related (comments) has all comments for those documents"/>
+<meta name="eis" content="name=API Reference, src=../docs/api/eager-loader.html, protocol=URI, tag=documentation"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="Copyright (c) 2025, Larry Rix"/>
+<meta name="license" content="MIT License"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_sql_eager_loader Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_sql_eager_loader_chart.html">Chart</a>
+<a class="nav class" href="simple_sql_eager_loader_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_eager_loader"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">		Eager loading support to prevent N+1 query problems.</span>
+		
+		<span class="estring">		Provides a declarative way to specify related data to load in a single query</span>
+		<span class="estring">		or with batched queries, rather than lazy loading each related entity.</span>
+		
+		<span class="estring">		Usage:</span>
+		<span class="estring">			loader := db.eager_loader</span>
+		<span class="estring">			loader.from_table (&quot;documents&quot;)</span>
+		<span class="estring">				.include (&quot;comments&quot;, &quot;document_id&quot;, &quot;id&quot;)</span>
+		<span class="estring">				.include (&quot;tags&quot;, &quot;document_tags&quot;, &quot;document_id&quot;, &quot;tag_id&quot;)</span>
+		<span class="estring">				.where (&quot;owner_id = 1&quot;)</span>
+		
+		<span class="estring">			results := loader.execute</span>
+		<span class="estring">			-- results.main_rows has documents</span>
+		<span class="estring">			-- results.related (&quot;comments&quot;) has all comments for those documents</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+	<span class="eitag">eis</span><span class="esymbol">:</span> <span class="estring">&quot;name=API Reference&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;src=../docs/api/eager-loader.html&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;protocol=URI&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;tag=documentation&quot;</span>
+	<span class="eitag">eis</span><span class="esymbol">:</span> <span class="estring">&quot;name=Eager Loading Tutorial&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;src=../docs/tutorials/eager-loading.html&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;protocol=URI&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;tag=tutorial&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+
+<span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../src/simple_sql_eager_loader_short.html">SIMPLE_SQL_EAGER_LOADER</a>
+
+<span class="ekeyword">create</span> 
+	<a class="efeature" href="../src/simple_sql_eager_loader_short.html#f_make">make</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Access</span>
+
+	<a name="f_database"></a><a class="efeature" href="../src/simple_sql_eager_loader_short.html#f_database">database</a><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_database_short.html">SIMPLE_SQL_DATABASE</a>
+			<span class="ecomment">--</span><span class="ecomment"> Database connection</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Configuration</span>
+
+	<a name="f_from_table"></a><a class="efeature" href="../src/simple_sql_eager_loader_short.html#f_from_table">from_table</a> <span class="esymbol">(</span><span class="elocal">a_table</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Set the main table to query</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">table_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_table</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">table_set</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <a class="efeature" href="../src/simple_sql_eager_loader_short.html#f_main_table">main_table</a> <span class="ekeyword">as</span> mt <a class="ekeyword" href="../base/boolean_short.html#f_conjuncted_semistrict">and then</a> <span class="elocal">mt</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_8_short.html#f_same_string">same_string</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_table</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_to_string_8">to_string_8</a><span class="esymbol">)</span>
+
+	<a name="f_include"></a><a class="efeature" href="../src/simple_sql_eager_loader_short.html#f_include">include</a> <span class="esymbol">(</span><span class="elocal">a_related_table</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_foreign_key</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_primary_key</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Include related table using direct foreign key relationship</span>
+			<span class="ecomment">--</span><span class="ecomment"> a_related_table: the table to include (e.g., &quot;comments&quot;)</span>
+			<span class="ecomment">--</span><span class="ecomment"> a_foreign_key: the foreign key column in related table (e.g., &quot;document_id&quot;)</span>
+			<span class="ecomment">--</span><span class="ecomment"> a_primary_key: the primary key column in main table (e.g., &quot;id&quot;)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">related_table_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_related_table</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+			<span class="etag">foreign_key_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_foreign_key</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+			<span class="etag">primary_key_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_primary_key</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_include_many_to_many"></a><a class="efeature" href="../src/simple_sql_eager_loader_short.html#f_include_many_to_many">include_many_to_many</a> <span class="esymbol">(</span><span class="elocal">a_related_table</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_join_table</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_main_fk</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_related_fk</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Include related table via many-to-many join table</span>
+			<span class="ecomment">--</span><span class="ecomment"> a_related_table: the final table to include (e.g., &quot;tags&quot;)</span>
+			<span class="ecomment">--</span><span class="ecomment"> a_join_table: the junction table (e.g., &quot;document_tags&quot;)</span>
+			<span class="ecomment">--</span><span class="ecomment"> a_main_fk: foreign key in join table to main table (e.g., &quot;document_id&quot;)</span>
+			<span class="ecomment">--</span><span class="ecomment"> a_related_fk: foreign key in join table to related table (e.g., &quot;tag_id&quot;)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">related_table_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_related_table</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+			<span class="etag">join_table_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_join_table</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+			<span class="etag">main_fk_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_main_fk</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+			<span class="etag">related_fk_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_related_fk</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_where"></a><a class="efeature" href="../src/simple_sql_eager_loader_short.html#f_where">where</a> <span class="esymbol">(</span><span class="elocal">a_condition</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Add WHERE condition for main table</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">condition_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_condition</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_limit"></a><a class="efeature" href="../src/simple_sql_eager_loader_short.html#f_limit">limit</a> <span class="esymbol">(</span><span class="elocal">a_limit</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Set LIMIT for main table query</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">limit_positive</span><span class="esymbol">:</span> <span class="elocal">a_limit</span> <a class="esymbol" href="../base/comparable_short.html#f_is_greater">&gt;</a> <span class="enumber">0</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">limit_set</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_eager_loader_short.html#f_limit_value">limit_value</a> <span class="esymbol">=</span> <span class="elocal">a_limit</span>
+
+	<a name="f_offset"></a><a class="efeature" href="../src/simple_sql_eager_loader_short.html#f_offset">offset</a> <span class="esymbol">(</span><span class="elocal">a_offset</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Set OFFSET for main table query</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">offset_non_negative</span><span class="esymbol">:</span> <span class="elocal">a_offset</span> <a class="esymbol" href="../base/comparable_short.html#f_is_greater_equal">&gt;=</a> <span class="enumber">0</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">offset_set</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_eager_loader_short.html#f_offset_value">offset_value</a> <span class="esymbol">=</span> <span class="elocal">a_offset</span>
+
+	<a name="f_order_by"></a><a class="efeature" href="../src/simple_sql_eager_loader_short.html#f_order_by">order_by</a> <span class="esymbol">(</span><span class="elocal">a_column</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Set ORDER BY for main table</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">column_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_column</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Status</span>
+
+	<a name="f_has_main_table"></a><a class="efeature" href="../src/simple_sql_eager_loader_short.html#f_has_main_table">has_main_table</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Has a main table been configured?</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Execution</span>
+
+	<a name="f_execute"></a><a class="efeature" href="../src/simple_sql_eager_loader_short.html#f_execute">execute</a><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_eager_result_short.html">SIMPLE_SQL_EAGER_RESULT</a>
+			<span class="ecomment">--</span><span class="ecomment"> Execute the eager loading query</span>
+			<span class="ecomment">--</span><span class="ecomment"> Returns main rows plus all related data in a single result object</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">has_table</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_eager_loader_short.html#f_has_main_table">has_main_table</a>
+	
+<span class="ekeyword">invariant</span>
+	<span class="etag">database_attached</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_eager_loader_short.html#f_database">database</a> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+
+<span class="ekeyword">note</span>
+	<span class="eitag">copyright</span><span class="esymbol">:</span> <span class="estring">&quot;Copyright (c) 2025, Larry Rix&quot;</span>
+	<span class="eitag">license</span><span class="esymbol">:</span> <span class="estring">&quot;MIT License&quot;</span>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../src/simple_sql_eager_loader_short.html">SIMPLE_SQL_EAGER_LOADER</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_sql_eager_loader_chart.html">Chart</a>
+<a class="nav class" href="simple_sql_eager_loader_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_eager_loader"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

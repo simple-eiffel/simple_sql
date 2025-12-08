@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="JSON Schema validator (Draft 2020-12 subset). Validates JSON instances against JSON Schema definitions.  Supported keywords: - type (string, number, integer, object, array, boolean, null) - properties, required (for objects) - minimum, maximum (for numbers) - minLength, maxLength, pattern (for strings) - minItems, maxItems, items (for arrays)"/>
+<meta name="eis" content="name=Documentation, protocol=URI, src=file://$(SYSTEM_PATH)/docs/docs/schema/simple_json_schema_validator.html"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_json_schema_validator Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_json_schema_validator_chart.html">Chart</a>
+<a class="nav class" href="simple_json_schema_validator_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_schema_validator"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">JSON Schema validator (Draft 2020-12 subset).</span>
+		<span class="estring">Validates JSON instances against JSON Schema definitions.</span>
+		
+		<span class="estring">Supported keywords:</span>
+		<span class="estring">- type (string, number, integer, object, array, boolean, null)</span>
+		<span class="estring">- properties, required (for objects)</span>
+		<span class="estring">- minimum, maximum (for numbers)</span>
+		<span class="estring">- minLength, maxLength, pattern (for strings)</span>
+		<span class="estring">- minItems, maxItems, items (for arrays)</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+	<span class="eitag">eis</span><span class="esymbol">:</span> <span class="estring">&quot;name=Documentation&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;protocol=URI&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;src=</span><a class="estring" href="file://$">file://$</a><span class="estring">(SYSTEM_PATH)/docs/docs/schema/simple_json_schema_validator.html&quot;</span>
+
+<span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../simple_json/simple_json_schema_validator_short.html">SIMPLE_JSON_SCHEMA_VALIDATOR</a>
+
+<span class="ekeyword">create</span> 
+	<a class="efeature" href="../simple_json/simple_json_schema_validator_short.html#f_make">make</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Validation</span>
+
+	<a name="f_validate"></a><a class="efeature" href="../simple_json/simple_json_schema_validator_short.html#f_validate">validate</a> <span class="esymbol">(</span><span class="elocal">a_instance</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_value_short.html">SIMPLE_JSON_VALUE</a><span class="esymbol">;</span> <span class="elocal">a_schema</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_schema_short.html">SIMPLE_JSON_SCHEMA</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_schema_validation_result_short.html">SIMPLE_JSON_SCHEMA_VALIDATION_RESULT</a>
+			<span class="ecomment">--</span><span class="ecomment"> Validate </span><span class="equoted">a_instance</span><span class="ecomment"> against </span><span class="equoted">a_schema</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">instance_not_void</span><span class="esymbol">:</span> <span class="elocal">a_instance</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">schema_not_void</span><span class="esymbol">:</span> <span class="elocal">a_schema</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../simple_json/simple_json_schema_validator_short.html">SIMPLE_JSON_SCHEMA_VALIDATOR</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_json_schema_validator_chart.html">Chart</a>
+<a class="nav class" href="simple_json_schema_validator_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_schema_validator"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

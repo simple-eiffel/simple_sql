@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="TTGeneric repository pattern for database entities.  TTProvides common CRUD operations (Create, Read, Update, Delete) for TTdatabase entities. Subclasses must implement deferred features to TTspecify table name, primary key, and entity mapping.  TTUsage: TTTclass USER_REPOSITORY inherit SIMPLE_SQL_REPOSITORY [USER] TTTfeature TTTTtable_name: STRING_8 = users TTTTprimary_key_column: STRING_8 = id TTTTrow_to_entity (a_row): USER do ... end TTTTentity_to_columns (a_entity): HASH_TABLE do ... end TTTTentity_id (a_entity): INTEGER_64 do ... end TTTend  TTT-- Then use: TTTrepo := create {USER_REPOSITORY}.make (db) TTTall_users := repo.find_all TTTuser := repo.find_by_id (42) TTTactive_users := repo.find_where (status = 'active') TTTnew_id := repo.insert (new_user) TTTrepo.update (existing_user) TTTrepo.delete (42)"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_sql_repository Chart</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<span class="nav class selected">Chart</span>
+<a class="nav class" href="simple_sql_repository_links.html">Relations</a>
+<a class="nav class" href="simple_sql_repository_short.html">Contracts</a>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_repository"></span>
+</div></form><pre><span class="ekeyword">deferred</span> <span class="ekeyword">class</span>
+	<a class="eclass" href="../src/simple_sql_repository_chart.html">SIMPLE_SQL_REPOSITORY</a> <span class="esymbol">[</span><span class="egeneric">G</span> <span class="esymbol">-&gt;</span> <a class="eclass" href="../base/any_chart.html">ANY</a><span class="esymbol">]</span>
+
+<span class="ekeyword">General</span>
+	<span class="eitag">cluster</span><span class="esymbol">:</span> <a class="ecluster" href="../src/index.html">src</a>
+	<span class="eitag">description</span><span class="esymbol">:</span> 
+		<span class="estring">&quot;Generic repository pattern for database entities.</span>
+		
+		<span class="estring">Provides common CRUD operations (Create, Read, Update, Delete) for</span>
+		<span class="estring">database entities. Subclasses must implement deferred features to</span>
+		<span class="estring">specify table name, primary key, and entity mapping.</span>
+		
+		<span class="estring">Usage:</span>
+		<span class="estring">class USER_REPOSITORY inherit SIMPLE_SQL_REPOSITORY </span><span class="estring">[USER]</span>
+		<span class="estring">feature</span>
+		<span class="estring">table_name: STRING_8 = %&quot;users%&quot;</span>
+		<span class="estring">primary_key_column: STRING_8 = %&quot;id%&quot;</span>
+		<span class="estring">row_to_entity (a_row): USER do ... end</span>
+		<span class="estring">entity_to_columns (a_entity): HASH_TABLE do ... end</span>
+		<span class="estring">entity_id (a_entity): INTEGER_64 do ... end</span>
+		<span class="estring">end</span>
+		
+		<span class="estring">-- Then use:</span>
+		<span class="estring">repo := create </span><span class="estring">{</span><span class="estring">USER_REPOSITORY</span><span class="estring">}</span><span class="estring">.make</span><span class="estring"> (db)</span>
+		<span class="estring">all_users := repo.find_all</span>
+		<span class="estring">user := repo.find_by_id (42)</span>
+		<span class="estring">active_users := repo.find_where (%&quot;status = 'active'%&quot;)</span>
+		<span class="estring">new_id := repo.insert (new_user)</span>
+		<span class="estring">repo.update (existing_user)</span>
+		<span class="estring">repo.delete (42)&quot;</span>
+
+<span class="ekeyword">Ancestors</span>
+	<a class="eclass" href="../base/any_chart.html">ANY</a>
+
+<span class="ekeyword">Queries</span>
+	<span title="`count' is declared in `Current'"><a class="efeature" href="../src/simple_sql_repository_short.html#f_count">count</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`count_where' is declared in `Current'"><a class="efeature" href="../src/simple_sql_repository_short.html#f_count_where">count_where</a> <span class="esymbol">(</span><span class="elocal">a_conditions</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_chart.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`database' is declared in `Current'"><a class="efeature" href="../src/simple_sql_repository_short.html#f_database">database</a><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_database_chart.html">SIMPLE_SQL_DATABASE</a></span>
+	<span title="`delete' is declared in `Current'"><a class="efeature" href="../src/simple_sql_repository_short.html#f_delete">delete</a> <span class="esymbol">(</span><span class="elocal">a_id</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_64_chart.html">INTEGER_64</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_chart.html">BOOLEAN</a></span>
+	<span title="`delete_all' is declared in `Current'"><a class="efeature" href="../src/simple_sql_repository_short.html#f_delete_all">delete_all</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`delete_where' is declared in `Current'"><a class="efeature" href="../src/simple_sql_repository_short.html#f_delete_where">delete_where</a> <span class="esymbol">(</span><span class="elocal">a_conditions</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_chart.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`exists' is declared in `Current'"><a class="efeature" href="../src/simple_sql_repository_short.html#f_exists">exists</a> <span class="esymbol">(</span><span class="elocal">a_id</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_64_chart.html">INTEGER_64</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_chart.html">BOOLEAN</a></span>
+	<span title="`find_all' is declared in `Current'"><a class="efeature" href="../src/simple_sql_repository_short.html#f_find_all">find_all</a><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_chart.html">ARRAYED_LIST</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span></span>
+	<span title="`find_all_limited' is declared in `Current'"><a class="efeature" href="../src/simple_sql_repository_short.html#f_find_all_limited">find_all_limited</a> <span class="esymbol">(</span><span class="elocal">a_limit</span><span class="esymbol">,</span> <span class="elocal">a_offset</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_chart.html">ARRAYED_LIST</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span></span>
+	<span title="`find_all_ordered' is declared in `Current'"><a class="efeature" href="../src/simple_sql_repository_short.html#f_find_all_ordered">find_all_ordered</a> <span class="esymbol">(</span><span class="elocal">a_order_by</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_chart.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_chart.html">ARRAYED_LIST</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span></span>
+	<span title="`find_by_id' is declared in `Current'"><a class="efeature" href="../src/simple_sql_repository_short.html#f_find_by_id">find_by_id</a> <span class="esymbol">(</span><span class="elocal">a_id</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_64_chart.html">INTEGER_64</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <span class="egeneric">G</span></span>
+	<span title="`find_first_where' is declared in `Current'"><a class="efeature" href="../src/simple_sql_repository_short.html#f_find_first_where">find_first_where</a> <span class="esymbol">(</span><span class="elocal">a_conditions</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_chart.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <span class="egeneric">G</span></span>
+	<span title="`find_where' is declared in `Current'"><a class="efeature" href="../src/simple_sql_repository_short.html#f_find_where">find_where</a> <span class="esymbol">(</span><span class="elocal">a_conditions</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_chart.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_chart.html">ARRAYED_LIST</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span></span>
+	<span title="`find_where_ordered' is declared in `Current'"><a class="efeature" href="../src/simple_sql_repository_short.html#f_find_where_ordered">find_where_ordered</a> <span class="esymbol">(</span><span class="elocal">a_conditions</span><span class="esymbol">,</span> <span class="elocal">a_order_by</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_chart.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_chart.html">ARRAYED_LIST</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span></span>
+	<span title="`has_error' is declared in `Current'"><a class="efeature" href="../src/simple_sql_repository_short.html#f_has_error">has_error</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_chart.html">BOOLEAN</a></span>
+	<span title="`insert' is declared in `Current'"><a class="efeature" href="../src/simple_sql_repository_short.html#f_insert">insert</a> <span class="esymbol">(</span><span class="elocal">a_entity</span><span class="esymbol">:</span> <span class="egeneric">G</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_64_chart.html">INTEGER_64</a></span>
+	<span title="`last_error_message' is declared in `Current'"><a class="efeature" href="../src/simple_sql_repository_short.html#f_last_error_message">last_error_message</a><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`primary_key_column' is declared in `Current'"><a class="efeature" href="../src/simple_sql_repository_short.html#f_primary_key_column">primary_key_column</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_chart.html">STRING_8</a></span>
+	<span title="`save' is declared in `Current'"><a class="efeature" href="../src/simple_sql_repository_short.html#f_save">save</a> <span class="esymbol">(</span><span class="elocal">a_entity</span><span class="esymbol">:</span> <span class="egeneric">G</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_64_chart.html">INTEGER_64</a></span>
+	<span title="`table_name' is declared in `Current'"><a class="efeature" href="../src/simple_sql_repository_short.html#f_table_name">table_name</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_chart.html">STRING_8</a></span>
+	<span title="`update' is declared in `Current'"><a class="efeature" href="../src/simple_sql_repository_short.html#f_update">update</a> <span class="esymbol">(</span><span class="elocal">a_entity</span><span class="esymbol">:</span> <span class="egeneric">G</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_chart.html">BOOLEAN</a></span>
+	<span title="`update_where' is declared in `Current'"><a class="efeature" href="../src/simple_sql_repository_short.html#f_update_where">update_where</a> <span class="esymbol">(</span><span class="elocal">a_columns</span><span class="esymbol">:</span> <a class="eclass" href="../base/hash_table_chart.html">HASH_TABLE</a> <span class="esymbol">[</span><span class="ekeyword">detachable</span> <a class="eclass" href="../base/any_chart.html">ANY</a><span class="esymbol">,</span> <a class="eclass" href="../base/string_8_chart.html">STRING_8</a><span class="esymbol">]</span><span class="esymbol">;</span> <span class="elocal">a_conditions</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_chart.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+
+<span class="ekeyword">Constraints</span>
+	<span class="etag">database attached</span>
+	<span class="etag">database open</span>
+	<span class="etag">table name valid</span>
+	<span class="etag">primary key valid</span>
+
+</pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<span class="nav class selected">Chart</span>
+<a class="nav class" href="simple_sql_repository_links.html">Relations</a>
+<a class="nav class" href="simple_sql_repository_short.html">Contracts</a>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_repository"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>

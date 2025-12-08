@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="Iterator on DIRECTORY  This can be used to scan a directory recursively. For a directory, files are processed first, then folders.  It is possible to exclude a path, a directory name, or a file name thanks to Tpath_excluded,  Tdirectory_excluded,  Tand file_excluded"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="Copyright (c) 1984-2021, Eiffel Software and others"/>
+<meta name="license" content="Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"/>
+<meta name="source" content="Eiffel Software 5949 Hollister Ave., Goleta, CA 93117 USA Telephone 805-685-1006, Fax 805-685-6869 Website http://www.eiffel.com Customer support http://support.eiffel.com"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>directory_iterator Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="directory_iterator_chart.html">Chart</a>
+<a class="nav class" href="directory_iterator_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="directory_iterator"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">Iterator on DIRECTORY</span>
+		
+		<span class="estring">This can be used to scan a directory recursively.</span>
+		<span class="estring">For a directory, files are processed first, then folders.</span>
+		
+		<span class="estring">It is possible to exclude a path, a directory name, or a file name thanks to</span>
+		<span class="estring">	path_excluded, </span>
+		<span class="estring">	directory_excluded, </span>
+		<span class="estring">	and file_excluded</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+
+<span class="ekeyword">deferred</span> <span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../base_extension/directory_iterator_short.html">DIRECTORY_ITERATOR</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Visitor</span>
+
+	<a name="f_process_directory"></a><a class="efeature" href="../base_extension/directory_iterator_short.html#f_process_directory">process_directory</a> <span class="esymbol">(</span><span class="elocal">dn</span><span class="esymbol">:</span> <a class="eclass" href="../base/path_short.html">PATH</a><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Iterate on directory </span><span class="equoted">dn</span>
+			<span class="ecomment">--</span><span class="ecomment"> process files first and then directories recursively.</span>
+
+	<a name="f_process_file"></a><a class="efeature" href="../base_extension/directory_iterator_short.html#f_process_file">process_file</a> <span class="esymbol">(</span><span class="elocal">fn</span><span class="esymbol">:</span> <a class="eclass" href="../base/path_short.html">PATH</a><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Visit file </span><span class="equoted">fn</span><span class="ecomment">.</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Status</span>
+
+	<a name="f_path_excluded"></a><a class="efeature" href="../base_extension/directory_iterator_short.html#f_path_excluded">path_excluded</a> <span class="esymbol">(</span><span class="elocal">a_path</span><span class="esymbol">:</span> <a class="eclass" href="../base/path_short.html">PATH</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is Path </span><span class="equoted">a_path</span><span class="ecomment"> excluded?</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">a_path_is_simple</span><span class="esymbol">:</span> <span class="elocal">a_path</span><span class="edot">.</span><a class="efeature" href="../base/path_short.html#f_is_simple">is_simple</a>
+
+	<a name="f_directory_excluded"></a><a class="efeature" href="../base_extension/directory_iterator_short.html#f_directory_excluded">directory_excluded</a> <span class="esymbol">(</span><span class="elocal">dn</span><span class="esymbol">:</span> <a class="eclass" href="../base/path_short.html">PATH</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is Directory </span><span class="equoted">dn</span><span class="ecomment"> excluded?</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">dn_is_simple</span><span class="esymbol">:</span> <span class="elocal">dn</span><span class="edot">.</span><a class="efeature" href="../base/path_short.html#f_is_simple">is_simple</a>
+			<span class="etag">path_not_excluded</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../base_extension/directory_iterator_short.html#f_path_excluded">path_excluded</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">dn</span><span class="esymbol">)</span>
+
+	<a name="f_file_excluded"></a><a class="efeature" href="../base_extension/directory_iterator_short.html#f_file_excluded">file_excluded</a> <span class="esymbol">(</span><span class="elocal">fn</span><span class="esymbol">:</span> <a class="eclass" href="../base/path_short.html">PATH</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is file </span><span class="equoted">fn</span><span class="ecomment"> excluded?</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">fn_is_simple</span><span class="esymbol">:</span> <span class="elocal">fn</span><span class="edot">.</span><a class="efeature" href="../base/path_short.html#f_is_simple">is_simple</a>
+			<span class="etag">path_not_excluded</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../base_extension/directory_iterator_short.html#f_path_excluded">path_excluded</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">fn</span><span class="esymbol">)</span>
+	
+<span class="ekeyword">note</span>
+	<span class="eitag">copyright</span><span class="esymbol">:</span> <span class="estring">&quot;Copyright (c) 1984-2021, Eiffel Software and others&quot;</span>
+	<span class="eitag">license</span><span class="esymbol">:</span> <span class="estring">&quot;Eiffel Forum License v2 (see </span><a class="estring" href="http://www.eiffel.com/licensing/forum.txt">http://www.eiffel.com/licensing/forum.txt</a><span class="estring">)&quot;</span>
+	<span class="eitag">source</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">Eiffel Software</span>
+		<span class="estring">5949 Hollister Ave., Goleta, CA 93117 USA</span>
+		<span class="estring">Telephone 805-685-1006, Fax 805-685-6869</span>
+		<span class="estring">Website </span><a class="estring" href="http://www.eiffel.com">http://www.eiffel.com</a>
+		<span class="estring">Customer support </span><a class="estring" href="http://support.eiffel.com">http://support.eiffel.com</a>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../base_extension/directory_iterator_short.html">DIRECTORY_ITERATOR</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="directory_iterator_chart.html">Chart</a>
+<a class="nav class" href="directory_iterator_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="directory_iterator"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

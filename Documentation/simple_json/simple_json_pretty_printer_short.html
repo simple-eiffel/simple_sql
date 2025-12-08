@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="Pretty printer for JSON values with configurable indentation. Produces human-readable JSON output with proper formatting."/>
+<meta name="eis" content="name=Documentation, protocol=URI, src=file://$(SYSTEM_PATH)/docs/docs/utilities/simple_json_pretty_printer.html"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_json_pretty_printer Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_json_pretty_printer_chart.html">Chart</a>
+<a class="nav class" href="simple_json_pretty_printer_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_pretty_printer"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">Pretty printer for JSON values with configurable indentation.</span>
+		<span class="estring">Produces human-readable JSON output with proper formatting.</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+	<span class="eitag">eis</span><span class="esymbol">:</span> <span class="estring">&quot;name=Documentation&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;protocol=URI&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;src=</span><a class="estring" href="file://$">file://$</a><span class="estring">(SYSTEM_PATH)/docs/docs/utilities/simple_json_pretty_printer.html&quot;</span>
+
+<span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../simple_json/simple_json_pretty_printer_short.html">SIMPLE_JSON_PRETTY_PRINTER</a>
+
+<span class="ekeyword">create</span> 
+	<a class="efeature" href="../simple_json/simple_json_pretty_printer_short.html#f_make">make</a><span class="esymbol">,</span>
+	<a class="efeature" href="../simple_json/simple_json_pretty_printer_short.html#f_make_with_options">make_with_options</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Configuration</span>
+
+	<a name="f_set_indent_string"></a><a class="efeature" href="../simple_json/simple_json_pretty_printer_short.html#f_set_indent_string">set_indent_string</a> <span class="esymbol">(</span><span class="elocal">a_indent</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Set the indentation string</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">indent_not_void</span><span class="esymbol">:</span> <span class="elocal">a_indent</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">indent_valid</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_indent</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">indent_set</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_pretty_printer_short.html#f_indent_string">indent_string</a> <span class="esymbol">=</span> <span class="elocal">a_indent</span>
+
+	<a name="f_use_tabs"></a><a class="efeature" href="../simple_json/simple_json_pretty_printer_short.html#f_use_tabs">use_tabs</a>
+			<span class="ecomment">--</span><span class="ecomment"> Configure to use tabs for indentation</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">uses_tabs</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_pretty_printer_short.html#f_indent_string">indent_string</a><span class="edot">.</span><a class="efeature" href="../base/readable_string_32_short.html#f_same_string">same_string</a><span class="esymbol"> </span><span class="esymbol">(</span>&quot;%T&quot;<span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_as_string_32">as_string_32</a><span class="esymbol">)</span>
+
+	<a name="f_use_spaces"></a><a class="efeature" href="../simple_json/simple_json_pretty_printer_short.html#f_use_spaces">use_spaces</a> <span class="esymbol">(</span><span class="elocal">a_count</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Configure to use specified number of spaces for indentation</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">positive_count</span><span class="esymbol">:</span> <span class="elocal">a_count</span> <a class="esymbol" href="../base/comparable_short.html#f_is_greater">&gt;</a> <span class="enumber">0</span>
+			<span class="etag">reasonable_count</span><span class="esymbol">:</span> <span class="elocal">a_count</span> <a class="esymbol" href="../base/comparable_short.html#f_is_less_equal">&lt;=</a> <a class="efeature" href="../simple_json/simple_json_constants_short.html#f_max_reasonable_indent_count">Max_reasonable_indent_count</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">correct_length</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_pretty_printer_short.html#f_indent_string">indent_string</a><span class="edot">.</span><a class="efeature" href="../base/readable_string_32_short.html#f_count">count</a> <span class="esymbol">=</span> <span class="elocal">a_count</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Access</span>
+
+	<a name="f_output"></a><a class="efeature" href="../simple_json/simple_json_pretty_printer_short.html#f_output">output</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Pretty-printed JSON output</span>
+
+	<a name="f_last_result"></a><a class="efeature" href="../simple_json/simple_json_pretty_printer_short.html#f_last_result">last_result</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Get the result of last print operation</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Printing</span>
+
+	<a name="f_print_json_value"></a><a class="efeature" href="../simple_json/simple_json_pretty_printer_short.html#f_print_json_value">print_json_value</a> <span class="esymbol">(</span><span class="elocal">a_value</span><span class="esymbol">:</span> <span class="neclass">JSON_VALUE</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Pretty print a JSON value and return the result</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">value_not_void</span><span class="esymbol">:</span> <span class="elocal">a_value</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Visitor Pattern</span>
+
+	<a name="f_visit_json_array"></a><a class="efeature" href="../simple_json/simple_json_pretty_printer_short.html#f_visit_json_array">visit_json_array</a> <span class="esymbol">(</span><span class="elocal">a_json_array</span><span class="esymbol">:</span> <span class="neclass">JSON_ARRAY</span><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Visit </span><span class="equoted">a_json_array</span><span class="ecomment"> with pretty formatting</span>
+
+	<a name="f_visit_json_boolean"></a><a class="efeature" href="../simple_json/simple_json_pretty_printer_short.html#f_visit_json_boolean">visit_json_boolean</a> <span class="esymbol">(</span><span class="elocal">a_json_boolean</span><span class="esymbol">:</span> <span class="neclass">JSON_BOOLEAN</span><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Visit </span><span class="equoted">a_json_boolean</span>
+
+	<a name="f_visit_json_null"></a><a class="efeature" href="../simple_json/simple_json_pretty_printer_short.html#f_visit_json_null">visit_json_null</a> <span class="esymbol">(</span><span class="elocal">a_json_null</span><span class="esymbol">:</span> <span class="neclass">JSON_NULL</span><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Visit </span><span class="equoted">a_json_null</span>
+
+	<a name="f_visit_json_number"></a><a class="efeature" href="../simple_json/simple_json_pretty_printer_short.html#f_visit_json_number">visit_json_number</a> <span class="esymbol">(</span><span class="elocal">a_json_number</span><span class="esymbol">:</span> <span class="neclass">JSON_NUMBER</span><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Visit </span><span class="equoted">a_json_number</span>
+
+	<a name="f_visit_json_object"></a><a class="efeature" href="../simple_json/simple_json_pretty_printer_short.html#f_visit_json_object">visit_json_object</a> <span class="esymbol">(</span><span class="elocal">a_json_object</span><span class="esymbol">:</span> <span class="neclass">JSON_OBJECT</span><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Visit </span><span class="equoted">a_json_object</span><span class="ecomment"> with pretty formatting</span>
+
+	<a name="f_visit_json_string"></a><a class="efeature" href="../simple_json/simple_json_pretty_printer_short.html#f_visit_json_string">visit_json_string</a> <span class="esymbol">(</span><span class="elocal">a_json_string</span><span class="esymbol">:</span> <span class="neclass">JSON_STRING</span><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Visit </span><span class="equoted">a_json_string</span><span class="ecomment"> - translates \uNNNN codes to actual Unicode characters</span>
+	
+<span class="ekeyword">invariant</span>
+	<span class="etag">output_not_void</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_pretty_printer_short.html#f_output">output</a> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	<span class="etag">indent_string_not_void</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_pretty_printer_short.html#f_indent_string">indent_string</a> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	<span class="etag">indent_string_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../simple_json/simple_json_pretty_printer_short.html#f_indent_string">indent_string</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+	<span class="etag">non_negative_indent</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_pretty_printer_short.html#f_current_indent_level">current_indent_level</a> <a class="esymbol" href="../base/comparable_short.html#f_is_greater_equal">&gt;=</a> <span class="enumber">0</span>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../simple_json/simple_json_pretty_printer_short.html">SIMPLE_JSON_PRETTY_PRINTER</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_json_pretty_printer_chart.html">Chart</a>
+<a class="nav class" href="simple_json_pretty_printer_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_pretty_printer"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

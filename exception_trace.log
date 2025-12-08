@@ -514,3 +514,98 @@ EB_KERNEL           make @5
 EB_KERNEL           root's creation                                     
 <000002226CBFC6C8>                         Routine failure.              Exit
 -------------------------------------------------------------------------------
+
+ec: system execution failed.
+Following is the set of recorded exceptions:
+
+******************************** Thread exception *****************************
+In thread           Root thread            0x0 (thread id)
+*******************************************************************************
+-------------------------------------------------------------------------------
+Class / Object      Routine                Nature of exception           Effect
+-------------------------------------------------------------------------------
+CONSOLE             put_string @4          FILE: unable to write STRING object.:
+<0000026E3557FEB8>                         Runtime I/O error.            Fail
+-------------------------------------------------------------------------------
+CONSOLE             put_string @4                                       
+<0000026E3557FEB8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+CONSOLE             put_string_general @17                              
+<0000026E3557FEB8>  (From PLAIN_TEXT_FILE) Routine failure.              Fail
+-------------------------------------------------------------------------------
+CONSOLE             put_string_32 @1                                    
+<0000026E3557FEB8>  (From PLAIN_TEXT_FILE) Routine failure.              Fail
+-------------------------------------------------------------------------------
+EC_ENCODING_CONVERTER
+                    localized_print_error @4
+<0000026E35527E58>  (From LOCALIZED_PRINTER)
+                                           Routine failure.              Fail
+-------------------------------------------------------------------------------
+DEGREE_OUTPUT       put_message @1                                      
+<0000026E3556FD18>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+DEGREE_OUTPUT       put_start_degree @6                                 
+<0000026E3556FD18>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SYSTEM_I            init_recompilation @1                               
+<0000026E36A436A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SYSTEM_I            do_recompilation @5                                 
+<0000026E36A436A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+SYSTEM_I            recompile @6                                        
+<0000026E36A436A8>                         Routine failure.              Rescue
+-------------------------------------------------------------------------------
+WORKBENCH_I         recompile @23                                       
+<0000026E35470808>                         Routine failure.              Rescue
+-------------------------------------------------------------------------------
+E_PROJECT           melt @7                                             
+<0000026E354703A8>                         Routine failure.              Rescue
+-------------------------------------------------------------------------------
+E_PROJECT           quick_melt @3                                       
+<0000026E354703A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+EWB_QUICK_MELT      perform_compilation @1                              
+<0000026E354702A8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+EWB_QUICK_MELT      compile @3                                          
+<0000026E354702A8>  (From EWB_COMP)        Routine failure.              Fail
+-------------------------------------------------------------------------------
+EWB_QUICK_MELT      execute @6                                          
+<0000026E354702A8>  (From EWB_COMP)        Routine failure.              Fail
+-------------------------------------------------------------------------------
+ES_BATCH            execute @45                                         
+<0000026E369D87E8>  (From ES)              Routine failure.              Rescue
+-------------------------------------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ entering level 1 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------------------------------------------------------------
+CONSOLE             put_string @4          FILE: unable to write STRING object.:
+<0000026E3557FEB8>                         Runtime I/O error.            Fail
+-------------------------------------------------------------------------------
+CONSOLE             put_string @4                                       
+<0000026E3557FEB8>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+CONSOLE             put_string_general @17                              
+<0000026E3557FEB8>  (From PLAIN_TEXT_FILE) Routine failure.              Fail
+-------------------------------------------------------------------------------
+CONSOLE             put_string_32 @1                                    
+<0000026E3557FEB8>  (From PLAIN_TEXT_FILE) Routine failure.              Fail
+-------------------------------------------------------------------------------
+ES_BATCH            localized_print_error @4
+<0000026E369D87E8>  (From LOCALIZED_PRINTER)
+                                           Routine failure.              Fail
+-------------------------------------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ back to level 0 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------------------------------------------------------------
+ES_BATCH            execute @69                                         
+<0000026E369D87E8>  (From ES)              Exception in rescue clause.   Fail
+-------------------------------------------------------------------------------
+ES_BATCH            make @13                                            
+<0000026E369D87E8>  (From ES)              Routine failure.              Fail
+-------------------------------------------------------------------------------
+EB_KERNEL           make @5                                             
+<0000026E3687E808>                         Routine failure.              Fail
+-------------------------------------------------------------------------------
+EB_KERNEL           root's creation                                     
+<0000026E3687E808>                         Routine failure.              Exit
+-------------------------------------------------------------------------------

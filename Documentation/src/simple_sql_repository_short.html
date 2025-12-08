@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="TTGeneric repository pattern for database entities.  TTProvides common CRUD operations (Create, Read, Update, Delete) for TTdatabase entities. Subclasses must implement deferred features to TTspecify table name, primary key, and entity mapping.  TTUsage: TTTclass USER_REPOSITORY inherit SIMPLE_SQL_REPOSITORY [USER] TTTfeature TTTTtable_name: STRING_8 = users TTTTprimary_key_column: STRING_8 = id TTTTrow_to_entity (a_row): USER do ... end TTTTentity_to_columns (a_entity): HASH_TABLE do ... end TTTTentity_id (a_entity): INTEGER_64 do ... end TTTend  TTT-- Then use: TTTrepo := create {USER_REPOSITORY}.make (db) TTTall_users := repo.find_all TTTuser := repo.find_by_id (42) TTTactive_users := repo.find_where (status = 'active') TTTnew_id := repo.insert (new_user) TTTrepo.update (existing_user) TTTrepo.delete (42)"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_sql_repository Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_sql_repository_chart.html">Chart</a>
+<a class="nav class" href="simple_sql_repository_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_repository"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">		Generic repository pattern for database entities.</span>
+		
+		<span class="estring">		Provides common CRUD operations (Create, Read, Update, Delete) for</span>
+		<span class="estring">		database entities. Subclasses must implement deferred features to</span>
+		<span class="estring">		specify table name, primary key, and entity mapping.</span>
+		
+		<span class="estring">		Usage:</span>
+		<span class="estring">			class USER_REPOSITORY inherit SIMPLE_SQL_REPOSITORY </span><span class="estring">[USER]</span>
+		<span class="estring">			feature</span>
+		<span class="estring">				table_name: STRING_8 = &quot;users&quot;</span>
+		<span class="estring">				primary_key_column: STRING_8 = &quot;id&quot;</span>
+		<span class="estring">				row_to_entity (a_row): USER do ... end</span>
+		<span class="estring">				entity_to_columns (a_entity): HASH_TABLE do ... end</span>
+		<span class="estring">				entity_id (a_entity): INTEGER_64 do ... end</span>
+		<span class="estring">			end</span>
+		
+		<span class="estring">			-- Then use:</span>
+		<span class="estring">			repo := create </span><span class="estring">{</span><span class="estring">USER_REPOSITORY</span><span class="estring">}</span><span class="estring">.make</span><span class="estring"> (db)</span>
+		<span class="estring">			all_users := repo.find_all</span>
+		<span class="estring">			user := repo.find_by_id (42)</span>
+		<span class="estring">			active_users := repo.find_where (&quot;status = 'active'&quot;)</span>
+		<span class="estring">			new_id := repo.insert (new_user)</span>
+		<span class="estring">			repo.update (existing_user)</span>
+		<span class="estring">			repo.delete (42)</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+
+<span class="ekeyword">deferred</span> <span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../src/simple_sql_repository_short.html">SIMPLE_SQL_REPOSITORY</a> <span class="esymbol">[</span><span class="egeneric">G</span> <span class="esymbol">-&gt;</span> <a class="eclass" href="../base/any_short.html">ANY</a><span class="esymbol">]</span>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Access</span>
+
+	<a name="f_database"></a><a class="efeature" href="../src/simple_sql_repository_short.html#f_database">database</a><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_database_short.html">SIMPLE_SQL_DATABASE</a>
+			<span class="ecomment">--</span><span class="ecomment"> Database connection</span>
+
+	<a name="f_table_name"></a><a class="efeature" href="../src/simple_sql_repository_short.html#f_table_name">table_name</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a>
+			<span class="ecomment">--</span><span class="ecomment"> Name of the database table</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="ekeyword">Result</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_primary_key_column"></a><a class="efeature" href="../src/simple_sql_repository_short.html#f_primary_key_column">primary_key_column</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a>
+			<span class="ecomment">--</span><span class="ecomment"> Name of the primary key column</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="ekeyword">Result</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Query: All</span>
+
+	<a name="f_find_all"></a><a class="efeature" href="../src/simple_sql_repository_short.html#f_find_all">find_all</a><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_short.html">ARRAYED_LIST</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> Return all entities from the table</span>
+
+	<a name="f_find_all_ordered"></a><a class="efeature" href="../src/simple_sql_repository_short.html#f_find_all_ordered">find_all_ordered</a> <span class="esymbol">(</span><span class="elocal">a_order_by</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_short.html">ARRAYED_LIST</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> Return all entities ordered by specified column(s)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">order_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_order_by</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_find_all_limited"></a><a class="efeature" href="../src/simple_sql_repository_short.html#f_find_all_limited">find_all_limited</a> <span class="esymbol">(</span><span class="elocal">a_limit</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">;</span> <span class="elocal">a_offset</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_short.html">ARRAYED_LIST</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> Return entities with pagination</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">positive_limit</span><span class="esymbol">:</span> <span class="elocal">a_limit</span> <a class="esymbol" href="../base/comparable_short.html#f_is_greater">&gt;</a> <span class="enumber">0</span>
+			<span class="etag">non_negative_offset</span><span class="esymbol">:</span> <span class="elocal">a_offset</span> <a class="esymbol" href="../base/comparable_short.html#f_is_greater_equal">&gt;=</a> <span class="enumber">0</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">respects_limit</span><span class="esymbol">:</span> <span class="ekeyword">Result</span><span class="edot">.</span><a class="efeature" href="../base/arrayed_list_short.html#f_count">count</a> <a class="esymbol" href="../base/comparable_short.html#f_is_less_equal">&lt;=</a> <span class="elocal">a_limit</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Query: By ID</span>
+
+	<a name="f_find_by_id"></a><a class="efeature" href="../src/simple_sql_repository_short.html#f_find_by_id">find_by_id</a> <span class="esymbol">(</span><span class="elocal">a_id</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_64_short.html">INTEGER_64</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <span class="egeneric">G</span>
+			<span class="ecomment">--</span><span class="ecomment"> Find entity by primary key, or Void if not found</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">valid_id</span><span class="esymbol">:</span> <span class="elocal">a_id</span> <a class="esymbol" href="../base/comparable_short.html#f_is_greater">&gt;</a> <span class="enumber">0</span>
+
+	<a name="f_exists"></a><a class="efeature" href="../src/simple_sql_repository_short.html#f_exists">exists</a> <span class="esymbol">(</span><span class="elocal">a_id</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_64_short.html">INTEGER_64</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Does an entity with this ID exist?</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">valid_id</span><span class="esymbol">:</span> <span class="elocal">a_id</span> <a class="esymbol" href="../base/comparable_short.html#f_is_greater">&gt;</a> <span class="enumber">0</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Query: Conditional</span>
+
+	<a name="f_find_where"></a><a class="efeature" href="../src/simple_sql_repository_short.html#f_find_where">find_where</a> <span class="esymbol">(</span><span class="elocal">a_conditions</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_short.html">ARRAYED_LIST</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> Find all entities matching conditions</span>
+			<span class="ecomment">--</span><span class="ecomment"> Example: &quot;status = 'active' AND age &gt; 21&quot;</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">conditions_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_conditions</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_find_where_ordered"></a><a class="efeature" href="../src/simple_sql_repository_short.html#f_find_where_ordered">find_where_ordered</a> <span class="esymbol">(</span><span class="elocal">a_conditions</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_order_by</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_short.html">ARRAYED_LIST</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> Find all entities matching conditions with ordering</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">conditions_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_conditions</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+			<span class="etag">order_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_order_by</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_find_first_where"></a><a class="efeature" href="../src/simple_sql_repository_short.html#f_find_first_where">find_first_where</a> <span class="esymbol">(</span><span class="elocal">a_conditions</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <span class="egeneric">G</span>
+			<span class="ecomment">--</span><span class="ecomment"> Find first entity matching conditions, or Void if none</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">conditions_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_conditions</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Query: Counting</span>
+
+	<a name="f_count"></a><a class="efeature" href="../src/simple_sql_repository_short.html#f_count">count</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Total number of entities in the table</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">non_negative</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <a class="esymbol" href="../base/comparable_short.html#f_is_greater_equal">&gt;=</a> <span class="enumber">0</span>
+
+	<a name="f_count_where"></a><a class="efeature" href="../src/simple_sql_repository_short.html#f_count_where">count_where</a> <span class="esymbol">(</span><span class="elocal">a_conditions</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Number of entities matching conditions</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">conditions_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_conditions</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">non_negative</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <a class="esymbol" href="../base/comparable_short.html#f_is_greater_equal">&gt;=</a> <span class="enumber">0</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Command: Insert</span>
+
+	<a name="f_insert"></a><a class="efeature" href="../src/simple_sql_repository_short.html#f_insert">insert</a> <span class="esymbol">(</span><span class="elocal">a_entity</span><span class="esymbol">:</span> <span class="egeneric">G</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_64_short.html">INTEGER_64</a>
+			<span class="ecomment">--</span><span class="ecomment"> Insert entity and return new primary key ID</span>
+			<span class="ecomment">--</span><span class="ecomment"> Returns 0 if insert failed</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">positive_id_on_success</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../src/simple_sql_repository_short.html#f_has_error">has_error</a> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <span class="ekeyword">Result</span> <a class="esymbol" href="../base/comparable_short.html#f_is_greater">&gt;</a> <span class="enumber">0</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Command: Update</span>
+
+	<a name="f_update"></a><a class="efeature" href="../src/simple_sql_repository_short.html#f_update">update</a> <span class="esymbol">(</span><span class="elocal">a_entity</span><span class="esymbol">:</span> <span class="egeneric">G</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Update entity by its primary key</span>
+			<span class="ecomment">--</span><span class="ecomment"> Returns True if exactly one row was updated</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">entity_still_exists</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <a class="efeature" href="../src/simple_sql_repository_short.html#f_exists">exists</a><span class="esymbol"> </span><span class="esymbol">(</span><a class="efeature" href="../src/simple_sql_repository_short.html#f_entity_id">entity_id</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_entity</span><span class="esymbol">)</span><span class="esymbol">)</span>
+
+	<a name="f_update_where"></a><a class="efeature" href="../src/simple_sql_repository_short.html#f_update_where">update_where</a> <span class="esymbol">(</span><span class="elocal">a_columns</span><span class="esymbol">:</span> <a class="eclass" href="../base/hash_table_short.html">HASH_TABLE</a> <span class="esymbol">[</span><span class="ekeyword">detachable</span> <a class="eclass" href="../base/any_short.html">ANY</a><span class="esymbol">,</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a><span class="esymbol">]</span><span class="esymbol">;</span> <span class="elocal">a_conditions</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Update columns for all entities matching conditions</span>
+			<span class="ecomment">--</span><span class="ecomment"> Returns number of rows affected</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">columns_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_columns</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+			<span class="etag">conditions_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_conditions</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">non_negative</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <a class="esymbol" href="../base/comparable_short.html#f_is_greater_equal">&gt;=</a> <span class="enumber">0</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Command: Delete</span>
+
+	<a name="f_delete"></a><a class="efeature" href="../src/simple_sql_repository_short.html#f_delete">delete</a> <span class="esymbol">(</span><span class="elocal">a_id</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_64_short.html">INTEGER_64</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Delete entity by primary key</span>
+			<span class="ecomment">--</span><span class="ecomment"> Returns True if exactly one row was deleted</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">valid_id</span><span class="esymbol">:</span> <span class="elocal">a_id</span> <a class="esymbol" href="../base/comparable_short.html#f_is_greater">&gt;</a> <span class="enumber">0</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">not_exists_if_success</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../src/simple_sql_repository_short.html#f_exists">exists</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_id</span><span class="esymbol">)</span>
+
+	<a name="f_delete_where"></a><a class="efeature" href="../src/simple_sql_repository_short.html#f_delete_where">delete_where</a> <span class="esymbol">(</span><span class="elocal">a_conditions</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Delete all entities matching conditions</span>
+			<span class="ecomment">--</span><span class="ecomment"> Returns number of rows deleted</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">conditions_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_conditions</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">non_negative</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <a class="esymbol" href="../base/comparable_short.html#f_is_greater_equal">&gt;=</a> <span class="enumber">0</span>
+
+	<a name="f_delete_all"></a><a class="efeature" href="../src/simple_sql_repository_short.html#f_delete_all">delete_all</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Delete all entities from the table (use with caution!)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Returns number of rows deleted</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">non_negative</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <a class="esymbol" href="../base/comparable_short.html#f_is_greater_equal">&gt;=</a> <span class="enumber">0</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Command: Save (Insert or Update)</span>
+
+	<a name="f_save"></a><a class="efeature" href="../src/simple_sql_repository_short.html#f_save">save</a> <span class="esymbol">(</span><span class="elocal">a_entity</span><span class="esymbol">:</span> <span class="egeneric">G</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_64_short.html">INTEGER_64</a>
+			<span class="ecomment">--</span><span class="ecomment"> Insert new entity or update existing</span>
+			<span class="ecomment">--</span><span class="ecomment"> Returns entity ID (new or existing)</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Status</span>
+
+	<a name="f_has_error"></a><a class="efeature" href="../src/simple_sql_repository_short.html#f_has_error">has_error</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Did the last operation cause an error?</span>
+
+	<a name="f_last_error_message"></a><a class="efeature" href="../src/simple_sql_repository_short.html#f_last_error_message">last_error_message</a><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Error message from last failed operation</span>
+	
+<span class="ekeyword">invariant</span>
+	<span class="etag">database_attached</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_repository_short.html#f_database">database</a> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	<span class="etag">database_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_repository_short.html#f_database">database</a><span class="edot">.</span><a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+	<span class="etag">table_name_valid</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../src/simple_sql_repository_short.html#f_table_name">table_name</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+	<span class="etag">primary_key_valid</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../src/simple_sql_repository_short.html#f_primary_key_column">primary_key_column</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../src/simple_sql_repository_short.html">SIMPLE_SQL_REPOSITORY</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_sql_repository_chart.html">Chart</a>
+<a class="nav class" href="simple_sql_repository_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_repository"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

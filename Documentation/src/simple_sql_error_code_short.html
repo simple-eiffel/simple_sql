@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="TTSQLite error codes as enumerated constants. TTProvides human-readable names for all SQLite result codes.  TTUsage: TTTif db.last_error_code = {SIMPLE_SQL_ERROR_CODE}.constraint then TTTT-- handle constraint violation TTTend"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="Copyright (c) 2025, Larry Rix"/>
+<meta name="license" content="MIT License"/>
+<meta name="source" content="SIMPLE_SQL - High-level SQLite API for Eiffel Error codes from https://www.sqlite.org/rescode.html"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_sql_error_code Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_sql_error_code_chart.html">Chart</a>
+<a class="nav class" href="simple_sql_error_code_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_error_code"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">		SQLite error codes as enumerated constants.</span>
+		<span class="estring">		Provides human-readable names for all SQLite result codes.</span>
+		
+		<span class="estring">		Usage:</span>
+		<span class="estring">			if db.last_error_code = </span><span class="esymbol">{</span><a class="eclass" href="../src/simple_sql_error_code_short.html">SIMPLE_SQL_ERROR_CODE</a><span class="esymbol">}</span><span class="edot">.</span><a class="efeature" href="../src/simple_sql_error_code_short.html#f_constraint">constraint</a><span class="estring"> then</span>
+		<span class="estring">				-- handle constraint violation</span>
+		<span class="estring">			end</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+
+<span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../src/simple_sql_error_code_short.html">SIMPLE_SQL_ERROR_CODE</a>
+
+<span class="ekeyword">create</span> 
+	<a class="efeature" href="../base/any_short.html#f_default_create">default_create</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Primary Result Codes</span>
+
+	<a name="f_ok"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_ok">Ok</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">0</span>
+			<span class="ecomment">--</span><span class="ecomment"> Successful result</span>
+
+	<a name="f_error"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_error">Error</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">1</span>
+			<span class="ecomment">--</span><span class="ecomment"> Generic error</span>
+
+	<a name="f_internal"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_internal">Internal</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">2</span>
+			<span class="ecomment">--</span><span class="ecomment"> Internal logic error in SQLite</span>
+
+	<a name="f_perm"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_perm">Perm</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">3</span>
+			<span class="ecomment">--</span><span class="ecomment"> Access permission denied</span>
+
+	<a name="f_abort"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_abort">Abort</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">4</span>
+			<span class="ecomment">--</span><span class="ecomment"> Callback routine requested an abort</span>
+
+	<a name="f_busy"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_busy">Busy</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">5</span>
+			<span class="ecomment">--</span><span class="ecomment"> The database file is locked</span>
+
+	<a name="f_locked"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_locked">Locked</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">6</span>
+			<span class="ecomment">--</span><span class="ecomment"> A table in the database is locked</span>
+
+	<a name="f_nomem"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_nomem">Nomem</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">7</span>
+			<span class="ecomment">--</span><span class="ecomment"> A malloc() failed</span>
+
+	<a name="f_readonly"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_readonly">Readonly</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">8</span>
+			<span class="ecomment">--</span><span class="ecomment"> Attempt to write a readonly database</span>
+
+	<a name="f_interrupt"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_interrupt">Interrupt</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">9</span>
+			<span class="ecomment">--</span><span class="ecomment"> Operation terminated by sqlite3_interrupt()</span>
+
+	<a name="f_ioerr"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_ioerr">Ioerr</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">10</span>
+			<span class="ecomment">--</span><span class="ecomment"> Some kind of disk I/O error occurred</span>
+
+	<a name="f_corrupt"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_corrupt">Corrupt</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">11</span>
+			<span class="ecomment">--</span><span class="ecomment"> The database disk image is malformed</span>
+
+	<a name="f_notfound"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_notfound">Notfound</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">12</span>
+			<span class="ecomment">--</span><span class="ecomment"> Unknown opcode in sqlite3_file_control()</span>
+
+	<a name="f_full"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_full">Full</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">13</span>
+			<span class="ecomment">--</span><span class="ecomment"> Insertion failed because database is full</span>
+
+	<a name="f_cantopen"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_cantopen">Cantopen</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">14</span>
+			<span class="ecomment">--</span><span class="ecomment"> Unable to open the database file</span>
+
+	<a name="f_protocol"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_protocol">Protocol</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">15</span>
+			<span class="ecomment">--</span><span class="ecomment"> Database lock protocol error</span>
+
+	<a name="f_empty"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_empty">Empty</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">16</span>
+			<span class="ecomment">--</span><span class="ecomment"> Internal use only</span>
+
+	<a name="f_schema"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_schema">Schema</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">17</span>
+			<span class="ecomment">--</span><span class="ecomment"> The database schema changed</span>
+
+	<a name="f_toobig"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_toobig">Toobig</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">18</span>
+			<span class="ecomment">--</span><span class="ecomment"> String or BLOB exceeds size limit</span>
+
+	<a name="f_constraint"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_constraint">Constraint</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">19</span>
+			<span class="ecomment">--</span><span class="ecomment"> Abort due to constraint violation</span>
+
+	<a name="f_mismatch"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_mismatch">Mismatch</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">20</span>
+			<span class="ecomment">--</span><span class="ecomment"> Data type mismatch</span>
+
+	<a name="f_misuse"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_misuse">Misuse</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">21</span>
+			<span class="ecomment">--</span><span class="ecomment"> Library used incorrectly</span>
+
+	<a name="f_nolfs"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_nolfs">Nolfs</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">22</span>
+			<span class="ecomment">--</span><span class="ecomment"> Uses OS features not supported on host</span>
+
+	<a name="f_auth"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_auth">Auth</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">23</span>
+			<span class="ecomment">--</span><span class="ecomment"> Authorization denied</span>
+
+	<a name="f_format"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_format">Format</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">24</span>
+			<span class="ecomment">--</span><span class="ecomment"> Not used</span>
+
+	<a name="f_range"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_range">Range</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">25</span>
+			<span class="ecomment">--</span><span class="ecomment"> 2nd parameter to sqlite3_bind out of range</span>
+
+	<a name="f_notadb"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_notadb">Notadb</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">26</span>
+			<span class="ecomment">--</span><span class="ecomment"> File opened that is not a database file</span>
+
+	<a name="f_notice"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_notice">Notice</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">27</span>
+			<span class="ecomment">--</span><span class="ecomment"> Notifications from sqlite3_log()</span>
+
+	<a name="f_warning"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_warning">Warning</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">28</span>
+			<span class="ecomment">--</span><span class="ecomment"> Warnings from sqlite3_log()</span>
+
+	<a name="f_row"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_row">Row</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">100</span>
+			<span class="ecomment">--</span><span class="ecomment"> sqlite3_step() has another row ready</span>
+
+	<a name="f_done"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_done">Done</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">101</span>
+			<span class="ecomment">--</span><span class="ecomment"> sqlite3_step() has finished executing</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Extended Result Codes (Common)</span>
+
+	<a name="f_error_missing_collseq"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_error_missing_collseq">Error_missing_collseq</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">257</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_ERROR_MISSING_COLLSEQ</span>
+
+	<a name="f_error_retry"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_error_retry">Error_retry</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">513</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_ERROR_RETRY</span>
+
+	<a name="f_error_snapshot"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_error_snapshot">Error_snapshot</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">769</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_ERROR_SNAPSHOT</span>
+
+	<a name="f_ioerr_read"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_ioerr_read">Ioerr_read</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">266</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_IOERR_READ</span>
+
+	<a name="f_ioerr_short_read"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_ioerr_short_read">Ioerr_short_read</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">522</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_IOERR_SHORT_READ</span>
+
+	<a name="f_ioerr_write"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_ioerr_write">Ioerr_write</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">778</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_IOERR_WRITE</span>
+
+	<a name="f_ioerr_fsync"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_ioerr_fsync">Ioerr_fsync</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">1034</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_IOERR_FSYNC</span>
+
+	<a name="f_ioerr_lock"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_ioerr_lock">Ioerr_lock</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">3850</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_IOERR_LOCK</span>
+
+	<a name="f_ioerr_close"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_ioerr_close">Ioerr_close</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">4106</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_IOERR_CLOSE</span>
+
+	<a name="f_locked_sharedcache"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_locked_sharedcache">Locked_sharedcache</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">262</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_LOCKED_SHAREDCACHE</span>
+
+	<a name="f_busy_recovery"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_busy_recovery">Busy_recovery</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">261</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_BUSY_RECOVERY</span>
+
+	<a name="f_busy_snapshot"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_busy_snapshot">Busy_snapshot</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">517</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_BUSY_SNAPSHOT</span>
+
+	<a name="f_busy_timeout"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_busy_timeout">Busy_timeout</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">773</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_BUSY_TIMEOUT</span>
+
+	<a name="f_cantopen_notempdir"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_cantopen_notempdir">Cantopen_notempdir</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">270</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_CANTOPEN_NOTEMPDIR</span>
+
+	<a name="f_cantopen_isdir"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_cantopen_isdir">Cantopen_isdir</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">526</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_CANTOPEN_ISDIR</span>
+
+	<a name="f_cantopen_fullpath"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_cantopen_fullpath">Cantopen_fullpath</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">782</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_CANTOPEN_FULLPATH</span>
+
+	<a name="f_corrupt_vtab"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_corrupt_vtab">Corrupt_vtab</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">267</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_CORRUPT_VTAB</span>
+
+	<a name="f_corrupt_sequence"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_corrupt_sequence">Corrupt_sequence</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">523</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_CORRUPT_SEQUENCE</span>
+
+	<a name="f_readonly_recovery"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_readonly_recovery">Readonly_recovery</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">264</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_READONLY_RECOVERY</span>
+
+	<a name="f_readonly_cantlock"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_readonly_cantlock">Readonly_cantlock</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">520</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_READONLY_CANTLOCK</span>
+
+	<a name="f_readonly_rollback"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_readonly_rollback">Readonly_rollback</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">776</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_READONLY_ROLLBACK</span>
+
+	<a name="f_readonly_dbmoved"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_readonly_dbmoved">Readonly_dbmoved</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">1032</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_READONLY_DBMOVED</span>
+
+	<a name="f_abort_rollback"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_abort_rollback">Abort_rollback</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">516</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_ABORT_ROLLBACK</span>
+
+	<a name="f_constraint_check"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_constraint_check">Constraint_check</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">275</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_CONSTRAINT_CHECK</span>
+
+	<a name="f_constraint_commithook"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_constraint_commithook">Constraint_commithook</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">531</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_CONSTRAINT_COMMITHOOK</span>
+
+	<a name="f_constraint_foreignkey"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_constraint_foreignkey">Constraint_foreignkey</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">787</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_CONSTRAINT_FOREIGNKEY</span>
+
+	<a name="f_constraint_function"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_constraint_function">Constraint_function</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">1043</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_CONSTRAINT_FUNCTION</span>
+
+	<a name="f_constraint_notnull"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_constraint_notnull">Constraint_notnull</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">1299</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_CONSTRAINT_NOTNULL</span>
+
+	<a name="f_constraint_primarykey"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_constraint_primarykey">Constraint_primarykey</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">1555</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_CONSTRAINT_PRIMARYKEY</span>
+
+	<a name="f_constraint_trigger"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_constraint_trigger">Constraint_trigger</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">1811</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_CONSTRAINT_TRIGGER</span>
+
+	<a name="f_constraint_unique"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_constraint_unique">Constraint_unique</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">2067</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_CONSTRAINT_UNIQUE</span>
+
+	<a name="f_constraint_vtab"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_constraint_vtab">Constraint_vtab</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">2323</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_CONSTRAINT_VTAB</span>
+
+	<a name="f_constraint_rowid"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_constraint_rowid">Constraint_rowid</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">2579</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_CONSTRAINT_ROWID</span>
+
+	<a name="f_notice_recover_wal"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_notice_recover_wal">Notice_recover_wal</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">283</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_NOTICE_RECOVER_WAL</span>
+
+	<a name="f_notice_recover_rollback"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_notice_recover_rollback">Notice_recover_rollback</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">539</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_NOTICE_RECOVER_ROLLBACK</span>
+
+	<a name="f_warning_autoindex"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_warning_autoindex">Warning_autoindex</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">284</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_WARNING_AUTOINDEX</span>
+
+	<a name="f_auth_user"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_auth_user">Auth_user</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">279</span>
+			<span class="ecomment">--</span><span class="ecomment"> SQLITE_AUTH_USER</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Query</span>
+
+	<a name="f_name"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_name">name</a> <span class="esymbol">(</span><span class="elocal">a_code</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a>
+			<span class="ecomment">--</span><span class="ecomment"> Human-readable name for error code</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">result_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="ekeyword">Result</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_is_success"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_is_success">is_success</a> <span class="esymbol">(</span><span class="elocal">a_code</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is this a success code?</span>
+
+	<a name="f_is_error"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_is_error">is_error</a> <span class="esymbol">(</span><span class="elocal">a_code</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is this an error code?</span>
+
+	<a name="f_primary_code"></a><a class="efeature" href="../src/simple_sql_error_code_short.html#f_primary_code">primary_code</a> <span class="esymbol">(</span><span class="elocal">a_extended_code</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Extract primary result code from extended code</span>
+			<span class="ecomment">--</span><span class="ecomment"> Extended codes have primary code in lower 8 bits</span>
+	
+<span class="ekeyword">note</span>
+	<span class="eitag">copyright</span><span class="esymbol">:</span> <span class="estring">&quot;Copyright (c) 2025, Larry Rix&quot;</span>
+	<span class="eitag">license</span><span class="esymbol">:</span> <span class="estring">&quot;MIT License&quot;</span>
+	<span class="eitag">source</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">SIMPLE_SQL - High-level SQLite API for Eiffel</span>
+		<span class="estring">Error codes from </span><a class="estring" href="https://www.sqlite.org/rescode.html">https://www.sqlite.org/rescode.html</a>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../src/simple_sql_error_code_short.html">SIMPLE_SQL_ERROR_CODE</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_sql_error_code_chart.html">Chart</a>
+<a class="nav class" href="simple_sql_error_code_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_error_code"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

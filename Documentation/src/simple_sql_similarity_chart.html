@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="TTSimilarity and distance calculations for vector embeddings.  TTProvides common metrics for comparing vectors: TTT- Cosine Similarity: Angle between vectors (-1 to 1) TTT- Euclidean Distance: Straight-line distance TTT- Manhattan Distance: Taxicab/L1 distance TTT- Dot Product: Inner product of vectors  TTUsage: TTTcreate sim.make TTTscore := sim.cosine_similarity (vec1, vec2) TTTdist := sim.euclidean_distance (vec1, vec2)  TTCosine Similarity: TTT- 1.0 = identical direction TTT- 0.0 = orthogonal (no similarity) TTT- -1.0 = opposite direction  TTFor normalized vectors, cosine similarity equals dot product."/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_sql_similarity Chart</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<span class="nav class selected">Chart</span>
+<a class="nav class" href="simple_sql_similarity_links.html">Relations</a>
+<a class="nav class" href="simple_sql_similarity_short.html">Contracts</a>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_similarity"></span>
+</div></form><pre><span class="ekeyword">class</span>
+	<a class="eclass" href="../src/simple_sql_similarity_chart.html">SIMPLE_SQL_SIMILARITY</a>
+
+<span class="ekeyword">General</span>
+	<span class="eitag">cluster</span><span class="esymbol">:</span> <a class="ecluster" href="../src/index.html">src</a>
+	<span class="eitag">description</span><span class="esymbol">:</span> 
+		<span class="estring">&quot;Similarity and distance calculations for vector embeddings.</span>
+		
+		<span class="estring">Provides common metrics for comparing vectors:</span>
+		<span class="estring">- Cosine Similarity: Angle between vectors (-1 to 1)</span>
+		<span class="estring">- Euclidean Distance: Straight-line distance</span>
+		<span class="estring">- Manhattan Distance: Taxicab/L1 distance</span>
+		<span class="estring">- Dot Product: Inner product of vectors</span>
+		
+		<span class="estring">Usage:</span>
+		<span class="estring">create sim.make</span>
+		<span class="estring">score := sim.cosine_similarity (vec1, vec2)</span>
+		<span class="estring">dist := sim.euclidean_distance (vec1, vec2)</span>
+		
+		<span class="estring">Cosine Similarity:</span>
+		<span class="estring">- 1.0 = identical direction</span>
+		<span class="estring">- 0.0 = orthogonal (no similarity)</span>
+		<span class="estring">- -1.0 = opposite direction</span>
+		
+		<span class="estring">For normalized vectors, cosine similarity equals dot product.&quot;</span>
+	<span class="eitag">create</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_similarity_short.html#f_make">make</a>
+
+<span class="ekeyword">Ancestors</span>
+	<a class="eclass" href="../base/any_chart.html">ANY</a>
+
+<span class="ekeyword">Queries</span>
+	<span title="`angular_distance' is declared in `Current'"><a class="efeature" href="../src/simple_sql_similarity_short.html#f_angular_distance">angular_distance</a> <span class="esymbol">(</span><span class="elocal">a_vec1</span><span class="esymbol">,</span> <span class="elocal">a_vec2</span><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_vector_chart.html">SIMPLE_SQL_VECTOR</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/real_64_chart.html">REAL_64</a></span>
+	<span title="`average_similarity' is declared in `Current'"><a class="efeature" href="../src/simple_sql_similarity_short.html#f_average_similarity">average_similarity</a> <span class="esymbol">(</span><span class="elocal">a_vectors</span><span class="esymbol">:</span> <a class="eclass" href="../base/array_chart.html">ARRAY</a> <span class="esymbol">[</span><a class="eclass" href="../src/simple_sql_vector_chart.html">SIMPLE_SQL_VECTOR</a><span class="esymbol">]</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/real_64_chart.html">REAL_64</a></span>
+	<span title="`cosine_similarity' is declared in `Current'"><a class="efeature" href="../src/simple_sql_similarity_short.html#f_cosine_similarity">cosine_similarity</a> <span class="esymbol">(</span><span class="elocal">a_vec1</span><span class="esymbol">,</span> <span class="elocal">a_vec2</span><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_vector_chart.html">SIMPLE_SQL_VECTOR</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/real_64_chart.html">REAL_64</a></span>
+	<span title="`dot_product' is declared in `Current'"><a class="efeature" href="../src/simple_sql_similarity_short.html#f_dot_product">dot_product</a> <span class="esymbol">(</span><span class="elocal">a_vec1</span><span class="esymbol">,</span> <span class="elocal">a_vec2</span><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_vector_chart.html">SIMPLE_SQL_VECTOR</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/real_64_chart.html">REAL_64</a></span>
+	<span title="`euclidean_distance' is declared in `Current'"><a class="efeature" href="../src/simple_sql_similarity_short.html#f_euclidean_distance">euclidean_distance</a> <span class="esymbol">(</span><span class="elocal">a_vec1</span><span class="esymbol">,</span> <span class="elocal">a_vec2</span><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_vector_chart.html">SIMPLE_SQL_VECTOR</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/real_64_chart.html">REAL_64</a></span>
+	<span title="`find_most_similar' is declared in `Current'"><a class="efeature" href="../src/simple_sql_similarity_short.html#f_find_most_similar">find_most_similar</a> <span class="esymbol">(</span><span class="elocal">a_query</span><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_vector_chart.html">SIMPLE_SQL_VECTOR</a><span class="esymbol">;</span> <span class="elocal">a_candidates</span><span class="esymbol">:</span> <a class="eclass" href="../base/array_chart.html">ARRAY</a> <span class="esymbol">[</span><a class="eclass" href="../src/simple_sql_vector_chart.html">SIMPLE_SQL_VECTOR</a><span class="esymbol">]</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`is_near' is declared in `Current'"><a class="efeature" href="../src/simple_sql_similarity_short.html#f_is_near">is_near</a> <span class="esymbol">(</span><span class="elocal">a_vec1</span><span class="esymbol">,</span> <span class="elocal">a_vec2</span><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_vector_chart.html">SIMPLE_SQL_VECTOR</a><span class="esymbol">;</span> <span class="elocal">a_max_distance</span><span class="esymbol">:</span> <a class="eclass" href="../base/real_64_chart.html">REAL_64</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_chart.html">BOOLEAN</a></span>
+	<span title="`is_similar' is declared in `Current'"><a class="efeature" href="../src/simple_sql_similarity_short.html#f_is_similar">is_similar</a> <span class="esymbol">(</span><span class="elocal">a_vec1</span><span class="esymbol">,</span> <span class="elocal">a_vec2</span><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_vector_chart.html">SIMPLE_SQL_VECTOR</a><span class="esymbol">;</span> <span class="elocal">a_threshold</span><span class="esymbol">:</span> <a class="eclass" href="../base/real_64_chart.html">REAL_64</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_chart.html">BOOLEAN</a></span>
+	<span title="`manhattan_distance' is declared in `Current'"><a class="efeature" href="../src/simple_sql_similarity_short.html#f_manhattan_distance">manhattan_distance</a> <span class="esymbol">(</span><span class="elocal">a_vec1</span><span class="esymbol">,</span> <span class="elocal">a_vec2</span><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_vector_chart.html">SIMPLE_SQL_VECTOR</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/real_64_chart.html">REAL_64</a></span>
+	<span title="`pairwise_cosine_similarity' is declared in `Current'"><a class="efeature" href="../src/simple_sql_similarity_short.html#f_pairwise_cosine_similarity">pairwise_cosine_similarity</a> <span class="esymbol">(</span><span class="elocal">a_vectors</span><span class="esymbol">:</span> <a class="eclass" href="../base/array_chart.html">ARRAY</a> <span class="esymbol">[</span><a class="eclass" href="../src/simple_sql_vector_chart.html">SIMPLE_SQL_VECTOR</a><span class="esymbol">]</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/array2_chart.html">ARRAY2</a> <span class="esymbol">[</span><a class="eclass" href="../base/real_64_chart.html">REAL_64</a><span class="esymbol">]</span></span>
+	<span title="`rank_by_similarity' is declared in `Current'"><a class="efeature" href="../src/simple_sql_similarity_short.html#f_rank_by_similarity">rank_by_similarity</a> <span class="esymbol">(</span><span class="elocal">a_query</span><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_vector_chart.html">SIMPLE_SQL_VECTOR</a><span class="esymbol">;</span> <span class="elocal">a_candidates</span><span class="esymbol">:</span> <a class="eclass" href="../base/array_chart.html">ARRAY</a> <span class="esymbol">[</span><a class="eclass" href="../src/simple_sql_vector_chart.html">SIMPLE_SQL_VECTOR</a><span class="esymbol">]</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/array_chart.html">ARRAY</a> <span class="esymbol">[</span><a class="eclass" href="../base/tuple_chart.html">TUPLE</a> <span class="esymbol">[</span><a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a><span class="esymbol">,</span> <a class="eclass" href="../base/real_64_chart.html">REAL_64</a><span class="esymbol">]</span><span class="esymbol">]</span></span>
+	<span title="`squared_euclidean_distance' is declared in `Current'"><a class="efeature" href="../src/simple_sql_similarity_short.html#f_squared_euclidean_distance">squared_euclidean_distance</a> <span class="esymbol">(</span><span class="elocal">a_vec1</span><span class="esymbol">,</span> <span class="elocal">a_vec2</span><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_vector_chart.html">SIMPLE_SQL_VECTOR</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/real_64_chart.html">REAL_64</a></span>
+
+<span class="ekeyword">Constraints</span>
+	<span class="etag">tolerance positive</span>
+
+</pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<span class="nav class selected">Chart</span>
+<a class="nav class" href="simple_sql_similarity_links.html">Relations</a>
+<a class="nav class" href="simple_sql_similarity_short.html">Contracts</a>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_similarity"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="TTUtilities for backing up SQLite databases between memory and filesystem.  TTFeatures: TTT- Simple copy operations (SQL-based) TTT- Online backup using SQLite Backup API (via online_backup) TTT- Export to CSV, JSON, SQL formats (via exporter) TTT- Import from CSV, JSON, SQL formats (via importer)  TTUsage: TTTbackup := create {SIMPLE_SQL_BACKUP}  TTT-- Simple copy (SQL-based) TTTbackup.copy_memory_to_file (memory_db, backup.db) TTTbackup.copy_file_to_memory (source.db, memory_db)  TTT-- Online backup with progress TTTonline := backup.online_backup (source_db, dest_db) TTTonline.set_progress_callback (agent on_progress) TTTonline.execute_incremental  TTT-- Export TTTexp := backup.exporter (db) TTTexp.database_to_sql (dump.sql)  TTT-- Import TTTimp := backup.importer (db) TTTimp.sql_file (dump.sql)"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="Copyright (c) 2025, Larry Rix"/>
+<meta name="license" content="MIT License"/>
+<meta name="source" content="SIMPLE_SQL - High-level SQLite API for Eiffel"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_sql_backup Relations</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_sql_backup_chart.html">Chart</a>
+<span class="nav class selected">Relations</span>
+<a class="nav class" href="simple_sql_backup_short.html">Contracts</a>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_backup"></span>
+</div></form><pre><span class="ekeyword">class</span>
+	<a class="eclass" href="../src/simple_sql_backup_links.html">SIMPLE_SQL_BACKUP</a>
+
+<span class="ekeyword">Ancestors</span>
+	<a class="eclass" href="../base/any_links.html">ANY</a>
+
+<span class="ekeyword">Clients</span>
+	<a class="eclass" href="../src/simple_sql_backup_links.html">SIMPLE_SQL_BACKUP</a>
+
+<span class="ekeyword">Suppliers</span>
+	<a class="eclass" href="../base/arrayed_list_links.html">ARRAYED_LIST</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<a class="eclass" href="../base/arrayed_list_iteration_cursor_links.html">ARRAYED_LIST_ITERATION_CURSOR</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<a class="eclass" href="../base/boolean_links.html">BOOLEAN</a>
+	<a class="eclass" href="../base/character_32_links.html">CHARACTER_32</a>
+	<a class="eclass" href="../base/character_8_links.html">CHARACTER_8</a>
+	<a class="eclass" href="../base/integer_32_links.html">INTEGER_32</a>
+	<a class="eclass" href="../base/integer_64_links.html">INTEGER_64</a>
+	<a class="eclass" href="../base/iteration_cursor_links.html">ITERATION_CURSOR</a><span class="echar">*</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<a class="eclass" href="../base/managed_pointer_links.html">MANAGED_POINTER</a>
+	<a class="eclass" href="../base/natural_32_links.html">NATURAL_32</a>
+	<a class="eclass" href="../base/natural_8_links.html">NATURAL_8</a>
+	<a class="eclass" href="../base/raw_file_links.html">RAW_FILE</a>
+	<a class="eclass" href="../base/readable_string_general_links.html">READABLE_STRING_GENERAL</a><span class="echar">*</span>
+	<a class="eclass" href="../base/real_64_links.html">REAL_64</a>
+	<a class="eclass" href="../src/simple_sql_backup_links.html">SIMPLE_SQL_BACKUP</a>
+	<a class="eclass" href="../src/simple_sql_database_links.html">SIMPLE_SQL_DATABASE</a>
+	<a class="eclass" href="../src/simple_sql_export_links.html">SIMPLE_SQL_EXPORT</a>
+	<a class="eclass" href="../src/simple_sql_import_links.html">SIMPLE_SQL_IMPORT</a>
+	<a class="eclass" href="../src/simple_sql_online_backup_links.html">SIMPLE_SQL_ONLINE_BACKUP</a>
+	<a class="eclass" href="../src/simple_sql_result_links.html">SIMPLE_SQL_RESULT</a>
+	<a class="eclass" href="../src/simple_sql_row_links.html">SIMPLE_SQL_ROW</a>
+	<a class="eclass" href="../base/string_32_links.html">STRING_32</a>
+	<a class="eclass" href="../base/string_8_links.html">STRING_8</a>
+
+</pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_sql_backup_chart.html">Chart</a>
+<span class="nav class selected">Relations</span>
+<a class="nav class" href="simple_sql_backup_short.html">Contracts</a>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_backup"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>

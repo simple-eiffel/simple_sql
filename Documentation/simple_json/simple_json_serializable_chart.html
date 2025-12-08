@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="TTDeferred class for entities that can serialize to/from JSON.  TTInherit from this class and implement `to_json` and `make_from_json` TTto enable automatic JSON serialization for your entity classes.  TTExample: TTTclass MY_ENTITY TTTinherit TTTTSIMPLE_JSON_SERIALIZABLE  TTTfeature -- JSON TTTTto_json: SIMPLE_JSON_OBJECT TTTTTdo TTTTTTcreate Result.make TTTTTTResult.put_integer (id, id) TTTTTTResult.put_string (name, name) TTTTTend  TTTTmake_from_json (a_json: SIMPLE_JSON_OBJECT) TTTTTdo TTTTTTid := a_json.integer_item (id) TTTTTTif attached a_json.string_item (name) as n then TTTTTTTname := n.to_string_8 TTTTTTend TTTTTend  TTTTjson_has_required_fields (a_json: SIMPLE_JSON_OBJECT): BOOLEAN TTTTTdo TTTTTTResult := a_json.has_all_keys (<<id, name>>) TTTTTend TTTend"/>
+<meta name="author" content="Claude Code"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="Copyright (c) 2025, Larry Rix"/>
+<meta name="license" content="MIT License"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_json_serializable Chart</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<span class="nav class selected">Chart</span>
+<a class="nav class" href="simple_json_serializable_links.html">Relations</a>
+<a class="nav class" href="simple_json_serializable_short.html">Contracts</a>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_serializable"></span>
+</div></form><pre><span class="ekeyword">deferred</span> <span class="ekeyword">class</span>
+	<a class="eclass" href="../simple_json/simple_json_serializable_chart.html">SIMPLE_JSON_SERIALIZABLE</a>
+
+<span class="ekeyword">General</span>
+	<span class="eitag">cluster</span><span class="esymbol">:</span> <span class="necluster">src</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> 
+		<span class="estring">&quot;Deferred class for entities that can serialize to/from JSON.</span>
+		
+		<span class="estring">Inherit from this class and implement </span><span class="estring">to_json</span><span class="estring"> and </span><span class="estring">make_from_json</span>
+		<span class="estring">to enable automatic JSON serialization for your entity classes.</span>
+		
+		<span class="estring">Example:</span>
+		<span class="estring">class MY_ENTITY</span>
+		<span class="estring">inherit</span>
+		<span class="estring">SIMPLE_JSON_SERIALIZABLE</span>
+		
+		<span class="estring">feature -- JSON</span>
+		<span class="estring">to_json: SIMPLE_JSON_OBJECT</span>
+		<span class="estring">do</span>
+		<span class="estring">create Result.make</span>
+		<span class="estring">Result.put_integer (id, %&quot;id%&quot;)</span>
+		<span class="estring">Result.put_string (name, %&quot;name%&quot;)</span>
+		<span class="estring">end</span>
+		
+		<span class="estring">make_from_json (a_json: SIMPLE_JSON_OBJECT)</span>
+		<span class="estring">do</span>
+		<span class="estring">id := a_json.integer_item (%&quot;id%&quot;)</span>
+		<span class="estring">if attached a_json.string_item (%&quot;name%&quot;) as n then</span>
+		<span class="estring">name := n.to_string_8</span>
+		<span class="estring">end</span>
+		<span class="estring">end</span>
+		
+		<span class="estring">json_has_required_fields (a_json: SIMPLE_JSON_OBJECT): BOOLEAN</span>
+		<span class="estring">do</span>
+		<span class="estring">Result := a_json.has_all_keys (&lt;&lt;%&quot;id%&quot;, %&quot;name%&quot;&gt;&gt;)</span>
+		<span class="estring">end</span>
+		<span class="estring">end&quot;</span>
+
+<span class="ekeyword">Ancestors</span>
+	<a class="eclass" href="../base/any_chart.html">ANY</a>
+
+<span class="ekeyword">Queries</span>
+	<span title="`json_has_required_fields' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_serializable_short.html#f_json_has_required_fields">json_has_required_fields</a> <span class="esymbol">(</span><span class="elocal">a_json</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_object_chart.html">SIMPLE_JSON_OBJECT</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_chart.html">BOOLEAN</a></span>
+	<span title="`json_missing_fields' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_serializable_short.html#f_json_missing_fields">json_missing_fields</a> <span class="esymbol">(</span><span class="elocal">a_json</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_object_chart.html">SIMPLE_JSON_OBJECT</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_chart.html">ARRAYED_LIST</a> <span class="esymbol">[</span><a class="eclass" href="../base/string_32_chart.html">STRING_32</a><span class="esymbol">]</span></span>
+	<span title="`to_json' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_serializable_short.html#f_to_json">to_json</a><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_object_chart.html">SIMPLE_JSON_OBJECT</a></span>
+	<span title="`to_json_string' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_serializable_short.html#f_to_json_string">to_json_string</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`to_json_string_8' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_serializable_short.html#f_to_json_string_8">to_json_string_8</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_chart.html">STRING_8</a></span>
+
+<span class="ekeyword">Commands</span>
+	<span title="`apply_json' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_serializable_short.html#f_apply_json">apply_json</a> <span class="esymbol">(</span><span class="elocal">a_json</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_object_chart.html">SIMPLE_JSON_OBJECT</a><span class="esymbol">)</span></span>
+
+</pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<span class="nav class selected">Chart</span>
+<a class="nav class" href="simple_json_serializable_links.html">Relations</a>
+<a class="nav class" href="simple_json_serializable_short.html">Contracts</a>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_serializable"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>

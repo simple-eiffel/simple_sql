@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="Memory-efficient streaming JSON parser for large files. Streams array elements one at a time without loading entire document. Uses iterator pattern with ITERATION_CURSOR for Eiffel's `across' loops."/>
+<meta name="eis" content="name=Streaming JSON, protocol=URI, src=https://en.wikipedia.org/wiki/Streaming_JSON"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="Copyright (c) 2024, Larry Rix"/>
+<meta name="license" content="MIT License"/>
+<meta name="source" content="SIMPLE_JSON Project Streaming parser implementation"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_json_stream Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_json_stream_chart.html">Chart</a>
+<a class="nav class" href="simple_json_stream_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_stream"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">Memory-efficient streaming JSON parser for large files.</span>
+		<span class="estring">Streams array elements one at a time without loading entire document.</span>
+		<span class="estring">Uses iterator pattern with ITERATION_CURSOR for Eiffel's </span><span class="estring">across</span><span class="estring"> loops.</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+	<span class="eitag">eis</span><span class="esymbol">:</span> <span class="estring">&quot;name=Streaming JSON&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;protocol=URI&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;src=</span><a class="estring" href="https://en.wikipedia.org/wiki/Streaming_JSON">https://en.wikipedia.org/wiki/Streaming_JSON</a><span class="estring">&quot;</span>
+	<span class="eitag">eis</span><span class="esymbol">:</span> <span class="estring">&quot;name=Documentation&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;protocol=URI&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;src=</span><a class="estring" href="file://$">file://$</a><span class="estring">(SYSTEM_PATH)/docs/docs/streaming/simple_json_stream.html&quot;</span>
+
+<span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../simple_json/simple_json_stream_short.html">SIMPLE_JSON_STREAM</a>
+
+<span class="ekeyword">create</span> 
+	<a class="efeature" href="../simple_json/simple_json_stream_short.html#f_make_from_file">make_from_file</a><span class="esymbol">,</span>
+	<a class="efeature" href="../simple_json/simple_json_stream_short.html#f_make_from_string">make_from_string</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Access</span>
+
+	<a name="f_new_cursor"></a><a class="efeature" href="../simple_json/simple_json_stream_short.html#f_new_cursor">new_cursor</a><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_stream_cursor_short.html">SIMPLE_JSON_STREAM_CURSOR</a>
+			<span class="ecomment">--</span><span class="ecomment"> Fresh cursor for iteration</span>
+		<span class="ekeyword">ensure then</span>
+			<span class="etag">cursor_attached</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+
+	<a name="f_element_count"></a><a class="efeature" href="../simple_json/simple_json_stream_short.html#f_element_count">element_count</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Number of elements parsed so far</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">non_negative</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <a class="esymbol" href="../base/comparable_short.html#f_is_greater_equal">&gt;=</a> <span class="enumber">0</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Status report</span>
+
+	<a name="f_has_errors"></a><a class="efeature" href="../simple_json/simple_json_stream_short.html#f_has_errors">has_errors</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Did errors occur during parsing?</span>
+
+	<a name="f_is_from_file"></a><a class="efeature" href="../simple_json/simple_json_stream_short.html#f_is_from_file">is_from_file</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Was this created from a file?</span>
+
+	<a name="f_is_parsed"></a><a class="efeature" href="../simple_json/simple_json_stream_short.html#f_is_parsed">is_parsed</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Has the array been parsed?</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Error tracking</span>
+
+	<a name="f_last_errors"></a><a class="efeature" href="../simple_json/simple_json_stream_short.html#f_last_errors">last_errors</a><span class="esymbol">:</span> <a class="eclass" href="../base/list_short.html">LIST</a> <span class="esymbol">[</span><a class="eclass" href="../simple_json/simple_json_error_short.html">SIMPLE_JSON_ERROR</a><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> Errors from last operation</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">result_attached</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	
+<span class="ekeyword">invariant</span>
+	<span class="etag">errors_attached</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_stream_short.html#f_errors">errors</a> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	<span class="etag">elements_attached</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_stream_short.html#f_elements">elements</a> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	<span class="etag">either_file_or_string</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_stream_short.html#f_is_from_file">is_from_file</a> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <a class="efeature" href="../simple_json/simple_json_stream_short.html#f_file_path">file_path</a> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	<span class="etag">not_from_file_implies_text</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../simple_json/simple_json_stream_short.html#f_is_from_file">is_from_file</a> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <a class="efeature" href="../simple_json/simple_json_stream_short.html#f_json_text">json_text</a> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	<span class="etag">has_errors_definition</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_stream_short.html#f_has_errors">has_errors</a> <span class="esymbol">=</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../simple_json/simple_json_stream_short.html#f_errors">errors</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+	<span class="etag">no_void_errors</span><span class="esymbol">:</span> <span class="ekeyword">across</span>
+			<a class="efeature" href="../simple_json/simple_json_stream_short.html#f_errors">errors</a> <span class="ekeyword">as</span> ic_err
+		<span class="ekeyword">all</span>
+			<span class="elocal">ic_err</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+		<span class="ekeyword">end</span>
+	<span class="etag">element_count_definition</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_stream_short.html#f_element_count">element_count</a> <span class="esymbol">=</span> <a class="efeature" href="../simple_json/simple_json_stream_short.html#f_elements">elements</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_count">count</a>
+	<span class="etag">count_non_negative</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_stream_short.html#f_element_count">element_count</a> <a class="esymbol" href="../base/comparable_short.html#f_is_greater_equal">&gt;=</a> <span class="enumber">0</span>
+	<span class="etag">no_void_elements</span><span class="esymbol">:</span> <span class="ekeyword">across</span>
+			<a class="efeature" href="../simple_json/simple_json_stream_short.html#f_elements">elements</a> <span class="ekeyword">as</span> ic_elem
+		<span class="ekeyword">all</span>
+			<span class="elocal">ic_elem</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+		<span class="ekeyword">end</span>
+
+<span class="ekeyword">note</span>
+	<span class="eitag">copyright</span><span class="esymbol">:</span> <span class="estring">&quot;Copyright (c) 2024, Larry Rix&quot;</span>
+	<span class="eitag">license</span><span class="esymbol">:</span> <span class="estring">&quot;MIT License&quot;</span>
+	<span class="eitag">source</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">SIMPLE_JSON Project</span>
+		<span class="estring">Streaming parser implementation</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../simple_json/simple_json_stream_short.html">SIMPLE_JSON_STREAM</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_json_stream_chart.html">Chart</a>
+<a class="nav class" href="simple_json_stream_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_stream"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

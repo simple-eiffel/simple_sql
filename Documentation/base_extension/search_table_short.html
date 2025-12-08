@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="Set based on implementation of HASH_TABLE for fast lookup."/>
+<meta name="legal" content="See notice at end of class."/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="Copyright (c) 1984-2023, Eiffel Software and others"/>
+<meta name="license" content="Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"/>
+<meta name="source" content="Eiffel Software 5949 Hollister Ave., Goleta, CA 93117 USA Telephone 805-685-1006, Fax 805-685-6869 Website http://www.eiffel.com Customer support http://support.eiffel.com"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>search_table Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="search_table_chart.html">Chart</a>
+<a class="nav class" href="search_table_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="search_table"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;Set based on implementation of HASH_TABLE for fast lookup.&quot;</span>
+	<span class="eitag">legal</span><span class="esymbol">:</span> <span class="estring">&quot;See notice at end of class.&quot;</span>
+	<span class="eitag">status</span><span class="esymbol">:</span> <span class="estring">&quot;See notice at end of class.&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+
+<span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../base_extension/search_table_short.html">SEARCH_TABLE</a> <span class="esymbol">[</span><span class="egeneric">H</span> <span class="esymbol">-&gt;</span> <a class="eclass" href="../base/hashable_short.html">HASHABLE</a><span class="esymbol">]</span>
+
+<span class="ekeyword">create</span> 
+	<a class="efeature" href="../base_extension/search_table_short.html#f_make">make</a><span class="esymbol">,</span>
+	<a class="efeature" href="../base_extension/search_table_short.html#f_make_map">make_map</a><span class="esymbol">,</span>
+	<a class="efeature" href="../base_extension/search_table_short.html#f_make_with_key_tester">make_with_key_tester</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Access and queries</span>
+
+	<a name="f_item"></a><a class="efeature" href="../base_extension/search_table_short.html#f_item">item</a> <span class="esymbol">(</span><span class="elocal">key</span><span class="esymbol">:</span> <span class="egeneric">H</span><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <span class="egeneric">H</span>
+			<span class="ecomment">--</span><span class="ecomment"> Item associated with </span><span class="equoted">key</span><span class="ecomment">, if present</span>
+			<span class="ecomment">--</span><span class="ecomment"> otherwise default value of type </span><span class="equoted">G</span><span class="ecomment">.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">valid_key</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/search_table_short.html#f_valid_key">valid_key</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">key</span><span class="esymbol">)</span>
+
+	<a name="f_has"></a><a class="efeature" href="../base_extension/search_table_short.html#f_has">has</a> <span class="esymbol">(</span><span class="elocal">key</span><span class="esymbol">:</span> <span class="egeneric">H</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is </span><span class="equoted">access_key</span><span class="ecomment"> currently used?</span>
+			<span class="ecomment">--</span><span class="ecomment"> (Shallow equality.)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">valid_key</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/search_table_short.html#f_valid_key">valid_key</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">key</span><span class="esymbol">)</span>
+
+	<a name="f_key_at"></a><a class="efeature" href="../base_extension/search_table_short.html#f_key_at">key_at</a> <span class="esymbol">(</span><span class="elocal">n</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <span class="egeneric">H</span>
+			<span class="ecomment">--</span><span class="ecomment"> Key corresponding to entry </span><span class="equoted">n</span><span class="ecomment">.</span>
+
+	<a name="f_is_empty"></a><a class="efeature" href="../base_extension/search_table_short.html#f_is_empty">is_empty</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is structure empty?</span>
+
+	<a name="f_search"></a><a class="efeature" href="../base_extension/search_table_short.html#f_search">search</a> <span class="esymbol">(</span><span class="elocal">key</span><span class="esymbol">:</span> <span class="egeneric">H</span><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Search for item of key </span><span class="equoted">key</span><span class="ecomment">.</span>
+			<span class="ecomment">--</span><span class="ecomment"> If found, set </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_found">found</a><span class="ecomment">`</span><span class="ecomment"> to True, and set</span>
+			<span class="ecomment">--</span><span class="ecomment"> </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_found_item">found_item</a><span class="ecomment">`</span><span class="ecomment"> to item associated with </span><span class="equoted">key</span><span class="ecomment">.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">item_if_found</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/search_table_short.html#f_found">found</a> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <span class="esymbol">(</span><a class="efeature" href="../base_extension/search_table_short.html#f_found_item">found_item</a> <span class="esymbol">=</span> <a class="efeature" href="../base_extension/search_table_short.html#f_content">content</a><span class="edot">.</span><a class="efeature" href="../base/special_short.html#f_item">item</a><span class="esymbol"> </span><span class="esymbol">(</span><a class="efeature" href="../base_extension/search_table_short.html#f_position">position</a><span class="esymbol">)</span><span class="esymbol">)</span>
+
+	<a name="f_go_to"></a><a class="efeature" href="../base_extension/search_table_short.html#f_go_to">go_to</a> <span class="esymbol">(</span><span class="elocal">c</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <a class="efeature" href="../base_extension/search_table_short.html#f_cursor">cursor</a><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Move to position </span><span class="equoted">c</span><span class="ecomment">.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">valid_cursor</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/search_table_short.html#f_valid_cursor">valid_cursor</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">c</span><span class="esymbol">)</span>
+
+	<a name="f_found_item"></a><a class="efeature" href="../base_extension/search_table_short.html#f_found_item">found_item</a><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <span class="egeneric">H</span>
+			<span class="ecomment">--</span><span class="ecomment"> Item found during a search with </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_has">has</a><span class="ecomment">`</span><span class="ecomment"> to reduce the number of</span>
+			<span class="ecomment">--</span><span class="ecomment"> search for clients.</span>
+
+	<a name="f_found"></a><a class="efeature" href="../base_extension/search_table_short.html#f_found">found</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Did last operation find the item sought?</span>
+
+	<a name="f_key_tester"></a><a class="efeature" href="../base_extension/search_table_short.html#f_key_tester">key_tester</a><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../base_extension/equality_tester_short.html">EQUALITY_TESTER</a> <span class="esymbol">[</span><span class="egeneric">H</span><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> Tester used for comparing keys.</span>
+
+	<a name="f_new_cursor"></a><a class="efeature" href="../base_extension/search_table_short.html#f_new_cursor">new_cursor</a><span class="esymbol">:</span> <a class="eclass" href="../base_extension/search_table_iteration_cursor_short.html">SEARCH_TABLE_ITERATION_CURSOR</a> <span class="esymbol">[</span><span class="egeneric">H</span><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> Fresh cursor associated with current structure</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Comparison</span>
+
+	<a name="f_is_equal"></a><a class="efeature" href="../base_extension/search_table_short.html#f_is_equal">is_equal</a> <span class="esymbol">(</span><span class="elocal">other</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Does table contain the same information as </span><span class="equoted">other</span><span class="ecomment">?</span>
+
+	<a name="f_disjoint"></a><a class="efeature" href="../base_extension/search_table_short.html#f_disjoint">disjoint</a> <span class="esymbol">(</span><span class="elocal">other</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is </span><span class="equoted">Current</span><span class="ecomment"> and </span><span class="equoted">other</span><span class="ecomment"> disjoint on their keys?</span>
+			<span class="ecomment">--</span><span class="ecomment"> Use </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_same_keys">same_keys</a><span class="ecomment">`</span><span class="ecomment"> for comparison.</span>
+
+	<a name="f_same_keys"></a><a class="efeature" href="../base_extension/search_table_short.html#f_same_keys">same_keys</a> <span class="esymbol">(</span><span class="elocal">a_search_key</span><span class="esymbol">,</span> <span class="elocal">a_key</span><span class="esymbol">:</span> <span class="egeneric">H</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Does </span><span class="equoted">a_search_key</span><span class="ecomment"> equal to </span><span class="equoted">a_key</span><span class="ecomment">?</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">valid_search_key</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/search_table_short.html#f_valid_key">valid_key</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_search_key</span><span class="esymbol">)</span>
+			<span class="etag">valid_key</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/search_table_short.html#f_valid_key">valid_key</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_key</span><span class="esymbol">)</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Insertion, deletion</span>
+
+	<a name="f_put"></a><a class="efeature" href="../base_extension/search_table_short.html#f_put">put</a> <span class="esymbol">(</span><span class="elocal">key</span><span class="esymbol">:</span> <span class="egeneric">H</span><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Attempt to insert &nbsp;with </span><span class="equoted">key</span><span class="ecomment">.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Set </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_control">control</a><span class="ecomment">`</span><span class="ecomment"> to </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_inserted">inserted</a><span class="ecomment">`</span><span class="ecomment"> or </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_conflict">conflict</a><span class="ecomment">`</span><span class="ecomment">.</span>
+			<span class="ecomment">--</span><span class="ecomment"> No insertion if conflict.</span>
+		<span class="ekeyword">require</span>
+			<a class="efeature" href="../base_extension/search_table_short.html#f_valid_key">valid_key</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">key</span><span class="esymbol">)</span>
+		<span class="ekeyword">ensure then</span>
+			<span class="etag">insertion_done</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/search_table_short.html#f_control">control</a> <span class="esymbol">=</span> <a class="efeature" href="../base_extension/search_table_short.html#f_inserted">Inserted</a> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <a class="efeature" href="../base_extension/search_table_short.html#f_pure_item">pure_item</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">key</span><span class="esymbol">)</span> <span class="esymbol">=</span> <span class="elocal">key</span>
+
+	<a name="f_force"></a><a class="efeature" href="../base_extension/search_table_short.html#f_force">force</a> <span class="esymbol">(</span><span class="elocal">key</span><span class="esymbol">:</span> <span class="egeneric">H</span><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> If </span><span class="equoted">key</span><span class="ecomment"> is present, replace </span><span class="equoted">key</span>
+			<span class="ecomment">--</span><span class="ecomment"> if not, insert key </span><span class="equoted">key</span><span class="ecomment">.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Set </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_control">control</a><span class="ecomment">`</span><span class="ecomment"> to </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_inserted">inserted</a><span class="ecomment">`</span><span class="ecomment">.</span>
+		<span class="ekeyword">require</span>
+			<a class="efeature" href="../base_extension/search_table_short.html#f_valid_key">valid_key</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">key</span><span class="esymbol">)</span>
+		<span class="ekeyword">ensure then</span>
+			<span class="etag">insertion_done</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/search_table_short.html#f_pure_item">pure_item</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">key</span><span class="esymbol">)</span> <span class="esymbol">=</span> <span class="elocal">key</span>
+
+	<a name="f_change_key"></a><a class="efeature" href="../base_extension/search_table_short.html#f_change_key">change_key</a> <span class="esymbol">(</span><span class="elocal">new_key</span><span class="esymbol">:</span> <span class="egeneric">H</span><span class="esymbol">;</span> <span class="elocal">old_key</span><span class="esymbol">:</span> <span class="egeneric">H</span><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> If table contains an item at </span><span class="equoted">old_key</span><span class="ecomment">,</span>
+			<span class="ecomment">--</span><span class="ecomment"> replace its key by </span><span class="equoted">new_key</span><span class="ecomment">.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Set </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_control">control</a><span class="ecomment">`</span><span class="ecomment"> to </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_changed">changed</a><span class="ecomment">`</span><span class="ecomment">, </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_conflict">conflict</a><span class="ecomment">`</span><span class="ecomment"> or </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_not_found_constant">not_found_constant</a><span class="ecomment">`</span><span class="ecomment">.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">valid_keys</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/search_table_short.html#f_valid_key">valid_key</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">new_key</span><span class="esymbol">)</span> <a class="ekeyword" href="../base/boolean_short.html#f_conjuncted">and</a> <a class="efeature" href="../base_extension/search_table_short.html#f_valid_key">valid_key</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">old_key</span><span class="esymbol">)</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">changed</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/search_table_short.html#f_control">control</a> <span class="esymbol">=</span> <a class="efeature" href="../base_extension/search_table_short.html#f_changed">Changed</a> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../base_extension/search_table_short.html#f_has">has</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">old_key</span><span class="esymbol">)</span>
+
+	<a name="f_remove"></a><a class="efeature" href="../base_extension/search_table_short.html#f_remove">remove</a> <span class="esymbol">(</span><span class="elocal">key</span><span class="esymbol">:</span> <span class="egeneric">H</span><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Remove item associated with </span><span class="equoted">key</span><span class="ecomment">, if present.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Set </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_control">control</a><span class="ecomment">`</span><span class="ecomment"> to </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_removed">removed</a><span class="ecomment">`</span><span class="ecomment"> or </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_not_found_constant">not_found_constant</a><span class="ecomment">`</span><span class="ecomment">.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Was declared in </span><span class="esymbol">{</span><a class="eclass" href="../base_extension/search_table_short.html">SEARCH_TABLE</a><span class="esymbol">}</span><span class="ecomment"> as synonym of </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_prune">prune</a><span class="ecomment">`</span><span class="ecomment">.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">valid_key</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/search_table_short.html#f_valid_key">valid_key</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">key</span><span class="esymbol">)</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">not_has</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../base_extension/search_table_short.html#f_has">has</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">key</span><span class="esymbol">)</span>
+
+	<a name="f_prune"></a><a class="efeature" href="../base_extension/search_table_short.html#f_prune">prune</a> <span class="esymbol">(</span><span class="elocal">key</span><span class="esymbol">:</span> <span class="egeneric">H</span><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Remove item associated with </span><span class="equoted">key</span><span class="ecomment">, if present.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Set </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_control">control</a><span class="ecomment">`</span><span class="ecomment"> to </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_removed">removed</a><span class="ecomment">`</span><span class="ecomment"> or </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_not_found_constant">not_found_constant</a><span class="ecomment">`</span><span class="ecomment">.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Was declared in </span><span class="esymbol">{</span><a class="eclass" href="../base_extension/search_table_short.html">SEARCH_TABLE</a><span class="esymbol">}</span><span class="ecomment"> as synonym of </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_remove">remove</a><span class="ecomment">`</span><span class="ecomment">.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">valid_key</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/search_table_short.html#f_valid_key">valid_key</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">key</span><span class="esymbol">)</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">not_has</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../base_extension/search_table_short.html#f_has">has</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">key</span><span class="esymbol">)</span>
+
+	<a name="f_wipe_out"></a><a class="efeature" href="../base_extension/search_table_short.html#f_wipe_out">wipe_out</a>
+			<span class="ecomment">--</span><span class="ecomment"> Reset all items to default values.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Was declared in </span><span class="esymbol">{</span><a class="eclass" href="../base_extension/search_table_short.html">SEARCH_TABLE</a><span class="esymbol">}</span><span class="ecomment"> as synonym of </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_clear_all">clear_all</a><span class="ecomment">`</span><span class="ecomment">.</span>
+
+	<a name="f_clear_all"></a><a class="efeature" href="../base_extension/search_table_short.html#f_clear_all">clear_all</a>
+			<span class="ecomment">--</span><span class="ecomment"> Reset all items to default values.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Was declared in </span><span class="esymbol">{</span><a class="eclass" href="../base_extension/search_table_short.html">SEARCH_TABLE</a><span class="esymbol">}</span><span class="ecomment"> as synonym of </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_wipe_out">wipe_out</a><span class="ecomment">`</span><span class="ecomment">.</span>
+
+	<a name="f_merge"></a><a class="efeature" href="../base_extension/search_table_short.html#f_merge">merge</a> <span class="esymbol">(</span><span class="elocal">other</span><span class="esymbol">:</span> <a class="eclass" href="../base_extension/search_table_short.html">SEARCH_TABLE</a> <span class="esymbol">[</span><span class="egeneric">H</span><span class="esymbol">]</span><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Merge two search_tables.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">other_not_void</span><span class="esymbol">:</span> <span class="elocal">other</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Resizing</span>
+
+	<a name="f_resize"></a><a class="efeature" href="../base_extension/search_table_short.html#f_resize">resize</a> <span class="esymbol">(</span><span class="elocal">n</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Resize table to accommodate </span><span class="equoted">n</span><span class="ecomment"> elements.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">n_non_negative</span><span class="esymbol">:</span> <span class="elocal">n</span> <a class="esymbol" href="../base/comparable_short.html#f_is_greater_equal">&gt;=</a> <span class="enumber">0</span>
+			<span class="etag">n_greater_than_count</span><span class="esymbol">:</span> <span class="elocal">n</span> <a class="esymbol" href="../base/comparable_short.html#f_is_greater_equal">&gt;=</a> <a class="efeature" href="../base_extension/search_table_short.html#f_count">count</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Number of elements</span>
+
+	<a name="f_count"></a><a class="efeature" href="../base_extension/search_table_short.html#f_count">count</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Number of items actually inserted in </span><span class="equoted">Current</span><span class="ecomment">.</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Duplication</span>
+
+	<a name="f_copy"></a><a class="efeature" href="../base_extension/search_table_short.html#f_copy">copy</a> <span class="esymbol">(</span><span class="elocal">other</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Re-initialize from </span><span class="equoted">other</span><span class="ecomment">.</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Conversion</span>
+
+	<a name="f_linear_representation"></a><a class="efeature" href="../base_extension/search_table_short.html#f_linear_representation">linear_representation</a><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_short.html">ARRAYED_LIST</a> <span class="esymbol">[</span><span class="egeneric">H</span><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> Representation as a linear structure.</span>
+			<span class="ecomment">--</span><span class="ecomment"> (Order is same as original order of insertion.)</span>
+		<span class="ekeyword">ensure then</span>
+			<span class="etag">result_exists</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">good_count</span><span class="esymbol">:</span> <span class="ekeyword">Result</span><span class="edot">.</span><a class="efeature" href="../base/arrayed_list_short.html#f_count">count</a> <span class="esymbol">=</span> <a class="efeature" href="../base_extension/search_table_short.html#f_count">count</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Assertion check</span>
+
+	<a name="f_valid_key"></a><a class="efeature" href="../base_extension/search_table_short.html#f_valid_key">valid_key</a> <span class="esymbol">(</span><span class="elocal">k</span><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <span class="egeneric">H</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is </span><span class="equoted">k</span><span class="ecomment"> a valid key?</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">definition</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <span class="elocal">k</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+
+	<a name="f_valid_cursor"></a><a class="efeature" href="../base_extension/search_table_short.html#f_valid_cursor">valid_cursor</a> <span class="esymbol">(</span><span class="elocal">c</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <a class="efeature" href="../base_extension/search_table_short.html#f_cursor">cursor</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Can cursor be moved to position </span><span class="equoted">c</span><span class="ecomment">?</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Iteration</span>
+
+	<a name="f_start"></a><a class="efeature" href="../base_extension/search_table_short.html#f_start">start</a>
+			<span class="ecomment">--</span><span class="ecomment"> Iteration initialization.</span>
+
+	<a name="f_forth"></a><a class="efeature" href="../base_extension/search_table_short.html#f_forth">forth</a>
+			<span class="ecomment">--</span><span class="ecomment"> Advance cursor to next occupied position,</span>
+			<span class="ecomment">--</span><span class="ecomment"> or </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_off">off</a><span class="ecomment">`</span><span class="ecomment"> if no such position remains.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">not_off</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../base_extension/search_table_short.html#f_off">off</a>
+
+	<a name="f_next_iteration_position"></a><a class="efeature" href="../base_extension/search_table_short.html#f_next_iteration_position">next_iteration_position</a> <span class="esymbol">(</span><span class="elocal">a_position</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <a class="efeature" href="../base_extension/search_table_short.html#f_iteration_position">iteration_position</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <a class="efeature" href="../base_extension/search_table_short.html#f_iteration_position">iteration_position</a>
+			<span class="ecomment">--</span><span class="ecomment"> Given an iteration position </span><span class="equoted">a_position</span><span class="ecomment">, compute the next one.</span>
+
+	<a name="f_after"></a><a class="efeature" href="../base_extension/search_table_short.html#f_after">after</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is the iteration cursor off?</span>
+			<span class="ecomment">--</span><span class="ecomment"> Was declared in </span><span class="esymbol">{</span><a class="eclass" href="../base_extension/search_table_short.html">SEARCH_TABLE</a><span class="esymbol">}</span><span class="ecomment"> as synonym of </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_off">off</a><span class="ecomment">`</span><span class="ecomment">.</span>
+
+	<a name="f_off"></a><a class="efeature" href="../base_extension/search_table_short.html#f_off">off</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is the iteration cursor off?</span>
+			<span class="ecomment">--</span><span class="ecomment"> Was declared in </span><span class="esymbol">{</span><a class="eclass" href="../base_extension/search_table_short.html">SEARCH_TABLE</a><span class="esymbol">}</span><span class="ecomment"> as synonym of </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_after">after</a><span class="ecomment">`</span><span class="ecomment">.</span>
+
+	<a name="f_item_for_iteration"></a><a class="efeature" href="../base_extension/search_table_short.html#f_item_for_iteration">item_for_iteration</a><span class="esymbol">:</span> <span class="egeneric">H</span>
+			<span class="ecomment">--</span><span class="ecomment"> Item at cursor position.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Was declared in </span><span class="esymbol">{</span><a class="eclass" href="../base_extension/search_table_short.html">SEARCH_TABLE</a><span class="esymbol">}</span><span class="ecomment"> as synonym of </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_key_for_iteration">key_for_iteration</a><span class="ecomment">`</span><span class="ecomment">.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">not_off</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../base_extension/search_table_short.html#f_after">after</a>
+
+	<a name="f_key_for_iteration"></a><a class="efeature" href="../base_extension/search_table_short.html#f_key_for_iteration">key_for_iteration</a><span class="esymbol">:</span> <span class="egeneric">H</span>
+			<span class="ecomment">--</span><span class="ecomment"> Item at cursor position.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Was declared in </span><span class="esymbol">{</span><a class="eclass" href="../base_extension/search_table_short.html">SEARCH_TABLE</a><span class="esymbol">}</span><span class="ecomment"> as synonym of </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/search_table_short.html#f_item_for_iteration">item_for_iteration</a><span class="ecomment">`</span><span class="ecomment">.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">not_off</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../base_extension/search_table_short.html#f_after">after</a>
+
+	<a name="f_cursor"></a><a class="efeature" href="../base_extension/search_table_short.html#f_cursor">cursor</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Cursor.</span>
+	
+<span class="ekeyword">invariant</span>
+	<span class="etag">count_big_enough</span><span class="esymbol">:</span> <span class="enumber">0</span> <a class="esymbol" href="../base/comparable_short.html#f_is_less_equal">&lt;=</a> <a class="efeature" href="../base_extension/search_table_short.html#f_count">count</a>
+
+<span class="ekeyword">note</span>
+	<span class="eitag">copyright</span><span class="esymbol">:</span> <span class="estring">&quot;Copyright (c) 1984-2023, Eiffel Software and others&quot;</span>
+	<span class="eitag">license</span><span class="esymbol">:</span> <span class="estring">&quot;Eiffel Forum License v2 (see </span><a class="estring" href="http://www.eiffel.com/licensing/forum.txt">http://www.eiffel.com/licensing/forum.txt</a><span class="estring">)&quot;</span>
+	<span class="eitag">source</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">Eiffel Software</span>
+		<span class="estring">5949 Hollister Ave., Goleta, CA 93117 USA</span>
+		<span class="estring">Telephone 805-685-1006, Fax 805-685-6869</span>
+		<span class="estring">Website </span><a class="estring" href="http://www.eiffel.com">http://www.eiffel.com</a>
+		<span class="estring">Customer support </span><a class="estring" href="http://support.eiffel.com">http://support.eiffel.com</a>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../base_extension/search_table_short.html">SEARCH_TABLE</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="search_table_chart.html">Chart</a>
+<a class="nav class" href="search_table_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="search_table"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

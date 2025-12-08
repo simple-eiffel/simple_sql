@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="Information about a database column from schema introspection"/>
+<meta name="author" content="Jimmy J. Johnson"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_sql_column_info Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_sql_column_info_chart.html">Chart</a>
+<a class="nav class" href="simple_sql_column_info_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_column_info"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;Information about a database column from schema introspection&quot;</span>
+	<span class="eitag">author</span><span class="esymbol">:</span> <span class="estring">&quot;Jimmy J. Johnson&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+
+<span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../src/simple_sql_column_info_short.html">SIMPLE_SQL_COLUMN_INFO</a>
+
+<span class="ekeyword">create</span> 
+	<a class="efeature" href="../src/simple_sql_column_info_short.html#f_make">make</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Access</span>
+
+	<a name="f_column_id"></a><a class="efeature" href="../src/simple_sql_column_info_short.html#f_column_id">column_id</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Column index (0-based position in table)</span>
+
+	<a name="f_name"></a><a class="efeature" href="../src/simple_sql_column_info_short.html#f_name">name</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a>
+			<span class="ecomment">--</span><span class="ecomment"> Column name</span>
+
+	<a name="f_declared_type"></a><a class="efeature" href="../src/simple_sql_column_info_short.html#f_declared_type">declared_type</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a>
+			<span class="ecomment">--</span><span class="ecomment"> Declared type as string (e.g., &quot;INTEGER&quot;, &quot;TEXT&quot;, &quot;REAL&quot;, &quot;BLOB&quot;)</span>
+
+	<a name="f_default_value"></a><a class="efeature" href="../src/simple_sql_column_info_short.html#f_default_value">default_value</a><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a>
+			<span class="ecomment">--</span><span class="ecomment"> Default value expression (if any)</span>
+
+	<a name="f_primary_key_index"></a><a class="efeature" href="../src/simple_sql_column_info_short.html#f_primary_key_index">primary_key_index</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Primary key index (0 = not part of PK, 1+ = position in composite PK)</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Status</span>
+
+	<a name="f_is_not_null"></a><a class="efeature" href="../src/simple_sql_column_info_short.html#f_is_not_null">is_not_null</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is this column NOT NULL constrained?</span>
+
+	<a name="f_is_nullable"></a><a class="efeature" href="../src/simple_sql_column_info_short.html#f_is_nullable">is_nullable</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Can this column contain NULL?</span>
+
+	<a name="f_is_primary_key"></a><a class="efeature" href="../src/simple_sql_column_info_short.html#f_is_primary_key">is_primary_key</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is this column part of the primary key?</span>
+
+	<a name="f_has_default"></a><a class="efeature" href="../src/simple_sql_column_info_short.html#f_has_default">has_default</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Does this column have a default value?</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Type Classification</span>
+
+	<a name="f_is_integer_type"></a><a class="efeature" href="../src/simple_sql_column_info_short.html#f_is_integer_type">is_integer_type</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is this an integer-affinity type?</span>
+
+	<a name="f_is_text_type"></a><a class="efeature" href="../src/simple_sql_column_info_short.html#f_is_text_type">is_text_type</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is this a text-affinity type?</span>
+
+	<a name="f_is_real_type"></a><a class="efeature" href="../src/simple_sql_column_info_short.html#f_is_real_type">is_real_type</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is this a real-affinity type?</span>
+
+	<a name="f_is_blob_type"></a><a class="efeature" href="../src/simple_sql_column_info_short.html#f_is_blob_type">is_blob_type</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is this a blob-affinity type?</span>
+
+	<a name="f_sqlite_affinity"></a><a class="efeature" href="../src/simple_sql_column_info_short.html#f_sqlite_affinity">sqlite_affinity</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a>
+			<span class="ecomment">--</span><span class="ecomment"> SQLite type affinity (INTEGER, TEXT, REAL, BLOB, NUMERIC)</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Output</span>
+
+	<a name="f_description"></a><a class="efeature" href="../src/simple_sql_column_info_short.html#f_description">description</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a>
+			<span class="ecomment">--</span><span class="ecomment"> Human-readable description</span>
+	
+<span class="ekeyword">invariant</span>
+	<span class="etag">name_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../src/simple_sql_column_info_short.html#f_name">name</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+	<span class="etag">declared_type_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <a class="efeature" href="../src/simple_sql_column_info_short.html#f_declared_type">declared_type</a>
+	<span class="etag">primary_key_index_valid</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_column_info_short.html#f_primary_key_index">primary_key_index</a> <a class="esymbol" href="../base/comparable_short.html#f_is_greater_equal">&gt;=</a> <span class="enumber">0</span>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../src/simple_sql_column_info_short.html">SIMPLE_SQL_COLUMN_INFO</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_sql_column_info_chart.html">Chart</a>
+<a class="nav class" href="simple_sql_column_info_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_column_info"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

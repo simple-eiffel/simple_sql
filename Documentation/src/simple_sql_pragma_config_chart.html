@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="TTSQLite PRAGMA configuration for performance tuning and database settings.  TTProvides named creation procedures for common configurations: TTT- make_default: Standard SQLite defaults TTT- make_wal: WAL mode with sensible defaults TTT- make_performance: Optimized for speed (some durability tradeoff) TTT- make_safe: Maximum durability, slower writes  TTUsage: TTTcreate db.make (mydb.sqlite) TTTcreate config.make_wal TTTconfig.apply (db)"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="Copyright (c) 2025, Larry Rix"/>
+<meta name="license" content="MIT License"/>
+<meta name="source" content="SIMPLE_SQL - High-level SQLite API for Eiffel PRAGMA reference: https://www.sqlite.org/pragma.html"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_sql_pragma_config Chart</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<span class="nav class selected">Chart</span>
+<a class="nav class" href="simple_sql_pragma_config_links.html">Relations</a>
+<a class="nav class" href="simple_sql_pragma_config_short.html">Contracts</a>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_pragma_config"></span>
+</div></form><pre><span class="ekeyword">class</span>
+	<a class="eclass" href="../src/simple_sql_pragma_config_chart.html">SIMPLE_SQL_PRAGMA_CONFIG</a>
+
+<span class="ekeyword">General</span>
+	<span class="eitag">cluster</span><span class="esymbol">:</span> <a class="ecluster" href="../src/index.html">src</a>
+	<span class="eitag">description</span><span class="esymbol">:</span> 
+		<span class="estring">&quot;SQLite PRAGMA configuration for performance tuning and database settings.</span>
+		
+		<span class="estring">Provides named creation procedures for common configurations:</span>
+		<span class="estring">- make_default: Standard SQLite defaults</span>
+		<span class="estring">- make_wal: WAL mode with sensible defaults</span>
+		<span class="estring">- make_performance: Optimized for speed (some durability tradeoff)</span>
+		<span class="estring">- make_safe: Maximum durability, slower writes</span>
+		
+		<span class="estring">Usage:</span>
+		<span class="estring">create db.make (%&quot;mydb.sqlite%&quot;)</span>
+		<span class="estring">create config.make_wal</span>
+		<span class="estring">config.apply (db)&quot;</span>
+	<span class="eitag">create</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_make_default">make_default</a><span class="esymbol">,</span> <a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_make_wal">make_wal</a><span class="esymbol">,</span> <a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_make_performance">make_performance</a><span class="esymbol">,</span> <a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_make_safe">make_safe</a><span class="esymbol">,</span> <a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_make_custom">make_custom</a>
+
+<span class="ekeyword">Ancestors</span>
+	<a class="eclass" href="../base/any_chart.html">ANY</a>
+
+<span class="ekeyword">Queries</span>
+	<span title="`busy_timeout' is declared in `Current'"><a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_busy_timeout">busy_timeout</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`cache_size' is declared in `Current'"><a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_cache_size">cache_size</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`foreign_keys' is declared in `Current'"><a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_foreign_keys">foreign_keys</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_chart.html">BOOLEAN</a></span>
+	<span title="`journal_delete' is declared in `Current'"><a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_journal_delete">Journal_delete</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`journal_memory' is declared in `Current'"><a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_journal_memory">Journal_memory</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`journal_mode' is declared in `Current'"><a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_journal_mode">journal_mode</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`journal_mode_string' is declared in `Current'"><a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_journal_mode_string">journal_mode_string</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_chart.html">STRING_8</a></span>
+	<span title="`journal_off' is declared in `Current'"><a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_journal_off">Journal_off</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`journal_persist' is declared in `Current'"><a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_journal_persist">Journal_persist</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`journal_truncate' is declared in `Current'"><a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_journal_truncate">Journal_truncate</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`journal_wal' is declared in `Current'"><a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_journal_wal">Journal_wal</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`mmap_size' is declared in `Current'"><a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_mmap_size">mmap_size</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_64_chart.html">INTEGER_64</a></span>
+	<span title="`synchronous' is declared in `Current'"><a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_synchronous">synchronous</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`synchronous_extra' is declared in `Current'"><a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_synchronous_extra">Synchronous_extra</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`synchronous_full' is declared in `Current'"><a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_synchronous_full">Synchronous_full</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`synchronous_normal' is declared in `Current'"><a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_synchronous_normal">Synchronous_normal</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`synchronous_off' is declared in `Current'"><a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_synchronous_off">Synchronous_off</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`synchronous_string' is declared in `Current'"><a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_synchronous_string">synchronous_string</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_chart.html">STRING_8</a></span>
+
+<span class="ekeyword">Commands</span>
+	<span title="`apply' is declared in `Current'"><a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_apply">apply</a> <span class="esymbol">(</span><span class="elocal">a_database</span><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_database_chart.html">SIMPLE_SQL_DATABASE</a><span class="esymbol">)</span></span>
+	<span title="`set_busy_timeout' is declared in `Current'"><a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_set_busy_timeout">set_busy_timeout</a> <span class="esymbol">(</span><span class="elocal">a_timeout</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a><span class="esymbol">)</span></span>
+	<span title="`set_cache_size' is declared in `Current'"><a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_set_cache_size">set_cache_size</a> <span class="esymbol">(</span><span class="elocal">a_size</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a><span class="esymbol">)</span></span>
+	<span title="`set_foreign_keys' is declared in `Current'"><a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_set_foreign_keys">set_foreign_keys</a> <span class="esymbol">(</span><span class="elocal">a_enabled</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_chart.html">BOOLEAN</a><span class="esymbol">)</span></span>
+	<span title="`set_journal_mode' is declared in `Current'"><a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_set_journal_mode">set_journal_mode</a> <span class="esymbol">(</span><span class="elocal">a_mode</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a><span class="esymbol">)</span></span>
+	<span title="`set_mmap_size' is declared in `Current'"><a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_set_mmap_size">set_mmap_size</a> <span class="esymbol">(</span><span class="elocal">a_size</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_64_chart.html">INTEGER_64</a><span class="esymbol">)</span></span>
+	<span title="`set_synchronous' is declared in `Current'"><a class="efeature" href="../src/simple_sql_pragma_config_short.html#f_set_synchronous">set_synchronous</a> <span class="esymbol">(</span><span class="elocal">a_level</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a><span class="esymbol">)</span></span>
+
+<span class="ekeyword">Constraints</span>
+	<span class="etag">valid journal mode</span>
+	<span class="etag">valid synchronous</span>
+	<span class="etag">non negative timeout</span>
+	<span class="etag">non negative mmap</span>
+
+</pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<span class="nav class selected">Chart</span>
+<a class="nav class" href="simple_sql_pragma_config_links.html">Relations</a>
+<a class="nav class" href="simple_sql_pragma_config_short.html">Contracts</a>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_pragma_config"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>

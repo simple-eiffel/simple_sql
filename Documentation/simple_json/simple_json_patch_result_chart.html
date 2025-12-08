@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="Result of applying a JSON Patch operation or patch document. Contains success status, the modified document (if successful), and error information (if failed)."/>
+<meta name="eis" content="name=Documentation, protocol=URI, src=file://$(SYSTEM_PATH)/docs/docs/patch/simple_json_patch.html"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="2025, Larry Rix"/>
+<meta name="license" content="MIT License"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_json_patch_result Chart</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<span class="nav class selected">Chart</span>
+<a class="nav class" href="simple_json_patch_result_links.html">Relations</a>
+<a class="nav class" href="simple_json_patch_result_short.html">Contracts</a>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_patch_result"></span>
+</div></form><pre><span class="ekeyword">class</span>
+	<a class="eclass" href="../simple_json/simple_json_patch_result_chart.html">SIMPLE_JSON_PATCH_RESULT</a>
+
+<span class="ekeyword">General</span>
+	<span class="eitag">cluster</span><span class="esymbol">:</span> <span class="necluster">src</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> 
+		<span class="estring">&quot;Result of applying a JSON Patch operation or patch document.</span>
+		<span class="estring">Contains success status, the modified document (if successful),</span>
+		<span class="estring">and error information (if failed).&quot;</span>
+	<span class="eitag">create</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_patch_result_short.html#f_make_success">make_success</a><span class="esymbol">,</span> <a class="efeature" href="../simple_json/simple_json_patch_result_short.html#f_make_failure">make_failure</a>
+
+<span class="ekeyword">Ancestors</span>
+	<a class="eclass" href="../base/any_chart.html">ANY</a>
+
+<span class="ekeyword">Queries</span>
+	<span title="`error_message' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_patch_result_short.html#f_error_message">error_message</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`has_document' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_patch_result_short.html#f_has_document">has_document</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_chart.html">BOOLEAN</a></span>
+	<span title="`has_error' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_patch_result_short.html#f_has_error">has_error</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_chart.html">BOOLEAN</a></span>
+	<span title="`is_failure' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_patch_result_short.html#f_is_failure">is_failure</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_chart.html">BOOLEAN</a></span>
+	<span title="`is_success' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_patch_result_short.html#f_is_success">is_success</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_chart.html">BOOLEAN</a></span>
+	<span title="`modified_document' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_patch_result_short.html#f_modified_document">modified_document</a><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../simple_json/simple_json_value_chart.html">SIMPLE_JSON_VALUE</a></span>
+
+<span class="ekeyword">Constraints</span>
+	<span class="etag">error message attached</span>
+	<span class="etag">is failure definition</span>
+	<span class="etag">success has document</span>
+	<span class="etag">success has empty error</span>
+	<span class="etag">failure has error</span>
+	<span class="etag">failure has non empty error</span>
+	<span class="etag">has error definition</span>
+	<span class="etag">has document definition</span>
+
+</pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<span class="nav class selected">Chart</span>
+<a class="nav class" href="simple_json_patch_result_links.html">Relations</a>
+<a class="nav class" href="simple_json_patch_result_short.html">Contracts</a>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_patch_result"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>

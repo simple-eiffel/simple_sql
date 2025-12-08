@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="Runs database migrations using PRAGMA user_version for tracking"/>
+<meta name="author" content="Jimmy J. Johnson"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_sql_migration_runner Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_sql_migration_runner_chart.html">Chart</a>
+<a class="nav class" href="simple_sql_migration_runner_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_migration_runner"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;Runs database migrations using PRAGMA user_version for tracking&quot;</span>
+	<span class="eitag">author</span><span class="esymbol">:</span> <span class="estring">&quot;Jimmy J. Johnson&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+
+<span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../src/simple_sql_migration_runner_short.html">SIMPLE_SQL_MIGRATION_RUNNER</a>
+
+<span class="ekeyword">create</span> 
+	<a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_make">make</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Access</span>
+
+	<a name="f_database"></a><a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_database">database</a><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_database_short.html">SIMPLE_SQL_DATABASE</a>
+			<span class="ecomment">--</span><span class="ecomment"> Target database</span>
+
+	<a name="f_schema"></a><a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_schema">schema</a><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_schema_short.html">SIMPLE_SQL_SCHEMA</a>
+			<span class="ecomment">--</span><span class="ecomment"> Schema inspector</span>
+
+	<a name="f_migrations"></a><a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_migrations">migrations</a><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_short.html">ARRAYED_LIST</a> <span class="esymbol">[</span><a class="eclass" href="../src/simple_sql_migration_short.html">SIMPLE_SQL_MIGRATION</a><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> Registered migrations (sorted by version)</span>
+
+	<a name="f_current_version"></a><a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_current_version">current_version</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Current database schema version</span>
+
+	<a name="f_latest_version"></a><a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_latest_version">latest_version</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Highest migration version registered</span>
+
+	<a name="f_pending_migrations"></a><a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_pending_migrations">pending_migrations</a><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_short.html">ARRAYED_LIST</a> <span class="esymbol">[</span><a class="eclass" href="../src/simple_sql_migration_short.html">SIMPLE_SQL_MIGRATION</a><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> Migrations that haven't been applied yet</span>
+
+	<a name="f_last_error"></a><a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_last_error">last_error</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a>
+			<span class="ecomment">--</span><span class="ecomment"> Last error message (empty if no error)</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Status</span>
+
+	<a name="f_has_error"></a><a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_has_error">has_error</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Did the last operation fail?</span>
+
+	<a name="f_has_pending"></a><a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_has_pending">has_pending</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Are there pending migrations?</span>
+
+	<a name="f_is_current"></a><a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_is_current">is_current</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is database at latest version?</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Registration</span>
+
+	<a name="f_add"></a><a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_add">add</a> <span class="esymbol">(</span><span class="elocal">a_migration</span><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_migration_short.html">SIMPLE_SQL_MIGRATION</a><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Register a migration</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">migration_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="elocal">a_migration</span>
+			<span class="etag">unique_version</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_has_version">has_version</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_migration</span><span class="edot">.</span><a class="efeature" href="../src/simple_sql_migration_short.html#f_version">version</a><span class="esymbol">)</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">migration_added</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_migrations">migrations</a><span class="edot">.</span><a class="efeature" href="../base/arrayed_list_short.html#f_has">has</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_migration</span><span class="esymbol">)</span>
+
+	<a name="f_has_version"></a><a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_has_version">has_version</a> <span class="esymbol">(</span><span class="elocal">a_version</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is a migration with this version already registered?</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Migration Operations</span>
+
+	<a name="f_migrate"></a><a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_migrate">migrate</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Run all pending migrations</span>
+			<span class="ecomment">--</span><span class="ecomment"> Returns True if successful</span>
+
+	<a name="f_migrate_to"></a><a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_migrate_to">migrate_to</a> <span class="esymbol">(</span><span class="elocal">a_target_version</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Migrate to specific version (up or down)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Returns True if successful</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">valid_version</span><span class="esymbol">:</span> <span class="elocal">a_target_version</span> <a class="esymbol" href="../base/comparable_short.html#f_is_greater_equal">&gt;=</a> <span class="enumber">0</span>
+
+	<a name="f_migrate_one"></a><a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_migrate_one">migrate_one</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Run the next pending migration only</span>
+			<span class="ecomment">--</span><span class="ecomment"> Returns True if successful</span>
+
+	<a name="f_rollback"></a><a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_rollback">rollback</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Rollback the last migration</span>
+			<span class="ecomment">--</span><span class="ecomment"> Returns True if successful</span>
+
+	<a name="f_rollback_all"></a><a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_rollback_all">rollback_all</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Rollback all migrations</span>
+			<span class="ecomment">--</span><span class="ecomment"> Returns True if successful</span>
+
+	<a name="f_reset"></a><a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_reset">reset</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Rollback all then migrate all (fresh start)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Returns True if successful</span>
+	
+<span class="ekeyword">invariant</span>
+	<span class="etag">database_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_database">database</a>
+	<span class="etag">schema_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_schema">schema</a>
+	<span class="etag">migrations_sorted</span><span class="esymbol">:</span> <span class="ekeyword">across</span>
+			<span class="enumber">1</span> <a class="esymbol" href="../base/integer_32_ref_short.html#f_interval">|..|</a> <span class="esymbol">(</span><a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_migrations">migrations</a><span class="edot">.</span><a class="efeature" href="../base/arrayed_list_short.html#f_count">count</a> <a class="esymbol" href="../base/integer_32_short.html#f_minus">-</a> <span class="enumber">1</span><span class="esymbol">)</span> <span class="ekeyword">as</span> i
+		<span class="ekeyword">all</span>
+			<a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_migrations">migrations</a> <a class="esymbol" href="../base/arrayed_list_short.html#f_i_th">[</a><span class="elocal">i</span><span class="edot">.</span><a class="efeature" href="../base/integer_32_ref_short.html#f_item">item</a><a class="esymbol" href="../base/arrayed_list_short.html#f_i_th">]</a><span class="edot">.</span><a class="efeature" href="../src/simple_sql_migration_short.html#f_version">version</a> <a class="esymbol" href="../base/integer_32_short.html#f_is_less">&lt;</a> <a class="efeature" href="../src/simple_sql_migration_runner_short.html#f_migrations">migrations</a> <a class="esymbol" href="../base/arrayed_list_short.html#f_i_th">[</a><span class="elocal">i</span><span class="edot">.</span><a class="efeature" href="../base/integer_32_ref_short.html#f_item">item</a> <a class="esymbol" href="../base/integer_32_short.html#f_plus">+</a> <span class="enumber">1</span><a class="esymbol" href="../base/arrayed_list_short.html#f_i_th">]</a><span class="edot">.</span><a class="efeature" href="../src/simple_sql_migration_short.html#f_version">version</a>
+		<span class="ekeyword">end</span>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../src/simple_sql_migration_runner_short.html">SIMPLE_SQL_MIGRATION_RUNNER</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_sql_migration_runner_chart.html">Chart</a>
+<a class="nav class" href="simple_sql_migration_runner_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_migration_runner"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

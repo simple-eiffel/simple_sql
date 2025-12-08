@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="SQLite statement argument object marshaller to convert Eiffel basic type objects into those usable by the internals of the SQLite library."/>
+<meta name="legal" content="See notice at end of class."/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="Copyright (c) 1984-2015, Eiffel Software"/>
+<meta name="license" content="GPL version 2 (see http://www.eiffel.com/licensing/gpl.txt)"/>
+<meta name="licensing_options" content="http://www.eiffel.com/licensing"/>
+<meta name="copying" content="This file is part of Eiffel Software's Eiffel Development Environment.  Eiffel Software's Eiffel Development Environment is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2 of the License (available at the URL listed under license above).  Eiffel Software's Eiffel Development Environment is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.  You should have received a copy of the GNU General Public License along with Eiffel Software's Eiffel Development Environment; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA"/>
+<meta name="source" content="Eiffel Software 5949 Hollister Ave., Goleta, CA 93117 USA Telephone 805-685-1006, Fax 805-685-6869 Website http://www.eiffel.com Customer support http://support.eiffel.com"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>sqlite_bind_arg_marshaller Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="sqlite_bind_arg_marshaller_chart.html">Chart</a>
+<a class="nav class" href="sqlite_bind_arg_marshaller_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="sqlite_bind_arg_marshaller"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">SQLite statement argument object marshaller to convert Eiffel basic type objects into those usable</span>
+		<span class="estring">by the internals of the SQLite library.</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+	<span class="eitag">legal</span><span class="esymbol">:</span> <span class="estring">&quot;See notice at end of class.&quot;</span>
+	<span class="eitag">status</span><span class="esymbol">:</span> <span class="estring">&quot;See notice at end of class.&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+
+<span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../sqlite/sqlite_bind_arg_marshaller_short.html">SQLITE_BIND_ARG_MARSHALLER</a>
+
+<span class="ekeyword">create</span> 
+	<a class="efeature" href="../base/any_short.html#f_default_create">default_create</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Status report</span>
+
+	<a name="f_is_value_marshalled"></a><a class="efeature" href="../sqlite/sqlite_bind_arg_marshaller_short.html#f_is_value_marshalled">is_value_marshalled</a> <span class="esymbol">(</span><span class="elocal">a_value</span><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../base/any_short.html">ANY</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Indicates if the value has already been marshalled (is of a </span><span class="esymbol">{</span><a class="eclass" href="../sqlite/sqlite_bind_arg_short.html">SQLITE_BIND_ARG</a><span class="esymbol">}</span><span class="ecomment"> type.</span>
+			<span class="ecomment">--</span>
+			<span class="ecomment">--</span><span class="ecomment"> </span><span class="equoted">a_value</span><span class="ecomment">: A value to check.</span>
+			<span class="ecomment">--</span><span class="ecomment"> </span><span class="equoted">Result</span><span class="ecomment">: True if no marshalling needs to be perform; False otherwise.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">a_value_is_valid_value_type</span><span class="esymbol">:</span> <a class="efeature" href="../sqlite/sqlite_binding_helpers_short.html#f_is_valid_argument">is_valid_argument</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_value</span><span class="esymbol">)</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">a_value_is_bind_arg</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <span class="ekeyword">attached</span> <span class="esymbol">{</span><a class="eclass" href="../sqlite/sqlite_bind_arg_short.html">SQLITE_BIND_ARG</a> <span class="esymbol">[</span><a class="eclass" href="../base/any_short.html">ANY</a><span class="esymbol">]</span><span class="esymbol">}</span> <span class="elocal">a_value</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Query</span>
+
+	<a name="f_new_binding_argument_array"></a><a class="efeature" href="../sqlite/sqlite_bind_arg_marshaller_short.html#f_new_binding_argument_array">new_binding_argument_array</a> <span class="esymbol">(</span><span class="elocal">a_args</span><span class="esymbol">:</span> <a class="eclass" href="../base/iterable_short.html">ITERABLE</a> <span class="esymbol">[</span><span class="ekeyword">detachable</span> <a class="eclass" href="../base/any_short.html">ANY</a><span class="esymbol">]</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/array_short.html">ARRAY</a> <span class="esymbol">[</span><a class="eclass" href="../sqlite/sqlite_bind_arg_short.html">SQLITE_BIND_ARG</a> <span class="esymbol">[</span><a class="eclass" href="../base/any_short.html">ANY</a><span class="esymbol">]</span><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> Creates a new argument array from a tuple of values.</span>
+			<span class="ecomment">--</span>
+			<span class="ecomment">--</span><span class="ecomment"> </span><span class="equoted">a_args</span><span class="ecomment">: Arguments to create a new array for.</span>
+			<span class="ecomment">--</span><span class="ecomment"> </span><span class="equoted">Result</span><span class="ecomment">: Argument array to use with processing</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">a_args_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="elocal">a_args</span>
+			<span class="etag">not_a_args_is_empty</span><span class="esymbol">:</span> <span class="ekeyword">across</span>
+					<span class="elocal">a_args</span> <span class="ekeyword">as</span> ic
+				<span class="ekeyword">some</span>
+					<span class="ekeyword">True</span>
+				<span class="ekeyword">end</span>
+			<span class="etag">a_args_is_valid_arguments</span><span class="esymbol">:</span> <a class="efeature" href="../sqlite/sqlite_binding_helpers_short.html#f_is_valid_arguments">is_valid_arguments</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_args</span><span class="esymbol">)</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">result_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="ekeyword">Result</span>
+			<span class="etag">result_count_matches</span><span class="esymbol">:</span> <a class="efeature" href="../sqlite/sqlite_binding_helpers_short.html#f_iterable_has_count">iterable_has_count</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_args</span><span class="esymbol">,</span> <span class="ekeyword">Result</span><span class="edot">.</span><a class="efeature" href="../base/array_short.html#f_count">count</a><span class="esymbol">)</span>
+
+	<a name="f_new_binding_argument"></a><a class="efeature" href="../sqlite/sqlite_bind_arg_marshaller_short.html#f_new_binding_argument">new_binding_argument</a> <span class="esymbol">(</span><span class="elocal">a_value</span><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../base/any_short.html">ANY</a><span class="esymbol">;</span> <span class="elocal">a_var</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../sqlite/sqlite_bind_arg_short.html">SQLITE_BIND_ARG</a> <span class="esymbol">[</span><a class="eclass" href="../base/any_short.html">ANY</a><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> Creates a new SQLite bind argument for us with executing SQLite statements containing arguments.</span>
+			<span class="ecomment">--</span>
+			<span class="ecomment">--</span><span class="ecomment"> </span><span class="equoted">a_value</span><span class="ecomment">: A value to create a binding argument for.</span>
+			<span class="ecomment">--</span><span class="ecomment"> </span><span class="equoted">Result</span><span class="ecomment">: A bound argument, or </span><span class="equoted">a_value</span><span class="ecomment"> if the argument is already a binding argument.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">a_value_is_valid_argument</span><span class="esymbol">:</span> <a class="efeature" href="../sqlite/sqlite_binding_helpers_short.html#f_is_valid_argument">is_valid_argument</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_value</span><span class="esymbol">)</span>
+			<span class="etag">a_var_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="elocal">a_var</span>
+			<span class="etag">not_a_var_is_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_var</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+			<span class="etag">a_var_is_valid_variable_name</span><span class="esymbol">:</span> <a class="efeature" href="../sqlite/sqlite_binding_helpers_short.html#f_is_valid_variable_name">is_valid_variable_name</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_var</span><span class="esymbol">)</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">result_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="ekeyword">Result</span>
+			<span class="etag">result_is_value_marshalled</span><span class="esymbol">:</span> <a class="efeature" href="../sqlite/sqlite_bind_arg_marshaller_short.html#f_is_value_marshalled">is_value_marshalled</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="ekeyword">Result</span><span class="esymbol">)</span>
+	
+<span class="ekeyword">note</span>
+	<span class="eitag">copyright</span><span class="esymbol">:</span> <span class="estring">&quot;Copyright (c) 1984-2015, Eiffel Software&quot;</span>
+	<span class="eitag">license</span><span class="esymbol">:</span> <span class="estring">&quot;GPL version 2 (see </span><a class="estring" href="http://www.eiffel.com/licensing/gpl.txt">http://www.eiffel.com/licensing/gpl.txt</a><span class="estring">)&quot;</span>
+	<span class="eitag">licensing_options</span><span class="esymbol">:</span> <span class="estring">&quot;</span><a class="estring" href="http://www.eiffel.com/licensing">http://www.eiffel.com/licensing</a><span class="estring">&quot;</span>
+	<span class="eitag">copying</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">This file is part of Eiffel Software's Eiffel Development Environment.</span>
+		
+		<span class="estring">Eiffel Software's Eiffel Development Environment is free</span>
+		<span class="estring">software; you can redistribute it and/or modify it under</span>
+		<span class="estring">the terms of the GNU General Public License as published</span>
+		<span class="estring">by the Free Software Foundation, version 2 of the License</span>
+		<span class="estring">(available at the URL listed under &quot;license&quot; above).</span>
+		
+		<span class="estring">Eiffel Software's Eiffel Development Environment is</span>
+		<span class="estring">distributed in the hope that it will be useful, but</span>
+		<span class="estring">WITHOUT ANY WARRANTY; without even the implied warranty</span>
+		<span class="estring">of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</span>
+		<span class="estring">See the GNU General Public License for more details.</span>
+		
+		<span class="estring">You should have received a copy of the GNU General Public</span>
+		<span class="estring">License along with Eiffel Software's Eiffel Development</span>
+		<span class="estring">Environment; if not, write to the Free Software Foundation,</span>
+		<span class="estring">Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+	<span class="eitag">source</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">Eiffel Software</span>
+		<span class="estring">5949 Hollister Ave., Goleta, CA 93117 USA</span>
+		<span class="estring">Telephone 805-685-1006, Fax 805-685-6869</span>
+		<span class="estring">Website </span><a class="estring" href="http://www.eiffel.com">http://www.eiffel.com</a>
+		<span class="estring">Customer support </span><a class="estring" href="http://support.eiffel.com">http://support.eiffel.com</a>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../sqlite/sqlite_bind_arg_marshaller_short.html">SQLITE_BIND_ARG_MARSHALLER</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="sqlite_bind_arg_marshaller_chart.html">Chart</a>
+<a class="nav class" href="sqlite_bind_arg_marshaller_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="sqlite_bind_arg_marshaller"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

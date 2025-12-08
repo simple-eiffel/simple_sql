@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="TTHigh-level SQLite database API for simple, safe database operations. TTSimplifies the sqlite3 library for common use cases with automatic resource management.  TTError Handling: TTT- `has_error`: Check if last operation failed TTT- `last_structured_error`: Full error with code, message, SQL context TTT- `last_error_code`: Quick access to error code constant TTT- `last_error_message`: Quick access to error message string TTT- `error_codes`: Access to SIMPLE_SQL_ERROR_CODE for comparisons"/>
+<meta name="eis" content="name=API Reference, src=../docs/api/database.html, protocol=URI, tag=documentation"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="Copyright (c) 2025, Larry Rix"/>
+<meta name="license" content="MIT License"/>
+<meta name="source" content="SIMPLE_SQL - High-level SQLite API for Eiffel"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_sql_database Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_sql_database_chart.html">Chart</a>
+<a class="nav class" href="simple_sql_database_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_database"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">		High-level SQLite database API for simple, safe database operations.</span>
+		<span class="estring">		Simplifies the sqlite3 library for common use cases with automatic resource management.</span>
+		
+		<span class="estring">		Error Handling:</span>
+		<span class="estring">			- </span><span class="estring">`</span><a class="efeature" href="../src/simple_sql_database_short.html#f_has_error">has_error</a><span class="estring">`</span><span class="estring">: Check if last operation failed</span>
+		<span class="estring">			- </span><span class="estring">`</span><a class="efeature" href="../src/simple_sql_database_short.html#f_last_structured_error">last_structured_error</a><span class="estring">`</span><span class="estring">: Full error with code, message, SQL context</span>
+		<span class="estring">			- </span><span class="estring">`</span><a class="efeature" href="../src/simple_sql_database_short.html#f_last_error_code">last_error_code</a><span class="estring">`</span><span class="estring">: Quick access to error code constant</span>
+		<span class="estring">			- </span><span class="estring">`</span><a class="efeature" href="../src/simple_sql_database_short.html#f_last_error_message">last_error_message</a><span class="estring">`</span><span class="estring">: Quick access to error message string</span>
+		<span class="estring">			- </span><span class="estring">`</span><a class="efeature" href="../src/simple_sql_database_short.html#f_error_codes">error_codes</a><span class="estring">`</span><span class="estring">: Access to SIMPLE_SQL_ERROR_CODE for comparisons</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+	<span class="eitag">eis</span><span class="esymbol">:</span> <span class="estring">&quot;name=API Reference&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;src=../docs/api/database.html&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;protocol=URI&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;tag=documentation&quot;</span>
+	<span class="eitag">eis</span><span class="esymbol">:</span> <span class="estring">&quot;name=Getting Started&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;src=../docs/getting-started.html&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;protocol=URI&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;tag=tutorial&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+
+<span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../src/simple_sql_database_short.html">SIMPLE_SQL_DATABASE</a>
+
+<span class="ekeyword">create</span> 
+	<a class="efeature" href="../src/simple_sql_database_short.html#f_make">make</a><span class="esymbol">,</span>
+	<a class="efeature" href="../src/simple_sql_database_short.html#f_make_memory">make_memory</a><span class="esymbol">,</span>
+	<a class="efeature" href="../src/simple_sql_database_short.html#f_make_read_only">make_read_only</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Access</span>
+
+	<a name="f_file_name"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_file_name">file_name</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Database file name or &quot;:memory:&quot;</span>
+
+	<a name="f_last_structured_error"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_last_structured_error">last_structured_error</a><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../src/simple_sql_error_short.html">SIMPLE_SQL_ERROR</a>
+			<span class="ecomment">--</span><span class="ecomment"> Structured error from last failed operation</span>
+
+	<a name="f_last_error_message"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_last_error_message">last_error_message</a><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Error message from last failed operation</span>
+
+	<a name="f_last_error_code"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_last_error_code">last_error_code</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Error code from last operation (0 = success)</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">zero_when_no_error</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../src/simple_sql_database_short.html#f_has_error">has_error</a> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <span class="ekeyword">Result</span> <span class="esymbol">=</span> <span class="enumber">0</span>
+
+	<a name="f_error_codes"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_error_codes">Error_codes</a><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_error_code_short.html">SIMPLE_SQL_ERROR_CODE</a>
+			<span class="ecomment">--</span><span class="ecomment"> Access to error code constants for comparisons</span>
+			<span class="ecomment">--</span><span class="ecomment"> Usage: if db.last_error_code = db.error_codes.constraint then ...</span>
+
+	<a name="f_changes_count"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_changes_count">changes_count</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Number of rows modified by last operation</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+
+	<a name="f_is_in_transaction"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_is_in_transaction">is_in_transaction</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is database currently in a transaction?</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Status report</span>
+
+	<a name="f_is_open"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is database connection open?</span>
+
+	<a name="f_has_error"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_has_error">has_error</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Did last operation fail?</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">error_attached</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <a class="efeature" href="../src/simple_sql_database_short.html#f_last_structured_error">last_structured_error</a> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Error status queries</span>
+
+	<a name="f_is_constraint_error"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_is_constraint_error">is_constraint_error</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Was last error a constraint violation?</span>
+
+	<a name="f_is_busy_error"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_is_busy_error">is_busy_error</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Was last error due to database being busy/locked?</span>
+
+	<a name="f_is_readonly_error"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_is_readonly_error">is_readonly_error</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Was last error due to readonly database?</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Basic operations</span>
+
+	<a name="f_execute"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_execute">execute</a> <span class="esymbol">(</span><span class="elocal">a_sql</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Execute SQL statement (INSERT, UPDATE, DELETE, CREATE, etc)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+			<span class="etag">sql_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_sql</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_query"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_query">query</a> <span class="esymbol">(</span><span class="elocal">a_sql</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_result_short.html">SIMPLE_SQL_RESULT</a>
+			<span class="ecomment">--</span><span class="ecomment"> Execute query and return results</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+			<span class="etag">sql_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_sql</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Parameterized Operations (convenience methods)</span>
+
+	<a name="f_execute_with_args"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_execute_with_args">execute_with_args</a> <span class="esymbol">(</span><span class="elocal">a_sql</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_args</span><span class="esymbol">:</span> <a class="eclass" href="../base/array_short.html">ARRAY</a> <span class="esymbol">[</span><span class="ekeyword">detachable</span> <a class="eclass" href="../base/any_short.html">ANY</a><span class="esymbol">]</span><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Execute SQL with parameters. Use ? placeholders.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Supported types: INTEGER, INTEGER_64, REAL_64, STRING, BOOLEAN, Void (NULL)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Example: execute_with_args (&quot;INSERT INTO t (a, b) VALUES (?, ?)&quot;, &lt;&lt;123, &quot;text&quot;&gt;&gt;)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+			<span class="etag">sql_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_sql</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_query_with_args"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_query_with_args">query_with_args</a> <span class="esymbol">(</span><span class="elocal">a_sql</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_args</span><span class="esymbol">:</span> <a class="eclass" href="../base/array_short.html">ARRAY</a> <span class="esymbol">[</span><span class="ekeyword">detachable</span> <a class="eclass" href="../base/any_short.html">ANY</a><span class="esymbol">]</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_result_short.html">SIMPLE_SQL_RESULT</a>
+			<span class="ecomment">--</span><span class="ecomment"> Execute query with parameters. Use ? placeholders.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Supported types: INTEGER, INTEGER_64, REAL_64, STRING, BOOLEAN, Void (NULL)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Example: query_with_args (&quot;SELECT * FROM t WHERE id = ?&quot;, &lt;&lt;123&gt;&gt;)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+			<span class="etag">sql_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_sql</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_begin_transaction"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_begin_transaction">begin_transaction</a>
+			<span class="ecomment">--</span><span class="ecomment"> Begin transaction (deferred mode)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+
+	<a name="f_commit"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_commit">commit</a>
+			<span class="ecomment">--</span><span class="ecomment"> Commit current transaction</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+			<span class="etag">in_transaction</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_in_transaction">is_in_transaction</a>
+
+	<a name="f_rollback"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_rollback">rollback</a>
+			<span class="ecomment">--</span><span class="ecomment"> Rollback current transaction</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+			<span class="etag">in_transaction</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_in_transaction">is_in_transaction</a>
+
+	<a name="f_close"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_close">close</a>
+			<span class="ecomment">--</span><span class="ecomment"> Close database connection</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_closed</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Prepared Statements</span>
+
+	<a name="f_prepare"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_prepare">prepare</a> <span class="esymbol">(</span><span class="elocal">a_sql</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_prepared_statement_short.html">SIMPLE_SQL_PREPARED_STATEMENT</a>
+			<span class="ecomment">--</span><span class="ecomment"> Create prepared statement for given SQL</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+			<span class="etag">sql_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_sql</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">result_attached</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Query Builders</span>
+
+	<a name="f_select_builder"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_select_builder">select_builder</a><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_select_builder_short.html">SIMPLE_SQL_SELECT_BUILDER</a>
+			<span class="ecomment">--</span><span class="ecomment"> Create SELECT query builder for this database</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">result_attached</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">database_set</span><span class="esymbol">:</span> <span class="ekeyword">Result</span><span class="edot">.</span><a class="efeature" href="../src/simple_sql_query_builder_short.html#f_database">database</a> <span class="esymbol">=</span> <span class="ekeyword">Current</span>
+
+	<a name="f_insert_builder"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_insert_builder">insert_builder</a><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_insert_builder_short.html">SIMPLE_SQL_INSERT_BUILDER</a>
+			<span class="ecomment">--</span><span class="ecomment"> Create INSERT query builder for this database</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">result_attached</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">database_set</span><span class="esymbol">:</span> <span class="ekeyword">Result</span><span class="edot">.</span><a class="efeature" href="../src/simple_sql_query_builder_short.html#f_database">database</a> <span class="esymbol">=</span> <span class="ekeyword">Current</span>
+
+	<a name="f_update_builder"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_update_builder">update_builder</a><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_update_builder_short.html">SIMPLE_SQL_UPDATE_BUILDER</a>
+			<span class="ecomment">--</span><span class="ecomment"> Create UPDATE query builder for this database</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">result_attached</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">database_set</span><span class="esymbol">:</span> <span class="ekeyword">Result</span><span class="edot">.</span><a class="efeature" href="../src/simple_sql_query_builder_short.html#f_database">database</a> <span class="esymbol">=</span> <span class="ekeyword">Current</span>
+
+	<a name="f_delete_builder"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_delete_builder">delete_builder</a><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_delete_builder_short.html">SIMPLE_SQL_DELETE_BUILDER</a>
+			<span class="ecomment">--</span><span class="ecomment"> Create DELETE query builder for this database</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">result_attached</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">database_set</span><span class="esymbol">:</span> <span class="ekeyword">Result</span><span class="edot">.</span><a class="efeature" href="../src/simple_sql_query_builder_short.html#f_database">database</a> <span class="esymbol">=</span> <span class="ekeyword">Current</span>
+
+	<a name="f_eager_loader"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_eager_loader">eager_loader</a><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_eager_loader_short.html">SIMPLE_SQL_EAGER_LOADER</a>
+			<span class="ecomment">--</span><span class="ecomment"> Create eager loader to prevent N+1 queries.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">result_attached</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+
+	<a name="f_paginator"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_paginator">paginator</a> <span class="esymbol">(</span><span class="elocal">a_table</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_paginator_short.html">SIMPLE_SQL_PAGINATOR</a>
+			<span class="ecomment">--</span><span class="ecomment"> Create paginator for cursor-based pagination.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+			<span class="etag">table_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_table</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">result_attached</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Streaming and Cursor Queries</span>
+
+	<a name="f_query_cursor"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_query_cursor">query_cursor</a> <span class="esymbol">(</span><span class="elocal">a_sql</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_cursor_short.html">SIMPLE_SQL_CURSOR</a>
+			<span class="ecomment">--</span><span class="ecomment"> Execute query returning lazy cursor for row-by-row iteration</span>
+			<span class="ecomment">--</span><span class="ecomment"> Use for large result sets to avoid loading all rows into memory</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+			<span class="etag">sql_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_sql</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">result_attached</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+
+	<a name="f_query_stream"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_query_stream">query_stream</a> <span class="esymbol">(</span><span class="elocal">a_sql</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_action</span><span class="esymbol">:</span> <a class="eclass" href="../base/function_short.html">FUNCTION</a> <span class="esymbol">[</span><a class="eclass" href="../src/simple_sql_row_short.html">SIMPLE_SQL_ROW</a><span class="esymbol">,</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a><span class="esymbol">]</span><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Execute query and process each row via callback action</span>
+			<span class="ecomment">--</span><span class="ecomment"> Action returns True to stop early, False to continue</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+			<span class="etag">sql_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_sql</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+			<span class="etag">action_attached</span><span class="esymbol">:</span> <span class="elocal">a_action</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+
+	<a name="f_create_stream"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_create_stream">create_stream</a> <span class="esymbol">(</span><span class="elocal">a_sql</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_result_stream_short.html">SIMPLE_SQL_RESULT_STREAM</a>
+			<span class="ecomment">--</span><span class="ecomment"> Create stream object for advanced streaming operations</span>
+			<span class="ecomment">--</span><span class="ecomment"> (for_each, aggregate, collect_first, etc.)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+			<span class="etag">sql_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_sql</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">result_attached</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Schema Introspection</span>
+
+	<a name="f_schema"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_schema">schema</a><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_schema_short.html">SIMPLE_SQL_SCHEMA</a>
+			<span class="ecomment">--</span><span class="ecomment"> Create schema inspector for this database</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">result_attached</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Full-Text Search</span>
+
+	<a name="f_fts5"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_fts5">fts5</a><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_fts5_short.html">SIMPLE_SQL_FTS5</a>
+			<span class="ecomment">--</span><span class="ecomment"> Create FTS5 full-text search manager for this database</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">result_attached</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> JSON Support</span>
+
+	<a name="f_json"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_json">json</a><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_json_short.html">SIMPLE_SQL_JSON</a>
+			<span class="ecomment">--</span><span class="ecomment"> Create JSON helper for advanced JSON operations (JSON1 extension)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">result_attached</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Audit/Change Tracking</span>
+
+	<a name="f_audit"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_audit">audit</a><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_audit_short.html">SIMPLE_SQL_AUDIT</a>
+			<span class="ecomment">--</span><span class="ecomment"> Create audit manager for automatic change tracking</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">result_attached</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> BLOB Utilities</span>
+
+	<a name="f_read_blob_from_file"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_read_blob_from_file">read_blob_from_file</a> <span class="esymbol">(</span><span class="elocal">a_file_path</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../base/managed_pointer_short.html">MANAGED_POINTER</a>
+			<span class="ecomment">--</span><span class="ecomment"> Read binary file into MANAGED_POINTER for use with BLOB columns</span>
+			<span class="ecomment">--</span><span class="ecomment"> Returns Void if file cannot be read</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">file_path_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_file_path</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_write_blob_to_file"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_write_blob_to_file">write_blob_to_file</a> <span class="esymbol">(</span><span class="elocal">a_blob</span><span class="esymbol">:</span> <a class="eclass" href="../base/managed_pointer_short.html">MANAGED_POINTER</a><span class="esymbol">;</span> <span class="elocal">a_file_path</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Write BLOB data (MANAGED_POINTER) to file</span>
+			<span class="ecomment">--</span><span class="ecomment"> Creates or overwrites the file at a_file_path</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">blob_not_void</span><span class="esymbol">:</span> <span class="elocal">a_blob</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">file_path_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_file_path</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Additional Accessors</span>
+
+	<a name="f_last_insert_rowid"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_last_insert_rowid">last_insert_rowid</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_64_short.html">INTEGER_64</a>
+			<span class="ecomment">--</span><span class="ecomment"> Row ID of last inserted row</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+
+	<a name="f_commit_transaction"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_commit_transaction">commit_transaction</a>
+			<span class="ecomment">--</span><span class="ecomment"> Commit current transaction (alias for commit)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+			<span class="etag">in_transaction</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_in_transaction">is_in_transaction</a>
+
+	<a name="f_rollback_transaction"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_rollback_transaction">rollback_transaction</a>
+			<span class="ecomment">--</span><span class="ecomment"> Rollback current transaction (alias for rollback)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+			<span class="etag">in_transaction</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_in_transaction">is_in_transaction</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Atomic Operations (Phase 6)</span>
+
+	<a name="f_atomic"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_atomic">atomic</a> <span class="esymbol">(</span><span class="elocal">a_operation</span><span class="esymbol">:</span> <a class="eclass" href="../base/procedure_short.html">PROCEDURE</a><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Execute operation inside a transaction with automatic commit/rollback.</span>
+			<span class="ecomment">--</span><span class="ecomment"> If operation raises exception, transaction is rolled back.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Example: db.atomic (agent my_multi_table_operation)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+			<span class="etag">not_in_transaction</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_in_transaction">is_in_transaction</a>
+			<span class="etag">operation_attached</span><span class="esymbol">:</span> <span class="elocal">a_operation</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+
+	<a name="f_update_versioned"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_update_versioned">update_versioned</a> <span class="esymbol">(</span><span class="elocal">a_table</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_id</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_64_short.html">INTEGER_64</a><span class="esymbol">;</span> <span class="elocal">a_current_version</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_64_short.html">INTEGER_64</a><span class="esymbol">;</span> <span class="elocal">a_set_clause</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_args</span><span class="esymbol">:</span> <a class="eclass" href="../base/array_short.html">ARRAY</a> <span class="esymbol">[</span><span class="ekeyword">detachable</span> <a class="eclass" href="../base/any_short.html">ANY</a><span class="esymbol">]</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/tuple_short.html">TUPLE</a> <span class="esymbol">[</span><span class="elocal">success</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a><span class="esymbol">;</span> <span class="elocal">new_version</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_64_short.html">INTEGER_64</a><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> Update row with optimistic locking using version column.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Returns [True, new_version] on success, [False, 0] if version mismatch (concurrent modification).</span>
+			<span class="ecomment">--</span><span class="ecomment"> The version column is automatically incremented.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Example: result := db.update_versioned (&quot;stock&quot;, 42, 5, &quot;quantity = quantity + ?&quot;, &lt;&lt;10&gt;&gt;)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+			<span class="etag">table_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_table</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+			<span class="etag">set_clause_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_set_clause</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">success_means_changed</span><span class="esymbol">:</span> <span class="ekeyword">Result</span><span class="edot">.</span><span class="elocal">success</span> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <a class="efeature" href="../src/simple_sql_database_short.html#f_changes_count">changes_count</a> <a class="esymbol" href="../base/comparable_short.html#f_is_greater">&gt;</a> <span class="enumber">0</span>
+			<span class="etag">failure_means_unchanged</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="ekeyword">Result</span><span class="edot">.</span><span class="elocal">success</span> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <a class="efeature" href="../src/simple_sql_database_short.html#f_changes_count">changes_count</a> <span class="esymbol">=</span> <span class="enumber">0</span>
+
+	<a name="f_upsert"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_upsert">upsert</a> <span class="esymbol">(</span><span class="elocal">a_table</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_columns</span><span class="esymbol">:</span> <a class="eclass" href="../base/array_short.html">ARRAY</a> <span class="esymbol">[</span><a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">]</span><span class="esymbol">;</span> <span class="elocal">a_values</span><span class="esymbol">:</span> <a class="eclass" href="../base/array_short.html">ARRAY</a> <span class="esymbol">[</span><span class="ekeyword">detachable</span> <a class="eclass" href="../base/any_short.html">ANY</a><span class="esymbol">]</span><span class="esymbol">;</span> <span class="elocal">a_conflict_columns</span><span class="esymbol">:</span> <a class="eclass" href="../base/array_short.html">ARRAY</a> <span class="esymbol">[</span><a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">]</span><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Insert row or update if conflict on specified columns.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Uses SQLite's INSERT ... ON CONFLICT DO UPDATE syntax.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Example: db.upsert (&quot;stock&quot;, &lt;&lt;&quot;product_id&quot;, &quot;location_id&quot;, &quot;quantity&quot;&gt;&gt;, &lt;&lt;1, 2, 100&gt;&gt;, &lt;&lt;&quot;product_id&quot;, &quot;location_id&quot;&gt;&gt;)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+			<span class="etag">table_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_table</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+			<span class="etag">columns_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_columns</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+			<span class="etag">values_match_columns</span><span class="esymbol">:</span> <span class="elocal">a_values</span><span class="edot">.</span><a class="efeature" href="../base/array_short.html#f_count">count</a> <span class="esymbol">=</span> <span class="elocal">a_columns</span><span class="edot">.</span><a class="efeature" href="../base/array_short.html#f_count">count</a>
+			<span class="etag">conflict_columns_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_conflict_columns</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_decrement_if"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_decrement_if">decrement_if</a> <span class="esymbol">(</span><span class="elocal">a_table</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_column</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_amount</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">;</span> <span class="elocal">a_where</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_args</span><span class="esymbol">:</span> <a class="eclass" href="../base/array_short.html">ARRAY</a> <span class="esymbol">[</span><span class="ekeyword">detachable</span> <a class="eclass" href="../base/any_short.html">ANY</a><span class="esymbol">]</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Atomically decrement column if condition is met (including sufficient value).</span>
+			<span class="ecomment">--</span><span class="ecomment"> Returns True if decrement succeeded, False if condition not met.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Prevents race condition of SELECT-then-UPDATE pattern.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Example: success := db.decrement_if (&quot;stock&quot;, &quot;quantity&quot;, 10, &quot;id = ? AND quantity &gt;= ?&quot;, &lt;&lt;stock_id, 10&gt;&gt;)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+			<span class="etag">table_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_table</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+			<span class="etag">column_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_column</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+			<span class="etag">amount_positive</span><span class="esymbol">:</span> <span class="elocal">a_amount</span> <a class="esymbol" href="../base/comparable_short.html#f_is_greater">&gt;</a> <span class="enumber">0</span>
+			<span class="etag">where_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_where</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_increment_if"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_increment_if">increment_if</a> <span class="esymbol">(</span><span class="elocal">a_table</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_column</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_amount</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">;</span> <span class="elocal">a_where</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_args</span><span class="esymbol">:</span> <a class="eclass" href="../base/array_short.html">ARRAY</a> <span class="esymbol">[</span><span class="ekeyword">detachable</span> <a class="eclass" href="../base/any_short.html">ANY</a><span class="esymbol">]</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Atomically increment column if condition is met.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Returns True if increment succeeded, False if condition not met.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Example: success := db.increment_if (&quot;stock&quot;, &quot;quantity&quot;, 5, &quot;id = ?&quot;, &lt;&lt;stock_id&gt;&gt;)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+			<span class="etag">table_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_table</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+			<span class="etag">column_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_column</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+			<span class="etag">amount_positive</span><span class="esymbol">:</span> <span class="elocal">a_amount</span> <a class="esymbol" href="../base/comparable_short.html#f_is_greater">&gt;</a> <span class="enumber">0</span>
+			<span class="etag">where_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_where</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Query Monitoring (N+1 Detection)</span>
+
+	<a name="f_query_monitor"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_query_monitor">query_monitor</a><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../src/simple_sql_query_monitor_short.html">SIMPLE_SQL_QUERY_MONITOR</a>
+			<span class="ecomment">--</span><span class="ecomment"> Query monitor for N+1 detection (Void when disabled).</span>
+
+	<a name="f_enable_query_monitor"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_enable_query_monitor">enable_query_monitor</a>
+			<span class="ecomment">--</span><span class="ecomment"> Enable N+1 query detection.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">enabled</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_query_monitor">query_monitor</a> <span class="ekeyword">as</span> m <a class="ekeyword" href="../base/boolean_short.html#f_conjuncted_semistrict">and then</a> <span class="elocal">m</span><span class="edot">.</span><a class="efeature" href="../src/simple_sql_query_monitor_short.html#f_is_enabled">is_enabled</a>
+
+	<a name="f_disable_query_monitor"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_disable_query_monitor">disable_query_monitor</a>
+			<span class="ecomment">--</span><span class="ecomment"> Disable N+1 query detection.</span>
+
+	<a name="f_reset_query_monitor"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_reset_query_monitor">reset_query_monitor</a>
+			<span class="ecomment">--</span><span class="ecomment"> Reset all monitoring data.</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Implementation</span>
+
+	<a name="f_dispose"></a><a class="efeature" href="../src/simple_sql_database_short.html#f_dispose">dispose</a>
+			<span class="ecomment">--</span><span class="ecomment"> Action to be executed just before garbage collection</span>
+			<span class="ecomment">--</span><span class="ecomment"> reclaims an object.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Effect it in descendants to perform specific dispose</span>
+			<span class="ecomment">--</span><span class="ecomment"> actions. Those actions should only take care of freeing</span>
+			<span class="ecomment">--</span><span class="ecomment"> external resources; they should not perform remote calls</span>
+			<span class="ecomment">--</span><span class="ecomment"> on other objects since these may also be dead and reclaimed.</span>
+	
+<span class="ekeyword">invariant</span>
+	<span class="etag">internal_db_attached</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_internal_db">internal_db</a> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	<span class="etag">file_name_attached</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_file_name">file_name</a> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	<span class="etag">error_consistency</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_database_short.html#f_has_error">has_error</a> <span class="esymbol">=</span> <span class="esymbol">(</span><a class="efeature" href="../src/simple_sql_database_short.html#f_last_structured_error">last_structured_error</a> <span class="esymbol">/=</span> <span class="ekeyword">Void</span><span class="esymbol">)</span>
+
+<span class="ekeyword">note</span>
+	<span class="eitag">copyright</span><span class="esymbol">:</span> <span class="estring">&quot;Copyright (c) 2025, Larry Rix&quot;</span>
+	<span class="eitag">license</span><span class="esymbol">:</span> <span class="estring">&quot;MIT License&quot;</span>
+	<span class="eitag">source</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">SIMPLE_SQL - High-level SQLite API for Eiffel</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../src/simple_sql_database_short.html">SIMPLE_SQL_DATABASE</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_sql_database_chart.html">Chart</a>
+<a class="nav class" href="simple_sql_database_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_database"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

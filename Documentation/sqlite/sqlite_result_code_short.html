@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="SQLite C macros used to determine the success/failure of an SQLite API operation.  These codes are used by the internals of the SQLite library, but are also used in the SQLite exceptions {e_EXCEPTION}."/>
+<meta name="legal" content="See notice at end of class."/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="Copyright (c) 1984-2013, Eiffel Software"/>
+<meta name="license" content="GPL version 2 (see http://www.eiffel.com/licensing/gpl.txt)"/>
+<meta name="licensing_options" content="http://www.eiffel.com/licensing"/>
+<meta name="copying" content="This file is part of Eiffel Software's Eiffel Development Environment.  Eiffel Software's Eiffel Development Environment is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2 of the License (available at the URL listed under license above).  Eiffel Software's Eiffel Development Environment is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.  You should have received a copy of the GNU General Public License along with Eiffel Software's Eiffel Development Environment; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA"/>
+<meta name="source" content="Eiffel Software 5949 Hollister Ave., Goleta, CA 93117 USA Telephone 805-685-1006, Fax 805-685-6869 Website http://www.eiffel.com Customer support http://support.eiffel.com"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>sqlite_result_code Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="sqlite_result_code_chart.html">Chart</a>
+<a class="nav class" href="sqlite_result_code_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="sqlite_result_code"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">SQLite C macros used to determine the success/failure of an SQLite API operation.</span>
+		
+		<span class="estring">These codes are used by the internals of the SQLite library, but are also used in the</span>
+		<span class="estring">SQLite exceptions </span><span class="estring">{</span><span class="estring">E_EXCEPTION</span><span class="estring">}</span><span class="estring">.</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+	<span class="eitag">legal</span><span class="esymbol">:</span> <span class="estring">&quot;See notice at end of class.&quot;</span>
+	<span class="eitag">status</span><span class="esymbol">:</span> <span class="estring">&quot;See notice at end of class.&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+
+<span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../sqlite/sqlite_result_code_short.html">SQLITE_RESULT_CODE</a>
+
+<span class="ekeyword">create</span> 
+	<a class="efeature" href="../base/any_short.html#f_default_create">default_create</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Access</span>
+
+	<a name="f_mask"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_mask">Mask</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">255</span>
+			<span class="ecomment">--</span><span class="ecomment"> Mask for extracting the result code.</span>
+
+	<a name="f_failure_mask"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_failure_mask">Failure_mask</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">31</span>
+			<span class="ecomment">--</span><span class="ecomment"> Mask for extracting the failure result code.</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Constants: Success</span>
+
+	<a name="f_ok"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_ok">ok</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Successful result.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Constants: Failure</span>
+
+	<a name="f_e_error"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_error">e_error</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> SQL error or missing database.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_e_internal"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_internal">e_internal</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Internal logic error in SQLite.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_e_perm"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_perm">e_perm</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Access permission denied.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_e_abort"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_abort">e_abort</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Callback routine requested an abort.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_e_busy"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_busy">e_busy</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> The database file is locked.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_e_locked"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_locked">e_locked</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> A table in the database is locked.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_e_no_mem"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_no_mem">e_no_mem</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> A malloc() failed.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_e_read_only"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_read_only">e_read_only</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Attempt to write a readonly database.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_e_interrupt"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_interrupt">e_interrupt</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Operation terminated by sqlite3_interrupt().</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_e_io_err"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_io_err">e_io_err</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Some kind of disk I/O error occurred.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_e_corrupt"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_corrupt">e_corrupt</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> The database disk image is malformed.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_e_not_found"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_not_found">e_not_found</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> NOT USED. Table or record not found.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_e_full"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_full">e_full</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Insertion failed because database is full.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_e_cant_open"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_cant_open">e_cant_open</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Unable to open the database file.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_e_protocol"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_protocol">e_protocol</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> NOT USED. Database lock protocol error.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_e_empty"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_empty">e_empty</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Database is empty.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_e_schema"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_schema">e_schema</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> The database schema changed.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_e_too_big"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_too_big">e_too_big</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> String or BLOB exceeds size limit.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_e_constraint"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_constraint">e_constraint</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Abort due to constraint violation.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_e_mismatch"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_mismatch">e_mismatch</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Data type mismatch.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_e_misuse"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_misuse">e_misuse</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Library used incorrectly.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_e_nolfs"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_nolfs">e_nolfs</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Uses OS features not supported on host.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_e_auth"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_auth">e_auth</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Authorization denied.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_e_format"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_format">e_format</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Auxiliary database format error.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_e_range"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_range">e_range</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> 2nd parameter to sqlite3_bind out of range.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_e_not_a_db"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_e_not_a_db">e_not_a_db</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> File opened that is not a database file.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Constants: Success</span>
+
+	<a name="f_row"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_row">row</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> sqlite3_step() has another row ready.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+
+	<a name="f_done"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_done">done</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> sqlite3_step() has finished executing.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Status</span>
+
+	<a name="f_is_valid_result_code"></a><a class="efeature" href="../sqlite/sqlite_result_code_short.html#f_is_valid_result_code">is_valid_result_code</a> <span class="esymbol">(</span><span class="elocal">a_code</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is </span><span class="equoted">a_code</span><span class="ecomment"> a valid result code?</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_class</span><span class="esymbol">:</span> <span class="ekeyword">class</span>
+	
+<span class="ekeyword">note</span>
+	<span class="eitag">copyright</span><span class="esymbol">:</span> <span class="estring">&quot;Copyright (c) 1984-2013, Eiffel Software&quot;</span>
+	<span class="eitag">license</span><span class="esymbol">:</span> <span class="estring">&quot;GPL version 2 (see </span><a class="estring" href="http://www.eiffel.com/licensing/gpl.txt">http://www.eiffel.com/licensing/gpl.txt</a><span class="estring">)&quot;</span>
+	<span class="eitag">licensing_options</span><span class="esymbol">:</span> <span class="estring">&quot;</span><a class="estring" href="http://www.eiffel.com/licensing">http://www.eiffel.com/licensing</a><span class="estring">&quot;</span>
+	<span class="eitag">copying</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">This file is part of Eiffel Software's Eiffel Development Environment.</span>
+		
+		<span class="estring">Eiffel Software's Eiffel Development Environment is free</span>
+		<span class="estring">software; you can redistribute it and/or modify it under</span>
+		<span class="estring">the terms of the GNU General Public License as published</span>
+		<span class="estring">by the Free Software Foundation, version 2 of the License</span>
+		<span class="estring">(available at the URL listed under &quot;license&quot; above).</span>
+		
+		<span class="estring">Eiffel Software's Eiffel Development Environment is</span>
+		<span class="estring">distributed in the hope that it will be useful, but</span>
+		<span class="estring">WITHOUT ANY WARRANTY; without even the implied warranty</span>
+		<span class="estring">of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</span>
+		<span class="estring">See the GNU General Public License for more details.</span>
+		
+		<span class="estring">You should have received a copy of the GNU General Public</span>
+		<span class="estring">License along with Eiffel Software's Eiffel Development</span>
+		<span class="estring">Environment; if not, write to the Free Software Foundation,</span>
+		<span class="estring">Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+	<span class="eitag">source</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">Eiffel Software</span>
+		<span class="estring">5949 Hollister Ave., Goleta, CA 93117 USA</span>
+		<span class="estring">Telephone 805-685-1006, Fax 805-685-6869</span>
+		<span class="estring">Website </span><a class="estring" href="http://www.eiffel.com">http://www.eiffel.com</a>
+		<span class="estring">Customer support </span><a class="estring" href="http://support.eiffel.com">http://support.eiffel.com</a>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../sqlite/sqlite_result_code_short.html">SQLITE_RESULT_CODE</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="sqlite_result_code_chart.html">Chart</a>
+<a class="nav class" href="sqlite_result_code_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="sqlite_result_code"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="Information about a foreign key constraint from schema introspection"/>
+<meta name="author" content="Jimmy J. Johnson"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_sql_foreign_key_info Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_sql_foreign_key_info_chart.html">Chart</a>
+<a class="nav class" href="simple_sql_foreign_key_info_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_foreign_key_info"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;Information about a foreign key constraint from schema introspection&quot;</span>
+	<span class="eitag">author</span><span class="esymbol">:</span> <span class="estring">&quot;Jimmy J. Johnson&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+
+<span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../src/simple_sql_foreign_key_info_short.html">SIMPLE_SQL_FOREIGN_KEY_INFO</a>
+
+<span class="ekeyword">create</span> 
+	<a class="efeature" href="../src/simple_sql_foreign_key_info_short.html#f_make">make</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Access</span>
+
+	<a name="f_id"></a><a class="efeature" href="../src/simple_sql_foreign_key_info_short.html#f_id">id</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Foreign key ID (for composite keys, multiple rows share same ID)</span>
+
+	<a name="f_from_table"></a><a class="efeature" href="../src/simple_sql_foreign_key_info_short.html#f_from_table">from_table</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a>
+			<span class="ecomment">--</span><span class="ecomment"> Source table containing the foreign key</span>
+
+	<a name="f_to_table"></a><a class="efeature" href="../src/simple_sql_foreign_key_info_short.html#f_to_table">to_table</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a>
+			<span class="ecomment">--</span><span class="ecomment"> Referenced table</span>
+
+	<a name="f_column_mappings"></a><a class="efeature" href="../src/simple_sql_foreign_key_info_short.html#f_column_mappings">column_mappings</a><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_short.html">ARRAYED_LIST</a> <span class="esymbol">[</span><a class="eclass" href="../base/tuple_short.html">TUPLE</a> <span class="esymbol">[</span><span class="elocal">from_column</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a><span class="esymbol">;</span> <span class="elocal">to_column</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a><span class="esymbol">]</span><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> Column mappings (from -&gt; to)</span>
+
+	<a name="f_on_update"></a><a class="efeature" href="../src/simple_sql_foreign_key_info_short.html#f_on_update">on_update</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a>
+			<span class="ecomment">--</span><span class="ecomment"> ON UPDATE action (NO ACTION, RESTRICT, SET NULL, SET DEFAULT, CASCADE)</span>
+
+	<a name="f_on_delete"></a><a class="efeature" href="../src/simple_sql_foreign_key_info_short.html#f_on_delete">on_delete</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a>
+			<span class="ecomment">--</span><span class="ecomment"> ON DELETE action (NO ACTION, RESTRICT, SET NULL, SET DEFAULT, CASCADE)</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Status</span>
+
+	<a name="f_is_composite"></a><a class="efeature" href="../src/simple_sql_foreign_key_info_short.html#f_is_composite">is_composite</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Does this foreign key involve multiple columns?</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Element Change</span>
+
+	<a name="f_add_column_mapping"></a><a class="efeature" href="../src/simple_sql_foreign_key_info_short.html#f_add_column_mapping">add_column_mapping</a> <span class="esymbol">(</span><span class="elocal">a_from</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_to</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Add a column mapping</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">from_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_from</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+			<span class="etag">to_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_to</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_set_on_update"></a><a class="efeature" href="../src/simple_sql_foreign_key_info_short.html#f_set_on_update">set_on_update</a> <span class="esymbol">(</span><span class="elocal">a_action</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Set ON UPDATE action</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">action_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_action</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">on_update_set</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_foreign_key_info_short.html#f_on_update">on_update</a><span class="edot">.</span><a class="efeature" href="../base/readable_string_8_short.html#f_same_string">same_string</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_action</span><span class="esymbol">)</span>
+
+	<a name="f_set_on_delete"></a><a class="efeature" href="../src/simple_sql_foreign_key_info_short.html#f_set_on_delete">set_on_delete</a> <span class="esymbol">(</span><span class="elocal">a_action</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Set ON DELETE action</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">action_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_action</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">on_delete_set</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_foreign_key_info_short.html#f_on_delete">on_delete</a><span class="edot">.</span><a class="efeature" href="../base/readable_string_8_short.html#f_same_string">same_string</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_action</span><span class="esymbol">)</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Output</span>
+
+	<a name="f_description"></a><a class="efeature" href="../src/simple_sql_foreign_key_info_short.html#f_description">description</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a>
+			<span class="ecomment">--</span><span class="ecomment"> Human-readable description</span>
+	
+<span class="ekeyword">invariant</span>
+	<span class="etag">from_table_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../src/simple_sql_foreign_key_info_short.html#f_from_table">from_table</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+	<span class="etag">to_table_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../src/simple_sql_foreign_key_info_short.html#f_to_table">to_table</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+	<span class="etag">column_mappings_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <a class="efeature" href="../src/simple_sql_foreign_key_info_short.html#f_column_mappings">column_mappings</a>
+	<span class="etag">on_update_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <a class="efeature" href="../src/simple_sql_foreign_key_info_short.html#f_on_update">on_update</a>
+	<span class="etag">on_delete_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <a class="efeature" href="../src/simple_sql_foreign_key_info_short.html#f_on_delete">on_delete</a>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../src/simple_sql_foreign_key_info_short.html">SIMPLE_SQL_FOREIGN_KEY_INFO</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_sql_foreign_key_info_chart.html">Chart</a>
+<a class="nav class" href="simple_sql_foreign_key_info_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_foreign_key_info"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

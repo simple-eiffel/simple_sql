@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="Schema introspection for SQLite databases"/>
+<meta name="author" content="Jimmy J. Johnson"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_sql_schema Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_sql_schema_chart.html">Chart</a>
+<a class="nav class" href="simple_sql_schema_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_schema"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;Schema introspection for SQLite databases&quot;</span>
+	<span class="eitag">author</span><span class="esymbol">:</span> <span class="estring">&quot;Jimmy J. Johnson&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+
+<span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../src/simple_sql_schema_short.html">SIMPLE_SQL_SCHEMA</a>
+
+<span class="ekeyword">create</span> 
+	<a class="efeature" href="../src/simple_sql_schema_short.html#f_make">make</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Access</span>
+
+	<a name="f_database"></a><a class="efeature" href="../src/simple_sql_schema_short.html#f_database">database</a><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_database_short.html">SIMPLE_SQL_DATABASE</a>
+			<span class="ecomment">--</span><span class="ecomment"> Database to inspect</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Table Queries</span>
+
+	<a name="f_tables"></a><a class="efeature" href="../src/simple_sql_schema_short.html#f_tables">tables</a><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_short.html">ARRAYED_LIST</a> <span class="esymbol">[</span><a class="eclass" href="../base/string_8_short.html">STRING_8</a><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> List of all table names (excluding sqlite_ internal tables)</span>
+
+	<a name="f_views"></a><a class="efeature" href="../src/simple_sql_schema_short.html#f_views">views</a><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_short.html">ARRAYED_LIST</a> <span class="esymbol">[</span><a class="eclass" href="../base/string_8_short.html">STRING_8</a><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> List of all view names</span>
+
+	<a name="f_table_exists"></a><a class="efeature" href="../src/simple_sql_schema_short.html#f_table_exists">table_exists</a> <span class="esymbol">(</span><span class="elocal">a_name</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Does table exist?</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">name_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_name</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_view_exists"></a><a class="efeature" href="../src/simple_sql_schema_short.html#f_view_exists">view_exists</a> <span class="esymbol">(</span><span class="elocal">a_name</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Does view exist?</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">name_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_name</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Table Info</span>
+
+	<a name="f_table_info"></a><a class="efeature" href="../src/simple_sql_schema_short.html#f_table_info">table_info</a> <span class="esymbol">(</span><span class="elocal">a_table</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../src/simple_sql_table_info_short.html">SIMPLE_SQL_TABLE_INFO</a>
+			<span class="ecomment">--</span><span class="ecomment"> Get detailed info about a table</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">table_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_table</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Column Queries</span>
+
+	<a name="f_columns"></a><a class="efeature" href="../src/simple_sql_schema_short.html#f_columns">columns</a> <span class="esymbol">(</span><span class="elocal">a_table</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_short.html">ARRAYED_LIST</a> <span class="esymbol">[</span><a class="eclass" href="../src/simple_sql_column_info_short.html">SIMPLE_SQL_COLUMN_INFO</a><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> Get columns for a table</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">table_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_table</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_column_names"></a><a class="efeature" href="../src/simple_sql_schema_short.html#f_column_names">column_names</a> <span class="esymbol">(</span><span class="elocal">a_table</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_short.html">ARRAYED_LIST</a> <span class="esymbol">[</span><a class="eclass" href="../base/string_8_short.html">STRING_8</a><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> Get column names for a table</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">table_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_table</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Index Queries</span>
+
+	<a name="f_indexes"></a><a class="efeature" href="../src/simple_sql_schema_short.html#f_indexes">indexes</a> <span class="esymbol">(</span><span class="elocal">a_table</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_short.html">ARRAYED_LIST</a> <span class="esymbol">[</span><a class="eclass" href="../src/simple_sql_index_info_short.html">SIMPLE_SQL_INDEX_INFO</a><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> Get indexes for a table</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">table_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_table</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Foreign Key Queries</span>
+
+	<a name="f_foreign_keys"></a><a class="efeature" href="../src/simple_sql_schema_short.html#f_foreign_keys">foreign_keys</a> <span class="esymbol">(</span><span class="elocal">a_table</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_short.html">ARRAYED_LIST</a> <span class="esymbol">[</span><a class="eclass" href="../src/simple_sql_foreign_key_info_short.html">SIMPLE_SQL_FOREIGN_KEY_INFO</a><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> Get foreign keys for a table</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">table_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_table</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Schema Version</span>
+
+	<a name="f_user_version"></a><a class="efeature" href="../src/simple_sql_schema_short.html#f_user_version">user_version</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Get PRAGMA user_version (useful for migrations)</span>
+
+	<a name="f_set_user_version"></a><a class="efeature" href="../src/simple_sql_schema_short.html#f_set_user_version">set_user_version</a> <span class="esymbol">(</span><span class="elocal">a_version</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Set PRAGMA user_version</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">version_non_negative</span><span class="esymbol">:</span> <span class="elocal">a_version</span> <a class="esymbol" href="../base/comparable_short.html#f_is_greater_equal">&gt;=</a> <span class="enumber">0</span>
+
+	<a name="f_schema_version"></a><a class="efeature" href="../src/simple_sql_schema_short.html#f_schema_version">schema_version</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Get PRAGMA schema_version (internal SQLite version, changes on schema modification)</span>
+	
+<span class="ekeyword">invariant</span>
+	<span class="etag">database_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <a class="efeature" href="../src/simple_sql_schema_short.html#f_database">database</a>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../src/simple_sql_schema_short.html">SIMPLE_SQL_SCHEMA</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_sql_schema_chart.html">Chart</a>
+<a class="nav class" href="simple_sql_schema_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_schema"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

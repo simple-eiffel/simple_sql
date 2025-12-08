@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="Indexable data structure sorters"/>
+<meta name="legal" content="See notice at end of class."/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="Copyright (c) 1984-2018, Eiffel Software and others"/>
+<meta name="license" content="Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"/>
+<meta name="source" content="Eiffel Software 5949 Hollister Ave., Goleta, CA 93117 USA Telephone 805-685-1006, Fax 805-685-6869 Website http://www.eiffel.com Customer support http://support.eiffel.com"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>sorter Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="sorter_chart.html">Chart</a>
+<a class="nav class" href="sorter_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="sorter"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;Indexable data structure sorters&quot;</span>
+	<span class="eitag">legal</span><span class="esymbol">:</span> <span class="estring">&quot;See notice at end of class.&quot;</span>
+	<span class="eitag">status</span><span class="esymbol">:</span> <span class="estring">&quot;See notice at end of class.&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+
+<span class="ekeyword">deferred</span> <span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../base_extension/sorter_short.html">SORTER</a> <span class="esymbol">[</span><span class="egeneric">G</span> <span class="esymbol">-&gt;</span> <span class="esymbol">]</span>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Access</span>
+
+	<a name="f_comparator"></a><a class="efeature" href="../base_extension/sorter_short.html#f_comparator">comparator</a><span class="esymbol">:</span> <a class="eclass" href="../base_extension/part_comparator_short.html">PART_COMPARATOR</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> Comparison criterion</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Status report</span>
+
+	<a name="f_is_sortable_container"></a><a class="efeature" href="../base_extension/sorter_short.html#f_is_sortable_container">is_sortable_container</a> <span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">:</span> <a class="eclass" href="../base/indexable_short.html">INDEXABLE</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">,</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">]</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is </span><span class="equoted">a_container</span><span class="ecomment"> useable for sorting?</span>
+
+	<a name="f_sorted"></a><a class="efeature" href="../base_extension/sorter_short.html#f_sorted">sorted</a> <span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">:</span> <a class="eclass" href="../base/indexable_short.html">INDEXABLE</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">,</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">]</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is </span><span class="equoted">a_container</span><span class="ecomment"> sorted in increasing order?</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">valid_container</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/sorter_short.html#f_is_sortable_container">is_sortable_container</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">)</span>
+
+	<a name="f_reverse_sorted"></a><a class="efeature" href="../base_extension/sorter_short.html#f_reverse_sorted">reverse_sorted</a> <span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">:</span> <a class="eclass" href="../base/indexable_short.html">INDEXABLE</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">,</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">]</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is </span><span class="equoted">a_container</span><span class="ecomment"> sorted in decreasing order?</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">valid_container</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/sorter_short.html#f_is_sortable_container">is_sortable_container</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">)</span>
+
+	<a name="f_sorted_with_comparator"></a><a class="efeature" href="../base_extension/sorter_short.html#f_sorted_with_comparator">sorted_with_comparator</a> <span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">:</span> <a class="eclass" href="../base/indexable_short.html">INDEXABLE</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">,</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">]</span><span class="esymbol">;</span> <span class="elocal">a_comparator</span><span class="esymbol">:</span> <a class="eclass" href="../base_extension/part_comparator_short.html">PART_COMPARATOR</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is </span><span class="equoted">a_container</span><span class="ecomment"> sorted according to</span>
+			<span class="ecomment">--</span><span class="ecomment"> </span><span class="equoted">a_comparator</span><span class="ecomment">'s comparison criterion?</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">valid_container</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/sorter_short.html#f_is_sortable_container">is_sortable_container</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">)</span>
+			<span class="etag">a_comparator_not_void</span><span class="esymbol">:</span> <span class="elocal">a_comparator</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+
+	<a name="f_subsorted"></a><a class="efeature" href="../base_extension/sorter_short.html#f_subsorted">subsorted</a> <span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">:</span> <a class="eclass" href="../base/indexable_short.html">INDEXABLE</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">,</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">]</span><span class="esymbol">;</span> <span class="elocal">lower</span><span class="esymbol">,</span> <span class="elocal">upper</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is </span><span class="equoted">a_container</span><span class="ecomment"> sorted in increasing order</span>
+			<span class="ecomment">--</span><span class="ecomment"> within bounds </span><span class="equoted">lower</span><span class="ecomment">..</span><span class="equoted">upper</span><span class="ecomment">?</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">valid_container</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/sorter_short.html#f_is_sortable_container">is_sortable_container</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">)</span>
+			<span class="etag">valid_lower</span><span class="esymbol">:</span> <span class="elocal">a_container</span><span class="edot">.</span><a class="efeature" href="../base/readable_indexable_short.html#f_valid_index">valid_index</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">lower</span><span class="esymbol">)</span>
+			<span class="etag">valid_upper</span><span class="esymbol">:</span> <span class="elocal">a_container</span><span class="edot">.</span><a class="efeature" href="../base/readable_indexable_short.html#f_valid_index">valid_index</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">upper</span><span class="esymbol">)</span>
+			<span class="etag">valid_bounds</span><span class="esymbol">:</span> <span class="elocal">lower</span> <a class="esymbol" href="../base/comparable_short.html#f_is_less_equal">&lt;=</a> <span class="elocal">upper</span>
+
+	<a name="f_reverse_subsorted"></a><a class="efeature" href="../base_extension/sorter_short.html#f_reverse_subsorted">reverse_subsorted</a> <span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">:</span> <a class="eclass" href="../base/indexable_short.html">INDEXABLE</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">,</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">]</span><span class="esymbol">;</span> <span class="elocal">lower</span><span class="esymbol">,</span> <span class="elocal">upper</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is </span><span class="equoted">a_container</span><span class="ecomment"> sorted in decreasing order</span>
+			<span class="ecomment">--</span><span class="ecomment"> within bounds </span><span class="equoted">lower</span><span class="ecomment">..</span><span class="equoted">upper</span><span class="ecomment">?</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">valid_container</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/sorter_short.html#f_is_sortable_container">is_sortable_container</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">)</span>
+			<span class="etag">valid_lower</span><span class="esymbol">:</span> <span class="elocal">a_container</span><span class="edot">.</span><a class="efeature" href="../base/readable_indexable_short.html#f_valid_index">valid_index</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">lower</span><span class="esymbol">)</span>
+			<span class="etag">valid_upper</span><span class="esymbol">:</span> <span class="elocal">a_container</span><span class="edot">.</span><a class="efeature" href="../base/readable_indexable_short.html#f_valid_index">valid_index</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">upper</span><span class="esymbol">)</span>
+			<span class="etag">valid_bounds</span><span class="esymbol">:</span> <span class="elocal">lower</span> <a class="esymbol" href="../base/comparable_short.html#f_is_less_equal">&lt;=</a> <span class="elocal">upper</span>
+
+	<a name="f_subsorted_with_comparator"></a><a class="efeature" href="../base_extension/sorter_short.html#f_subsorted_with_comparator">subsorted_with_comparator</a> <span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">:</span> <a class="eclass" href="../base/indexable_short.html">INDEXABLE</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">,</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">]</span><span class="esymbol">;</span> <span class="elocal">a_comparator</span><span class="esymbol">:</span> <a class="eclass" href="../base_extension/part_comparator_short.html">PART_COMPARATOR</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span><span class="esymbol">;</span> <span class="elocal">lower</span><span class="esymbol">,</span> <span class="elocal">upper</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is </span><span class="equoted">a_container</span><span class="ecomment"> sorted according to </span><span class="equoted">a_comparator</span><span class="ecomment">'s</span>
+			<span class="ecomment">--</span><span class="ecomment"> comparison criterion within bounds </span><span class="equoted">lower</span><span class="ecomment">..</span><span class="equoted">upper</span><span class="ecomment">?</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">valid_container</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/sorter_short.html#f_is_sortable_container">is_sortable_container</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">)</span>
+			<span class="etag">a_comparator_not_void</span><span class="esymbol">:</span> <span class="elocal">a_comparator</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">valid_lower</span><span class="esymbol">:</span> <span class="elocal">a_container</span><span class="edot">.</span><a class="efeature" href="../base/readable_indexable_short.html#f_valid_index">valid_index</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">lower</span><span class="esymbol">)</span>
+			<span class="etag">valid_upper</span><span class="esymbol">:</span> <span class="elocal">a_container</span><span class="edot">.</span><a class="efeature" href="../base/readable_indexable_short.html#f_valid_index">valid_index</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">upper</span><span class="esymbol">)</span>
+			<span class="etag">valid_bounds</span><span class="esymbol">:</span> <span class="elocal">lower</span> <a class="esymbol" href="../base/comparable_short.html#f_is_less_equal">&lt;=</a> <span class="elocal">upper</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Sort</span>
+
+	<a name="f_sort"></a><a class="efeature" href="../base_extension/sorter_short.html#f_sort">sort</a> <span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">:</span> <a class="eclass" href="../base/indexable_short.html">INDEXABLE</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">,</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">]</span><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Sort </span><span class="equoted">a_container</span><span class="ecomment"> in increasing order.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">valid_container</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/sorter_short.html#f_is_sortable_container">is_sortable_container</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">)</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">sorted</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/sorter_short.html#f_sorted">sorted</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">)</span>
+
+	<a name="f_reverse_sort"></a><a class="efeature" href="../base_extension/sorter_short.html#f_reverse_sort">reverse_sort</a> <span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">:</span> <a class="eclass" href="../base/indexable_short.html">INDEXABLE</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">,</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">]</span><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Sort </span><span class="equoted">a_container</span><span class="ecomment"> in decreasing order.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">valid_container</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/sorter_short.html#f_is_sortable_container">is_sortable_container</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">)</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">sorted</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/sorter_short.html#f_reverse_sorted">reverse_sorted</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">)</span>
+
+	<a name="f_sort_with_comparator"></a><a class="efeature" href="../base_extension/sorter_short.html#f_sort_with_comparator">sort_with_comparator</a> <span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">:</span> <a class="eclass" href="../base/indexable_short.html">INDEXABLE</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">,</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">]</span><span class="esymbol">;</span> <span class="elocal">a_comparator</span><span class="esymbol">:</span> <a class="eclass" href="../base_extension/part_comparator_short.html">PART_COMPARATOR</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Sort </span><span class="equoted">a_container</span><span class="ecomment"> according to</span>
+			<span class="ecomment">--</span><span class="ecomment"> </span><span class="equoted">a_comparator</span><span class="ecomment">'s comparison criterion?</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">valid_container</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/sorter_short.html#f_is_sortable_container">is_sortable_container</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">)</span>
+			<span class="etag">a_comparator_not_void</span><span class="esymbol">:</span> <span class="elocal">a_comparator</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">sorted</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/sorter_short.html#f_sorted_with_comparator">sorted_with_comparator</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">,</span> <span class="elocal">a_comparator</span><span class="esymbol">)</span>
+
+	<a name="f_subsort"></a><a class="efeature" href="../base_extension/sorter_short.html#f_subsort">subsort</a> <span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">:</span> <a class="eclass" href="../base/indexable_short.html">INDEXABLE</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">,</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">]</span><span class="esymbol">;</span> <span class="elocal">lower</span><span class="esymbol">,</span> <span class="elocal">upper</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Sort </span><span class="equoted">a_container</span><span class="ecomment"> in increasing order</span>
+			<span class="ecomment">--</span><span class="ecomment"> within bounds </span><span class="equoted">lower</span><span class="ecomment">..</span><span class="equoted">upper</span><span class="ecomment">.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">valid_container</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/sorter_short.html#f_is_sortable_container">is_sortable_container</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">)</span>
+			<span class="etag">valid_lower</span><span class="esymbol">:</span> <span class="elocal">a_container</span><span class="edot">.</span><a class="efeature" href="../base/readable_indexable_short.html#f_valid_index">valid_index</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">lower</span><span class="esymbol">)</span>
+			<span class="etag">valid_upper</span><span class="esymbol">:</span> <span class="elocal">a_container</span><span class="edot">.</span><a class="efeature" href="../base/readable_indexable_short.html#f_valid_index">valid_index</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">upper</span><span class="esymbol">)</span>
+			<span class="etag">valid_bounds</span><span class="esymbol">:</span> <span class="elocal">lower</span> <a class="esymbol" href="../base/comparable_short.html#f_is_less_equal">&lt;=</a> <span class="elocal">upper</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">subsorted</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/sorter_short.html#f_subsorted">subsorted</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">,</span> <span class="elocal">lower</span><span class="esymbol">,</span> <span class="elocal">upper</span><span class="esymbol">)</span>
+
+	<a name="f_reverse_subsort"></a><a class="efeature" href="../base_extension/sorter_short.html#f_reverse_subsort">reverse_subsort</a> <span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">:</span> <a class="eclass" href="../base/indexable_short.html">INDEXABLE</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">,</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">]</span><span class="esymbol">;</span> <span class="elocal">lower</span><span class="esymbol">,</span> <span class="elocal">upper</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Sort </span><span class="equoted">a_container</span><span class="ecomment"> in decreasing order</span>
+			<span class="ecomment">--</span><span class="ecomment"> within bounds </span><span class="equoted">lower</span><span class="ecomment">..</span><span class="equoted">upper</span><span class="ecomment">.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">valid_container</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/sorter_short.html#f_is_sortable_container">is_sortable_container</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">)</span>
+			<span class="etag">valid_lower</span><span class="esymbol">:</span> <span class="elocal">a_container</span><span class="edot">.</span><a class="efeature" href="../base/readable_indexable_short.html#f_valid_index">valid_index</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">lower</span><span class="esymbol">)</span>
+			<span class="etag">valid_upper</span><span class="esymbol">:</span> <span class="elocal">a_container</span><span class="edot">.</span><a class="efeature" href="../base/readable_indexable_short.html#f_valid_index">valid_index</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">upper</span><span class="esymbol">)</span>
+			<span class="etag">valid_bounds</span><span class="esymbol">:</span> <span class="elocal">lower</span> <a class="esymbol" href="../base/comparable_short.html#f_is_less_equal">&lt;=</a> <span class="elocal">upper</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">subsorted</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/sorter_short.html#f_reverse_subsorted">reverse_subsorted</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">,</span> <span class="elocal">lower</span><span class="esymbol">,</span> <span class="elocal">upper</span><span class="esymbol">)</span>
+
+	<a name="f_subsort_with_comparator"></a><a class="efeature" href="../base_extension/sorter_short.html#f_subsort_with_comparator">subsort_with_comparator</a> <span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">:</span> <a class="eclass" href="../base/indexable_short.html">INDEXABLE</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">,</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">]</span><span class="esymbol">;</span> <span class="elocal">a_comparator</span><span class="esymbol">:</span> <a class="eclass" href="../base_extension/part_comparator_short.html">PART_COMPARATOR</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span><span class="esymbol">;</span> <span class="elocal">lower</span><span class="esymbol">,</span> <span class="elocal">upper</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Sort </span><span class="equoted">a_container</span><span class="ecomment"> according to </span><span class="equoted">a_comparator</span><span class="ecomment">'s</span>
+			<span class="ecomment">--</span><span class="ecomment"> comparison criterion within bounds </span><span class="equoted">lower</span><span class="ecomment">..</span><span class="equoted">upper</span><span class="ecomment">?</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">valid_container</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/sorter_short.html#f_is_sortable_container">is_sortable_container</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">)</span>
+			<span class="etag">a_comparator_not_void</span><span class="esymbol">:</span> <span class="elocal">a_comparator</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">valid_lower</span><span class="esymbol">:</span> <span class="elocal">a_container</span><span class="edot">.</span><a class="efeature" href="../base/readable_indexable_short.html#f_valid_index">valid_index</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">lower</span><span class="esymbol">)</span>
+			<span class="etag">valid_upper</span><span class="esymbol">:</span> <span class="elocal">a_container</span><span class="edot">.</span><a class="efeature" href="../base/readable_indexable_short.html#f_valid_index">valid_index</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">upper</span><span class="esymbol">)</span>
+			<span class="etag">valid_bounds</span><span class="esymbol">:</span> <span class="elocal">lower</span> <a class="esymbol" href="../base/comparable_short.html#f_is_less_equal">&lt;=</a> <span class="elocal">upper</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">subsorted</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/sorter_short.html#f_subsorted_with_comparator">subsorted_with_comparator</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_container</span><span class="esymbol">,</span> <span class="elocal">a_comparator</span><span class="esymbol">,</span> <span class="elocal">lower</span><span class="esymbol">,</span> <span class="elocal">upper</span><span class="esymbol">)</span>
+	
+<span class="ekeyword">invariant</span>
+	<span class="etag">comparator_not_void</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/sorter_short.html#f_comparator">comparator</a> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+
+<span class="ekeyword">note</span>
+	<span class="eitag">copyright</span><span class="esymbol">:</span> <span class="estring">&quot;Copyright (c) 1984-2018, Eiffel Software and others&quot;</span>
+	<span class="eitag">license</span><span class="esymbol">:</span> <span class="estring">&quot;Eiffel Forum License v2 (see </span><a class="estring" href="http://www.eiffel.com/licensing/forum.txt">http://www.eiffel.com/licensing/forum.txt</a><span class="estring">)&quot;</span>
+	<span class="eitag">source</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">Eiffel Software</span>
+		<span class="estring">5949 Hollister Ave., Goleta, CA 93117 USA</span>
+		<span class="estring">Telephone 805-685-1006, Fax 805-685-6869</span>
+		<span class="estring">Website </span><a class="estring" href="http://www.eiffel.com">http://www.eiffel.com</a>
+		<span class="estring">Customer support </span><a class="estring" href="http://support.eiffel.com">http://support.eiffel.com</a>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../base_extension/sorter_short.html">SORTER</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="sorter_chart.html">Chart</a>
+<a class="nav class" href="sorter_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="sorter"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

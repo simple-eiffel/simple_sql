@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="Centralized constants for the SIMPLE_JSON library.  This class provides named constants to replace magic values throughout the codebase, improving readability and maintainability.  Constants are organized by category: - Size/Buffer Constants: Initial sizes for containers and buffers - String Processing: Offsets, lengths, and character codes - JSON Schema Keywords: Standard JSON Schema property names - JSON Formatting: Output formatting strings - Validation Limits: Already defined in SIMPLE_JSON_OBJECT"/>
+<meta name="eis" content="name=Documentation, protocol=URI, src=file://$(SYSTEM_PATH)/docs/docs/core/simple_json_constants.html"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="2025, Larry Rix"/>
+<meta name="license" content="MIT License"/>
+<meta name="source" content="SIMPLE_JSON Library https://github.com/ljr1981/simple_json"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_json_constants Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_json_constants_chart.html">Chart</a>
+<a class="nav class" href="simple_json_constants_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_constants"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">Centralized constants for the SIMPLE_JSON library.</span>
+		
+		<span class="estring">This class provides named constants to replace magic values throughout</span>
+		<span class="estring">the codebase, improving readability and maintainability.</span>
+		
+		<span class="estring">Constants are organized by category:</span>
+		<span class="estring">- Size/Buffer Constants: Initial sizes for containers and buffers</span>
+		<span class="estring">- String Processing: Offsets, lengths, and character codes</span>
+		<span class="estring">- JSON Schema Keywords: Standard JSON Schema property names</span>
+		<span class="estring">- JSON Formatting: Output formatting strings</span>
+		<span class="estring">- Validation Limits: Already defined in SIMPLE_JSON_OBJECT</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+	<span class="eitag">eis</span><span class="esymbol">:</span> <span class="estring">&quot;name=Documentation&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;protocol=URI&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;src=</span><a class="estring" href="file://$">file://$</a><span class="estring">(SYSTEM_PATH)/docs/docs/core/simple_json_constants.html&quot;</span>
+
+<span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../simple_json/simple_json_constants_short.html">SIMPLE_JSON_CONSTANTS</a>
+
+<span class="ekeyword">create</span> 
+	<a class="efeature" href="../base/any_short.html#f_default_create">default_create</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Size and Buffer Constants</span>
+
+	<a name="f_default_error_list_size"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_default_error_list_size">Default_error_list_size</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">5</span>
+			<span class="ecomment">--</span><span class="ecomment"> Default initial capacity for error lists in streaming and simple operations</span>
+			<span class="ecomment">--</span><span class="ecomment"> Used when creating error containers that typically have few errors</span>
+
+	<a name="f_default_errors_capacity"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_default_errors_capacity">Default_errors_capacity</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">10</span>
+			<span class="ecomment">--</span><span class="ecomment"> Default initial capacity for error lists in schema validation</span>
+			<span class="ecomment">--</span><span class="ecomment"> Used for operations that may generate multiple validation errors</span>
+
+	<a name="f_default_elements_capacity"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_default_elements_capacity">Default_elements_capacity</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">10</span>
+			<span class="ecomment">--</span><span class="ecomment"> Default initial capacity for element lists in streaming operations</span>
+			<span class="ecomment">--</span><span class="ecomment"> Provides reasonable starting size for most JSON arrays</span>
+
+	<a name="f_default_path_segments_capacity"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_default_path_segments_capacity">Default_path_segments_capacity</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">5</span>
+			<span class="ecomment">--</span><span class="ecomment"> Default initial capacity for path segment arrays</span>
+			<span class="ecomment">--</span><span class="ecomment"> Most JSON paths have relatively few segments</span>
+
+	<a name="f_error_message_buffer_size"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_error_message_buffer_size">Error_message_buffer_size</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">50</span>
+			<span class="ecomment">--</span><span class="ecomment"> Standard buffer size for constructing error messages</span>
+			<span class="ecomment">--</span><span class="ecomment"> Provides sufficient space for most error message strings</span>
+			<span class="ecomment">--</span><span class="ecomment"> Used in schema validation error construction</span>
+
+	<a name="f_item_path_buffer_size"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_item_path_buffer_size">Item_path_buffer_size</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">20</span>
+			<span class="ecomment">--</span><span class="ecomment"> Buffer size for item path construction in schema validation</span>
+			<span class="ecomment">--</span><span class="ecomment"> Used when building paths for nested schema validation</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> String Processing Constants</span>
+
+	<a name="f_substring_skip_first_char"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_substring_skip_first_char">Substring_skip_first_char</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">2</span>
+			<span class="ecomment">--</span><span class="ecomment"> Offset to skip first character in substring operations</span>
+			<span class="ecomment">--</span><span class="ecomment"> Used when removing leading slash from JSON Pointer paths</span>
+			<span class="ecomment">--</span><span class="ecomment"> substring(2, count) skips the first character</span>
+
+	<a name="f_substring_skip_first_two_chars"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_substring_skip_first_two_chars">Substring_skip_first_two_chars</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">3</span>
+			<span class="ecomment">--</span><span class="ecomment"> Offset to skip first two characters in substring operations</span>
+			<span class="ecomment">--</span><span class="ecomment"> Used when removing array bracket markers like &quot;[-&quot;</span>
+			<span class="ecomment">--</span><span class="ecomment"> substring(3, count) skips the first two characters</span>
+
+	<a name="f_hex_digit_count"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_hex_digit_count">Hex_digit_count</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">4</span>
+			<span class="ecomment">--</span><span class="ecomment"> Number of hex digits required for Unicode escape sequences (\uXXXX)</span>
+			<span class="ecomment">--</span><span class="ecomment"> JSON standard requires exactly 4 hex digits for Unicode escapes</span>
+
+	<a name="f_hex_last_four_offset"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_hex_last_four_offset">Hex_last_four_offset</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">3</span>
+			<span class="ecomment">--</span><span class="ecomment"> Offset for extracting last 4 characters from hex string</span>
+			<span class="ecomment">--</span><span class="ecomment"> substring(count - 3, count) gives the last 4 characters</span>
+			<span class="ecomment">--</span><span class="ecomment"> Used when padding hex strings to ensure 4-digit format</span>
+
+	<a name="f_position_prefix_length"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_position_prefix_length">Position_prefix_length</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">11</span>
+			<span class="ecomment">--</span><span class="ecomment"> Length of the string &quot;(position: &quot; used in error messages</span>
+			<span class="ecomment">--</span><span class="ecomment"> Used to calculate string offsets when extracting position information</span>
+
+	<a name="f_ascii_control_char_boundary"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_ascii_control_char_boundary">Ascii_control_char_boundary</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">32</span>
+			<span class="ecomment">--</span><span class="ecomment"> ASCII code boundary for control characters (0x00-0x1F)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Characters with code &lt; 32 are control characters requiring escape</span>
+			<span class="ecomment">--</span><span class="ecomment"> Character code 32 is space (first printable ASCII character)</span>
+
+	<a name="f_max_reasonable_indent_count"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_max_reasonable_indent_count">Max_reasonable_indent_count</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a> <span class="esymbol">=</span> <span class="enumber">8</span>
+			<span class="ecomment">--</span><span class="ecomment"> Maximum reasonable number of spaces for indentation</span>
+			<span class="ecomment">--</span><span class="ecomment"> Prevents excessive indentation that would harm readability</span>
+			<span class="ecomment">--</span><span class="ecomment"> Typical values: 2, 4, or 8 spaces</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> JSON Schema Keywords</span>
+
+	<a name="f_schema_keyword_type"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_schema_keyword_type">Schema_keyword_type</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;type&quot;
+			<span class="ecomment">--</span><span class="ecomment"> JSON Schema keyword for specifying value type</span>
+			<span class="ecomment">--</span><span class="ecomment"> Example: {&quot;type&quot;: &quot;string&quot;}</span>
+
+	<a name="f_schema_keyword_properties"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_schema_keyword_properties">Schema_keyword_properties</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;properties&quot;
+			<span class="ecomment">--</span><span class="ecomment"> JSON Schema keyword for object property definitions</span>
+			<span class="ecomment">--</span><span class="ecomment"> Example: {&quot;properties&quot;: {&quot;name&quot;: {&quot;type&quot;: &quot;string&quot;}}}</span>
+
+	<a name="f_schema_keyword_required"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_schema_keyword_required">Schema_keyword_required</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;required&quot;
+			<span class="ecomment">--</span><span class="ecomment"> JSON Schema keyword for required properties array</span>
+			<span class="ecomment">--</span><span class="ecomment"> Example: {&quot;required&quot;: [&quot;name&quot;, &quot;email&quot;]}</span>
+
+	<a name="f_schema_keyword_items"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_schema_keyword_items">Schema_keyword_items</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;items&quot;
+			<span class="ecomment">--</span><span class="ecomment"> JSON Schema keyword for array item schema</span>
+			<span class="ecomment">--</span><span class="ecomment"> Example: {&quot;items&quot;: {&quot;type&quot;: &quot;number&quot;}}</span>
+
+	<a name="f_schema_keyword_minimum"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_schema_keyword_minimum">Schema_keyword_minimum</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;minimum&quot;
+			<span class="ecomment">--</span><span class="ecomment"> JSON Schema keyword for minimum numeric value</span>
+			<span class="ecomment">--</span><span class="ecomment"> Example: {&quot;minimum&quot;: 0}</span>
+
+	<a name="f_schema_keyword_maximum"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_schema_keyword_maximum">Schema_keyword_maximum</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;maximum&quot;
+			<span class="ecomment">--</span><span class="ecomment"> JSON Schema keyword for maximum numeric value</span>
+			<span class="ecomment">--</span><span class="ecomment"> Example: {&quot;maximum&quot;: 100}</span>
+
+	<a name="f_schema_keyword_min_length"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_schema_keyword_min_length">Schema_keyword_min_length</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;minLength&quot;
+			<span class="ecomment">--</span><span class="ecomment"> JSON Schema keyword for minimum string length</span>
+			<span class="ecomment">--</span><span class="ecomment"> Example: {&quot;minLength&quot;: 1}</span>
+
+	<a name="f_schema_keyword_max_length"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_schema_keyword_max_length">Schema_keyword_max_length</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;maxLength&quot;
+			<span class="ecomment">--</span><span class="ecomment"> JSON Schema keyword for maximum string length</span>
+			<span class="ecomment">--</span><span class="ecomment"> Example: {&quot;maxLength&quot;: 255}</span>
+
+	<a name="f_schema_keyword_min_items"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_schema_keyword_min_items">Schema_keyword_min_items</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;minItems&quot;
+			<span class="ecomment">--</span><span class="ecomment"> JSON Schema keyword for minimum array length</span>
+			<span class="ecomment">--</span><span class="ecomment"> Example: {&quot;minItems&quot;: 1}</span>
+
+	<a name="f_schema_keyword_max_items"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_schema_keyword_max_items">Schema_keyword_max_items</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;maxItems&quot;
+			<span class="ecomment">--</span><span class="ecomment"> JSON Schema keyword for maximum array length</span>
+			<span class="ecomment">--</span><span class="ecomment"> Example: {&quot;maxItems&quot;: 100}</span>
+
+	<a name="f_schema_keyword_pattern"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_schema_keyword_pattern">Schema_keyword_pattern</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;pattern&quot;
+			<span class="ecomment">--</span><span class="ecomment"> JSON Schema keyword for regex pattern matching</span>
+			<span class="ecomment">--</span><span class="ecomment"> Example: {&quot;pattern&quot;: &quot;^</span><span class="ecomment">[0-9]</span><span class="ecomment">+$&quot;}</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> JSON Type Keywords</span>
+
+	<a name="f_json_type_string"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_type_string">Json_type_string</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;string&quot;
+			<span class="ecomment">--</span><span class="ecomment"> JSON type name for string values</span>
+			<span class="ecomment">--</span><span class="ecomment"> Used in schema type validation</span>
+
+	<a name="f_json_type_number"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_type_number">Json_type_number</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;number&quot;
+			<span class="ecomment">--</span><span class="ecomment"> JSON type name for numeric values</span>
+			<span class="ecomment">--</span><span class="ecomment"> Used in schema type validation</span>
+
+	<a name="f_json_type_integer"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_type_integer">Json_type_integer</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;integer&quot;
+			<span class="ecomment">--</span><span class="ecomment"> JSON type name for integer values</span>
+			<span class="ecomment">--</span><span class="ecomment"> Used in schema type validation</span>
+
+	<a name="f_json_type_object"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_type_object">Json_type_object</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;object&quot;
+			<span class="ecomment">--</span><span class="ecomment"> JSON type name for object values</span>
+			<span class="ecomment">--</span><span class="ecomment"> Used in schema type validation</span>
+
+	<a name="f_json_type_array"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_type_array">Json_type_array</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;array&quot;
+			<span class="ecomment">--</span><span class="ecomment"> JSON type name for array values</span>
+			<span class="ecomment">--</span><span class="ecomment"> Used in schema type validation</span>
+
+	<a name="f_json_type_null"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_type_null">Json_type_null</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;null&quot;
+			<span class="ecomment">--</span><span class="ecomment"> JSON type name for null values</span>
+			<span class="ecomment">--</span><span class="ecomment"> Used in schema type validation</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> JSON Formatting Strings</span>
+
+	<a name="f_default_two_space_indent"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_default_two_space_indent">Default_two_space_indent</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;  &quot;
+			<span class="ecomment">--</span><span class="ecomment"> Standard two-space indentation for JSON pretty printing</span>
+			<span class="ecomment">--</span><span class="ecomment"> Most common indentation style for JSON</span>
+
+	<a name="f_json_colon_space"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_colon_space">Json_colon_space</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;: &quot;
+			<span class="ecomment">--</span><span class="ecomment"> Standard separator between key and value in JSON objects</span>
+			<span class="ecomment">--</span><span class="ecomment"> Format: &quot;key&quot;: value</span>
+
+	<a name="f_json_comma"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_comma">Json_comma</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;,&quot;
+			<span class="ecomment">--</span><span class="ecomment"> Comma separator for array elements and object properties</span>
+
+	<a name="f_json_empty_object"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_empty_object">Json_empty_object</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;{}&quot;
+			<span class="ecomment">--</span><span class="ecomment"> String representation of empty JSON object</span>
+
+	<a name="f_json_empty_array"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_empty_array">Json_empty_array</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;[]&quot;
+			<span class="ecomment">--</span><span class="ecomment"> String representation of empty JSON array</span>
+
+	<a name="f_json_open_brace"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_open_brace">Json_open_brace</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;{&quot;
+			<span class="ecomment">--</span><span class="ecomment"> Opening brace for JSON objects</span>
+
+	<a name="f_json_close_brace"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_close_brace">Json_close_brace</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;}&quot;
+			<span class="ecomment">--</span><span class="ecomment"> Closing brace for JSON objects</span>
+
+	<a name="f_json_open_bracket"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_open_bracket">Json_open_bracket</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;[&quot;
+			<span class="ecomment">--</span><span class="ecomment"> Opening bracket for JSON arrays</span>
+
+	<a name="f_json_close_bracket"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_close_bracket">Json_close_bracket</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;]&quot;
+			<span class="ecomment">--</span><span class="ecomment"> Closing bracket for JSON arrays</span>
+
+	<a name="f_json_quote"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_quote">Json_quote</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;%&quot;&quot;
+			<span class="ecomment">--</span><span class="ecomment"> Double quote character for JSON strings</span>
+
+	<a name="f_json_true"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_true">Json_true</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;true&quot;
+			<span class="ecomment">--</span><span class="ecomment"> JSON boolean true literal</span>
+
+	<a name="f_json_false"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_false">Json_false</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;false&quot;
+			<span class="ecomment">--</span><span class="ecomment"> JSON boolean false literal</span>
+
+	<a name="f_json_null_literal"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_null_literal">Json_null_literal</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;null&quot;
+			<span class="ecomment">--</span><span class="ecomment"> JSON null literal</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> JSON Escape Sequences</span>
+
+	<a name="f_json_escape_quote"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_escape_quote">Json_escape_quote</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;\%&quot;&quot;
+			<span class="ecomment">--</span><span class="ecomment"> Escaped double quote: \&quot;</span>
+			<span class="ecomment">--</span><span class="ecomment"> Used when outputting quotes within JSON strings</span>
+
+	<a name="f_json_escape_backslash"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_escape_backslash">Json_escape_backslash</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;\\&quot;
+			<span class="ecomment">--</span><span class="ecomment"> Escaped backslash: \\</span>
+			<span class="ecomment">--</span><span class="ecomment"> Used when outputting backslash within JSON strings</span>
+
+	<a name="f_json_escape_newline"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_escape_newline">Json_escape_newline</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;\n&quot;
+			<span class="ecomment">--</span><span class="ecomment"> Escaped newline: \n</span>
+			<span class="ecomment">--</span><span class="ecomment"> Used for newline characters in JSON strings</span>
+
+	<a name="f_json_escape_return"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_escape_return">Json_escape_return</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;\r&quot;
+			<span class="ecomment">--</span><span class="ecomment"> Escaped carriage return: \r</span>
+			<span class="ecomment">--</span><span class="ecomment"> Used for carriage return characters in JSON strings</span>
+
+	<a name="f_json_escape_tab"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_escape_tab">Json_escape_tab</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;\t&quot;
+			<span class="ecomment">--</span><span class="ecomment"> Escaped tab: \t</span>
+			<span class="ecomment">--</span><span class="ecomment"> Used for tab characters in JSON strings</span>
+
+	<a name="f_json_escape_formfeed"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_escape_formfeed">Json_escape_formfeed</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;\f&quot;
+			<span class="ecomment">--</span><span class="ecomment"> Escaped form feed: \f</span>
+			<span class="ecomment">--</span><span class="ecomment"> Used for form feed characters in JSON strings</span>
+
+	<a name="f_json_escape_backspace"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_escape_backspace">Json_escape_backspace</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;\b&quot;
+			<span class="ecomment">--</span><span class="ecomment"> Escaped backspace: \b</span>
+			<span class="ecomment">--</span><span class="ecomment"> Used for backspace characters in JSON strings</span>
+
+	<a name="f_json_escape_unicode_prefix"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_escape_unicode_prefix">Json_escape_unicode_prefix</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;\u&quot;
+			<span class="ecomment">--</span><span class="ecomment"> Unicode escape sequence prefix: \u</span>
+			<span class="ecomment">--</span><span class="ecomment"> Followed by 4 hex digits for Unicode code point</span>
+
+	<a name="f_hex_padding_zero"></a><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_hex_padding_zero">Hex_padding_zero</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a> <span class="esymbol">=</span> &quot;0&quot;
+			<span class="ecomment">--</span><span class="ecomment"> Zero character used for padding hex strings</span>
+			<span class="ecomment">--</span><span class="ecomment"> Ensures 4-digit format for Unicode escapes</span>
+	
+<span class="ekeyword">note</span>
+	<span class="eitag">copyright</span><span class="esymbol">:</span> <span class="estring">&quot;2025, Larry Rix&quot;</span>
+	<span class="eitag">license</span><span class="esymbol">:</span> <span class="estring">&quot;MIT License&quot;</span>
+	<span class="eitag">source</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">SIMPLE_JSON Library</span>
+		<a class="estring" href="https://github.com/ljr1981/simple_json">https://github.com/ljr1981/simple_json</a>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../simple_json/simple_json_constants_short.html">SIMPLE_JSON_CONSTANTS</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_json_constants_chart.html">Chart</a>
+<a class="nav class" href="simple_json_constants_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_constants"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="Externals for interacting with SQLite databases (sqlite3 *)."/>
+<meta name="legal" content="See notice at end of class."/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="Copyright (c) 1984-2009, Eiffel Software"/>
+<meta name="license" content="GPL version 2 (see http://www.eiffel.com/licensing/gpl.txt)"/>
+<meta name="licensing_options" content="http://www.eiffel.com/licensing"/>
+<meta name="copying" content="This file is part of Eiffel Software's Eiffel Development Environment.  Eiffel Software's Eiffel Development Environment is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2 of the License (available at the URL listed under license above).  Eiffel Software's Eiffel Development Environment is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.  You should have received a copy of the GNU General Public License along with Eiffel Software's Eiffel Development Environment; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA"/>
+<meta name="source" content="Eiffel Software 5949 Hollister Ave., Goleta, CA 93117 USA Telephone 805-685-1006, Fax 805-685-6869 Website http://www.eiffel.com Customer support http://support.eiffel.com"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>sqlite_database_externals Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="sqlite_database_externals_chart.html">Chart</a>
+<a class="nav class" href="sqlite_database_externals_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="sqlite_database_externals"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">Externals for interacting with SQLite databases (sqlite3 *).</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+	<span class="eitag">legal</span><span class="esymbol">:</span> <span class="estring">&quot;See notice at end of class.&quot;</span>
+	<span class="eitag">status</span><span class="esymbol">:</span> <span class="estring">&quot;See notice at end of class.&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+
+<span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../sqlite/sqlite_database_externals_short.html">SQLITE_DATABASE_EXTERNALS</a>
+
+<span class="ekeyword">create</span> 
+	<a class="efeature" href="../base/any_short.html#f_default_create">default_create</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Measure</span>
+
+	<a name="f_sqlite3_changes"></a><a class="efeature" href="../sqlite/sqlite_database_externals_short.html#f_sqlite3_changes">sqlite3_changes</a> <span class="esymbol">(</span><span class="elocal">a_api</span><span class="esymbol">:</span> <a class="eclass" href="../sqlite/sqlite_api_short.html">SQLITE_API</a><span class="esymbol">;</span> <span class="elocal">a_db</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+		<span class="ekeyword">require</span>
+			<span class="etag">a_api_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="elocal">a_api</span>
+			<span class="etag">a_api_is_interface_usable</span><span class="esymbol">:</span> <span class="elocal">a_api</span><span class="edot">.</span><a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a>
+			<span class="etag">not_a_db_is_null</span><span class="esymbol">:</span> <span class="elocal">a_db</span> <span class="esymbol">/=</span> <a class="efeature" href="../base/any_short.html#f_default_pointer">default_pointer</a>
+
+	<a name="f_sqlite3_total_changes"></a><a class="efeature" href="../sqlite/sqlite_database_externals_short.html#f_sqlite3_total_changes">sqlite3_total_changes</a> <span class="esymbol">(</span><span class="elocal">a_api</span><span class="esymbol">:</span> <a class="eclass" href="../sqlite/sqlite_api_short.html">SQLITE_API</a><span class="esymbol">;</span> <span class="elocal">a_db</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+		<span class="ekeyword">require</span>
+			<span class="etag">a_api_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="elocal">a_api</span>
+			<span class="etag">a_api_is_interface_usable</span><span class="esymbol">:</span> <span class="elocal">a_api</span><span class="edot">.</span><a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a>
+			<span class="etag">not_a_db_is_null</span><span class="esymbol">:</span> <span class="elocal">a_db</span> <span class="esymbol">/=</span> <a class="efeature" href="../base/any_short.html#f_default_pointer">default_pointer</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Query: Error handling</span>
+
+	<a name="f_sqlite3_errcode"></a><a class="efeature" href="../sqlite/sqlite_database_externals_short.html#f_sqlite3_errcode">sqlite3_errcode</a> <span class="esymbol">(</span><span class="elocal">a_api</span><span class="esymbol">:</span> <a class="eclass" href="../sqlite/sqlite_api_short.html">SQLITE_API</a><span class="esymbol">;</span> <span class="elocal">a_db</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+		<span class="ekeyword">require</span>
+			<span class="etag">a_api_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="elocal">a_api</span>
+			<span class="etag">a_api_is_interface_usable</span><span class="esymbol">:</span> <span class="elocal">a_api</span><span class="edot">.</span><a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a>
+			<span class="etag">not_a_db_is_null</span><span class="esymbol">:</span> <span class="elocal">a_db</span> <span class="esymbol">/=</span> <a class="efeature" href="../base/any_short.html#f_default_pointer">default_pointer</a>
+
+	<a name="f_sqlite3_errmsg"></a><a class="efeature" href="../sqlite/sqlite_database_externals_short.html#f_sqlite3_errmsg">sqlite3_errmsg</a> <span class="esymbol">(</span><span class="elocal">a_api</span><span class="esymbol">:</span> <a class="eclass" href="../sqlite/sqlite_api_short.html">SQLITE_API</a><span class="esymbol">;</span> <span class="elocal">a_db</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a>
+		<span class="ekeyword">require</span>
+			<span class="etag">a_api_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="elocal">a_api</span>
+			<span class="etag">a_api_is_interface_usable</span><span class="esymbol">:</span> <span class="elocal">a_api</span><span class="edot">.</span><a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a>
+			<span class="etag">not_a_db_is_null</span><span class="esymbol">:</span> <span class="elocal">a_db</span> <span class="esymbol">/=</span> <a class="efeature" href="../base/any_short.html#f_default_pointer">default_pointer</a>
+
+	<a name="f_sqlite3_extended_errcode"></a><a class="efeature" href="../sqlite/sqlite_database_externals_short.html#f_sqlite3_extended_errcode">sqlite3_extended_errcode</a> <span class="esymbol">(</span><span class="elocal">a_api</span><span class="esymbol">:</span> <a class="eclass" href="../sqlite/sqlite_api_short.html">SQLITE_API</a><span class="esymbol">;</span> <span class="elocal">a_db</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+		<span class="ekeyword">require</span>
+			<span class="etag">a_api_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="elocal">a_api</span>
+			<span class="etag">a_api_is_interface_usable</span><span class="esymbol">:</span> <span class="elocal">a_api</span><span class="edot">.</span><a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a>
+			<span class="etag">not_a_db_is_null</span><span class="esymbol">:</span> <span class="elocal">a_db</span> <span class="esymbol">/=</span> <a class="efeature" href="../base/any_short.html#f_default_pointer">default_pointer</a>
+
+	<a name="f_sqlite3_last_insert_rowid"></a><a class="efeature" href="../sqlite/sqlite_database_externals_short.html#f_sqlite3_last_insert_rowid">sqlite3_last_insert_rowid</a> <span class="esymbol">(</span><span class="elocal">a_api</span><span class="esymbol">:</span> <a class="eclass" href="../sqlite/sqlite_api_short.html">SQLITE_API</a><span class="esymbol">;</span> <span class="elocal">a_db</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_64_short.html">INTEGER_64</a>
+		<span class="ekeyword">require</span>
+			<span class="etag">a_api_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="elocal">a_api</span>
+			<span class="etag">a_api_is_interface_usable</span><span class="esymbol">:</span> <span class="elocal">a_api</span><span class="edot">.</span><a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a>
+			<span class="etag">not_a_db_is_null</span><span class="esymbol">:</span> <span class="elocal">a_db</span> <span class="esymbol">/=</span> <a class="efeature" href="../base/any_short.html#f_default_pointer">default_pointer</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Basic operations</span>
+
+	<a name="f_sqlite3_busy_timeout"></a><a class="efeature" href="../sqlite/sqlite_database_externals_short.html#f_sqlite3_busy_timeout">sqlite3_busy_timeout</a> <span class="esymbol">(</span><span class="elocal">a_api</span><span class="esymbol">:</span> <a class="eclass" href="../sqlite/sqlite_api_short.html">SQLITE_API</a><span class="esymbol">;</span> <span class="elocal">a_db</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">;</span> <span class="elocal">a_ms</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+		<span class="ekeyword">require</span>
+			<span class="etag">a_api_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="elocal">a_api</span>
+			<span class="etag">a_api_is_interface_usable</span><span class="esymbol">:</span> <span class="elocal">a_api</span><span class="edot">.</span><a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a>
+			<span class="etag">not_a_db_is_null</span><span class="esymbol">:</span> <span class="elocal">a_db</span> <span class="esymbol">/=</span> <a class="efeature" href="../base/any_short.html#f_default_pointer">default_pointer</a>
+			<span class="etag">a_ms_non_negative</span><span class="esymbol">:</span> <span class="elocal">a_ms</span> <a class="esymbol" href="../base/comparable_short.html#f_is_greater_equal">&gt;=</a> <span class="enumber">0</span>
+
+	<a name="f_sqlite3_interrupt"></a><a class="efeature" href="../sqlite/sqlite_database_externals_short.html#f_sqlite3_interrupt">sqlite3_interrupt</a> <span class="esymbol">(</span><span class="elocal">a_api</span><span class="esymbol">:</span> <a class="eclass" href="../sqlite/sqlite_api_short.html">SQLITE_API</a><span class="esymbol">;</span> <span class="elocal">a_db</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">a_api_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="elocal">a_api</span>
+			<span class="etag">a_api_is_interface_usable</span><span class="esymbol">:</span> <span class="elocal">a_api</span><span class="edot">.</span><a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a>
+			<span class="etag">not_a_db_is_null</span><span class="esymbol">:</span> <span class="elocal">a_db</span> <span class="esymbol">/=</span> <a class="efeature" href="../base/any_short.html#f_default_pointer">default_pointer</a>
+
+	<a name="f_sqlite3_close"></a><a class="efeature" href="../sqlite/sqlite_database_externals_short.html#f_sqlite3_close">sqlite3_close</a> <span class="esymbol">(</span><span class="elocal">a_api</span><span class="esymbol">:</span> <a class="eclass" href="../sqlite/sqlite_api_short.html">SQLITE_API</a><span class="esymbol">;</span> <span class="elocal">a_db</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+		<span class="ekeyword">require</span>
+			<span class="etag">a_api_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="elocal">a_api</span>
+			<span class="etag">a_api_is_interface_usable</span><span class="esymbol">:</span> <span class="elocal">a_api</span><span class="edot">.</span><a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a>
+			<span class="etag">not_a_db_is_null</span><span class="esymbol">:</span> <span class="elocal">a_db</span> <span class="esymbol">/=</span> <a class="efeature" href="../base/any_short.html#f_default_pointer">default_pointer</a>
+
+	<a name="f_sqlite3_extended_result_codes"></a><a class="efeature" href="../sqlite/sqlite_database_externals_short.html#f_sqlite3_extended_result_codes">sqlite3_extended_result_codes</a> <span class="esymbol">(</span><span class="elocal">a_api</span><span class="esymbol">:</span> <a class="eclass" href="../sqlite/sqlite_api_short.html">SQLITE_API</a><span class="esymbol">;</span> <span class="elocal">a_db</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">;</span> <span class="elocal">a_onoff</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+		<span class="ekeyword">require</span>
+			<span class="etag">a_api_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="elocal">a_api</span>
+			<span class="etag">a_api_is_interface_usable</span><span class="esymbol">:</span> <span class="elocal">a_api</span><span class="edot">.</span><a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a>
+			<span class="etag">not_a_db_is_null</span><span class="esymbol">:</span> <span class="elocal">a_db</span> <span class="esymbol">/=</span> <a class="efeature" href="../base/any_short.html#f_default_pointer">default_pointer</a>
+
+	<a name="f_sqlite3_open_v2"></a><a class="efeature" href="../sqlite/sqlite_database_externals_short.html#f_sqlite3_open_v2">sqlite3_open_v2</a> <span class="esymbol">(</span><span class="elocal">a_api</span><span class="esymbol">:</span> <a class="eclass" href="../sqlite/sqlite_api_short.html">SQLITE_API</a><span class="esymbol">;</span> <span class="elocal">a_file_name</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">;</span> <span class="elocal">a_db</span><span class="esymbol">:</span> <a class="eclass" href="../base/typed_pointer_short.html">TYPED_POINTER</a> <span class="esymbol">[</span><a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">]</span><span class="esymbol">;</span> <span class="elocal">a_flags</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">;</span> <span class="elocal">a_vfs</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+		<span class="ekeyword">require</span>
+			<span class="etag">a_api_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="elocal">a_api</span>
+			<span class="etag">a_api_is_interface_usable</span><span class="esymbol">:</span> <span class="elocal">a_api</span><span class="edot">.</span><a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a>
+			<span class="etag">not_a_file_name_is_null</span><span class="esymbol">:</span> <span class="elocal">a_file_name</span> <span class="esymbol">/=</span> <a class="efeature" href="../base/any_short.html#f_default_pointer">default_pointer</a>
+			<span class="etag">not_a_db_is_null</span><span class="esymbol">:</span> <span class="elocal">a_db</span><span class="edot">.</span><a class="efeature" href="../base/pointer_ref_short.html#f_item">to_pointer</a> <span class="esymbol">/=</span> <a class="efeature" href="../base/any_short.html#f_default_pointer">default_pointer</a>
+
+	<a name="f_sqlite3_next_stmt"></a><a class="efeature" href="../sqlite/sqlite_database_externals_short.html#f_sqlite3_next_stmt">sqlite3_next_stmt</a> <span class="esymbol">(</span><span class="elocal">a_api</span><span class="esymbol">:</span> <a class="eclass" href="../sqlite/sqlite_api_short.html">SQLITE_API</a><span class="esymbol">;</span> <span class="elocal">a_db</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">;</span> <span class="elocal">a_stmt</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a>
+		<span class="ekeyword">require</span>
+			<span class="etag">a_api_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="elocal">a_api</span>
+			<span class="etag">a_api_is_interface_usable</span><span class="esymbol">:</span> <span class="elocal">a_api</span><span class="edot">.</span><a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a>
+			<span class="etag">not_a_db_is_null</span><span class="esymbol">:</span> <span class="elocal">a_db</span> <span class="esymbol">/=</span> <a class="efeature" href="../base/any_short.html#f_default_pointer">default_pointer</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Basic operations: Threading</span>
+
+	<a name="f_sqlite3_db_mutex"></a><a class="efeature" href="../sqlite/sqlite_database_externals_short.html#f_sqlite3_db_mutex">sqlite3_db_mutex</a> <span class="esymbol">(</span><span class="elocal">a_api</span><span class="esymbol">:</span> <a class="eclass" href="../sqlite/sqlite_api_short.html">SQLITE_API</a><span class="esymbol">;</span> <span class="elocal">a_db</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a>
+		<span class="ekeyword">require</span>
+			<span class="etag">a_api_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="elocal">a_api</span>
+			<span class="etag">a_api_is_interface_usable</span><span class="esymbol">:</span> <span class="elocal">a_api</span><span class="edot">.</span><a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a>
+			<span class="etag">not_a_db_is_null</span><span class="esymbol">:</span> <span class="elocal">a_db</span> <span class="esymbol">/=</span> <a class="efeature" href="../base/any_short.html#f_default_pointer">default_pointer</a>
+
+	<a name="f_sqlite3_mutex_enter"></a><a class="efeature" href="../sqlite/sqlite_database_externals_short.html#f_sqlite3_mutex_enter">sqlite3_mutex_enter</a> <span class="esymbol">(</span><span class="elocal">a_api</span><span class="esymbol">:</span> <a class="eclass" href="../sqlite/sqlite_api_short.html">SQLITE_API</a><span class="esymbol">;</span> <span class="elocal">a_mutex</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">a_api_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="elocal">a_api</span>
+			<span class="etag">a_api_is_interface_usable</span><span class="esymbol">:</span> <span class="elocal">a_api</span><span class="edot">.</span><a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a>
+			<span class="etag">not_a_mutex_is_null</span><span class="esymbol">:</span> <span class="elocal">a_mutex</span> <span class="esymbol">/=</span> <a class="efeature" href="../base/any_short.html#f_default_pointer">default_pointer</a>
+
+	<a name="f_sqlite3_mutex_leave"></a><a class="efeature" href="../sqlite/sqlite_database_externals_short.html#f_sqlite3_mutex_leave">sqlite3_mutex_leave</a> <span class="esymbol">(</span><span class="elocal">a_api</span><span class="esymbol">:</span> <a class="eclass" href="../sqlite/sqlite_api_short.html">SQLITE_API</a><span class="esymbol">;</span> <span class="elocal">a_mutex</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">a_api_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="elocal">a_api</span>
+			<span class="etag">a_api_is_interface_usable</span><span class="esymbol">:</span> <span class="elocal">a_api</span><span class="edot">.</span><a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a>
+			<span class="etag">not_a_mutex_is_null</span><span class="esymbol">:</span> <span class="elocal">a_mutex</span> <span class="esymbol">/=</span> <a class="efeature" href="../base/any_short.html#f_default_pointer">default_pointer</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Callbacks</span>
+
+	<a name="f_sqlite3_progress_handler"></a><a class="efeature" href="../sqlite/sqlite_database_externals_short.html#f_sqlite3_progress_handler">sqlite3_progress_handler</a> <span class="esymbol">(</span><span class="elocal">a_api</span><span class="esymbol">:</span> <a class="eclass" href="../sqlite/sqlite_api_short.html">SQLITE_API</a><span class="esymbol">;</span> <span class="elocal">a_db</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">;</span> <span class="elocal">a_flags</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">;</span> <span class="elocal">a_cb_data</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">a_api_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="elocal">a_api</span>
+			<span class="etag">a_api_is_interface_usable</span><span class="esymbol">:</span> <span class="elocal">a_api</span><span class="edot">.</span><a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a>
+			<span class="etag">not_a_db_is_null</span><span class="esymbol">:</span> <span class="elocal">a_db</span> <span class="esymbol">/=</span> <a class="efeature" href="../base/any_short.html#f_default_pointer">default_pointer</a>
+
+	<a name="f_sqlite3_busy_handler"></a><a class="efeature" href="../sqlite/sqlite_database_externals_short.html#f_sqlite3_busy_handler">sqlite3_busy_handler</a> <span class="esymbol">(</span><span class="elocal">a_api</span><span class="esymbol">:</span> <a class="eclass" href="../sqlite/sqlite_api_short.html">SQLITE_API</a><span class="esymbol">;</span> <span class="elocal">a_db</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">;</span> <span class="elocal">a_cb_data</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+		<span class="ekeyword">require</span>
+			<span class="etag">a_api_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="elocal">a_api</span>
+			<span class="etag">a_api_is_interface_usable</span><span class="esymbol">:</span> <span class="elocal">a_api</span><span class="edot">.</span><a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a>
+			<span class="etag">not_a_db_is_null</span><span class="esymbol">:</span> <span class="elocal">a_db</span> <span class="esymbol">/=</span> <a class="efeature" href="../base/any_short.html#f_default_pointer">default_pointer</a>
+
+	<a name="f_sqlite3_commit_hook"></a><a class="efeature" href="../sqlite/sqlite_database_externals_short.html#f_sqlite3_commit_hook">sqlite3_commit_hook</a> <span class="esymbol">(</span><span class="elocal">a_api</span><span class="esymbol">:</span> <a class="eclass" href="../sqlite/sqlite_api_short.html">SQLITE_API</a><span class="esymbol">;</span> <span class="elocal">a_db</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">;</span> <span class="elocal">a_cb_data</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a>
+		<span class="ekeyword">require</span>
+			<span class="etag">a_api_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="elocal">a_api</span>
+			<span class="etag">a_api_is_interface_usable</span><span class="esymbol">:</span> <span class="elocal">a_api</span><span class="edot">.</span><a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a>
+			<span class="etag">not_a_db_is_null</span><span class="esymbol">:</span> <span class="elocal">a_db</span> <span class="esymbol">/=</span> <a class="efeature" href="../base/any_short.html#f_default_pointer">default_pointer</a>
+
+	<a name="f_sqlite3_rollback_hook"></a><a class="efeature" href="../sqlite/sqlite_database_externals_short.html#f_sqlite3_rollback_hook">sqlite3_rollback_hook</a> <span class="esymbol">(</span><span class="elocal">a_api</span><span class="esymbol">:</span> <a class="eclass" href="../sqlite/sqlite_api_short.html">SQLITE_API</a><span class="esymbol">;</span> <span class="elocal">a_db</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">;</span> <span class="elocal">a_cb_data</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a>
+		<span class="ekeyword">require</span>
+			<span class="etag">a_api_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="elocal">a_api</span>
+			<span class="etag">a_api_is_interface_usable</span><span class="esymbol">:</span> <span class="elocal">a_api</span><span class="edot">.</span><a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a>
+			<span class="etag">not_a_db_is_null</span><span class="esymbol">:</span> <span class="elocal">a_db</span> <span class="esymbol">/=</span> <a class="efeature" href="../base/any_short.html#f_default_pointer">default_pointer</a>
+
+	<a name="f_sqlite3_update_hook"></a><a class="efeature" href="../sqlite/sqlite_database_externals_short.html#f_sqlite3_update_hook">sqlite3_update_hook</a> <span class="esymbol">(</span><span class="elocal">a_api</span><span class="esymbol">:</span> <a class="eclass" href="../sqlite/sqlite_api_short.html">SQLITE_API</a><span class="esymbol">;</span> <span class="elocal">a_db</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">;</span> <span class="elocal">a_cb_data</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/pointer_short.html">POINTER</a>
+		<span class="ekeyword">require</span>
+			<span class="etag">a_api_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="elocal">a_api</span>
+			<span class="etag">a_api_is_interface_usable</span><span class="esymbol">:</span> <span class="elocal">a_api</span><span class="edot">.</span><a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a>
+			<span class="etag">not_a_db_is_null</span><span class="esymbol">:</span> <span class="elocal">a_db</span> <span class="esymbol">/=</span> <a class="efeature" href="../base/any_short.html#f_default_pointer">default_pointer</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Externals: Macros</span>
+
+	<a name="f_sqlite_open_readonly"></a><a class="efeature" href="../sqlite/sqlite_database_externals_short.html#f_sqlite_open_readonly">sqlite_open_readonly</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+
+	<a name="f_sqlite_open_readwrite"></a><a class="efeature" href="../sqlite/sqlite_database_externals_short.html#f_sqlite_open_readwrite">sqlite_open_readwrite</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+
+	<a name="f_sqlite_open_create"></a><a class="efeature" href="../sqlite/sqlite_database_externals_short.html#f_sqlite_open_create">sqlite_open_create</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+
+	<a name="f_sqlite_open_nomutex"></a><a class="efeature" href="../sqlite/sqlite_database_externals_short.html#f_sqlite_open_nomutex">sqlite_open_nomutex</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+
+	<a name="f_sqlite_open_fullmutex"></a><a class="efeature" href="../sqlite/sqlite_database_externals_short.html#f_sqlite_open_fullmutex">sqlite_open_fullmutex</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+	
+<span class="ekeyword">note</span>
+	<span class="eitag">copyright</span><span class="esymbol">:</span> <span class="estring">&quot;Copyright (c) 1984-2009, Eiffel Software&quot;</span>
+	<span class="eitag">license</span><span class="esymbol">:</span> <span class="estring">&quot;GPL version 2 (see </span><a class="estring" href="http://www.eiffel.com/licensing/gpl.txt">http://www.eiffel.com/licensing/gpl.txt</a><span class="estring">)&quot;</span>
+	<span class="eitag">licensing_options</span><span class="esymbol">:</span> <span class="estring">&quot;</span><a class="estring" href="http://www.eiffel.com/licensing">http://www.eiffel.com/licensing</a><span class="estring">&quot;</span>
+	<span class="eitag">copying</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">This file is part of Eiffel Software's Eiffel Development Environment.</span>
+		
+		<span class="estring">Eiffel Software's Eiffel Development Environment is free</span>
+		<span class="estring">software; you can redistribute it and/or modify it under</span>
+		<span class="estring">the terms of the GNU General Public License as published</span>
+		<span class="estring">by the Free Software Foundation, version 2 of the License</span>
+		<span class="estring">(available at the URL listed under &quot;license&quot; above).</span>
+		
+		<span class="estring">Eiffel Software's Eiffel Development Environment is</span>
+		<span class="estring">distributed in the hope that it will be useful, but</span>
+		<span class="estring">WITHOUT ANY WARRANTY; without even the implied warranty</span>
+		<span class="estring">of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</span>
+		<span class="estring">See the GNU General Public License for more details.</span>
+		
+		<span class="estring">You should have received a copy of the GNU General Public</span>
+		<span class="estring">License along with Eiffel Software's Eiffel Development</span>
+		<span class="estring">Environment; if not, write to the Free Software Foundation,</span>
+		<span class="estring">Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+	<span class="eitag">source</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">Eiffel Software</span>
+		<span class="estring">5949 Hollister Ave., Goleta, CA 93117 USA</span>
+		<span class="estring">Telephone 805-685-1006, Fax 805-685-6869</span>
+		<span class="estring">Website </span><a class="estring" href="http://www.eiffel.com">http://www.eiffel.com</a>
+		<span class="estring">Customer support </span><a class="estring" href="http://support.eiffel.com">http://support.eiffel.com</a>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../sqlite/sqlite_database_externals_short.html">SQLITE_DATABASE_EXTERNALS</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="sqlite_database_externals_chart.html">Chart</a>
+<a class="nav class" href="sqlite_database_externals_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="sqlite_database_externals"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

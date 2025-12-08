@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="Project-wide universal properties. This class is an ancestor to all developer-written classes. ANY may be customized for individual projects or teams."/>
+<meta name="library" content="Free implementation of ELKS library"/>
+<meta name="legal" content="See notice at end of class."/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="Copyright (c) 1984-2020, Eiffel Software and others"/>
+<meta name="license" content="Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"/>
+<meta name="source" content="Eiffel Software 5949 Hollister Ave., Goleta, CA 93117 USA Telephone 805-685-1006, Fax 805-685-6869 Website http://www.eiffel.com Customer support http://support.eiffel.com"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>any Relations</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="any_chart.html">Chart</a>
+<span class="nav class selected">Relations</span>
+<a class="nav class" href="any_short.html">Contracts</a>
+<span class="nav class goto">Go to: <input name="c" value="any"></span>
+</div></form><pre><span class="ekeyword">class</span>
+	<a class="eclass" href="../base/any_links.html">ANY</a>
+
+<span class="ekeyword">Descendants</span>
+	<span class="neclass">AES</span>
+	<span class="neclass">AES_PARAMETERS</span><span class="echar">*</span>
+	<a class="eclass" href="../base/ascii_links.html">ASCII</a>
+	<span class="neclass">BASE32</span>
+	<span class="neclass">BASE64</span>
+	<a class="eclass" href="../base/basic_routines_links.html">BASIC_ROUTINES</a>
+	<span class="neclass">BCRYPT</span>
+	<span class="neclass">BOM_CONSTANTS</span>
+	<a class="eclass" href="../base/bool_string_links.html">BOOL_STRING</a>
+	<a class="eclass" href="../base/cell_links.html">CELL</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<a class="eclass" href="../base/character_property_links.html">CHARACTER_PROPERTY</a>
+	<span class="neclass">CODE_PAGES</span>
+	<a class="eclass" href="../base/code_page_constants_links.html">CODE_PAGE_CONSTANTS</a>
+	<span class="neclass">CODE_VALIDITY_CHECKER</span>
+	<a class="eclass" href="../base/console_links.html">CONSOLE</a>
+	<a class="eclass" href="../base_extension/counter_links.html">COUNTER</a>
+	<a class="eclass" href="../base/cursor_links.html">CURSOR</a>
+	<span class="neclass">C_DATE</span>
+	<span class="neclass">DATE_TIME_LANGUAGE_CONSTANTS</span><span class="echar">*</span>
+	<span class="neclass">DATE_TIME_SET</span>
+	<span class="neclass">DATE_TIME_VALIDITY_CHECKER</span>
+	<span class="neclass">DATE_VALIDITY_CHECKER</span>
+	<span class="neclass">DCM_EPSILON</span>
+	<span class="neclass">DCM_MA_DECIMAL_CONTEXT</span>
+	<span class="neclass">DCM_MA_DECIMAL_CONTEXT_CONSTANTS</span>
+	<span class="neclass">DCM_MA_DECIMAL_PARSER</span><span class="echar">*</span>
+	<span class="neclass">DCM_MA_DECIMAL_TEST</span>
+	<span class="neclass">DCM_MA_SHARED_DECIMAL_CONSTANTS</span>
+	<span class="neclass">DCM_MA_SHARED_DECIMAL_CONTEXT</span>
+	<span class="neclass">DCM_PRECOMPUTED_VALUES</span>
+	<a class="eclass" href="../base/debug_output_links.html">DEBUG_OUTPUT</a><span class="echar">*</span>
+	<a class="eclass" href="../base/declarator_links.html">DECLARATOR</a>
+	<a class="eclass" href="../base_extension/directory_visitor_links.html">DIRECTORY_VISITOR</a><span class="echar">*</span>
+	<a class="eclass" href="../base/disposable_links.html">DISPOSABLE</a><span class="echar">*</span>
+	<span class="neclass">DS_ARRAY_SORTER</span><span class="echar">*</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<span class="neclass">DS_BINARY_SEARCH_TREE_CONTAINER_NODE</span><span class="echar">*</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">,</span> <span class="egeneric">K</span><span class="esymbol">]</span>
+	<span class="neclass">DS_CELL</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<span class="neclass">DS_CONTAINER</span><span class="echar">*</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<span class="neclass">DS_CURSOR</span><span class="echar">*</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<span class="neclass">DS_NESTED_LIST</span><span class="echar">*</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<span class="neclass">DS_NESTED_LIST_FLATTENER</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<span class="neclass">DS_SORTER</span><span class="echar">*</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<span class="neclass">DS_TOPOLOGICAL_SORTER</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<span class="neclass">ENCODER</span><span class="echar">*</span> <span class="esymbol">[</span><span class="egeneric">U</span> <span class="esymbol">-&gt;</span> <a class="eclass" href="../base/readable_string_general_links.html">READABLE_STRING_GENERAL</a><span class="esymbol">,</span> <span class="egeneric">E</span> <span class="esymbol">-&gt;</span> <a class="eclass" href="../base/readable_string_general_links.html">READABLE_STRING_GENERAL</a><span class="esymbol">]</span>
+	<a class="eclass" href="../base/encoding_links.html">ENCODING</a>
+	<span class="neclass">ENCODING_DETECTOR</span><span class="echar">*</span>
+	<a class="eclass" href="../base/encoding_helper_links.html">ENCODING_HELPER</a>
+	<span class="neclass">ENCODING_I</span><span class="echar">*</span>
+	<a class="eclass" href="../base_extension/equality_tester_links.html">EQUALITY_TESTER</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<a class="eclass" href="../base_extension/equality_tuple_links.html">EQUALITY_TUPLE</a> <span class="esymbol">[</span><span class="egeneric">G</span> <span class="esymbol">-&gt;</span> <a class="eclass" href="../base/tuple_links.html">TUPLE</a><span class="esymbol">]</span>
+	<a class="eclass" href="../base/exception_manager_links.html">EXCEPTION_MANAGER</a>
+	<a class="eclass" href="../base/exception_manager_factory_links.html">EXCEPTION_MANAGER_FACTORY</a>
+	<a class="eclass" href="../base/excep_const_links.html">EXCEP_CONST</a>
+	<a class="eclass" href="../base/file_utilities_links.html">FILE_UTILITIES</a>
+	<span class="neclass">FIND_SEPARATOR_FACILITY</span>
+	<a class="eclass" href="../base/format_double_links.html">FORMAT_DOUBLE</a>
+	<a class="eclass" href="../base/format_integer_links.html">FORMAT_INTEGER</a>
+	<a class="eclass" href="../base/gc_info_links.html">GC_INFO</a>
+	<span class="neclass">GROUP_ELEMENT</span><span class="echar">*</span>
+	<a class="eclass" href="../base/hashable_links.html">HASHABLE</a><span class="echar">*</span>
+	<span class="neclass">HELPER</span>
+	<span class="neclass">HOTP</span>
+	<a class="eclass" href="../base/identified_controller_links.html">IDENTIFIED_CONTROLLER</a>
+	<a class="eclass" href="../base/identified_routines_links.html">IDENTIFIED_ROUTINES</a>
+	<a class="eclass" href="../base/ise_runtime_links.html">ISE_RUNTIME</a>
+	<a class="eclass" href="../base/ise_scoop_runtime_links.html">ISE_SCOOP_RUNTIME</a>
+	<a class="eclass" href="../base/iterable_links.html">ITERABLE</a><span class="echar">*</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<a class="eclass" href="../base/iteration_cursor_links.html">ITERATION_CURSOR</a><span class="echar">*</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<a class="eclass" href="../base/iterator_links.html">ITERATOR</a><span class="echar">*</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<span class="neclass">JSON_BASIC_SERIALIZATION</span>
+	<span class="neclass">JSON_DESERIALIZER_CREATION_CALLBACK</span><span class="echar">*</span>
+	<span class="neclass">JSON_DESERIALIZER_CREATION_INFORMATION</span>
+	<span class="neclass">JSON_DESERIALIZER_ERROR</span>
+	<span class="neclass">JSON_EQUALITY_TESTER</span>
+	<span class="neclass">JSON_FILE_READER</span>
+	<span class="neclass">JSON_PARSER</span>
+	<span class="neclass">JSON_PARSER_ACCESS</span><span class="echar">*</span>
+	<span class="neclass">JSON_PATH</span>
+	<span class="neclass">JSON_READER</span>
+	<span class="neclass">JSON_SERIALIZABLE</span><span class="echar">*</span>
+	<span class="neclass">JSON_SERIALIZATION</span>
+	<span class="neclass">JSON_SERIALIZATION_CONTEXT</span>
+	<span class="neclass">JSON_SERIALIZATION_CONTEXT_I</span><span class="echar">*</span>
+	<span class="neclass">JSON_SERIALIZATION_FACTORY</span>
+	<span class="neclass">JSON_SERIALIZATION_I</span><span class="echar">*</span>
+	<span class="neclass">JSON_SERIALIZER_REFERENCE_COLLECTION</span>
+	<span class="neclass">JSON_STREAM_WRITER</span><span class="echar">*</span>
+	<span class="neclass">JSON_TOKENS</span>
+	<span class="neclass">JSON_VISITOR</span><span class="echar">*</span>
+	<span class="neclass">KI_BUFFER</span><span class="echar">*</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<span class="neclass">KI_EXCEPTIONS</span><span class="echar">*</span>
+	<span class="neclass">KI_FILE_SYSTEM</span><span class="echar">*</span>
+	<span class="neclass">KI_FILE_SYSTEM_ENTRY</span><span class="echar">*</span>
+	<span class="neclass">KI_INPUT_STREAM</span><span class="echar">*</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<span class="neclass">KI_MEMORY</span><span class="echar">*</span>
+	<span class="neclass">KI_OUTPUT_STREAM</span><span class="echar">*</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<span class="neclass">KI_PATHNAME</span><span class="echar">*</span>
+	<span class="neclass">KI_PLATFORM</span><span class="echar">*</span>
+	<span class="neclass">KI_SHELL_COMMAND</span><span class="echar">*</span>
+	<span class="neclass">KI_SYSTEM_CLOCK</span><span class="echar">*</span>
+	<span class="neclass">KL_AGENT_ROUTINES</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<span class="neclass">KL_ANY</span>
+	<span class="neclass">KL_ANY_ROUTINES</span>
+	<span class="neclass">KL_BOOLEAN_ROUTINES</span>
+	<span class="neclass">KL_CELL</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<span class="neclass">KL_CLONABLE</span>
+	<span class="neclass">KL_EIFFEL_COMPILER</span>
+	<span class="neclass">KL_EQUALITY_TESTER</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<span class="neclass">KL_GOBO_VERSION</span>
+	<span class="neclass">KL_GREGORIAN_CALENDAR</span>
+	<span class="neclass">KL_HASHABLE_ROUTINES</span>
+	<span class="neclass">KL_HASH_FUNCTION</span><span class="echar">*</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<span class="neclass">KL_IMPORTED_AGENT_ROUTINES</span>
+	<span class="neclass">KL_IMPORTED_ANY_ROUTINES</span>
+	<span class="neclass">KL_IMPORTED_ARRAY_ROUTINES</span>
+	<span class="neclass">KL_IMPORTED_BOOLEAN_ROUTINES</span>
+	<span class="neclass">KL_IMPORTED_CHARACTER_ROUTINES</span>
+	<span class="neclass">KL_IMPORTED_DOUBLE_ROUTINES</span>
+	<span class="neclass">KL_IMPORTED_HASHABLE_ROUTINES</span>
+	<span class="neclass">KL_IMPORTED_INTEGER_ROUTINES</span>
+	<span class="neclass">KL_IMPORTED_SPECIAL_ROUTINES</span>
+	<span class="neclass">KL_IMPORTED_STRING_ROUTINES</span>
+	<span class="neclass">KL_OPERATING_SYSTEM</span>
+	<span class="neclass">KL_PART_COMPARABLE</span><span class="echar">*</span>
+	<span class="neclass">KL_PART_COMPARATOR</span><span class="echar">*</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<span class="neclass">KL_SHARED_ARGUMENTS</span>
+	<span class="neclass">KL_SHARED_EIFFEL_COMPILER</span>
+	<span class="neclass">KL_SHARED_EXCEPTIONS</span>
+	<span class="neclass">KL_SHARED_EXECUTION_ENVIRONMENT</span>
+	<span class="neclass">KL_SHARED_FILE_SYSTEM</span>
+	<span class="neclass">KL_SHARED_MEMORY</span>
+	<span class="neclass">KL_SHARED_OPERATING_SYSTEM</span>
+	<span class="neclass">KL_SHARED_STANDARD_FILES</span>
+	<span class="neclass">KL_SHARED_STREAMS</span>
+	<span class="neclass">KL_SHARED_STRING_EQUALITY_TESTER</span>
+	<span class="neclass">KL_SPECIAL_ROUTINES</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<span class="neclass">KL_STANDARD_FILES</span>
+	<span class="neclass">KL_STRING_8_VALUES</span><span class="echar">*</span>
+	<span class="neclass">KL_TYPE</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<span class="neclass">KL_VALUES</span><span class="echar">*</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">,</span> <span class="egeneric">K</span><span class="esymbol">]</span>
+	<span class="neclass">LOCALIZED_PRINTER</span>
+	<span class="neclass">LOG_FACILITY_CONSTANTS</span>
+	<span class="neclass">LOG_OPTION_CONSTANTS</span>
+	<span class="neclass">LOG_PRIORITY_CONSTANTS</span>
+	<a class="eclass" href="../base/math_const_links.html">MATH_CONST</a>
+	<a class="eclass" href="../base/memory_stream_links.html">MEMORY_STREAM</a>
+	<a class="eclass" href="../base/memory_structure_links.html">MEMORY_STRUCTURE</a><span class="echar">*</span>
+	<a class="eclass" href="../base/mem_const_links.html">MEM_CONST</a>
+	<a class="eclass" href="../base/mem_info_links.html">MEM_INFO</a>
+	<span class="neclass">MESSAGE_DIGEST</span><span class="echar">*</span>
+	<a class="eclass" href="../base/mismatch_corrector_links.html">MISMATCH_CORRECTOR</a>
+	<a class="eclass" href="../base/native_array_links.html">NATIVE_ARRAY</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<a class="eclass" href="../base/native_string_handler_links.html">NATIVE_STRING_HANDLER</a>
+	<a class="eclass" href="../base/numeric_information_links.html">NUMERIC_INFORMATION</a>
+	<a class="eclass" href="../base/object_graph_marker_links.html">OBJECT_GRAPH_MARKER</a>
+	<a class="eclass" href="../base/object_graph_traversable_links.html">OBJECT_GRAPH_TRAVERSABLE</a><span class="echar">*</span>
+	<a class="eclass" href="../base/operating_environment_links.html">OPERATING_ENVIRONMENT</a>
+	<a class="eclass" href="../base_extension/packed_booleans_links.html">PACKED_BOOLEANS</a>
+	<a class="eclass" href="../base/part_comparable_links.html">PART_COMPARABLE</a><span class="echar">*</span>
+	<a class="eclass" href="../base_extension/part_comparator_links.html">PART_COMPARATOR</a><span class="echar">*</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<span class="neclass">PERCENT_ENCODER</span>
+	<a class="eclass" href="../base/platform_links.html">PLATFORM</a>
+	<a class="eclass" href="../base/profiling_setting_links.html">PROFILING_SETTING</a>
+	<a class="eclass" href="../base/refactoring_helper_links.html">REFACTORING_HELPER</a>
+	<a class="eclass" href="../base/reflector_constants_links.html">REFLECTOR_CONSTANTS</a>
+	<a class="eclass" href="../base/reflector_helper_links.html">REFLECTOR_HELPER</a>
+	<span class="neclass">RT_DBG_EXECUTION_PARAMETERS</span>
+	<span class="neclass">RT_DBG_EXECUTION_RECORDER</span>
+	<a class="eclass" href="../base/rt_debugger_links.html">RT_DEBUGGER</a>
+	<span class="neclass">RT_EXTENSION_COMMON</span><span class="echar">*</span>
+	<span class="neclass">RX_BYTE_CODE</span>
+	<span class="neclass">RX_CASE_MAPPING</span>
+	<span class="neclass">RX_CHARACTER_SET</span>
+	<span class="neclass">RX_PATTERN_MATCHER</span><span class="echar">*</span>
+	<span class="neclass">RX_PCRE_BYTE_CODE_CONSTANTS</span>
+	<span class="neclass">RX_PCRE_COMPILER</span>
+	<span class="neclass">RX_PCRE_ERROR_CONSTANTS</span>
+	<span class="neclass">RX_PCRE_ESCAPE_CONSTANTS</span>
+	<span class="neclass">RX_PCRE_OPTION_ROUTINES</span>
+	<span class="neclass">RX_PCRE_ROUTINES</span>
+	<span class="neclass">RX_PCRE_SHARED_CHARACTER_SETS</span>
+	<span class="neclass">SALT_GENERATOR</span><span class="echar">*</span>
+	<a class="eclass" href="../base_extension/search_table_links.html">SEARCH_TABLE</a> <span class="esymbol">[</span><span class="egeneric">H</span> <span class="esymbol">-&gt;</span> <a class="eclass" href="../base/hashable_links.html">HASHABLE</a><span class="esymbol">]</span>
+	<a class="eclass" href="../base/sed_abstract_objects_table_links.html">SED_ABSTRACT_OBJECTS_TABLE</a><span class="echar">*</span>
+	<a class="eclass" href="../base/sed_error_links.html">SED_ERROR</a>
+	<a class="eclass" href="../base/sed_error_factory_links.html">SED_ERROR_FACTORY</a>
+	<a class="eclass" href="../base/sed_meta_model_links.html">SED_META_MODEL</a>
+	<a class="eclass" href="../base/sed_multi_object_serialization_links.html">SED_MULTI_OBJECT_SERIALIZATION</a>
+	<a class="eclass" href="../base/sed_reader_writer_links.html">SED_READER_WRITER</a><span class="echar">*</span>
+	<a class="eclass" href="../base/sed_storable_facilities_links.html">SED_STORABLE_FACILITIES</a>
+	<a class="eclass" href="../base/sed_type_mismatch_links.html">SED_TYPE_MISMATCH</a>
+	<a class="eclass" href="../base/sed_utilities_links.html">SED_UTILITIES</a>
+	<a class="eclass" href="../base/sed_versions_links.html">SED_VERSIONS</a>
+	<span class="neclass">SHARED_BASE64</span>
+	<span class="neclass">SHARED_EJSON</span>
+	<a class="eclass" href="../base/shared_execution_environment_links.html">SHARED_EXECUTION_ENVIRONMENT</a>
+	<span class="neclass">SHARED_HTML_ENCODER</span>
+	<span class="neclass">SHARED_JSON_ENCODER</span>
+	<span class="neclass">SHARED_URL_ENCODER</span>
+	<span class="neclass">SHARED_UTF8_URL_ENCODER</span>
+	<span class="neclass">SHARED_XML_ENCODER</span>
+	<a class="eclass" href="../simple_json/simple_json_constants_links.html">SIMPLE_JSON_CONSTANTS</a>
+	<a class="eclass" href="../simple_json/simple_json_error_links.html">SIMPLE_JSON_ERROR</a>
+	<a class="eclass" href="../simple_json/simple_json_merge_patch_links.html">SIMPLE_JSON_MERGE_PATCH</a>
+	<a class="eclass" href="../simple_json/simple_json_merge_patch_result_links.html">SIMPLE_JSON_MERGE_PATCH_RESULT</a>
+	<a class="eclass" href="../simple_json/simple_json_patch_links.html">SIMPLE_JSON_PATCH</a>
+	<a class="eclass" href="../simple_json/simple_json_patch_result_links.html">SIMPLE_JSON_PATCH_RESULT</a>
+	<a class="eclass" href="../simple_json/simple_json_schema_links.html">SIMPLE_JSON_SCHEMA</a>
+	<a class="eclass" href="../simple_json/simple_json_schema_validation_error_links.html">SIMPLE_JSON_SCHEMA_VALIDATION_ERROR</a>
+	<a class="eclass" href="../simple_json/simple_json_schema_validation_result_links.html">SIMPLE_JSON_SCHEMA_VALIDATION_RESULT</a>
+	<a class="eclass" href="../simple_json/simple_json_serializable_links.html">SIMPLE_JSON_SERIALIZABLE</a><span class="echar">*</span>
+	<a class="eclass" href="../simple_json/simple_json_stream_element_links.html">SIMPLE_JSON_STREAM_ELEMENT</a>
+	<a class="eclass" href="../simple_json/simple_json_value_links.html">SIMPLE_JSON_VALUE</a>
+	<a class="eclass" href="../src/simple_sql_audit_links.html">SIMPLE_SQL_AUDIT</a>
+	<a class="eclass" href="../src/simple_sql_backup_links.html">SIMPLE_SQL_BACKUP</a>
+	<a class="eclass" href="../src/simple_sql_batch_links.html">SIMPLE_SQL_BATCH</a>
+	<a class="eclass" href="../src/simple_sql_column_info_links.html">SIMPLE_SQL_COLUMN_INFO</a>
+	<a class="eclass" href="../src/simple_sql_eager_loader_links.html">SIMPLE_SQL_EAGER_LOADER</a>
+	<a class="eclass" href="../src/simple_sql_eager_result_links.html">SIMPLE_SQL_EAGER_RESULT</a>
+	<a class="eclass" href="../src/simple_sql_error_links.html">SIMPLE_SQL_ERROR</a>
+	<a class="eclass" href="../src/simple_sql_error_code_links.html">SIMPLE_SQL_ERROR_CODE</a>
+	<a class="eclass" href="../src/simple_sql_export_links.html">SIMPLE_SQL_EXPORT</a>
+	<a class="eclass" href="../src/simple_sql_foreign_key_info_links.html">SIMPLE_SQL_FOREIGN_KEY_INFO</a>
+	<a class="eclass" href="../src/simple_sql_fts5_links.html">SIMPLE_SQL_FTS5</a>
+	<a class="eclass" href="../src/simple_sql_fts5_query_links.html">SIMPLE_SQL_FTS5_QUERY</a>
+	<a class="eclass" href="../src/simple_sql_import_links.html">SIMPLE_SQL_IMPORT</a>
+	<a class="eclass" href="../src/simple_sql_index_info_links.html">SIMPLE_SQL_INDEX_INFO</a>
+	<a class="eclass" href="../src/simple_sql_json_links.html">SIMPLE_SQL_JSON</a>
+	<a class="eclass" href="../src/simple_sql_json_helpers_links.html">SIMPLE_SQL_JSON_HELPERS</a>
+	<a class="eclass" href="../src/simple_sql_migration_links.html">SIMPLE_SQL_MIGRATION</a><span class="echar">*</span>
+	<a class="eclass" href="../src/simple_sql_migration_runner_links.html">SIMPLE_SQL_MIGRATION_RUNNER</a>
+	<a class="eclass" href="../src/simple_sql_page_links.html">SIMPLE_SQL_PAGE</a>
+	<a class="eclass" href="../src/simple_sql_paginator_links.html">SIMPLE_SQL_PAGINATOR</a>
+	<a class="eclass" href="../src/simple_sql_pragma_config_links.html">SIMPLE_SQL_PRAGMA_CONFIG</a>
+	<a class="eclass" href="../src/simple_sql_prepared_statement_links.html">SIMPLE_SQL_PREPARED_STATEMENT</a>
+	<a class="eclass" href="../src/simple_sql_query_builder_links.html">SIMPLE_SQL_QUERY_BUILDER</a><span class="echar">*</span>
+	<a class="eclass" href="../src/simple_sql_query_monitor_links.html">SIMPLE_SQL_QUERY_MONITOR</a>
+	<a class="eclass" href="../src/simple_sql_raw_expression_links.html">SIMPLE_SQL_RAW_EXPRESSION</a>
+	<a class="eclass" href="../src/simple_sql_repository_links.html">SIMPLE_SQL_REPOSITORY</a><span class="echar">*</span> <span class="esymbol">[</span><span class="egeneric">G</span> <span class="esymbol">-&gt;</span> <a class="eclass" href="../base/any_links.html">ANY</a><span class="esymbol">]</span>
+	<a class="eclass" href="../src/simple_sql_result_links.html">SIMPLE_SQL_RESULT</a>
+	<a class="eclass" href="../src/simple_sql_result_stream_links.html">SIMPLE_SQL_RESULT_STREAM</a>
+	<a class="eclass" href="../src/simple_sql_row_links.html">SIMPLE_SQL_ROW</a>
+	<a class="eclass" href="../src/simple_sql_schema_links.html">SIMPLE_SQL_SCHEMA</a>
+	<a class="eclass" href="../src/simple_sql_similarity_links.html">SIMPLE_SQL_SIMILARITY</a>
+	<a class="eclass" href="../src/simple_sql_table_info_links.html">SIMPLE_SQL_TABLE_INFO</a>
+	<a class="eclass" href="../src/simple_sql_vector_links.html">SIMPLE_SQL_VECTOR</a>
+	<a class="eclass" href="../src/simple_sql_vector_store_links.html">SIMPLE_SQL_VECTOR_STORE</a>
+	<a class="eclass" href="../base_extension/sorter_links.html">SORTER</a><span class="echar">*</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<a class="eclass" href="../sqlite/sqlite_action_codes_links.html">SQLITE_ACTION_CODES</a>
+	<a class="eclass" href="../sqlite/sqlite_api_links.html">SQLITE_API</a>
+	<a class="eclass" href="../sqlite/sqlite_api_externals_links.html">SQLITE_API_EXTERNALS</a>
+	<a class="eclass" href="../sqlite/sqlite_backup_externals_links.html">SQLITE_BACKUP_EXTERNALS</a>
+	<a class="eclass" href="../sqlite/sqlite_bind_arg_links.html">SQLITE_BIND_ARG</a><span class="echar">*</span> <span class="esymbol">[</span><span class="egeneric">G</span> <span class="esymbol">-&gt;</span> <a class="eclass" href="../base/any_links.html">ANY</a><span class="esymbol">]</span>
+	<a class="eclass" href="../sqlite/sqlite_database_externals_links.html">SQLITE_DATABASE_EXTERNALS</a>
+	<a class="eclass" href="../sqlite/sqlite_experimental_externals_links.html">SQLITE_EXPERIMENTAL_EXTERNALS</a>
+	<a class="eclass" href="../sqlite/sqlite_extended_ioerr_codes_links.html">SQLITE_EXTENDED_IOERR_CODES</a>
+	<a class="eclass" href="../sqlite/sqlite_externals_links.html">SQLITE_EXTERNALS</a>
+	<a class="eclass" href="../sqlite/sqlite_helpers_links.html">SQLITE_HELPERS</a>
+	<a class="eclass" href="../sqlite/sqlite_internals_links.html">SQLITE_INTERNALS</a><span class="echar">*</span>
+	<a class="eclass" href="../sqlite/sqlite_open_mode_links.html">SQLITE_OPEN_MODE</a>
+	<a class="eclass" href="../sqlite/sqlite_result_code_links.html">SQLITE_RESULT_CODE</a>
+	<a class="eclass" href="../sqlite/sqlite_result_externals_links.html">SQLITE_RESULT_EXTERNALS</a>
+	<a class="eclass" href="../sqlite/sqlite_result_set_links.html">SQLITE_RESULT_SET</a><span class="echar">*</span>
+	<a class="eclass" href="../sqlite/sqlite_shared_api_links.html">SQLITE_SHARED_API</a>
+	<a class="eclass" href="../sqlite/sqlite_source_links.html">SQLITE_SOURCE</a><span class="echar">*</span>
+	<a class="eclass" href="../sqlite/sqlite_statement_externals_links.html">SQLITE_STATEMENT_EXTERNALS</a>
+	<a class="eclass" href="../sqlite/sqlite_threading_mode_links.html">SQLITE_THREADING_MODE</a>
+	<a class="eclass" href="../sqlite/sqlite_type_links.html">SQLITE_TYPE</a>
+	<a class="eclass" href="../sqlite/sqlite_update_action_links.html">SQLITE_UPDATE_ACTION</a>
+	<a class="eclass" href="../base/std_files_links.html">STD_FILES</a>
+	<a class="eclass" href="../base/string_handler_links.html">STRING_HANDLER</a>
+	<a class="eclass" href="../base/string_searcher_links.html">STRING_SEARCHER</a><span class="echar">*</span>
+	<a class="eclass" href="../base/subset_strategy_links.html">SUBSET_STRATEGY</a><span class="echar">*</span> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+	<a class="eclass" href="../base/system_encodings_links.html">SYSTEM_ENCODINGS</a>
+	<span class="neclass">SYSTEM_ENCODINGS_I</span><span class="echar">*</span>
+	<a class="eclass" href="../base/system_string_links.html">SYSTEM_STRING</a>
+	<a class="eclass" href="../base/system_string_factory_links.html">SYSTEM_STRING_FACTORY</a>
+	<a class="eclass" href="../base/test_case_links.html">TEST_CASE</a><span class="echar">*</span>
+	<a class="eclass" href="../base/thread_environment_links.html">THREAD_ENVIRONMENT</a>
+	<span class="neclass">TIME_UTILITY</span>
+	<span class="neclass">TIME_VALIDITY_CHECKER</span>
+	<a class="eclass" href="../base_extension/topological_sorter_links.html">TOPOLOGICAL_SORTER</a> <span class="esymbol">[</span><span class="egeneric">G</span> <span class="esymbol">-&gt;</span> <a class="eclass" href="../base/hashable_links.html">HASHABLE</a><span class="esymbol">]</span>
+	<a class="eclass" href="../base/to_special_links.html">TO_SPECIAL</a> <span class="esymbol">[</span><span class="egeneric">T</span><span class="esymbol">]</span>
+	<a class="eclass" href="../base/tracing_handler_links.html">TRACING_HANDLER</a><span class="echar">*</span>
+	<a class="eclass" href="../base/tracing_setting_links.html">TRACING_SETTING</a>
+	<span class="neclass">UC_CHARACTER_CODES</span>
+	<span class="neclass">UC_IMPORTED_UNICODE_ROUTINES</span>
+	<span class="neclass">UC_IMPORTED_UTF16_ROUTINES</span>
+	<span class="neclass">UC_IMPORTED_UTF32_ROUTINES</span>
+	<span class="neclass">UC_IMPORTED_UTF8_ROUTINES</span>
+	<span class="neclass">UC_SHARED_STRING_COMPARATOR</span>
+	<span class="neclass">UC_SHARED_STRING_EQUALITY_TESTER</span>
+	<span class="neclass">UC_STRING</span>
+	<span class="neclass">UC_STRING_HANDLER</span>
+	<span class="neclass">UC_UNICODE_ROUTINES</span>
+	<span class="neclass">UC_UNICODE_VERSIONING</span><span class="echar">*</span>
+	<span class="neclass">UC_V510_CTYPE_LOWERCASE</span>
+	<span class="neclass">UC_V510_CTYPE_TITLECASE</span>
+	<span class="neclass">UC_V510_CTYPE_UPPERCASE</span>
+	<a class="eclass" href="../base/unix_signals_links.html">UNIX_SIGNALS</a>
+	<a class="eclass" href="../base/utf_converter_links.html">UTF_CONVERTER</a>
+	<span class="neclass">UT_ARRAY_FORMATTER</span>
+	<span class="neclass">UT_BOOLEAN_FORMATTER</span>
+	<span class="neclass">UT_CHARACTER_CODES</span>
+	<span class="neclass">UT_CHARACTER_FORMATTER</span>
+	<span class="neclass">UT_COUNTER</span>
+	<span class="neclass">UT_CSV_HANDLER</span>
+	<span class="neclass">UT_ERROR</span><span class="echar">*</span>
+	<span class="neclass">UT_ERROR_HANDLER</span>
+	<span class="neclass">UT_FILENAME_HANDLER</span>
+	<span class="neclass">UT_FILE_URI_ROUTINES</span>
+	<span class="neclass">UT_HOST_PORT</span>
+	<span class="neclass">UT_HOST_PORT_ROUTINES</span>
+	<span class="neclass">UT_IMPORTED_FORMATTERS</span>
+	<span class="neclass">UT_INTEGER_FORMATTER</span>
+	<span class="neclass">UT_MEDIA_TYPE</span>
+	<span class="neclass">UT_SHARED_ECF_VERSIONS</span>
+	<span class="neclass">UT_SHARED_ECMA_VERSIONS</span>
+	<span class="neclass">UT_SHARED_FILE_URI_ROUTINES</span>
+	<span class="neclass">UT_SHARED_ISE_VERSIONS</span>
+	<span class="neclass">UT_SHARED_MEDIA_TYPE_EQUALITY_TESTER</span>
+	<span class="neclass">UT_SHARED_URL_ENCODING</span>
+	<span class="neclass">UT_STRING_FORMATTER</span>
+	<span class="neclass">UT_TRISTATE</span>
+	<span class="neclass">UT_URI</span>
+	<span class="neclass">UT_URI_STRING</span>
+	<span class="neclass">UT_URL_ENCODING</span>
+	<span class="neclass">UT_VERSION</span>
+	<a class="eclass" href="../base/versionable_links.html">VERSIONABLE</a><span class="echar">*</span>
+	<span class="neclass">XOR_SHIFT_64</span>
+	<span class="neclass">YY_BUFFER</span>
+	<span class="neclass">YY_PARSER</span><span class="echar">*</span>
+	<span class="neclass">YY_PARSER_ACTION</span>
+	<span class="neclass">YY_PARSER_TOKENS</span><span class="echar">*</span>
+	<span class="neclass">YY_SCANNER</span><span class="echar">*</span>
+
+<span class="ekeyword">Clients</span>
+	<a class="eclass" href="../base/any_links.html">ANY</a>
+	<span class="neclass">EJSON</span>
+	<a class="eclass" href="../base/internal_links.html">INTERNAL</a>
+	<a class="eclass" href="../base/ise_scoop_runtime_links.html">ISE_SCOOP_RUNTIME</a>
+	<span class="neclass">JSON_REFLECTOR_DESERIALIZER</span>
+	<span class="neclass">JSON_SERIALIZER_CONTEXT</span>
+	<span class="neclass">JSON_SERIALIZER_REFERENCE_COLLECTION</span>
+	<span class="neclass">JSON_SMART_REFLECTOR_DESERIALIZER</span>
+	<span class="neclass">KL_ANY_ROUTINES</span>
+	<span class="neclass">KL_HASHABLE_ROUTINES</span>
+	<a class="eclass" href="../base/memory_links.html">MEMORY</a>
+	<a class="eclass" href="../base/mismatch_information_links.html">MISMATCH_INFORMATION</a>
+	<a class="eclass" href="../base/reflected_object_links.html">REFLECTED_OBJECT</a><span class="echar">*</span>
+	<a class="eclass" href="../base/reflector_links.html">REFLECTOR</a>
+	<a class="eclass" href="../base/routine_links.html">ROUTINE</a><span class="echar">*</span> <span class="esymbol">[</span><span class="egeneric">OPEN_ARGS</span> <span class="esymbol">-&gt;</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../base/tuple_links.html">TUPLE</a> <span class="ekeyword">create</span> <a class="efeature" href="../base/any_short.html#f_default_create">default_create</a> <span class="ekeyword">end</span><span class="esymbol">]</span>
+	<span class="neclass">RT_DBG_ATTRIBUTE_RECORD</span> <span class="esymbol">[</span><span class="egeneric">G</span> <span class="esymbol">-&gt;</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../base/any_links.html">ANY</a><span class="esymbol">]</span>
+	<span class="neclass">RT_DBG_CALL_RECORD</span>
+	<span class="neclass">RT_DBG_EXECUTION_RECORDER</span>
+	<span class="neclass">RT_DBG_FIELD_RECORD</span> <span class="esymbol">[</span><span class="egeneric">G</span> <span class="esymbol">-&gt;</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../base/any_links.html">ANY</a><span class="esymbol">]</span>
+	<span class="neclass">RT_DBG_INTERNAL</span><span class="echar">*</span>
+	<span class="neclass">RT_DBG_LOCAL_RECORD</span> <span class="esymbol">[</span><span class="egeneric">G</span> <span class="esymbol">-&gt;</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../base/any_links.html">ANY</a><span class="esymbol">]</span>
+	<span class="neclass">RT_EXTENSION</span>
+	<span class="neclass">RT_EXTENSION_GENERAL</span><span class="echar">*</span>
+	<a class="eclass" href="../base/sed_error_factory_links.html">SED_ERROR_FACTORY</a>
+	<a class="eclass" href="../base/sed_recoverable_deserializer_links.html">SED_RECOVERABLE_DESERIALIZER</a>
+	<a class="eclass" href="../src/simple_sql_fts5_links.html">SIMPLE_SQL_FTS5</a>
+	<a class="eclass" href="../src/simple_sql_json_links.html">SIMPLE_SQL_JSON</a>
+	<a class="eclass" href="../src/simple_sql_paginator_links.html">SIMPLE_SQL_PAGINATOR</a>
+	<a class="eclass" href="../src/simple_sql_query_builder_links.html">SIMPLE_SQL_QUERY_BUILDER</a><span class="echar">*</span>
+	<a class="eclass" href="../sqlite/sqlite_binding_helpers_links.html">SQLITE_BINDING_HELPERS</a>
+	<a class="eclass" href="../sqlite/sqlite_bind_arg_marshaller_links.html">SQLITE_BIND_ARG_MARSHALLER</a>
+
+<span class="ekeyword">Suppliers</span>
+	<a class="eclass" href="../base/any_links.html">ANY</a>
+	<a class="eclass" href="../base/boolean_links.html">BOOLEAN</a>
+	<a class="eclass" href="../base/exceptions_links.html">EXCEPTIONS</a>
+	<a class="eclass" href="../base/mismatch_corrector_links.html">MISMATCH_CORRECTOR</a>
+	<a class="eclass" href="../base/operating_environment_links.html">OPERATING_ENVIRONMENT</a>
+	<a class="eclass" href="../base/readable_string_8_links.html">READABLE_STRING_8</a><span class="echar">*</span>
+	<a class="eclass" href="../base/std_files_links.html">STD_FILES</a>
+	<a class="eclass" href="../base/string_32_links.html">STRING_32</a>
+	<a class="eclass" href="../base/string_8_links.html">STRING_8</a>
+	<a class="eclass" href="../base/type_links.html">TYPE</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+
+</pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="any_chart.html">Chart</a>
+<span class="nav class selected">Relations</span>
+<a class="nav class" href="any_short.html">Contracts</a>
+<span class="nav class goto">Go to: <input name="c" value="any"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>

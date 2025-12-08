@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="JSON Merge Patch implementation (RFC 7386).  Provides simple merge semantics for JSON documents where patch is a JSON document describing changes to make.  Unlike JSON Patch (RFC 6902), Merge Patch: - Uses JSON itself as the patch format - Has simpler merge semantics - Is easier for humans to create - Cannot test values or move/copy"/>
+<meta name="legal" content="See notice at end of class."/>
+<meta name="eis" content="name=JSON Merge Patch RFC 7386, src=https://tools.ietf.org/html/rfc7386, tag=specification, merge-patch"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="2025, Larry Rix"/>
+<meta name="license" content="MIT License"/>
+<meta name="source" content="SIMPLE_JSON Project https://github.com/ljr1981/simple_json"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_json_merge_patch Chart</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<span class="nav class selected">Chart</span>
+<a class="nav class" href="simple_json_merge_patch_links.html">Relations</a>
+<a class="nav class" href="simple_json_merge_patch_short.html">Contracts</a>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_merge_patch"></span>
+</div></form><pre><span class="ekeyword">class</span>
+	<a class="eclass" href="../simple_json/simple_json_merge_patch_chart.html">SIMPLE_JSON_MERGE_PATCH</a>
+
+<span class="ekeyword">General</span>
+	<span class="eitag">cluster</span><span class="esymbol">:</span> <span class="necluster">src</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> 
+		<span class="estring">&quot;JSON Merge Patch implementation (RFC 7386).</span>
+		
+		<span class="estring">Provides simple merge semantics for JSON documents where</span>
+		<span class="estring">patch is a JSON document describing changes to make.</span>
+		
+		<span class="estring">Unlike JSON Patch (RFC 6902), Merge Patch:</span>
+		<span class="estring">- Uses JSON itself as the patch format</span>
+		<span class="estring">- Has simpler merge semantics</span>
+		<span class="estring">- Is easier for humans to create</span>
+		<span class="estring">- Cannot test values or move/copy&quot;</span>
+	<span class="eitag">create</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_merge_patch_short.html#f_make">make</a><span class="esymbol">,</span> <a class="efeature" href="../simple_json/simple_json_merge_patch_short.html#f_make_from_json">make_from_json</a><span class="esymbol">,</span> <a class="efeature" href="../simple_json/simple_json_merge_patch_short.html#f_make_from_string">make_from_string</a>
+
+<span class="ekeyword">Ancestors</span>
+	<a class="eclass" href="../base/any_chart.html">ANY</a>
+
+<span class="ekeyword">Queries</span>
+	<span title="`apply' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_merge_patch_short.html#f_apply">apply</a> <span class="esymbol">(</span><span class="elocal">a_target</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_value_chart.html">SIMPLE_JSON_VALUE</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_merge_patch_result_chart.html">SIMPLE_JSON_MERGE_PATCH_RESULT</a></span>
+	<span title="`has_errors' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_merge_patch_short.html#f_has_errors">has_errors</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_chart.html">BOOLEAN</a></span>
+	<span title="`is_valid' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_merge_patch_short.html#f_is_valid">is_valid</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_chart.html">BOOLEAN</a></span>
+	<span title="`patch_document' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_merge_patch_short.html#f_patch_document">patch_document</a><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_value_chart.html">SIMPLE_JSON_VALUE</a></span>
+	<span title="`validation_errors' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_merge_patch_short.html#f_validation_errors">validation_errors</a><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_chart.html">ARRAYED_LIST</a> <span class="esymbol">[</span><a class="eclass" href="../base/string_8_chart.html">STRING_8</a><span class="esymbol">]</span></span>
+
+<span class="ekeyword">Constraints</span>
+	<span class="etag">patch document attached</span>
+	<span class="etag">validation errors attached</span>
+	<span class="etag">is valid definition</span>
+	<span class="etag">has errors definition</span>
+	<span class="etag">no void error messages</span>
+
+</pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<span class="nav class selected">Chart</span>
+<a class="nav class" href="simple_json_merge_patch_links.html">Relations</a>
+<a class="nav class" href="simple_json_merge_patch_short.html">Contracts</a>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_merge_patch"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>

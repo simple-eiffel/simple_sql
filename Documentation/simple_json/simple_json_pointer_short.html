@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="JSON Pointer (RFC 6901) - simpler than JSONPath. Format: /path/to/element or /array/0 Used by JSON Patch operations to specify locations."/>
+<meta name="eis" content="name=RFC 6901, protocol=URI, src=https://tools.ietf.org/html/rfc6901"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="2025, Larry Rix"/>
+<meta name="license" content="MIT License"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_json_pointer Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_json_pointer_chart.html">Chart</a>
+<a class="nav class" href="simple_json_pointer_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_pointer"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">JSON Pointer (RFC 6901) - simpler than JSONPath.</span>
+		<span class="estring">Format: /path/to/element or /array/0</span>
+		<span class="estring">Used by JSON Patch operations to specify locations.</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+	<span class="eitag">eis</span><span class="esymbol">:</span> <span class="estring">&quot;name=RFC 6901&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;protocol=URI&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;src=</span><a class="estring" href="https://tools.ietf.org/html/rfc6901">https://tools.ietf.org/html/rfc6901</a><span class="estring">&quot;</span>
+	<span class="eitag">eis</span><span class="esymbol">:</span> <span class="estring">&quot;name=Documentation&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;protocol=URI&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;src=</span><a class="estring" href="file://$">file://$</a><span class="estring">(SYSTEM_PATH)/docs/docs/pointer/simple_json_pointer.html&quot;</span>
+
+<span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../simple_json/simple_json_pointer_short.html">SIMPLE_JSON_POINTER</a>
+
+<span class="ekeyword">create</span> 
+	<a class="efeature" href="../base/any_short.html#f_default_create">default_create</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Access</span>
+
+	<a name="f_segments"></a><a class="efeature" href="../simple_json/simple_json_pointer_short.html#f_segments">segments</a><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_short.html">ARRAYED_LIST</a> <span class="esymbol">[</span><a class="eclass" href="../base/string_32_short.html">STRING_32</a><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> Path segments</span>
+
+	<a name="f_last_segment"></a><a class="efeature" href="../simple_json/simple_json_pointer_short.html#f_last_segment">last_segment</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Last segment of the path (property name or array index)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">has_segments</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../simple_json/simple_json_pointer_short.html#f_segments">segments</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Parsing</span>
+
+	<a name="f_parse_path"></a><a class="efeature" href="../simple_json/simple_json_pointer_short.html#f_parse_path">parse_path</a> <span class="esymbol">(</span><span class="elocal">a_path</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Parse JSON Pointer path into segments</span>
+			<span class="ecomment">--</span><span class="ecomment"> Supports: /key, /key/nested, /array/0</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">path_not_void</span><span class="esymbol">:</span> <span class="elocal">a_path</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">success_has_segments</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <span class="esymbol">(</span><a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_path</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_32_short.html#f_is_equal">is_equal</a><span class="esymbol"> </span><span class="esymbol">(</span>&quot;/&quot;<span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_as_string_32">as_string_32</a><span class="esymbol">)</span> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../simple_json/simple_json_pointer_short.html#f_segments">segments</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a><span class="esymbol">)</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Navigation</span>
+
+	<a name="f_navigate"></a><a class="efeature" href="../simple_json/simple_json_pointer_short.html#f_navigate">navigate</a> <span class="esymbol">(</span><span class="elocal">a_document</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_value_short.html">SIMPLE_JSON_VALUE</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../simple_json/simple_json_value_short.html">SIMPLE_JSON_VALUE</a>
+			<span class="ecomment">--</span><span class="ecomment"> Navigate to the value at this path</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">document_not_void</span><span class="esymbol">:</span> <span class="elocal">a_document</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+
+	<a name="f_navigate_to_parent"></a><a class="efeature" href="../simple_json/simple_json_pointer_short.html#f_navigate_to_parent">navigate_to_parent</a> <span class="esymbol">(</span><span class="elocal">a_document</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_value_short.html">SIMPLE_JSON_VALUE</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../simple_json/simple_json_value_short.html">SIMPLE_JSON_VALUE</a>
+			<span class="ecomment">--</span><span class="ecomment"> Navigate to the parent container of the target</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">document_not_void</span><span class="esymbol">:</span> <span class="elocal">a_document</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">has_parent</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_pointer_short.html#f_segments">segments</a><span class="edot">.</span><a class="efeature" href="../base/arrayed_list_short.html#f_count">count</a> <a class="esymbol" href="../base/comparable_short.html#f_is_greater">&gt;</a> <span class="enumber">0</span>
+	
+<span class="ekeyword">invariant</span>
+	<span class="etag">segments_attached</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_pointer_short.html#f_segments">segments</a> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	<span class="etag">no_void_segments</span><span class="esymbol">:</span> <span class="ekeyword">across</span>
+			<a class="efeature" href="../simple_json/simple_json_pointer_short.html#f_segments">segments</a> <span class="ekeyword">as</span> ic_seg
+		<span class="ekeyword">all</span>
+			<span class="elocal">ic_seg</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+		<span class="ekeyword">end</span>
+	<span class="etag">no_empty_segments</span><span class="esymbol">:</span> <span class="ekeyword">across</span>
+			<a class="efeature" href="../simple_json/simple_json_pointer_short.html#f_segments">segments</a> <span class="ekeyword">as</span> ic_seg
+		<span class="ekeyword">all</span>
+			<a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">ic_seg</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+		<span class="ekeyword">end</span>
+
+<span class="ekeyword">note</span>
+	<span class="eitag">copyright</span><span class="esymbol">:</span> <span class="estring">&quot;2025, Larry Rix&quot;</span>
+	<span class="eitag">license</span><span class="esymbol">:</span> <span class="estring">&quot;MIT License&quot;</span>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../simple_json/simple_json_pointer_short.html">SIMPLE_JSON_POINTER</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_json_pointer_chart.html">Chart</a>
+<a class="nav class" href="simple_json_pointer_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_pointer"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

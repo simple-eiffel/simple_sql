@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="JSON Patch 'replace' operation (RFC 6902). Replaces the value at the specified path. The target location MUST exist."/>
+<meta name="eis" content="name=RFC 6902 Replace, protocol=URI, src=https://tools.ietf.org/html/rfc6902#section-4.3"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="2025, Larry Rix"/>
+<meta name="license" content="MIT License"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_json_patch_replace Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_json_patch_replace_chart.html">Chart</a>
+<a class="nav class" href="simple_json_patch_replace_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_patch_replace"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">JSON Patch 'replace' operation (RFC 6902).</span>
+		<span class="estring">Replaces the value at the specified path.</span>
+		<span class="estring">The target location MUST exist.</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+	<span class="eitag">eis</span><span class="esymbol">:</span> <span class="estring">&quot;name=RFC 6902 Replace&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;protocol=URI&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;src=</span><a class="estring" href="https://tools.ietf.org/html/rfc6902#section-4.3">https://tools.ietf.org/html/rfc6902#section-4.3</a><span class="estring">&quot;</span>
+	<span class="eitag">eis</span><span class="esymbol">:</span> <span class="estring">&quot;name=Documentation&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;protocol=URI&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;src=</span><a class="estring" href="file://$">file://$</a><span class="estring">(SYSTEM_PATH)/docs/docs/patch/simple_json_patch.html&quot;</span>
+
+<span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../simple_json/simple_json_patch_replace_short.html">SIMPLE_JSON_PATCH_REPLACE</a>
+
+<span class="ekeyword">create</span> 
+	<a class="efeature" href="../simple_json/simple_json_patch_replace_short.html#f_make">make</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Access</span>
+
+	<a name="f_op"></a><a class="efeature" href="../simple_json/simple_json_patch_replace_short.html#f_op">Op</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Operation name</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Status report</span>
+
+	<a name="f_is_valid"></a><a class="efeature" href="../simple_json/simple_json_patch_replace_short.html#f_is_valid">is_valid</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is this operation valid?</span>
+
+	<a name="f_requires_value"></a><a class="efeature" href="../simple_json/simple_json_patch_replace_short.html#f_requires_value">Requires_value</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a> <span class="esymbol">=</span> <span class="ekeyword">True</span>
+			<span class="ecomment">--</span><span class="ecomment"> Replace requires a value</span>
+
+	<a name="f_requires_from"></a><a class="efeature" href="../simple_json/simple_json_patch_replace_short.html#f_requires_from">Requires_from</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a> <span class="esymbol">=</span> <span class="ekeyword">False</span>
+			<span class="ecomment">--</span><span class="ecomment"> Replace doesn't need a from path</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Operations</span>
+
+	<a name="f_apply"></a><a class="efeature" href="../simple_json/simple_json_patch_replace_short.html#f_apply">apply</a> <span class="esymbol">(</span><span class="elocal">a_document</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_value_short.html">SIMPLE_JSON_VALUE</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_patch_result_short.html">SIMPLE_JSON_PATCH_RESULT</a>
+			<span class="ecomment">--</span><span class="ecomment"> Replace value at path in document</span>
+	
+<span class="ekeyword">invariant</span>
+	<span class="etag">replace_requires_value</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_patch_replace_short.html#f_requires_value">Requires_value</a>
+	<span class="etag">replace_not_requires_from</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../simple_json/simple_json_patch_replace_short.html#f_requires_from">Requires_from</a>
+	<span class="etag">valid_definition</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_patch_replace_short.html#f_is_valid">is_valid</a> <span class="esymbol">=</span> <span class="esymbol">(</span><a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../simple_json/simple_json_patch_operation_short.html#f_path">path</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a> <a class="ekeyword" href="../base/boolean_short.html#f_conjuncted">and</a> <a class="efeature" href="../simple_json/simple_json_patch_operation_short.html#f_value">value</a> <span class="esymbol">/=</span> <span class="ekeyword">Void</span><span class="esymbol">)</span>
+
+<span class="ekeyword">note</span>
+	<span class="eitag">copyright</span><span class="esymbol">:</span> <span class="estring">&quot;2025, Larry Rix&quot;</span>
+	<span class="eitag">license</span><span class="esymbol">:</span> <span class="estring">&quot;MIT License&quot;</span>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../simple_json/simple_json_patch_replace_short.html">SIMPLE_JSON_PATCH_REPLACE</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_json_patch_replace_chart.html">Chart</a>
+<a class="nav class" href="simple_json_patch_replace_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_patch_replace"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

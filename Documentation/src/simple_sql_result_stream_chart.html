@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="TTStreaming query processor for memory-efficient row-by-row handling.  TTUnlike SIMPLE_SQL_RESULT which loads all rows into memory, or TTSIMPLE_SQL_CURSOR which buffers rows, SIMPLE_SQL_RESULT_STREAM TTprocesses each row via a callback action, never holding more than TTone row in memory at a time.  TTUse cases: TTT- Processing millions of rows without memory exhaustion TTT- ETL operations (extract, transform, load) TTT- Generating reports from large datasets TTT- Aggregating statistics row-by-row  TTUsage with action: TTTdb.query_stream (SELECT * FROM huge_table, agent process_row)  TTTprocess_row (a_row: SIMPLE_SQL_ROW): BOOLEAN TTTTdo TTTTT-- process row TTTTTResult := False -- Continue (True to stop) TTTTend  TTUsage with class: TTTstream := db.create_stream (SELECT * FROM huge_table) TTTstream.for_each (agent process_row)  TTAdvanced - stop early: TTTstream.for_each (agent (row: SIMPLE_SQL_ROW): BOOLEAN TTTTdo TTTTTif row.integer_value (id) > 1000 then TTTTTTResult := True -- Stop iteration TTTTTend TTTTend)"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="Copyright (c) 2025, Larry Rix"/>
+<meta name="license" content="MIT License"/>
+<meta name="source" content="SIMPLE_SQL - High-level SQLite API for Eiffel"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_sql_result_stream Chart</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<span class="nav class selected">Chart</span>
+<a class="nav class" href="simple_sql_result_stream_links.html">Relations</a>
+<a class="nav class" href="simple_sql_result_stream_short.html">Contracts</a>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_result_stream"></span>
+</div></form><pre><span class="ekeyword">class</span>
+	<a class="eclass" href="../src/simple_sql_result_stream_chart.html">SIMPLE_SQL_RESULT_STREAM</a>
+
+<span class="ekeyword">General</span>
+	<span class="eitag">cluster</span><span class="esymbol">:</span> <a class="ecluster" href="../src/index.html">src</a>
+	<span class="eitag">description</span><span class="esymbol">:</span> 
+		<span class="estring">&quot;Streaming query processor for memory-efficient row-by-row handling.</span>
+		
+		<span class="estring">Unlike SIMPLE_SQL_RESULT which loads all rows into memory, or</span>
+		<span class="estring">SIMPLE_SQL_CURSOR which buffers rows, SIMPLE_SQL_RESULT_STREAM</span>
+		<span class="estring">processes each row via a callback action, never holding more than</span>
+		<span class="estring">one row in memory at a time.</span>
+		
+		<span class="estring">Use cases:</span>
+		<span class="estring">- Processing millions of rows without memory exhaustion</span>
+		<span class="estring">- ETL operations (extract, transform, load)</span>
+		<span class="estring">- Generating reports from large datasets</span>
+		<span class="estring">- Aggregating statistics row-by-row</span>
+		
+		<span class="estring">Usage with action:</span>
+		<span class="estring">db.query_stream (%&quot;SELECT * FROM huge_table%&quot;, agent process_row)</span>
+		
+		<span class="estring">process_row (a_row: SIMPLE_SQL_ROW): BOOLEAN</span>
+		<span class="estring">do</span>
+		<span class="estring">-- process row</span>
+		<span class="estring">Result := False -- Continue (True to stop)</span>
+		<span class="estring">end</span>
+		
+		<span class="estring">Usage with class:</span>
+		<span class="estring">stream := db.create_stream (%&quot;SELECT * FROM huge_table%&quot;)</span>
+		<span class="estring">stream.for_each (agent process_row)</span>
+		
+		<span class="estring">Advanced - stop early:</span>
+		<span class="estring">stream.for_each (agent (row: SIMPLE_SQL_ROW): BOOLEAN</span>
+		<span class="estring">do</span>
+		<span class="estring">if row.integer_value (%&quot;id%&quot;) &gt; 1000 then</span>
+		<span class="estring">Result := True -- Stop iteration</span>
+		<span class="estring">end</span>
+		<span class="estring">end)&quot;</span>
+	<span class="eitag">create</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_result_stream_short.html#f_make">make</a>
+
+<span class="ekeyword">Ancestors</span>
+	<a class="eclass" href="../base/any_chart.html">ANY</a>
+
+<span class="ekeyword">Queries</span>
+	<span title="`collect_first' is declared in `Current'"><a class="efeature" href="../src/simple_sql_result_stream_short.html#f_collect_first">collect_first</a> <span class="esymbol">(</span><span class="elocal">a_count</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_chart.html">ARRAYED_LIST</a> <span class="esymbol">[</span><a class="eclass" href="../src/simple_sql_row_chart.html">SIMPLE_SQL_ROW</a><span class="esymbol">]</span></span>
+	<span title="`count_rows' is declared in `Current'"><a class="efeature" href="../src/simple_sql_result_stream_short.html#f_count_rows">count_rows</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`exists' is declared in `Current'"><a class="efeature" href="../src/simple_sql_result_stream_short.html#f_exists">exists</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_chart.html">BOOLEAN</a></span>
+	<span title="`first_row' is declared in `Current'"><a class="efeature" href="../src/simple_sql_result_stream_short.html#f_first_row">first_row</a><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../src/simple_sql_row_chart.html">SIMPLE_SQL_ROW</a></span>
+	<span title="`rows_processed' is declared in `Current'"><a class="efeature" href="../src/simple_sql_result_stream_short.html#f_rows_processed">rows_processed</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`sql' is declared in `Current'"><a class="efeature" href="../src/simple_sql_result_stream_short.html#f_sql">sql</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_chart.html">STRING_8</a></span>
+	<span title="`was_stopped_early' is declared in `Current'"><a class="efeature" href="../src/simple_sql_result_stream_short.html#f_was_stopped_early">was_stopped_early</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_chart.html">BOOLEAN</a></span>
+
+<span class="ekeyword">Commands</span>
+	<span title="`for_each' is declared in `Current'"><a class="efeature" href="../src/simple_sql_result_stream_short.html#f_for_each">for_each</a> <span class="esymbol">(</span><span class="elocal">a_action</span><span class="esymbol">:</span> <a class="eclass" href="../base/function_chart.html">FUNCTION</a> <span class="esymbol">[</span><a class="eclass" href="../src/simple_sql_row_chart.html">SIMPLE_SQL_ROW</a><span class="esymbol">,</span> <a class="eclass" href="../base/boolean_chart.html">BOOLEAN</a><span class="esymbol">]</span><span class="esymbol">)</span></span>
+	<span title="`for_each_do' is declared in `Current'"><a class="efeature" href="../src/simple_sql_result_stream_short.html#f_for_each_do">for_each_do</a> <span class="esymbol">(</span><span class="elocal">a_procedure</span><span class="esymbol">:</span> <a class="eclass" href="../base/procedure_chart.html">PROCEDURE</a> <span class="esymbol">[</span><a class="eclass" href="../src/simple_sql_row_chart.html">SIMPLE_SQL_ROW</a><span class="esymbol">]</span><span class="esymbol">)</span></span>
+
+<span class="ekeyword">Constraints</span>
+	<span class="etag">sql attached</span>
+	<span class="etag">database attached</span>
+	<span class="etag">rows processed non negative</span>
+
+</pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<span class="nav class selected">Chart</span>
+<a class="nav class" href="simple_sql_result_stream_links.html">Relations</a>
+<a class="nav class" href="simple_sql_result_stream_short.html">Contracts</a>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_result_stream"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>

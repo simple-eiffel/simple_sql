@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="JSON Patch 'add' operation (RFC 6902). Adds or replaces a value at the specified path. For arrays: use index to insert, or '-' to append."/>
+<meta name="eis" content="name=RFC 6902 Add, protocol=URI, src=https://tools.ietf.org/html/rfc6902#section-4.1"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="2025, Larry Rix"/>
+<meta name="license" content="MIT License"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_json_patch_add Chart</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<span class="nav class selected">Chart</span>
+<a class="nav class" href="simple_json_patch_add_links.html">Relations</a>
+<a class="nav class" href="simple_json_patch_add_short.html">Contracts</a>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_patch_add"></span>
+</div></form><pre><span class="ekeyword">class</span>
+	<a class="eclass" href="../simple_json/simple_json_patch_add_chart.html">SIMPLE_JSON_PATCH_ADD</a>
+
+<span class="ekeyword">General</span>
+	<span class="eitag">cluster</span><span class="esymbol">:</span> <span class="necluster">src</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> 
+		<span class="estring">&quot;JSON Patch 'add' operation (RFC 6902).</span>
+		<span class="estring">Adds or replaces a value at the specified path.</span>
+		<span class="estring">For arrays: use index to insert, or '-' to append.&quot;</span>
+	<span class="eitag">create</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_patch_add_short.html#f_make">make</a>
+
+<span class="ekeyword">Ancestors</span>
+	<a class="eclass" href="../simple_json/simple_json_patch_operation_chart.html">SIMPLE_JSON_PATCH_OPERATION</a><span class="echar">*</span>
+
+<span class="ekeyword">Queries</span>
+	<span title="`apply' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_patch_add_short.html#f_apply">apply</a> <span class="esymbol">(</span><span class="elocal">a_document</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_value_chart.html">SIMPLE_JSON_VALUE</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_patch_result_chart.html">SIMPLE_JSON_PATCH_RESULT</a></span>
+	<span title="`ascii_control_char_boundary' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_ascii_control_char_boundary">Ascii_control_char_boundary</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`default_elements_capacity' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_default_elements_capacity">Default_elements_capacity</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`default_error_list_size' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_default_error_list_size">Default_error_list_size</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`default_errors_capacity' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_default_errors_capacity">Default_errors_capacity</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`default_path_segments_capacity' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_default_path_segments_capacity">Default_path_segments_capacity</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`default_two_space_indent' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_default_two_space_indent">Default_two_space_indent</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`error_message_buffer_size' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_error_message_buffer_size">Error_message_buffer_size</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`from_path' was declared in SIMPLE_JSON_PATCH_OPERATION"><a class="efeature" href="../simple_json/simple_json_patch_operation_short.html#f_from_path">from_path</a><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`hex_digit_count' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_hex_digit_count">Hex_digit_count</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`hex_last_four_offset' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_hex_last_four_offset">Hex_last_four_offset</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`hex_padding_zero' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_hex_padding_zero">Hex_padding_zero</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`is_valid' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_patch_add_short.html#f_is_valid">is_valid</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_chart.html">BOOLEAN</a></span>
+	<span title="`item_path_buffer_size' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_item_path_buffer_size">Item_path_buffer_size</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`json_close_brace' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_close_brace">Json_close_brace</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`json_close_bracket' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_close_bracket">Json_close_bracket</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`json_colon_space' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_colon_space">Json_colon_space</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`json_comma' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_comma">Json_comma</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`json_empty_array' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_empty_array">Json_empty_array</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`json_empty_object' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_empty_object">Json_empty_object</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`json_escape_backslash' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_escape_backslash">Json_escape_backslash</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`json_escape_backspace' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_escape_backspace">Json_escape_backspace</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`json_escape_formfeed' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_escape_formfeed">Json_escape_formfeed</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`json_escape_newline' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_escape_newline">Json_escape_newline</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`json_escape_quote' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_escape_quote">Json_escape_quote</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`json_escape_return' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_escape_return">Json_escape_return</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`json_escape_tab' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_escape_tab">Json_escape_tab</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`json_escape_unicode_prefix' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_escape_unicode_prefix">Json_escape_unicode_prefix</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`json_false' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_false">Json_false</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`json_null_literal' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_null_literal">Json_null_literal</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`json_open_brace' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_open_brace">Json_open_brace</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`json_open_bracket' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_open_bracket">Json_open_bracket</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`json_quote' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_quote">Json_quote</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`json_true' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_true">Json_true</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`json_type_array' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_type_array">Json_type_array</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`json_type_integer' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_type_integer">Json_type_integer</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`json_type_null' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_type_null">Json_type_null</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`json_type_number' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_type_number">Json_type_number</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`json_type_object' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_type_object">Json_type_object</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`json_type_string' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_json_type_string">Json_type_string</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`max_reasonable_indent_count' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_max_reasonable_indent_count">Max_reasonable_indent_count</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`op' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_patch_add_short.html#f_op">Op</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`path' was declared in SIMPLE_JSON_PATCH_OPERATION"><a class="efeature" href="../simple_json/simple_json_patch_operation_short.html#f_path">path</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`position_prefix_length' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_position_prefix_length">Position_prefix_length</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`requires_from' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_patch_add_short.html#f_requires_from">Requires_from</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_chart.html">BOOLEAN</a></span>
+	<span title="`requires_value' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_patch_add_short.html#f_requires_value">Requires_value</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_chart.html">BOOLEAN</a></span>
+	<span title="`schema_keyword_items' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_schema_keyword_items">Schema_keyword_items</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`schema_keyword_max_items' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_schema_keyword_max_items">Schema_keyword_max_items</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`schema_keyword_max_length' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_schema_keyword_max_length">Schema_keyword_max_length</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`schema_keyword_maximum' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_schema_keyword_maximum">Schema_keyword_maximum</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`schema_keyword_min_items' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_schema_keyword_min_items">Schema_keyword_min_items</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`schema_keyword_min_length' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_schema_keyword_min_length">Schema_keyword_min_length</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`schema_keyword_minimum' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_schema_keyword_minimum">Schema_keyword_minimum</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`schema_keyword_pattern' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_schema_keyword_pattern">Schema_keyword_pattern</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`schema_keyword_properties' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_schema_keyword_properties">Schema_keyword_properties</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`schema_keyword_required' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_schema_keyword_required">Schema_keyword_required</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`schema_keyword_type' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_schema_keyword_type">Schema_keyword_type</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`substring_skip_first_char' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_substring_skip_first_char">Substring_skip_first_char</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`substring_skip_first_two_chars' was declared in SIMPLE_JSON_CONSTANTS"><a class="efeature" href="../simple_json/simple_json_constants_short.html#f_substring_skip_first_two_chars">Substring_skip_first_two_chars</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`to_json_object' was declared in SIMPLE_JSON_PATCH_OPERATION"><a class="efeature" href="../simple_json/simple_json_patch_operation_short.html#f_to_json_object">to_json_object</a><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_object_chart.html">SIMPLE_JSON_OBJECT</a></span>
+	<span title="`value' was declared in SIMPLE_JSON_PATCH_OPERATION"><a class="efeature" href="../simple_json/simple_json_patch_operation_short.html#f_value">value</a><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../simple_json/simple_json_value_chart.html">SIMPLE_JSON_VALUE</a></span>
+
+<span class="ekeyword">Commands</span>
+	<span title="`set_from_path' was declared in SIMPLE_JSON_PATCH_OPERATION"><a class="efeature" href="../simple_json/simple_json_patch_operation_short.html#f_set_from_path">set_from_path</a> <span class="esymbol">(</span><span class="elocal">a_from</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a><span class="esymbol">)</span></span>
+	<span title="`set_path' was declared in SIMPLE_JSON_PATCH_OPERATION"><a class="efeature" href="../simple_json/simple_json_patch_operation_short.html#f_set_path">set_path</a> <span class="esymbol">(</span><span class="elocal">a_path</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a><span class="esymbol">)</span></span>
+	<span title="`set_value' was declared in SIMPLE_JSON_PATCH_OPERATION"><a class="efeature" href="../simple_json/simple_json_patch_operation_short.html#f_set_value">set_value</a> <span class="esymbol">(</span><span class="elocal">a_value</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_value_chart.html">SIMPLE_JSON_VALUE</a><span class="esymbol">)</span></span>
+
+<span class="ekeyword">Constraints</span>
+	<span class="etag">add requires value</span>
+	<span class="etag">add not requires from</span>
+	<span class="etag">valid definition</span>
+
+</pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<span class="nav class selected">Chart</span>
+<a class="nav class" href="simple_json_patch_add_links.html">Relations</a>
+<a class="nav class" href="simple_json_patch_add_short.html">Contracts</a>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_patch_add"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>

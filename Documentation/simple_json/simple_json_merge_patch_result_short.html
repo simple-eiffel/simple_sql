@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="Result of a JSON Merge Patch operation.  Encapsulates the outcome of applying a merge patch, including success/failure status, the merged document, and any error messages."/>
+<meta name="legal" content="See notice at end of class."/>
+<meta name="eis" content="name=Documentation, protocol=URI, src=file://$(SYSTEM_PATH)/docs/docs/merge_patch/simple_json_merge_patch.html"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="2025, Larry Rix"/>
+<meta name="license" content="MIT License"/>
+<meta name="source" content="SIMPLE_JSON Project https://github.com/ljr1981/simple_json"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_json_merge_patch_result Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_json_merge_patch_result_chart.html">Chart</a>
+<a class="nav class" href="simple_json_merge_patch_result_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_merge_patch_result"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">Result of a JSON Merge Patch operation.</span>
+		
+		<span class="estring">Encapsulates the outcome of applying a merge patch,</span>
+		<span class="estring">including success/failure status, the merged document,</span>
+		<span class="estring">and any error messages.</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+	<span class="eitag">legal</span><span class="esymbol">:</span> <span class="estring">&quot;See notice at end of class.&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+	<span class="eitag">eis</span><span class="esymbol">:</span> <span class="estring">&quot;name=Documentation&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;protocol=URI&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;src=</span><a class="estring" href="file://$">file://$</a><span class="estring">(SYSTEM_PATH)/docs/docs/merge_patch/simple_json_merge_patch.html&quot;</span>
+
+<span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../simple_json/simple_json_merge_patch_result_short.html">SIMPLE_JSON_MERGE_PATCH_RESULT</a>
+
+<span class="ekeyword">create</span> 
+	<a class="efeature" href="../simple_json/simple_json_merge_patch_result_short.html#f_make_success">make_success</a><span class="esymbol">,</span>
+	<a class="efeature" href="../simple_json/simple_json_merge_patch_result_short.html#f_make_failure">make_failure</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Access</span>
+
+	<a name="f_merged_document"></a><a class="efeature" href="../simple_json/simple_json_merge_patch_result_short.html#f_merged_document">merged_document</a><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_value_short.html">SIMPLE_JSON_VALUE</a>
+			<span class="ecomment">--</span><span class="ecomment"> The merged document (if successful)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Null value if failed</span>
+
+	<a name="f_error_message"></a><a class="efeature" href="../simple_json/simple_json_merge_patch_result_short.html#f_error_message">error_message</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a>
+			<span class="ecomment">--</span><span class="ecomment"> Error message (if failed)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Empty string if successful</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Status report</span>
+
+	<a name="f_is_success"></a><a class="efeature" href="../simple_json/simple_json_merge_patch_result_short.html#f_is_success">is_success</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Did the merge succeed?</span>
+
+	<a name="f_has_error"></a><a class="efeature" href="../simple_json/simple_json_merge_patch_result_short.html#f_has_error">has_error</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Was there an error?</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">definition</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">=</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../simple_json/simple_json_merge_patch_result_short.html#f_is_success">is_success</a>
+	
+<span class="ekeyword">invariant</span>
+	<span class="etag">merged_document_attached</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_merge_patch_result_short.html#f_merged_document">merged_document</a> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	<span class="etag">error_message_attached</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_merge_patch_result_short.html#f_error_message">error_message</a> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	<span class="etag">success_implies_no_error</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_merge_patch_result_short.html#f_is_success">is_success</a> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <a class="efeature" href="../simple_json/simple_json_merge_patch_result_short.html#f_error_message">error_message</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+	<span class="etag">success_excludes_has_error</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_merge_patch_result_short.html#f_is_success">is_success</a> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../simple_json/simple_json_merge_patch_result_short.html#f_has_error">has_error</a>
+	<span class="etag">failure_implies_error_message</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../simple_json/simple_json_merge_patch_result_short.html#f_is_success">is_success</a> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../simple_json/simple_json_merge_patch_result_short.html#f_error_message">error_message</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+	<span class="etag">failure_has_error</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_merge_patch_result_short.html#f_has_error">has_error</a> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../simple_json/simple_json_merge_patch_result_short.html#f_error_message">error_message</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+	<span class="etag">has_error_definition</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_merge_patch_result_short.html#f_has_error">has_error</a> <span class="esymbol">=</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../simple_json/simple_json_merge_patch_result_short.html#f_is_success">is_success</a>
+	<span class="etag">success_and_error_exclusive</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_merge_patch_result_short.html#f_is_success">is_success</a> <span class="esymbol">=</span> <a class="efeature" href="../simple_json/simple_json_merge_patch_result_short.html#f_error_message">error_message</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+
+<span class="ekeyword">note</span>
+	<span class="eitag">copyright</span><span class="esymbol">:</span> <span class="estring">&quot;2025, Larry Rix&quot;</span>
+	<span class="eitag">license</span><span class="esymbol">:</span> <span class="estring">&quot;MIT License&quot;</span>
+	<span class="eitag">source</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">SIMPLE_JSON Project</span>
+		<a class="estring" href="https://github.com/ljr1981/simple_json">https://github.com/ljr1981/simple_json</a>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../simple_json/simple_json_merge_patch_result_short.html">SIMPLE_JSON_MERGE_PATCH_RESULT</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_json_merge_patch_result_chart.html">Chart</a>
+<a class="nav class" href="simple_json_merge_patch_result_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_merge_patch_result"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

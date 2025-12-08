@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="Base class for fluent SQL query builders"/>
+<meta name="author" content="Jimmy J. Johnson"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_sql_query_builder Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_sql_query_builder_chart.html">Chart</a>
+<a class="nav class" href="simple_sql_query_builder_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_query_builder"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;Base class for fluent SQL query builders&quot;</span>
+	<span class="eitag">author</span><span class="esymbol">:</span> <span class="estring">&quot;Jimmy J. Johnson&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+
+<span class="ekeyword">deferred</span> <span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../src/simple_sql_query_builder_short.html">SIMPLE_SQL_QUERY_BUILDER</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Access</span>
+
+	<a name="f_database"></a><a class="efeature" href="../src/simple_sql_query_builder_short.html#f_database">database</a><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../src/simple_sql_database_short.html">SIMPLE_SQL_DATABASE</a>
+			<span class="ecomment">--</span><span class="ecomment"> Database for execution (optional - can generate SQL only)</span>
+
+	<a name="f_to_sql"></a><a class="efeature" href="../src/simple_sql_query_builder_short.html#f_to_sql">to_sql</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a>
+			<span class="ecomment">--</span><span class="ecomment"> Generate the SQL string</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">result_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="ekeyword">Result</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Element Change</span>
+
+	<a name="f_set_database"></a><a class="efeature" href="../src/simple_sql_query_builder_short.html#f_set_database">set_database</a> <span class="esymbol">(</span><span class="elocal">a_database</span><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_database_short.html">SIMPLE_SQL_DATABASE</a><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Set database for execution</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">database_open</span><span class="esymbol">:</span> <span class="elocal">a_database</span><span class="edot">.</span><a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">database_set</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_query_builder_short.html#f_database">database</a> <span class="esymbol">=</span> <span class="elocal">a_database</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Status</span>
+
+	<a name="f_has_database"></a><a class="efeature" href="../src/simple_sql_query_builder_short.html#f_has_database">has_database</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is a database set for execution?</span>
+	
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../src/simple_sql_query_builder_short.html">SIMPLE_SQL_QUERY_BUILDER</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_sql_query_builder_chart.html">Chart</a>
+<a class="nav class" href="simple_sql_query_builder_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_query_builder"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="Fluent builder for UPDATE statements"/>
+<meta name="author" content="Jimmy J. Johnson"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_sql_update_builder Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_sql_update_builder_chart.html">Chart</a>
+<a class="nav class" href="simple_sql_update_builder_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_update_builder"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;Fluent builder for UPDATE statements&quot;</span>
+	<span class="eitag">author</span><span class="esymbol">:</span> <span class="estring">&quot;Jimmy J. Johnson&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+
+<span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../src/simple_sql_update_builder_short.html">SIMPLE_SQL_UPDATE_BUILDER</a>
+
+<span class="ekeyword">create</span> 
+	<a class="efeature" href="../src/simple_sql_update_builder_short.html#f_make">make</a><span class="esymbol">,</span>
+	<a class="efeature" href="../src/simple_sql_update_builder_short.html#f_make_with_database">make_with_database</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Table</span>
+
+	<a name="f_table"></a><a class="efeature" href="../src/simple_sql_update_builder_short.html#f_table">table</a> <span class="esymbol">(</span><span class="elocal">a_table</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Set the target table</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">table_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_table</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">table_set</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_update_builder_short.html#f_table_name">table_name</a><span class="edot">.</span><a class="efeature" href="../base/readable_string_8_short.html#f_same_string">same_string</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_table</span><span class="esymbol">)</span>
+
+	<a name="f_update"></a><a class="efeature" href="../src/simple_sql_update_builder_short.html#f_update">update</a> <span class="esymbol">(</span><span class="elocal">a_table</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Alias for table - more natural reading</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">table_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_table</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">table_set</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_update_builder_short.html#f_table_name">table_name</a><span class="edot">.</span><a class="efeature" href="../base/readable_string_8_short.html#f_same_string">same_string</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">a_table</span><span class="esymbol">)</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> SET Clauses</span>
+
+	<a name="f_set"></a><a class="efeature" href="../src/simple_sql_update_builder_short.html#f_set">set</a> <span class="esymbol">(</span><span class="elocal">a_column</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_value</span><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../base/any_short.html">ANY</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Set column = value</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">column_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_column</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_set_null"></a><a class="efeature" href="../src/simple_sql_update_builder_short.html#f_set_null">set_null</a> <span class="esymbol">(</span><span class="elocal">a_column</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Set column = NULL</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">column_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_column</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_set_expression"></a><a class="efeature" href="../src/simple_sql_update_builder_short.html#f_set_expression">set_expression</a> <span class="esymbol">(</span><span class="elocal">a_column</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_expression</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Set column = raw SQL expression (not escaped)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Use for things like: set_expression(&quot;counter&quot;, &quot;counter + 1&quot;)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">column_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_column</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+			<span class="etag">expression_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_expression</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_increment"></a><a class="efeature" href="../src/simple_sql_update_builder_short.html#f_increment">increment</a> <span class="esymbol">(</span><span class="elocal">a_column</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Increment column by 1</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">column_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_column</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_increment_by"></a><a class="efeature" href="../src/simple_sql_update_builder_short.html#f_increment_by">increment_by</a> <span class="esymbol">(</span><span class="elocal">a_column</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_amount</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Increment column by amount</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">column_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_column</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_decrement"></a><a class="efeature" href="../src/simple_sql_update_builder_short.html#f_decrement">decrement</a> <span class="esymbol">(</span><span class="elocal">a_column</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Decrement column by 1</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">column_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_column</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_decrement_by"></a><a class="efeature" href="../src/simple_sql_update_builder_short.html#f_decrement_by">decrement_by</a> <span class="esymbol">(</span><span class="elocal">a_column</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_amount</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Decrement column by amount</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">column_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_column</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> WHERE Clauses</span>
+
+	<a name="f_where"></a><a class="efeature" href="../src/simple_sql_update_builder_short.html#f_where">where</a> <span class="esymbol">(</span><span class="elocal">a_condition</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Set the WHERE condition (replaces any existing)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">condition_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_condition</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_where_equals"></a><a class="efeature" href="../src/simple_sql_update_builder_short.html#f_where_equals">where_equals</a> <span class="esymbol">(</span><span class="elocal">a_column</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_value</span><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../base/any_short.html">ANY</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Add WHERE column = value</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">column_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_column</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_where_id"></a><a class="efeature" href="../src/simple_sql_update_builder_short.html#f_where_id">where_id</a> <span class="esymbol">(</span><span class="elocal">a_id</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_64_short.html">INTEGER_64</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Convenience: WHERE id = value</span>
+
+	<a name="f_and_where"></a><a class="efeature" href="../src/simple_sql_update_builder_short.html#f_and_where">and_where</a> <span class="esymbol">(</span><span class="elocal">a_condition</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Add AND condition</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">condition_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_condition</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_and_where_equals"></a><a class="efeature" href="../src/simple_sql_update_builder_short.html#f_and_where_equals">and_where_equals</a> <span class="esymbol">(</span><span class="elocal">a_column</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_value</span><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../base/any_short.html">ANY</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Add AND column = value</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">column_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_column</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_or_where"></a><a class="efeature" href="../src/simple_sql_update_builder_short.html#f_or_where">or_where</a> <span class="esymbol">(</span><span class="elocal">a_condition</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Add OR condition</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">condition_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_condition</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_or_where_equals"></a><a class="efeature" href="../src/simple_sql_update_builder_short.html#f_or_where_equals">or_where_equals</a> <span class="esymbol">(</span><span class="elocal">a_column</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_value</span><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../base/any_short.html">ANY</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Add OR column = value</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">column_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_column</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_where_null"></a><a class="efeature" href="../src/simple_sql_update_builder_short.html#f_where_null">where_null</a> <span class="esymbol">(</span><span class="elocal">a_column</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Add WHERE column IS NULL</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">column_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_column</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_where_not_null"></a><a class="efeature" href="../src/simple_sql_update_builder_short.html#f_where_not_null">where_not_null</a> <span class="esymbol">(</span><span class="elocal">a_column</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Add WHERE column IS NOT NULL</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">column_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_column</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_where_in"></a><a class="efeature" href="../src/simple_sql_update_builder_short.html#f_where_in">where_in</a> <span class="esymbol">(</span><span class="elocal">a_column</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_values</span><span class="esymbol">:</span> <a class="eclass" href="../base/array_short.html">ARRAY</a> <span class="esymbol">[</span><span class="ekeyword">detachable</span> <a class="eclass" href="../base/any_short.html">ANY</a><span class="esymbol">]</span><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">like</span> <span class="ekeyword">Current</span>
+			<span class="ecomment">--</span><span class="ecomment"> Add WHERE column IN (values)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">column_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_column</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+			<span class="etag">values_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_values</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Status (for preconditions)</span>
+
+	<a name="f_has_table"></a><a class="efeature" href="../src/simple_sql_update_builder_short.html#f_has_table">has_table</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Has a table been specified?</span>
+
+	<a name="f_has_set_clauses"></a><a class="efeature" href="../src/simple_sql_update_builder_short.html#f_has_set_clauses">has_set_clauses</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Are there SET clauses?</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Execution</span>
+
+	<a name="f_execute"></a><a class="efeature" href="../src/simple_sql_update_builder_short.html#f_execute">execute</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Execute update and return number of rows affected</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">has_database</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_query_builder_short.html#f_has_database">has_database</a>
+			<span class="etag">has_table</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_update_builder_short.html#f_has_table">has_table</a>
+			<span class="etag">has_set_clauses</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_update_builder_short.html#f_has_set_clauses">has_set_clauses</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Reset</span>
+
+	<a name="f_reset"></a><a class="efeature" href="../src/simple_sql_update_builder_short.html#f_reset">reset</a>
+			<span class="ecomment">--</span><span class="ecomment"> Clear all builder state</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">table_empty</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_update_builder_short.html#f_table_name">table_name</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+			<span class="etag">set_empty</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_update_builder_short.html#f_set_clauses">set_clauses</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+			<span class="etag">where_empty</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_update_builder_short.html#f_where_clauses">where_clauses</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Output</span>
+
+	<a name="f_to_sql"></a><a class="efeature" href="../src/simple_sql_update_builder_short.html#f_to_sql">to_sql</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a>
+			<span class="ecomment">--</span><span class="ecomment"> Generate SQL UPDATE statement</span>
+	
+<span class="ekeyword">invariant</span>
+	<span class="etag">table_name_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <a class="efeature" href="../src/simple_sql_update_builder_short.html#f_table_name">table_name</a>
+	<span class="etag">set_clauses_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <a class="efeature" href="../src/simple_sql_update_builder_short.html#f_set_clauses">set_clauses</a>
+	<span class="etag">where_clauses_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <a class="efeature" href="../src/simple_sql_update_builder_short.html#f_where_clauses">where_clauses</a>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../src/simple_sql_update_builder_short.html">SIMPLE_SQL_UPDATE_BUILDER</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_sql_update_builder_chart.html">Chart</a>
+<a class="nav class" href="simple_sql_update_builder_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_update_builder"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

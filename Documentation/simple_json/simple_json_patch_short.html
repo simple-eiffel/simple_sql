@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="JSON Patch document (RFC 6902). A sequence of operations to apply to a JSON document. Operations are applied atomically - if any fails, none are applied."/>
+<meta name="eis" content="name=RFC 6902, protocol=URI, src=https://tools.ietf.org/html/rfc6902"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="2025, Larry Rix"/>
+<meta name="license" content="MIT License"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_json_patch Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_json_patch_chart.html">Chart</a>
+<a class="nav class" href="simple_json_patch_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_patch"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">JSON Patch document (RFC 6902).</span>
+		<span class="estring">A sequence of operations to apply to a JSON document.</span>
+		<span class="estring">Operations are applied atomically - if any fails, none are applied.</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+	<span class="eitag">eis</span><span class="esymbol">:</span> <span class="estring">&quot;name=RFC 6902&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;protocol=URI&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;src=</span><a class="estring" href="https://tools.ietf.org/html/rfc6902">https://tools.ietf.org/html/rfc6902</a><span class="estring">&quot;</span>
+	<span class="eitag">eis</span><span class="esymbol">:</span> <span class="estring">&quot;name=Documentation&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;protocol=URI&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;src=</span><a class="estring" href="file://$">file://$</a><span class="estring">(SYSTEM_PATH)/docs/docs/patch/simple_json_patch.html&quot;</span>
+
+<span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../simple_json/simple_json_patch_short.html">SIMPLE_JSON_PATCH</a>
+
+<span class="ekeyword">create</span> 
+	<a class="efeature" href="../simple_json/simple_json_patch_short.html#f_make">make</a><span class="esymbol">,</span>
+	<a class="efeature" href="../simple_json/simple_json_patch_short.html#f_make_from_array">make_from_array</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Access</span>
+
+	<a name="f_operations"></a><a class="efeature" href="../simple_json/simple_json_patch_short.html#f_operations">operations</a><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_short.html">ARRAYED_LIST</a> <span class="esymbol">[</span><a class="eclass" href="../simple_json/simple_json_patch_operation_short.html">SIMPLE_JSON_PATCH_OPERATION</a><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> List of patch operations</span>
+
+	<a name="f_count"></a><a class="efeature" href="../simple_json/simple_json_patch_short.html#f_count">count</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Number of operations</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">definition</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">=</span> <a class="efeature" href="../simple_json/simple_json_patch_short.html#f_operations">operations</a><span class="edot">.</span><a class="efeature" href="../base/arrayed_list_short.html#f_count">count</a>
+
+	<a name="f_is_empty"></a><a class="efeature" href="../simple_json/simple_json_patch_short.html#f_is_empty">is_empty</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is patch empty?</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">definition</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">=</span> <a class="efeature" href="../simple_json/simple_json_patch_short.html#f_operations">operations</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Building (Fluent API)</span>
+
+	<a name="f_add"></a><a class="efeature" href="../simple_json/simple_json_patch_short.html#f_add">add</a> <span class="esymbol">(</span><span class="elocal">a_path</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a><span class="esymbol">;</span> <span class="elocal">a_value</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_value_short.html">SIMPLE_JSON_VALUE</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_patch_short.html">SIMPLE_JSON_PATCH</a>
+			<span class="ecomment">--</span><span class="ecomment"> Add an 'add' operation and return Current for chaining</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">path_not_void</span><span class="esymbol">:</span> <span class="elocal">a_path</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">path_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_path</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+			<span class="etag">value_not_void</span><span class="esymbol">:</span> <span class="elocal">a_value</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">operation_added</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_patch_short.html#f_operations">operations</a><span class="edot">.</span><a class="efeature" href="../base/arrayed_list_short.html#f_count">count</a> <span class="esymbol">=</span> <span class="ekeyword">old</span> <a class="efeature" href="../simple_json/simple_json_patch_short.html#f_operations">operations</a><span class="edot">.</span><a class="efeature" href="../base/arrayed_list_short.html#f_count">count</a> <a class="esymbol" href="../base/integer_32_short.html#f_plus">+</a> <span class="enumber">1</span>
+			<span class="etag">returns_current</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">=</span> <span class="ekeyword">Current</span>
+
+	<a name="f_remove"></a><a class="efeature" href="../simple_json/simple_json_patch_short.html#f_remove">remove</a> <span class="esymbol">(</span><span class="elocal">a_path</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_patch_short.html">SIMPLE_JSON_PATCH</a>
+			<span class="ecomment">--</span><span class="ecomment"> Add a 'remove' operation and return Current for chaining</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">path_not_void</span><span class="esymbol">:</span> <span class="elocal">a_path</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">path_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_path</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">operation_added</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_patch_short.html#f_operations">operations</a><span class="edot">.</span><a class="efeature" href="../base/arrayed_list_short.html#f_count">count</a> <span class="esymbol">=</span> <span class="ekeyword">old</span> <a class="efeature" href="../simple_json/simple_json_patch_short.html#f_operations">operations</a><span class="edot">.</span><a class="efeature" href="../base/arrayed_list_short.html#f_count">count</a> <a class="esymbol" href="../base/integer_32_short.html#f_plus">+</a> <span class="enumber">1</span>
+			<span class="etag">returns_current</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">=</span> <span class="ekeyword">Current</span>
+
+	<a name="f_replace"></a><a class="efeature" href="../simple_json/simple_json_patch_short.html#f_replace">replace</a> <span class="esymbol">(</span><span class="elocal">a_path</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a><span class="esymbol">;</span> <span class="elocal">a_value</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_value_short.html">SIMPLE_JSON_VALUE</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_patch_short.html">SIMPLE_JSON_PATCH</a>
+			<span class="ecomment">--</span><span class="ecomment"> Add a 'replace' operation and return Current for chaining</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">path_not_void</span><span class="esymbol">:</span> <span class="elocal">a_path</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">path_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_path</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+			<span class="etag">value_not_void</span><span class="esymbol">:</span> <span class="elocal">a_value</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">operation_added</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_patch_short.html#f_operations">operations</a><span class="edot">.</span><a class="efeature" href="../base/arrayed_list_short.html#f_count">count</a> <span class="esymbol">=</span> <span class="ekeyword">old</span> <a class="efeature" href="../simple_json/simple_json_patch_short.html#f_operations">operations</a><span class="edot">.</span><a class="efeature" href="../base/arrayed_list_short.html#f_count">count</a> <a class="esymbol" href="../base/integer_32_short.html#f_plus">+</a> <span class="enumber">1</span>
+			<span class="etag">returns_current</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">=</span> <span class="ekeyword">Current</span>
+
+	<a name="f_move"></a><a class="efeature" href="../simple_json/simple_json_patch_short.html#f_move">move</a> <span class="esymbol">(</span><span class="elocal">a_from</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a><span class="esymbol">;</span> <span class="elocal">a_to</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_patch_short.html">SIMPLE_JSON_PATCH</a>
+			<span class="ecomment">--</span><span class="ecomment"> Add a 'move' operation and return Current for chaining</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">from_not_void</span><span class="esymbol">:</span> <span class="elocal">a_from</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">from_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_from</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+			<span class="etag">to_not_void</span><span class="esymbol">:</span> <span class="elocal">a_to</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">to_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_to</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">operation_added</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_patch_short.html#f_operations">operations</a><span class="edot">.</span><a class="efeature" href="../base/arrayed_list_short.html#f_count">count</a> <span class="esymbol">=</span> <span class="ekeyword">old</span> <a class="efeature" href="../simple_json/simple_json_patch_short.html#f_operations">operations</a><span class="edot">.</span><a class="efeature" href="../base/arrayed_list_short.html#f_count">count</a> <a class="esymbol" href="../base/integer_32_short.html#f_plus">+</a> <span class="enumber">1</span>
+			<span class="etag">returns_current</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">=</span> <span class="ekeyword">Current</span>
+
+	<a name="f_copy_value"></a><a class="efeature" href="../simple_json/simple_json_patch_short.html#f_copy_value">copy_value</a> <span class="esymbol">(</span><span class="elocal">a_from</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a><span class="esymbol">;</span> <span class="elocal">a_to</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_patch_short.html">SIMPLE_JSON_PATCH</a>
+			<span class="ecomment">--</span><span class="ecomment"> Add a 'copy' operation and return Current for chaining</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">from_not_void</span><span class="esymbol">:</span> <span class="elocal">a_from</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">from_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_from</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+			<span class="etag">to_not_void</span><span class="esymbol">:</span> <span class="elocal">a_to</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">to_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_to</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">operation_added</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_patch_short.html#f_operations">operations</a><span class="edot">.</span><a class="efeature" href="../base/arrayed_list_short.html#f_count">count</a> <span class="esymbol">=</span> <span class="ekeyword">old</span> <a class="efeature" href="../simple_json/simple_json_patch_short.html#f_operations">operations</a><span class="edot">.</span><a class="efeature" href="../base/arrayed_list_short.html#f_count">count</a> <a class="esymbol" href="../base/integer_32_short.html#f_plus">+</a> <span class="enumber">1</span>
+			<span class="etag">returns_current</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">=</span> <span class="ekeyword">Current</span>
+
+	<a name="f_test"></a><a class="efeature" href="../simple_json/simple_json_patch_short.html#f_test">test</a> <span class="esymbol">(</span><span class="elocal">a_path</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a><span class="esymbol">;</span> <span class="elocal">a_value</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_value_short.html">SIMPLE_JSON_VALUE</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_patch_short.html">SIMPLE_JSON_PATCH</a>
+			<span class="ecomment">--</span><span class="ecomment"> Add a 'test' operation and return Current for chaining</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">path_not_void</span><span class="esymbol">:</span> <span class="elocal">a_path</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">path_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_path</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+			<span class="etag">value_not_void</span><span class="esymbol">:</span> <span class="elocal">a_value</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">operation_added</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_patch_short.html#f_operations">operations</a><span class="edot">.</span><a class="efeature" href="../base/arrayed_list_short.html#f_count">count</a> <span class="esymbol">=</span> <span class="ekeyword">old</span> <a class="efeature" href="../simple_json/simple_json_patch_short.html#f_operations">operations</a><span class="edot">.</span><a class="efeature" href="../base/arrayed_list_short.html#f_count">count</a> <a class="esymbol" href="../base/integer_32_short.html#f_plus">+</a> <span class="enumber">1</span>
+			<span class="etag">returns_current</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">=</span> <span class="ekeyword">Current</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Operations</span>
+
+	<a name="f_apply"></a><a class="efeature" href="../simple_json/simple_json_patch_short.html#f_apply">apply</a> <span class="esymbol">(</span><span class="elocal">a_document</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_value_short.html">SIMPLE_JSON_VALUE</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_patch_result_short.html">SIMPLE_JSON_PATCH_RESULT</a>
+			<span class="ecomment">--</span><span class="ecomment"> Apply all operations atomically to document</span>
+			<span class="ecomment">--</span><span class="ecomment"> If any operation fails, the entire patch fails</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">document_not_void</span><span class="esymbol">:</span> <span class="elocal">a_document</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Conversion</span>
+
+	<a name="f_to_json_array"></a><a class="efeature" href="../simple_json/simple_json_patch_short.html#f_to_json_array">to_json_array</a><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_array_short.html">SIMPLE_JSON_ARRAY</a>
+			<span class="ecomment">--</span><span class="ecomment"> Convert patch to JSON array for serialization</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">correct_count</span><span class="esymbol">:</span> <span class="ekeyword">Result</span><span class="edot">.</span><a class="efeature" href="../simple_json/simple_json_array_short.html#f_count">count</a> <span class="esymbol">=</span> <a class="efeature" href="../simple_json/simple_json_patch_short.html#f_operations">operations</a><span class="edot">.</span><a class="efeature" href="../base/arrayed_list_short.html#f_count">count</a>
+
+	<a name="f_to_json_string"></a><a class="efeature" href="../simple_json/simple_json_patch_short.html#f_to_json_string">to_json_string</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Convert patch to JSON string</span>
+	
+<span class="ekeyword">invariant</span>
+	<span class="etag">operations_attached</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_patch_short.html#f_operations">operations</a> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	<span class="etag">count_definition</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_patch_short.html#f_count">count</a> <span class="esymbol">=</span> <a class="efeature" href="../simple_json/simple_json_patch_short.html#f_operations">operations</a><span class="edot">.</span><a class="efeature" href="../base/arrayed_list_short.html#f_count">count</a>
+	<span class="etag">is_empty_definition</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_patch_short.html#f_is_empty">is_empty</a> <span class="esymbol">=</span> <a class="efeature" href="../simple_json/simple_json_patch_short.html#f_operations">operations</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+	<span class="etag">no_void_operations</span><span class="esymbol">:</span> <span class="ekeyword">across</span>
+			<a class="efeature" href="../simple_json/simple_json_patch_short.html#f_operations">operations</a> <span class="ekeyword">as</span> ic_op
+		<span class="ekeyword">all</span>
+			<span class="elocal">ic_op</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+		<span class="ekeyword">end</span>
+	<span class="etag">all_operations_valid</span><span class="esymbol">:</span> <span class="ekeyword">across</span>
+			<a class="efeature" href="../simple_json/simple_json_patch_short.html#f_operations">operations</a> <span class="ekeyword">as</span> ic_op
+		<span class="ekeyword">all</span>
+			<span class="elocal">ic_op</span><span class="edot">.</span><a class="efeature" href="../simple_json/simple_json_patch_operation_short.html#f_is_valid">is_valid</a>
+		<span class="ekeyword">end</span>
+
+<span class="ekeyword">note</span>
+	<span class="eitag">copyright</span><span class="esymbol">:</span> <span class="estring">&quot;2025, Larry Rix&quot;</span>
+	<span class="eitag">license</span><span class="esymbol">:</span> <span class="estring">&quot;MIT License&quot;</span>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../simple_json/simple_json_patch_short.html">SIMPLE_JSON_PATCH</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_json_patch_chart.html">Chart</a>
+<a class="nav class" href="simple_json_patch_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_patch"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

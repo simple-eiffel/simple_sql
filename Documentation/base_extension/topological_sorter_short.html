@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="Topological sorter. Used to produce a total order on a set of elements having only a partial order."/>
+<meta name="author" content="Olivier Jeger"/>
+<meta name="license" content="Eiffel Forum License v2 (see forum.txt)"/>
+<meta name="eis" content="name=Devising and engineering an algorithm: Topological Sort, src=https://link.springer.com/chapter/10.1007/978-3-540-92145-5_15, protocol=uri"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="Copyright (c) 1984-2020, Eiffel Software and others"/>
+<meta name="license" content="Eiffel Forum License v2 (see http://www.eiffel.com/licensing/forum.txt)"/>
+<meta name="source" content="Eiffel Software 5949 Hollister Ave., Goleta, CA 93117 USA Telephone 805-685-1006, Fax 805-685-6869 Website http://www.eiffel.com Customer support http://support.eiffel.com"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>topological_sorter Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="topological_sorter_chart.html">Chart</a>
+<a class="nav class" href="topological_sorter_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="topological_sorter"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">Topological sorter.</span>
+		<span class="estring">Used to produce a total order on a set of</span>
+		<span class="estring">elements having only a partial order.</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+	<span class="eitag">author</span><span class="esymbol">:</span> <span class="estring">&quot;Olivier Jeger&quot;</span>
+	<span class="eitag">license</span><span class="esymbol">:</span> <span class="estring">&quot;Eiffel Forum License v2 (see forum.txt)&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+	<span class="eitag">eis</span><span class="esymbol">:</span> <span class="estring">&quot;name=Devising and engineering an algorithm: Topological Sort&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;src=</span><a class="estring" href="https://link.springer.com/chapter/10.1007/978-3-540-92145-5_15">https://link.springer.com/chapter/10.1007/978-3-540-92145-5_15</a><span class="estring">&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;protocol=uri&quot;</span>
+
+<span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../base_extension/topological_sorter_short.html">TOPOLOGICAL_SORTER</a> <span class="esymbol">[</span><span class="egeneric">G</span> <span class="esymbol">-&gt;</span> <a class="eclass" href="../base/hashable_short.html">HASHABLE</a><span class="esymbol">]</span>
+
+<span class="ekeyword">create</span> 
+	<a class="efeature" href="../base_extension/topological_sorter_short.html#f_make">make</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Initialization</span>
+
+	<a name="f_record_element"></a><a class="efeature" href="../base_extension/topological_sorter_short.html#f_record_element">record_element</a> <span class="esymbol">(</span><span class="elocal">e</span><span class="esymbol">:</span> <span class="egeneric">G</span><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Add </span><span class="equoted">e</span><span class="ecomment"> to the set of elements, unless already present.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">not_sorted</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_done">done</a>
+
+	<a name="f_record_constraint"></a><a class="efeature" href="../base_extension/topological_sorter_short.html#f_record_constraint">record_constraint</a> <span class="esymbol">(</span><span class="elocal">e</span><span class="esymbol">,</span> <span class="elocal">f</span><span class="esymbol">:</span> <span class="egeneric">G</span><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Add the constraint </span><span class="equoted">[e,f]</span><span class="ecomment">.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">not_sorted</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_done">done</a>
+			<span class="etag">not_void</span><span class="esymbol">:</span> <span class="elocal">e</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span> <a class="ekeyword" href="../base/boolean_short.html#f_conjuncted">and</a> <span class="elocal">f</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Access</span>
+
+	<a name="f_cycle_found"></a><a class="efeature" href="../base_extension/topological_sorter_short.html#f_cycle_found">cycle_found</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Did the original constraint imply a cycle?</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">sorted</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_done">done</a>
+
+	<a name="f_cycle_list"></a><a class="efeature" href="../base_extension/topological_sorter_short.html#f_cycle_list">cycle_list</a><span class="esymbol">:</span> <a class="eclass" href="../base/list_short.html">LIST</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> Elements involved in cycles</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">sorted</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_done">done</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">empty_iff_none</span><span class="esymbol">:</span> <span class="esymbol">(</span><a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_cycle_found">cycle_found</a><span class="esymbol">)</span> <span class="esymbol">=</span> <span class="esymbol">(</span><span class="ekeyword">Result</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a><span class="esymbol">)</span>
+			<span class="etag">not_empty_if_cycle</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_cycle_found">cycle_found</a> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <span class="esymbol">(</span><a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="ekeyword">Result</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a><span class="esymbol">)</span>
+
+	<a name="f_sorted_elements"></a><a class="efeature" href="../base_extension/topological_sorter_short.html#f_sorted_elements">sorted_elements</a><span class="esymbol">:</span> <a class="eclass" href="../base/list_short.html">LIST</a> <span class="esymbol">[</span><span class="egeneric">G</span><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> List, in an order respecting the constraints, of all</span>
+			<span class="ecomment">--</span><span class="ecomment"> the elements that can be ordered in that way</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">sorted</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_done">done</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Measurement</span>
+
+	<a name="f_count"></a><a class="efeature" href="../base_extension/topological_sorter_short.html#f_count">count</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Number of elements</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Status report</span>
+
+	<a name="f_done"></a><a class="efeature" href="../base_extension/topological_sorter_short.html#f_done">done</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Has topological sort been performed?</span>
+
+	<a name="f_object_comparison"></a><a class="efeature" href="../base_extension/topological_sorter_short.html#f_object_comparison">object_comparison</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Must </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/topological_sorter_short.html#f_record_element">record_element</a><span class="ecomment">`</span><span class="ecomment"> operations use </span><span class="ecomment">`</span><a class="efeature" href="../base/any_short.html#f_equal">equal</a><span class="ecomment">`</span><span class="ecomment"> rather than </span><span class="equoted">=</span>
+			<span class="ecomment">--</span><span class="ecomment"> to avoid duplicate elements?</span>
+
+	<a name="f_fifo_output"></a><a class="efeature" href="../base_extension/topological_sorter_short.html#f_fifo_output">fifo_output</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Are elements without constraints added to output by</span>
+			<span class="ecomment">--</span><span class="ecomment"> FIFO (first in first out) strategy?</span>
+
+	<a name="f_has_element"></a><a class="efeature" href="../base_extension/topological_sorter_short.html#f_has_element">has_element</a> <span class="esymbol">(</span><span class="elocal">e</span><span class="esymbol">:</span> <span class="egeneric">G</span><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is e one of the elements to be topologically sorted?</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">exist</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <span class="ekeyword">Result</span> <span class="esymbol">=</span> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_index_of_element">index_of_element</a><span class="edot">.</span><a class="efeature" href="../base/hash_table_short.html#f_has">has</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">e</span><span class="esymbol">)</span> <a class="ekeyword" href="../base/boolean_short.html#f_conjuncted_semistrict">and then</a> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_index_of_element">index_of_element</a> <a class="esymbol" href="../base/hash_table_short.html#f_item">[</a><span class="elocal">e</span><a class="esymbol" href="../base/hash_table_short.html#f_item">]</a> <a class="esymbol" href="../base/comparable_short.html#f_is_greater_equal">&gt;=</a> <span class="enumber">1</span> <a class="ekeyword" href="../base/boolean_short.html#f_conjuncted_semistrict">and then</a> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_index_of_element">index_of_element</a> <a class="esymbol" href="../base/hash_table_short.html#f_item">[</a><span class="elocal">e</span><a class="esymbol" href="../base/hash_table_short.html#f_item">]</a> <a class="esymbol" href="../base/comparable_short.html#f_is_less_equal">&lt;=</a> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_element_of_index">element_of_index</a><span class="edot">.</span><a class="efeature" href="../base/array_short.html#f_count">count</a>
+			<span class="etag">not_exist</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="ekeyword">Result</span> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_index_of_element">index_of_element</a><span class="edot">.</span><a class="efeature" href="../base/hash_table_short.html#f_has">has</a><span class="esymbol"> </span><span class="esymbol">(</span><span class="elocal">e</span><span class="esymbol">)</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Status setting</span>
+
+	<a name="f_reset"></a><a class="efeature" href="../base_extension/topological_sorter_short.html#f_reset">reset</a>
+			<span class="ecomment">--</span><span class="ecomment"> Allow further updates of the elements and constraints.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">fresh</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_done">done</a>
+
+	<a name="f_compare_references"></a><a class="efeature" href="../base_extension/topological_sorter_short.html#f_compare_references">compare_references</a>
+			<span class="ecomment">--</span><span class="ecomment"> Ensure that future </span><span class="equoted">record_element	 operations will use </span><span class="ecomment">=`</span>
+			<span class="ecomment">--</span><span class="ecomment"> rather than </span><span class="ecomment">`</span><a class="efeature" href="../base/any_short.html#f_equal">equal</a><span class="ecomment">`</span><span class="ecomment"> for comparing references.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">empty</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_count">count</a> <span class="esymbol">=</span> <span class="enumber">0</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">reference_comparison</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_object_comparison">object_comparison</a>
+
+	<a name="f_compare_objects"></a><a class="efeature" href="../base_extension/topological_sorter_short.html#f_compare_objects">compare_objects</a>
+			<span class="ecomment">--</span><span class="ecomment"> Ensure that future </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/topological_sorter_short.html#f_record_element">record_element</a><span class="ecomment">`</span><span class="ecomment"> operations will use </span><span class="ecomment">`</span><a class="efeature" href="../base/any_short.html#f_equal">equal</a><span class="ecomment">`</span>
+			<span class="ecomment">--</span><span class="ecomment"> rather than </span><span class="equoted">=</span><span class="ecomment"> for comparing references.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">empty</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_count">count</a> <span class="esymbol">=</span> <span class="enumber">0</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">object_comparison</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_object_comparison">object_comparison</a>
+
+	<a name="f_use_fifo_output"></a><a class="efeature" href="../base_extension/topological_sorter_short.html#f_use_fifo_output">use_fifo_output</a>
+			<span class="ecomment">--</span><span class="ecomment"> Elements without constraints are added to output with</span>
+			<span class="ecomment">--</span><span class="ecomment"> FIFO (first in first out) strategy.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">not_sorted</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_done">done</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">fifo_output</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_fifo_output">fifo_output</a>
+
+	<a name="f_use_lifo_output"></a><a class="efeature" href="../base_extension/topological_sorter_short.html#f_use_lifo_output">use_lifo_output</a>
+			<span class="ecomment">--</span><span class="ecomment"> Elements without constraints are added to output with</span>
+			<span class="ecomment">--</span><span class="ecomment"> LIFO (last in first out) strategy.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">not_sorted</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_done">done</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">lifo_output</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_fifo_output">fifo_output</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Element change</span>
+
+	<a name="f_process"></a><a class="efeature" href="../base_extension/topological_sorter_short.html#f_process">process</a>
+			<span class="ecomment">--</span><span class="ecomment"> Perform a topological sort over all applicable elements.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Results are accessible through </span><span class="equoted">sorted</span><span class="ecomment">, </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/topological_sorter_short.html#f_cycle_found">cycle_found</a><span class="ecomment">`</span><span class="ecomment"> and </span><span class="ecomment">`</span><a class="efeature" href="../base_extension/topological_sorter_short.html#f_cycle_list">cycle_list</a><span class="ecomment">`</span><span class="ecomment">.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">not_sorted</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_done">done</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">sorted</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_done">done</a>
+	
+<span class="ekeyword">invariant</span>
+	<span class="etag">element_count</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_element_of_index">element_of_index</a><span class="edot">.</span><a class="efeature" href="../base/array_short.html#f_count">count</a> <span class="esymbol">=</span> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_count">count</a>
+	<span class="etag">predecessor_list_count</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_predecessor_count">predecessor_count</a><span class="edot">.</span><a class="efeature" href="../base/array_short.html#f_count">count</a> <span class="esymbol">=</span> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_count">count</a>
+	<span class="etag">successor_list_count</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_successors">successors</a><span class="edot">.</span><a class="efeature" href="../base/array_short.html#f_count">count</a> <span class="esymbol">=</span> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_count">count</a>
+	<span class="etag">cycle_list_iff_cycle</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_done">done</a> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <span class="esymbol">(</span><a class="efeature" href="../base_extension/topological_sorter_short.html#f_cycle_found">cycle_found</a> <span class="esymbol">=</span> <span class="esymbol">(</span><a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_cycle_list">cycle_list</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a><span class="esymbol">)</span><span class="esymbol">)</span>
+	<span class="etag">all_items_sorted</span><span class="esymbol">:</span> <span class="esymbol">(</span><a class="efeature" href="../base_extension/topological_sorter_short.html#f_done">done</a> <a class="ekeyword" href="../base/boolean_short.html#f_conjuncted_semistrict">and then</a> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_cycle_found">cycle_found</a><span class="esymbol">)</span> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <span class="esymbol">(</span><a class="efeature" href="../base_extension/topological_sorter_short.html#f_count">count</a> <span class="esymbol">=</span> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_sorted_elements">sorted_elements</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_count">count</a><span class="esymbol">)</span>
+	<span class="etag">no_item_forgotten</span><span class="esymbol">:</span> <span class="esymbol">(</span><a class="efeature" href="../base_extension/topological_sorter_short.html#f_done">done</a> <a class="ekeyword" href="../base/boolean_short.html#f_conjuncted_semistrict">and then</a> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_cycle_found">cycle_found</a><span class="esymbol">)</span> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <span class="esymbol">(</span><a class="efeature" href="../base_extension/topological_sorter_short.html#f_count">count</a> <span class="esymbol">=</span> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_sorted_elements">sorted_elements</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_count">count</a> <a class="esymbol" href="../base/integer_32_short.html#f_plus">+</a> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_cycle_list">cycle_list</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_count">count</a><span class="esymbol">)</span>
+	<span class="etag">processed_count</span><span class="esymbol">:</span> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_done">done</a> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_processed_count">processed_count</a> <span class="esymbol">=</span> <a class="efeature" href="../base_extension/topological_sorter_short.html#f_sorted_elements">sorted_elements</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_count">count</a>
+
+<span class="ekeyword">note</span>
+	<span class="eitag">copyright</span><span class="esymbol">:</span> <span class="estring">&quot;Copyright (c) 1984-2020, Eiffel Software and others&quot;</span>
+	<span class="eitag">license</span><span class="esymbol">:</span> <span class="estring">&quot;Eiffel Forum License v2 (see </span><a class="estring" href="http://www.eiffel.com/licensing/forum.txt">http://www.eiffel.com/licensing/forum.txt</a><span class="estring">)&quot;</span>
+	<span class="eitag">source</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">Eiffel Software</span>
+		<span class="estring">5949 Hollister Ave., Goleta, CA 93117 USA</span>
+		<span class="estring">Telephone 805-685-1006, Fax 805-685-6869</span>
+		<span class="estring">Website </span><a class="estring" href="http://www.eiffel.com">http://www.eiffel.com</a>
+		<span class="estring">Customer support </span><a class="estring" href="http://support.eiffel.com">http://support.eiffel.com</a>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../base_extension/topological_sorter_short.html">TOPOLOGICAL_SORTER</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="topological_sorter_chart.html">Chart</a>
+<a class="nav class" href="topological_sorter_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="topological_sorter"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

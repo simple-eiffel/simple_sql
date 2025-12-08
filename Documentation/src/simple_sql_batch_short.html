@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="TTBatch operations for efficient bulk INSERT/UPDATE/DELETE.  TTAutomatically wraps operations in transactions for performance. TTUses prepared statements internally for security and speed.  TTUsage: TTTcreate batch.make (db) TTTbatch.begin TTTbatch.insert (users, <<name, age>>, <<Alice, 30>>) TTTbatch.insert (users, <<name, age>>, <<Bob, 25>>) TTTbatch.insert (users, <<name, age>>, <<Carol, 35>>) TTTbatch.commit  -- All inserts happen in one transaction  TTOr with execute_many for repeated operations: TTTbatch.execute_many (INSERT INTO users (name) VALUES (?), TTT    <<<<Alice>>, <<Bob>>, <<Carol>>>>)"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="Copyright (c) 2025, Larry Rix"/>
+<meta name="license" content="MIT License"/>
+<meta name="source" content="SIMPLE_SQL - High-level SQLite API for Eiffel"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_sql_batch Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_sql_batch_chart.html">Chart</a>
+<a class="nav class" href="simple_sql_batch_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_batch"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">		Batch operations for efficient bulk INSERT/UPDATE/DELETE.</span>
+		
+		<span class="estring">		Automatically wraps operations in transactions for performance.</span>
+		<span class="estring">		Uses prepared statements internally for security and speed.</span>
+		
+		<span class="estring">		Usage:</span>
+		<span class="estring">			create batch.make (db)</span>
+		<span class="estring">			batch.begin</span>
+		<span class="estring">			batch.insert (&quot;users&quot;, &lt;&lt;&quot;name&quot;, &quot;age&quot;&gt;&gt;, &lt;&lt;&quot;Alice&quot;, 30&gt;&gt;)</span>
+		<span class="estring">			batch.insert (&quot;users&quot;, &lt;&lt;&quot;name&quot;, &quot;age&quot;&gt;&gt;, &lt;&lt;&quot;Bob&quot;, 25&gt;&gt;)</span>
+		<span class="estring">			batch.insert (&quot;users&quot;, &lt;&lt;&quot;name&quot;, &quot;age&quot;&gt;&gt;, &lt;&lt;&quot;Carol&quot;, 35&gt;&gt;)</span>
+		<span class="estring">			batch.commit &nbsp;-- All inserts happen in one transaction</span>
+		
+		<span class="estring">		Or with execute_many for repeated operations:</span>
+		<span class="estring">			batch.execute_many (&quot;INSERT INTO users (name) VALUES (?)&quot;,</span>
+		<span class="estring">			 &nbsp;&nbsp;&nbsp;&lt;&lt;&lt;&lt;&quot;Alice&quot;&gt;&gt;, &lt;&lt;&quot;Bob&quot;&gt;&gt;, &lt;&lt;&quot;Carol&quot;&gt;&gt;&gt;&gt;)</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+
+<span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../src/simple_sql_batch_short.html">SIMPLE_SQL_BATCH</a>
+
+<span class="ekeyword">create</span> 
+	<a class="efeature" href="../src/simple_sql_batch_short.html#f_make">make</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Access</span>
+
+	<a name="f_database"></a><a class="efeature" href="../src/simple_sql_batch_short.html#f_database">database</a><span class="esymbol">:</span> <a class="eclass" href="../src/simple_sql_database_short.html">SIMPLE_SQL_DATABASE</a>
+			<span class="ecomment">--</span><span class="ecomment"> Database for batch operations</span>
+
+	<a name="f_operations_count"></a><a class="efeature" href="../src/simple_sql_batch_short.html#f_operations_count">operations_count</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Number of operations queued in current batch</span>
+
+	<a name="f_last_error"></a><a class="efeature" href="../src/simple_sql_batch_short.html#f_last_error">last_error</a><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../src/simple_sql_error_short.html">SIMPLE_SQL_ERROR</a>
+			<span class="ecomment">--</span><span class="ecomment"> Error from last operation</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Status</span>
+
+	<a name="f_is_active"></a><a class="efeature" href="../src/simple_sql_batch_short.html#f_is_active">is_active</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Is a batch currently in progress?</span>
+
+	<a name="f_has_error"></a><a class="efeature" href="../src/simple_sql_batch_short.html#f_has_error">has_error</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Did last operation fail?</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Batch control</span>
+
+	<a name="f_begin"></a><a class="efeature" href="../src/simple_sql_batch_short.html#f_begin">begin</a>
+			<span class="ecomment">--</span><span class="ecomment"> Start a new batch (begins transaction)</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">not_active</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../src/simple_sql_batch_short.html#f_is_active">is_active</a>
+			<span class="etag">database_open</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_batch_short.html#f_database">database</a><span class="edot">.</span><a class="efeature" href="../src/simple_sql_database_short.html#f_is_open">is_open</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_active</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_batch_short.html#f_is_active">is_active</a>
+			<span class="etag">count_reset</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_batch_short.html#f_operations_count">operations_count</a> <span class="esymbol">=</span> <span class="enumber">0</span>
+
+	<a name="f_commit"></a><a class="efeature" href="../src/simple_sql_batch_short.html#f_commit">commit</a>
+			<span class="ecomment">--</span><span class="ecomment"> Commit all batched operations</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_active</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_batch_short.html#f_is_active">is_active</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">not_active</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../src/simple_sql_batch_short.html#f_is_active">is_active</a>
+
+	<a name="f_rollback"></a><a class="efeature" href="../src/simple_sql_batch_short.html#f_rollback">rollback</a>
+			<span class="ecomment">--</span><span class="ecomment"> Cancel all batched operations</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_active</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_batch_short.html#f_is_active">is_active</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">not_active</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../src/simple_sql_batch_short.html#f_is_active">is_active</a>
+			<span class="etag">count_reset</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_batch_short.html#f_operations_count">operations_count</a> <span class="esymbol">=</span> <span class="enumber">0</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Batch operations</span>
+
+	<a name="f_add"></a><a class="efeature" href="../src/simple_sql_batch_short.html#f_add">add</a> <span class="esymbol">(</span><span class="elocal">a_sql</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Add SQL statement to batch</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_active</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_batch_short.html#f_is_active">is_active</a>
+			<span class="etag">sql_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_sql</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">count_increased</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_batch_short.html#f_operations_count">operations_count</a> <span class="esymbol">=</span> <span class="ekeyword">old</span> <a class="efeature" href="../src/simple_sql_batch_short.html#f_operations_count">operations_count</a> <a class="esymbol" href="../base/integer_32_short.html#f_plus">+</a> <span class="enumber">1</span>
+
+	<a name="f_insert"></a><a class="efeature" href="../src/simple_sql_batch_short.html#f_insert">insert</a> <span class="esymbol">(</span><span class="elocal">a_table</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_columns</span><span class="esymbol">:</span> <a class="eclass" href="../base/array_short.html">ARRAY</a> <span class="esymbol">[</span><a class="eclass" href="../base/string_8_short.html">STRING_8</a><span class="esymbol">]</span><span class="esymbol">;</span> <span class="elocal">a_values</span><span class="esymbol">:</span> <a class="eclass" href="../base/array_short.html">ARRAY</a> <span class="esymbol">[</span><span class="ekeyword">detachable</span> <a class="eclass" href="../base/any_short.html">ANY</a><span class="esymbol">]</span><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Add INSERT statement to batch</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_active</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_batch_short.html#f_is_active">is_active</a>
+			<span class="etag">table_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_table</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+			<span class="etag">columns_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_columns</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+			<span class="etag">values_match_columns</span><span class="esymbol">:</span> <span class="elocal">a_values</span><span class="edot">.</span><a class="efeature" href="../base/array_short.html#f_count">count</a> <span class="esymbol">=</span> <span class="elocal">a_columns</span><span class="edot">.</span><a class="efeature" href="../base/array_short.html#f_count">count</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">count_increased</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_batch_short.html#f_operations_count">operations_count</a> <span class="esymbol">=</span> <span class="ekeyword">old</span> <a class="efeature" href="../src/simple_sql_batch_short.html#f_operations_count">operations_count</a> <a class="esymbol" href="../base/integer_32_short.html#f_plus">+</a> <span class="enumber">1</span>
+
+	<a name="f_update"></a><a class="efeature" href="../src/simple_sql_batch_short.html#f_update">update</a> <span class="esymbol">(</span><span class="elocal">a_table</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_set_columns</span><span class="esymbol">:</span> <a class="eclass" href="../base/array_short.html">ARRAY</a> <span class="esymbol">[</span><a class="eclass" href="../base/string_8_short.html">STRING_8</a><span class="esymbol">]</span><span class="esymbol">;</span> <span class="elocal">a_set_values</span><span class="esymbol">:</span> <a class="eclass" href="../base/array_short.html">ARRAY</a> <span class="esymbol">[</span><span class="ekeyword">detachable</span> <a class="eclass" href="../base/any_short.html">ANY</a><span class="esymbol">]</span><span class="esymbol">;</span> <span class="elocal">a_where</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Add UPDATE statement to batch</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_active</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_batch_short.html#f_is_active">is_active</a>
+			<span class="etag">table_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_table</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+			<span class="etag">columns_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_set_columns</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+			<span class="etag">values_match_columns</span><span class="esymbol">:</span> <span class="elocal">a_set_values</span><span class="edot">.</span><a class="efeature" href="../base/array_short.html#f_count">count</a> <span class="esymbol">=</span> <span class="elocal">a_set_columns</span><span class="edot">.</span><a class="efeature" href="../base/array_short.html#f_count">count</a>
+			<span class="etag">where_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_where</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">count_increased</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_batch_short.html#f_operations_count">operations_count</a> <span class="esymbol">=</span> <span class="ekeyword">old</span> <a class="efeature" href="../src/simple_sql_batch_short.html#f_operations_count">operations_count</a> <a class="esymbol" href="../base/integer_32_short.html#f_plus">+</a> <span class="enumber">1</span>
+
+	<a name="f_delete"></a><a class="efeature" href="../src/simple_sql_batch_short.html#f_delete">delete</a> <span class="esymbol">(</span><span class="elocal">a_table</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_where</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Add DELETE statement to batch</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_active</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_batch_short.html#f_is_active">is_active</a>
+			<span class="etag">table_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_table</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+			<span class="etag">where_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_where</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">count_increased</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_batch_short.html#f_operations_count">operations_count</a> <span class="esymbol">=</span> <span class="ekeyword">old</span> <a class="efeature" href="../src/simple_sql_batch_short.html#f_operations_count">operations_count</a> <a class="esymbol" href="../base/integer_32_short.html#f_plus">+</a> <span class="enumber">1</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Convenience operations</span>
+
+	<a name="f_execute_many"></a><a class="efeature" href="../src/simple_sql_batch_short.html#f_execute_many">execute_many</a> <span class="esymbol">(</span><span class="elocal">a_sql_template</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_value_sets</span><span class="esymbol">:</span> <a class="eclass" href="../base/array_short.html">ARRAY</a> <span class="esymbol">[</span><a class="eclass" href="../base/array_short.html">ARRAY</a> <span class="esymbol">[</span><span class="ekeyword">detachable</span> <a class="eclass" href="../base/any_short.html">ANY</a><span class="esymbol">]</span><span class="esymbol">]</span><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Execute SQL template with multiple value sets</span>
+			<span class="ecomment">--</span><span class="ecomment"> Template uses ? placeholders</span>
+			<span class="ecomment">--</span><span class="ecomment"> Automatically wrapped in transaction if not already in batch</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">sql_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_sql_template</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+			<span class="etag">value_sets_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_value_sets</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_insert_many"></a><a class="efeature" href="../src/simple_sql_batch_short.html#f_insert_many">insert_many</a> <span class="esymbol">(</span><span class="elocal">a_table</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_short.html">STRING_8</a><span class="esymbol">;</span> <span class="elocal">a_columns</span><span class="esymbol">:</span> <a class="eclass" href="../base/array_short.html">ARRAY</a> <span class="esymbol">[</span><a class="eclass" href="../base/string_8_short.html">STRING_8</a><span class="esymbol">]</span><span class="esymbol">;</span> <span class="elocal">a_value_sets</span><span class="esymbol">:</span> <a class="eclass" href="../base/array_short.html">ARRAY</a> <span class="esymbol">[</span><a class="eclass" href="../base/array_short.html">ARRAY</a> <span class="esymbol">[</span><span class="ekeyword">detachable</span> <a class="eclass" href="../base/any_short.html">ANY</a><span class="esymbol">]</span><span class="esymbol">]</span><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Insert multiple rows efficiently</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">table_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_table</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+			<span class="etag">columns_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_columns</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+			<span class="etag">value_sets_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_value_sets</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+	
+<span class="ekeyword">invariant</span>
+	<span class="etag">database_attached</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_batch_short.html#f_database">database</a> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	<span class="etag">pending_statements_attached</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_batch_short.html#f_pending_statements">pending_statements</a> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	<span class="etag">count_non_negative</span><span class="esymbol">:</span> <a class="efeature" href="../src/simple_sql_batch_short.html#f_operations_count">operations_count</a> <a class="esymbol" href="../base/comparable_short.html#f_is_greater_equal">&gt;=</a> <span class="enumber">0</span>
+
+<span class="ekeyword">note</span>
+	<span class="eitag">copyright</span><span class="esymbol">:</span> <span class="estring">&quot;Copyright (c) 2025, Larry Rix&quot;</span>
+	<span class="eitag">license</span><span class="esymbol">:</span> <span class="estring">&quot;MIT License&quot;</span>
+	<span class="eitag">source</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">SIMPLE_SQL - High-level SQLite API for Eiffel</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../src/simple_sql_batch_short.html">SIMPLE_SQL_BATCH</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_sql_batch_chart.html">Chart</a>
+<a class="nav class" href="simple_sql_batch_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_batch"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

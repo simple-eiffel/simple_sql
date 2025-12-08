@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="Core wrapping of the SQLite library.  This class is no indended for pulic use and is used by the internals of the SQLite Eiffel library. Please use the higher level classes such as {SQLITE_DATABASE}."/>
+<meta name="legal" content="See notice at end of class."/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="Copyright (c) 1984-2015, Eiffel Software"/>
+<meta name="license" content="GPL version 2 (see http://www.eiffel.com/licensing/gpl.txt)"/>
+<meta name="licensing_options" content="http://www.eiffel.com/licensing"/>
+<meta name="copying" content="This file is part of Eiffel Software's Eiffel Development Environment.  Eiffel Software's Eiffel Development Environment is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 2 of the License (available at the URL listed under license above).  Eiffel Software's Eiffel Development Environment is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.  You should have received a copy of the GNU General Public License along with Eiffel Software's Eiffel Development Environment; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA"/>
+<meta name="source" content="Eiffel Software 5949 Hollister Ave., Goleta, CA 93117 USA Telephone 805-685-1006, Fax 805-685-6869 Website http://www.eiffel.com Customer support http://support.eiffel.com"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>sqlite_api Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="sqlite_api_chart.html">Chart</a>
+<a class="nav class" href="sqlite_api_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="sqlite_api"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">Core wrapping of the SQLite library.</span>
+		
+		<span class="estring">This class is no indended for pulic use and is used by the internals of the SQLite Eiffel</span>
+		<span class="estring">library. Please use the higher level classes such as </span><span class="esymbol">{</span><a class="eclass" href="../sqlite/sqlite_database_short.html">SQLITE_DATABASE</a><span class="esymbol">}</span><span class="estring">.</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+	<span class="eitag">legal</span><span class="esymbol">:</span> <span class="estring">&quot;See notice at end of class.&quot;</span>
+	<span class="eitag">status</span><span class="esymbol">:</span> <span class="estring">&quot;See notice at end of class.&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+
+<span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../sqlite/sqlite_api_short.html">SQLITE_API</a>
+
+<span class="ekeyword">create</span> 
+	<a class="efeature" href="../sqlite/sqlite_api_short.html#f_make">make</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Access</span>
+
+	<a name="f_version"></a><a class="efeature" href="../sqlite/sqlite_api_short.html#f_version">Version</a><span class="esymbol">:</span> <a class="eclass" href="../base/immutable_string_8_short.html">IMMUTABLE_STRING_8</a>
+			<span class="ecomment">--</span><span class="ecomment"> Version of the sqlite3 library represented as a string.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_interface_usable</span><span class="esymbol">:</span> <a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">result_attached</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">not_result_is_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="ekeyword">Result</span><span class="edot">.</span><a class="efeature" href="../base/immutable_string_8_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_version_number"></a><a class="efeature" href="../sqlite/sqlite_api_short.html#f_version_number">Version_number</a><span class="esymbol">:</span> <a class="eclass" href="../base/natural_32_short.html">NATURAL_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Flat version number of the sqlite library.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_interface_usable</span><span class="esymbol">:</span> <a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Element change</span>
+
+	<a name="f_set_threading_mode"></a><a class="efeature" href="../sqlite/sqlite_api_short.html#f_set_threading_mode">set_threading_mode</a> <span class="esymbol">(</span><span class="elocal">a_mode</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Sets the threading mode.</span>
+			<span class="ecomment">--</span>
+			<span class="ecomment">--</span><span class="ecomment"> </span><span class="equoted">a_mode</span><span class="ecomment">: The threading mode to set.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_interface_usable</span><span class="esymbol">:</span> <a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a>
+			<span class="etag">not_is_initialized</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_initialized">is_initialized</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Status report</span>
+
+	<a name="f_is_interface_usable"></a><a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Determines if the interface is usable.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">is_initialized</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_initialized">is_initialized</a>
+
+	<a name="f_is_initialized"></a><a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_initialized">is_initialized</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Indicates if the library has been initialized correctly and is ready for use.</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">initialization_count_positive</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <a class="efeature" href="../sqlite/sqlite_api_short.html#f_initialization_count">Initialization_count</a><span class="edot">.</span><a class="efeature" href="../base/cell_short.html#f_item">item</a> <a class="esymbol" href="../base/comparable_short.html#f_is_greater">&gt;</a> <span class="enumber">0</span>
+
+	<a name="f_is_thread_safe"></a><a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_thread_safe">is_thread_safe</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+		<span class="ekeyword">ensure then</span>
+			<span class="etag">is_thread_capable</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <span class="esymbol">{</span><a class="eclass" href="../base/platform_short.html">PLATFORM</a><span class="esymbol">}</span><span class="edot">.</span><a class="efeature" href="../base/platform_short.html#f_is_thread_capable">is_thread_capable</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Settings</span>
+
+	<a name="f_maximum_variable_index_number"></a><a class="efeature" href="../sqlite/sqlite_api_short.html#f_maximum_variable_index_number">maximum_variable_index_number</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Maximum index number of any parameter in an SQL statement.</span>
+			<span class="ecomment">--</span><span class="ecomment"> See </span><span class="esymbol">{</span><a class="eclass" href="../sqlite/sqlite_database_short.html">SQLITE_DATABASE</a><span class="esymbol">}</span><span class="edot">.</span><a class="efeature" href="../sqlite/sqlite_database_short.html#f_maximum_variable_index_number">maximum_variable_index_number</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Settings change</span>
+
+	<a name="f_set_maximum_variable_index_number"></a><a class="efeature" href="../sqlite/sqlite_api_short.html#f_set_maximum_variable_index_number">set_maximum_variable_index_number</a> <span class="esymbol">(</span><span class="elocal">nb</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a><span class="esymbol">)</span>
+			<span class="ecomment">--</span><span class="ecomment"> Set </span><span class="ecomment">`</span><a class="efeature" href="../sqlite/sqlite_api_short.html#f_maximum_variable_index_number">maximum_variable_index_number</a><span class="ecomment">`</span><span class="ecomment"> value to </span><span class="equoted">nb</span><span class="ecomment">.</span>
+			<span class="ecomment">--</span><span class="ecomment"> It has no impact on sqlite data.</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Status report: SQL</span>
+
+	<a name="f_is_complete_statement"></a><a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_complete_statement">is_complete_statement</a> <span class="esymbol">(</span><span class="elocal">a_sql</span><span class="esymbol">:</span> <a class="eclass" href="../base/readable_string_8_short.html">READABLE_STRING_8</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Determines if an SQLite SQL statement is complete.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Note: This does not parse the SQL statement for syntax validity, only checks for completion.</span>
+			<span class="ecomment">--</span><span class="ecomment"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The function is useful for command-line tools where input is required.</span>
+			<span class="ecomment">--</span>
+			<span class="ecomment">--</span><span class="ecomment"> </span><span class="equoted">a_sql</span><span class="ecomment">: An SQL statement.</span>
+			<span class="ecomment">--</span><span class="ecomment"> </span><span class="equoted">Result</span><span class="ecomment">: True if the statement is complete; False otherwise.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">is_interface_usable</span><span class="esymbol">:</span> <a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a>
+			<span class="etag">a_sql_attached</span><span class="esymbol">:</span> <span class="ekeyword">attached</span> <span class="elocal">a_sql</span>
+			<span class="etag">not_a_sql_is_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_sql</span><span class="edot">.</span><a class="efeature" href="../base/readable_string_general_short.html#f_is_empty">is_empty</a>
+	
+<span class="ekeyword">invariant</span>
+	<span class="etag">initialization_count_not_negative</span><span class="esymbol">:</span> <a class="efeature" href="../sqlite/sqlite_api_short.html#f_initialization_count">Initialization_count</a><span class="edot">.</span><a class="efeature" href="../base/cell_short.html#f_item">item</a> <a class="esymbol" href="../base/comparable_short.html#f_is_greater_equal">&gt;=</a> <span class="enumber">0</span>
+	<a class="efeature" href="../sqlite/sqlite_api_short.html#f_is_interface_usable">is_interface_usable</a>
+
+<span class="ekeyword">note</span>
+	<span class="eitag">copyright</span><span class="esymbol">:</span> <span class="estring">&quot;Copyright (c) 1984-2015, Eiffel Software&quot;</span>
+	<span class="eitag">license</span><span class="esymbol">:</span> <span class="estring">&quot;GPL version 2 (see </span><a class="estring" href="http://www.eiffel.com/licensing/gpl.txt">http://www.eiffel.com/licensing/gpl.txt</a><span class="estring">)&quot;</span>
+	<span class="eitag">licensing_options</span><span class="esymbol">:</span> <span class="estring">&quot;</span><a class="estring" href="http://www.eiffel.com/licensing">http://www.eiffel.com/licensing</a><span class="estring">&quot;</span>
+	<span class="eitag">copying</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">This file is part of Eiffel Software's Eiffel Development Environment.</span>
+		
+		<span class="estring">Eiffel Software's Eiffel Development Environment is free</span>
+		<span class="estring">software; you can redistribute it and/or modify it under</span>
+		<span class="estring">the terms of the GNU General Public License as published</span>
+		<span class="estring">by the Free Software Foundation, version 2 of the License</span>
+		<span class="estring">(available at the URL listed under &quot;license&quot; above).</span>
+		
+		<span class="estring">Eiffel Software's Eiffel Development Environment is</span>
+		<span class="estring">distributed in the hope that it will be useful, but</span>
+		<span class="estring">WITHOUT ANY WARRANTY; without even the implied warranty</span>
+		<span class="estring">of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.</span>
+		<span class="estring">See the GNU General Public License for more details.</span>
+		
+		<span class="estring">You should have received a copy of the GNU General Public</span>
+		<span class="estring">License along with Eiffel Software's Eiffel Development</span>
+		<span class="estring">Environment; if not, write to the Free Software Foundation,</span>
+		<span class="estring">Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+	<span class="eitag">source</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">Eiffel Software</span>
+		<span class="estring">5949 Hollister Ave., Goleta, CA 93117 USA</span>
+		<span class="estring">Telephone 805-685-1006, Fax 805-685-6869</span>
+		<span class="estring">Website </span><a class="estring" href="http://www.eiffel.com">http://www.eiffel.com</a>
+		<span class="estring">Customer support </span><a class="estring" href="http://support.eiffel.com">http://support.eiffel.com</a>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../sqlite/sqlite_api_short.html">SQLITE_API</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="sqlite_api_chart.html">Chart</a>
+<a class="nav class" href="sqlite_api_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="sqlite_api"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

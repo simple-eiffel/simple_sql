@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="Represents a JSON error with detailed position information. Provides line, column, and character position tracking for precise error reporting."/>
+<meta name="eis" content="name=Error Handling Best Practices, protocol=URI, src=https://www.eiffel.org/doc/solutions/Error_Handling"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="2024, Larry Rix"/>
+<meta name="license" content="MIT License"/>
+<meta name="eis" content="name=JSON Error Reporting, protocol=URI, src=https://www.json.org"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_json_error Chart</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<span class="nav class selected">Chart</span>
+<a class="nav class" href="simple_json_error_links.html">Relations</a>
+<a class="nav class" href="simple_json_error_short.html">Contracts</a>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_error"></span>
+</div></form><pre><span class="ekeyword">class</span>
+	<a class="eclass" href="../simple_json/simple_json_error_chart.html">SIMPLE_JSON_ERROR</a>
+
+<span class="ekeyword">General</span>
+	<span class="eitag">cluster</span><span class="esymbol">:</span> <span class="necluster">src</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> 
+		<span class="estring">&quot;Represents a JSON error with detailed position information.</span>
+		<span class="estring">Provides line, column, and character position tracking for precise error reporting.&quot;</span>
+	<span class="eitag">create</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_error_short.html#f_make">make</a><span class="esymbol">,</span> <a class="efeature" href="../simple_json/simple_json_error_short.html#f_make_with_position">make_with_position</a>
+
+<span class="ekeyword">Ancestors</span>
+	<a class="eclass" href="../base/any_chart.html">ANY</a>
+
+<span class="ekeyword">Queries</span>
+	<span title="`column' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_error_short.html#f_column">column</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`has_line_column' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_error_short.html#f_has_line_column">has_line_column</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_chart.html">BOOLEAN</a></span>
+	<span title="`has_position' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_error_short.html#f_has_position">has_position</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_chart.html">BOOLEAN</a></span>
+	<span title="`line' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_error_short.html#f_line">line</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`message' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_error_short.html#f_message">message</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`position' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_error_short.html#f_position">position</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`to_detailed_string' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_error_short.html#f_to_detailed_string">to_detailed_string</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`to_string' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_error_short.html#f_to_string">to_string</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+	<span title="`to_string_with_position' is declared in `Current'"><a class="efeature" href="../simple_json/simple_json_error_short.html#f_to_string_with_position">to_string_with_position</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_chart.html">STRING_32</a></span>
+
+<span class="ekeyword">Constraints</span>
+	<span class="etag">message not void</span>
+	<span class="etag">line non negative</span>
+	<span class="etag">column non negative</span>
+	<span class="etag">position non negative</span>
+	<span class="etag">position implies line column</span>
+
+</pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<span class="nav class selected">Chart</span>
+<a class="nav class" href="simple_json_error_links.html">Relations</a>
+<a class="nav class" href="simple_json_error_short.html">Contracts</a>
+<span class="nav class goto">Go to: <input name="c" value="simple_json_error"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>

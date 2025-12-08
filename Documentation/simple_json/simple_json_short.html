@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="Simple, high-level API for working with JSON using STRING_32/Unicode/UTF-8. This class provides an easy-to-use interface over the Eiffel JSON library. Includes comprehensive error tracking with line/column position information."/>
+<meta name="eis" content="name=JSON Specification, protocol=URI, src=https://www.json.org"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_json Contracts</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_json_chart.html">Chart</a>
+<a class="nav class" href="simple_json_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_json"></span>
+</div></form><pre><span class="ekeyword">note</span>
+	<span class="eitag">description</span><span class="esymbol">:</span> <span class="estring">&quot;</span><span class="estring">[</span>
+		<span class="estring">Simple, high-level API for working with JSON using STRING_32/Unicode/UTF-8.</span>
+		<span class="estring">This class provides an easy-to-use interface over the Eiffel JSON library.</span>
+		<span class="estring">Includes comprehensive error tracking with line/column position information.</span>
+	<span class="estring">]</span><span class="estring">&quot;</span>
+	<span class="eitag">date</span><span class="esymbol">:</span> <span class="estring">&quot;$Date$&quot;</span>
+	<span class="eitag">revision</span><span class="esymbol">:</span> <span class="estring">&quot;$Revision$&quot;</span>
+	<span class="eitag">eis</span><span class="esymbol">:</span> <span class="estring">&quot;name=JSON Specification&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;protocol=URI&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;src=</span><a class="estring" href="https://www.json.org">https://www.json.org</a><span class="estring">&quot;</span>
+	<span class="eitag">eis</span><span class="esymbol">:</span> <span class="estring">&quot;name=Documentation&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;protocol=URI&quot;</span><span class="esymbol">,</span> <span class="estring">&quot;src=</span><a class="estring" href="file://$">file://$</a><span class="estring">(SYSTEM_PATH)/docs/docs/core/simple_json.html&quot;</span>
+
+<span class="ekeyword">class</span> <span class="ekeyword">interface</span>
+	<a class="eclass" href="../simple_json/simple_json_short.html">SIMPLE_JSON</a>
+
+<span class="ekeyword">create</span> 
+	<a class="efeature" href="../base/any_short.html#f_default_create">default_create</a>
+
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Parsing</span>
+
+	<a name="f_parse"></a><a class="efeature" href="../simple_json/simple_json_short.html#f_parse">parse</a> <span class="esymbol">(</span><span class="elocal">a_json_text</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../simple_json/simple_json_value_short.html">SIMPLE_JSON_VALUE</a>
+			<span class="ecomment">--</span><span class="ecomment"> Parse JSON text and return a SIMPLE_JSON_VALUE wrapper.</span>
+			<span class="ecomment">--</span><span class="ecomment"> On error, returns Void and populates </span><span class="ecomment">`</span><a class="efeature" href="../simple_json/simple_json_short.html#f_last_errors">last_errors</a><span class="ecomment">`</span><span class="ecomment"> with details.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_json_text</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">errors_cleared_on_success</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../simple_json/simple_json_short.html#f_has_errors">has_errors</a>
+
+	<a name="f_parse_file"></a><a class="efeature" href="../simple_json/simple_json_short.html#f_parse_file">parse_file</a> <span class="esymbol">(</span><span class="elocal">a_file_path</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../simple_json/simple_json_value_short.html">SIMPLE_JSON_VALUE</a>
+			<span class="ecomment">--</span><span class="ecomment"> Parse JSON from file and return a SIMPLE_JSON_VALUE wrapper.</span>
+			<span class="ecomment">--</span><span class="ecomment"> On error, returns Void and populates </span><span class="ecomment">`</span><a class="efeature" href="../simple_json/simple_json_short.html#f_last_errors">last_errors</a><span class="ecomment">`</span><span class="ecomment"> with details.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_file_path</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_is_valid_json"></a><a class="efeature" href="../simple_json/simple_json_short.html#f_is_valid_json">is_valid_json</a> <span class="esymbol">(</span><span class="elocal">a_json_text</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Check if text is valid JSON without creating the value.</span>
+			<span class="ecomment">--</span><span class="ecomment"> On invalid JSON, populates </span><span class="ecomment">`</span><a class="efeature" href="../simple_json/simple_json_short.html#f_last_errors">last_errors</a><span class="ecomment">`</span><span class="ecomment"> with details.</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_json_text</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">valid_implies_no_errors</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../simple_json/simple_json_short.html#f_has_errors">has_errors</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Error Tracking</span>
+
+	<a name="f_has_errors"></a><a class="efeature" href="../simple_json/simple_json_short.html#f_has_errors">has_errors</a><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a>
+			<span class="ecomment">--</span><span class="ecomment"> Were there errors during the last parse operation?</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">definition</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">=</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../simple_json/simple_json_short.html#f_last_errors">last_errors</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_last_errors"></a><a class="efeature" href="../simple_json/simple_json_short.html#f_last_errors">last_errors</a><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_short.html">ARRAYED_LIST</a> <span class="esymbol">[</span><a class="eclass" href="../simple_json/simple_json_error_short.html">SIMPLE_JSON_ERROR</a><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> Errors from the last parse operation</span>
+
+	<a name="f_error_count"></a><a class="efeature" href="../simple_json/simple_json_short.html#f_error_count">error_count</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_short.html">INTEGER_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Number of errors from last parse operation</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">definition</span><span class="esymbol">:</span> <span class="ekeyword">Result</span> <span class="esymbol">=</span> <a class="efeature" href="../simple_json/simple_json_short.html#f_last_errors">last_errors</a><span class="edot">.</span><a class="efeature" href="../base/arrayed_list_short.html#f_count">count</a>
+
+	<a name="f_first_error"></a><a class="efeature" href="../simple_json/simple_json_short.html#f_first_error">first_error</a><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../simple_json/simple_json_error_short.html">SIMPLE_JSON_ERROR</a>
+			<span class="ecomment">--</span><span class="ecomment"> First error from last parse operation, if any</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">has_error_implies_result</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_short.html#f_has_errors">has_errors</a> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <span class="ekeyword">Result</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">no_error_implies_void</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../simple_json/simple_json_short.html#f_has_errors">has_errors</a> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <span class="ekeyword">Result</span> <span class="esymbol">=</span> <span class="ekeyword">Void</span>
+
+	<a name="f_errors_as_string"></a><a class="efeature" href="../simple_json/simple_json_short.html#f_errors_as_string">errors_as_string</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> All errors formatted as a single string</span>
+
+	<a name="f_detailed_errors"></a><a class="efeature" href="../simple_json/simple_json_short.html#f_detailed_errors">detailed_errors</a><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> All errors with detailed position information</span>
+
+	<a name="f_clear_errors"></a><a class="efeature" href="../simple_json/simple_json_short.html#f_clear_errors">clear_errors</a>
+			<span class="ecomment">--</span><span class="ecomment"> Clear all error information</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">no_errors</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../simple_json/simple_json_short.html#f_has_errors">has_errors</a>
+			<span class="etag">empty_list</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_short.html#f_last_errors">last_errors</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> Building</span>
+
+	<a name="f_new_object"></a><a class="efeature" href="../simple_json/simple_json_short.html#f_new_object">new_object</a><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_object_short.html">SIMPLE_JSON_OBJECT</a>
+			<span class="ecomment">--</span><span class="ecomment"> Create a new JSON object builder</span>
+
+	<a name="f_new_array"></a><a class="efeature" href="../simple_json/simple_json_short.html#f_new_array">new_array</a><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_array_short.html">SIMPLE_JSON_ARRAY</a>
+			<span class="ecomment">--</span><span class="ecomment"> Create a new JSON array builder</span>
+
+	<a name="f_string_value"></a><a class="efeature" href="../simple_json/simple_json_short.html#f_string_value">string_value</a> <span class="esymbol">(</span><span class="elocal">a_string</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_value_short.html">SIMPLE_JSON_VALUE</a>
+			<span class="ecomment">--</span><span class="ecomment"> Create a JSON string value</span>
+
+	<a name="f_number_value"></a><a class="efeature" href="../simple_json/simple_json_short.html#f_number_value">number_value</a> <span class="esymbol">(</span><span class="elocal">a_number</span><span class="esymbol">:</span> <a class="eclass" href="../base/real_64_short.html">REAL_64</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_value_short.html">SIMPLE_JSON_VALUE</a>
+			<span class="ecomment">--</span><span class="ecomment"> Create a JSON number value</span>
+
+	<a name="f_integer_value"></a><a class="efeature" href="../simple_json/simple_json_short.html#f_integer_value">integer_value</a> <span class="esymbol">(</span><span class="elocal">a_integer</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_64_short.html">INTEGER_64</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_value_short.html">SIMPLE_JSON_VALUE</a>
+			<span class="ecomment">--</span><span class="ecomment"> Create a JSON integer value</span>
+
+	<a name="f_boolean_value"></a><a class="efeature" href="../simple_json/simple_json_short.html#f_boolean_value">boolean_value</a> <span class="esymbol">(</span><span class="elocal">a_boolean</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_short.html">BOOLEAN</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_value_short.html">SIMPLE_JSON_VALUE</a>
+			<span class="ecomment">--</span><span class="ecomment"> Create a JSON boolean value</span>
+
+	<a name="f_null_value"></a><a class="efeature" href="../simple_json/simple_json_short.html#f_null_value">null_value</a><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_value_short.html">SIMPLE_JSON_VALUE</a>
+			<span class="ecomment">--</span><span class="ecomment"> Create a JSON null value</span>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> JSONPath Queries</span>
+
+	<a name="f_query_string"></a><a class="efeature" href="../simple_json/simple_json_short.html#f_query_string">query_string</a> <span class="esymbol">(</span><span class="elocal">a_value</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_value_short.html">SIMPLE_JSON_VALUE</a><span class="esymbol">;</span> <span class="elocal">a_path</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a>
+			<span class="ecomment">--</span><span class="ecomment"> Query for a single string value using JSONPath.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Returns Void if path not found or value is not a string.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Example paths: &quot;$.person.name&quot;, &quot;$.person.address.street&quot;, &quot;$.hobbies</span><span class="ecomment">[0]</span><span class="ecomment">&quot;</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">value_not_void</span><span class="esymbol">:</span> <span class="elocal">a_value</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">path_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_path</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_query_integer"></a><a class="efeature" href="../simple_json/simple_json_short.html#f_query_integer">query_integer</a> <span class="esymbol">(</span><span class="elocal">a_value</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_value_short.html">SIMPLE_JSON_VALUE</a><span class="esymbol">;</span> <span class="elocal">a_path</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_64_short.html">INTEGER_64</a>
+			<span class="ecomment">--</span><span class="ecomment"> Query for a single integer value using JSONPath.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Returns 0 if path not found or value is not an integer.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Example paths: &quot;$.person.age&quot;, &quot;$.counts</span><span class="ecomment">[0]</span><span class="ecomment">&quot;</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">value_not_void</span><span class="esymbol">:</span> <span class="elocal">a_value</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">path_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_path</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_query_strings"></a><a class="efeature" href="../simple_json/simple_json_short.html#f_query_strings">query_strings</a> <span class="esymbol">(</span><span class="elocal">a_value</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_value_short.html">SIMPLE_JSON_VALUE</a><span class="esymbol">;</span> <span class="elocal">a_path</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_short.html">ARRAYED_LIST</a> <span class="esymbol">[</span><a class="eclass" href="../base/string_32_short.html">STRING_32</a><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> Query for multiple string values using JSONPath with wildcards.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Returns empty list if path not found or values are not strings.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Example paths: &quot;$.hobbies</span><span class="ecomment">[*]</span><span class="ecomment">&quot;, &quot;$.people</span><span class="ecomment">[*]</span><span class="ecomment">.name&quot;</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">value_not_void</span><span class="esymbol">:</span> <span class="elocal">a_value</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">path_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_path</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_query_integers"></a><a class="efeature" href="../simple_json/simple_json_short.html#f_query_integers">query_integers</a> <span class="esymbol">(</span><span class="elocal">a_value</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_value_short.html">SIMPLE_JSON_VALUE</a><span class="esymbol">;</span> <span class="elocal">a_path</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/arrayed_list_short.html">ARRAYED_LIST</a> <span class="esymbol">[</span><a class="eclass" href="../base/integer_64_short.html">INTEGER_64</a><span class="esymbol">]</span>
+			<span class="ecomment">--</span><span class="ecomment"> Query for multiple integer values using JSONPath with wildcards.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Returns empty list if path not found or values are not integers.</span>
+			<span class="ecomment">--</span><span class="ecomment"> Example paths: &quot;$.counts</span><span class="ecomment">[*]</span><span class="ecomment">&quot;, &quot;$.people</span><span class="ecomment">[*]</span><span class="ecomment">.age&quot;</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">value_not_void</span><span class="esymbol">:</span> <span class="elocal">a_value</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">path_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_path</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+	
+<span class="ekeyword">feature</span> <span class="ecomment">--</span><span class="ecomment"> JSON Patch (RFC 6902)</span>
+
+	<a name="f_create_patch"></a><a class="efeature" href="../simple_json/simple_json_short.html#f_create_patch">create_patch</a><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_patch_short.html">SIMPLE_JSON_PATCH</a>
+			<span class="ecomment">--</span><span class="ecomment"> Create a new empty JSON Patch</span>
+		<span class="ekeyword">ensure</span>
+			<span class="etag">empty</span><span class="esymbol">:</span> <span class="ekeyword">Result</span><span class="edot">.</span><a class="efeature" href="../simple_json/simple_json_patch_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_parse_patch"></a><a class="efeature" href="../simple_json/simple_json_short.html#f_parse_patch">parse_patch</a> <span class="esymbol">(</span><span class="elocal">a_patch_json</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <span class="ekeyword">detachable</span> <a class="eclass" href="../simple_json/simple_json_patch_short.html">SIMPLE_JSON_PATCH</a>
+			<span class="ecomment">--</span><span class="ecomment"> Parse JSON Patch document from string</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">patch_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_patch_json</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+
+	<a name="f_apply_patch"></a><a class="efeature" href="../simple_json/simple_json_short.html#f_apply_patch">apply_patch</a> <span class="esymbol">(</span><span class="elocal">a_document</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_value_short.html">SIMPLE_JSON_VALUE</a><span class="esymbol">;</span> <span class="elocal">a_patch_json</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_32_short.html">STRING_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../simple_json/simple_json_patch_result_short.html">SIMPLE_JSON_PATCH_RESULT</a>
+			<span class="ecomment">--</span><span class="ecomment"> Parse patch and apply to document</span>
+		<span class="ekeyword">require</span>
+			<span class="etag">document_not_void</span><span class="esymbol">:</span> <span class="elocal">a_document</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+			<span class="etag">patch_not_empty</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <span class="elocal">a_patch_json</span><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+	
+<span class="ekeyword">invariant</span>
+	<span class="etag">last_errors_attached</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_short.html#f_last_errors">last_errors</a> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	<span class="etag">has_errors_definition</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_short.html#f_has_errors">has_errors</a> <span class="esymbol">=</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../simple_json/simple_json_short.html#f_last_errors">last_errors</a><span class="edot">.</span><a class="efeature" href="../base/finite_short.html#f_is_empty">is_empty</a>
+	<span class="etag">error_count_definition</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_short.html#f_error_count">error_count</a> <span class="esymbol">=</span> <a class="efeature" href="../simple_json/simple_json_short.html#f_last_errors">last_errors</a><span class="edot">.</span><a class="efeature" href="../base/arrayed_list_short.html#f_count">count</a>
+	<span class="etag">no_void_errors</span><span class="esymbol">:</span> <span class="ekeyword">across</span>
+			<a class="efeature" href="../simple_json/simple_json_short.html#f_last_errors">last_errors</a> <span class="ekeyword">as</span> ic_err
+		<span class="ekeyword">all</span>
+			<span class="elocal">ic_err</span> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+		<span class="ekeyword">end</span>
+	<span class="etag">has_errors_implies_first_error</span><span class="esymbol">:</span> <a class="efeature" href="../simple_json/simple_json_short.html#f_has_errors">has_errors</a> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <a class="efeature" href="../simple_json/simple_json_short.html#f_first_error">first_error</a> <span class="esymbol">/=</span> <span class="ekeyword">Void</span>
+	<span class="etag">no_errors_implies_no_first_error</span><span class="esymbol">:</span> <a class="ekeyword" href="../base/boolean_short.html#f_negated">not</a> <a class="efeature" href="../simple_json/simple_json_short.html#f_has_errors">has_errors</a> <a class="ekeyword" href="../base/boolean_short.html#f_implication">implies</a> <a class="efeature" href="../simple_json/simple_json_short.html#f_first_error">first_error</a> <span class="esymbol">=</span> <span class="ekeyword">Void</span>
+
+<span class="ekeyword">end</span> <span class="ecomment">--</span> <span class="ecomment">class </span><a class="eclass" href="../simple_json/simple_json_short.html">SIMPLE_JSON</a></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<a class="nav class" href="simple_json_chart.html">Chart</a>
+<a class="nav class" href="simple_json_links.html">Relations</a>
+<span class="nav class selected">Contracts</span>
+<span class="nav class goto">Go to: <input name="c" value="simple_json"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
+

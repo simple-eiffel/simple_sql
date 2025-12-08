@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="generator" content="ISE EiffelStudio version 25.02.9.8732 - win64">
+<meta name="description" content="TTSQLite error codes as enumerated constants. TTProvides human-readable names for all SQLite result codes.  TTUsage: TTTif db.last_error_code = {SIMPLE_SQL_ERROR_CODE}.constraint then TTTT-- handle constraint violation TTTend"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="copyright" content="Copyright (c) 2025, Larry Rix"/>
+<meta name="license" content="MIT License"/>
+<meta name="source" content="SIMPLE_SQL - High-level SQLite API for Eiffel Error codes from https://www.sqlite.org/rescode.html"/>
+<meta name="keywords" content="Eiffel class"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+<title>simple_sql_error_code Chart</title>
+<link rel="stylesheet" href="../default.css" type="text/css">
+<script type="text/javascript" src="../goto.html"></script>
+</head>
+<body>
+<pre></pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<span class="nav class selected">Chart</span>
+<a class="nav class" href="simple_sql_error_code_links.html">Relations</a>
+<a class="nav class" href="simple_sql_error_code_short.html">Contracts</a>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_error_code"></span>
+</div></form><pre><span class="ekeyword">class</span>
+	<a class="eclass" href="../src/simple_sql_error_code_chart.html">SIMPLE_SQL_ERROR_CODE</a>
+
+<span class="ekeyword">General</span>
+	<span class="eitag">cluster</span><span class="esymbol">:</span> <a class="ecluster" href="../src/index.html">src</a>
+	<span class="eitag">description</span><span class="esymbol">:</span> 
+		<span class="estring">&quot;SQLite error codes as enumerated constants.</span>
+		<span class="estring">Provides human-readable names for all SQLite result codes.</span>
+		
+		<span class="estring">Usage:</span>
+		<span class="estring">if db.last_error_code = </span><span class="esymbol">{</span><a class="eclass" href="../src/simple_sql_error_code_chart.html">SIMPLE_SQL_ERROR_CODE</a><span class="esymbol">}</span><span class="edot">.</span><a class="efeature" href="../src/simple_sql_error_code_short.html#f_constraint">constraint</a><span class="estring"> then</span>
+		<span class="estring">-- handle constraint violation</span>
+		<span class="estring">end&quot;</span>
+
+<span class="ekeyword">Ancestors</span>
+	<a class="eclass" href="../base/any_chart.html">ANY</a>
+
+<span class="ekeyword">Queries</span>
+	<span title="`abort' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_abort">Abort</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`abort_rollback' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_abort_rollback">Abort_rollback</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`auth' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_auth">Auth</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`auth_user' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_auth_user">Auth_user</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`busy' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_busy">Busy</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`busy_recovery' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_busy_recovery">Busy_recovery</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`busy_snapshot' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_busy_snapshot">Busy_snapshot</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`busy_timeout' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_busy_timeout">Busy_timeout</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`cantopen' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_cantopen">Cantopen</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`cantopen_fullpath' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_cantopen_fullpath">Cantopen_fullpath</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`cantopen_isdir' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_cantopen_isdir">Cantopen_isdir</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`cantopen_notempdir' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_cantopen_notempdir">Cantopen_notempdir</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`constraint' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_constraint">Constraint</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`constraint_check' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_constraint_check">Constraint_check</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`constraint_commithook' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_constraint_commithook">Constraint_commithook</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`constraint_foreignkey' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_constraint_foreignkey">Constraint_foreignkey</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`constraint_function' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_constraint_function">Constraint_function</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`constraint_notnull' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_constraint_notnull">Constraint_notnull</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`constraint_primarykey' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_constraint_primarykey">Constraint_primarykey</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`constraint_rowid' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_constraint_rowid">Constraint_rowid</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`constraint_trigger' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_constraint_trigger">Constraint_trigger</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`constraint_unique' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_constraint_unique">Constraint_unique</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`constraint_vtab' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_constraint_vtab">Constraint_vtab</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`corrupt' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_corrupt">Corrupt</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`corrupt_sequence' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_corrupt_sequence">Corrupt_sequence</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`corrupt_vtab' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_corrupt_vtab">Corrupt_vtab</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`done' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_done">Done</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`empty' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_empty">Empty</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`error' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_error">Error</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`error_missing_collseq' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_error_missing_collseq">Error_missing_collseq</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`error_retry' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_error_retry">Error_retry</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`error_snapshot' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_error_snapshot">Error_snapshot</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`format' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_format">Format</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`full' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_full">Full</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`internal' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_internal">Internal</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`interrupt' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_interrupt">Interrupt</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`ioerr' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_ioerr">Ioerr</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`ioerr_close' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_ioerr_close">Ioerr_close</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`ioerr_fsync' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_ioerr_fsync">Ioerr_fsync</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`ioerr_lock' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_ioerr_lock">Ioerr_lock</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`ioerr_read' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_ioerr_read">Ioerr_read</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`ioerr_short_read' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_ioerr_short_read">Ioerr_short_read</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`ioerr_write' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_ioerr_write">Ioerr_write</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`is_error' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_is_error">is_error</a> <span class="esymbol">(</span><span class="elocal">a_code</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_chart.html">BOOLEAN</a></span>
+	<span title="`is_success' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_is_success">is_success</a> <span class="esymbol">(</span><span class="elocal">a_code</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/boolean_chart.html">BOOLEAN</a></span>
+	<span title="`locked' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_locked">Locked</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`locked_sharedcache' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_locked_sharedcache">Locked_sharedcache</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`mismatch' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_mismatch">Mismatch</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`misuse' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_misuse">Misuse</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`name' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_name">name</a> <span class="esymbol">(</span><span class="elocal">a_code</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/string_8_chart.html">STRING_8</a></span>
+	<span title="`nolfs' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_nolfs">Nolfs</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`nomem' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_nomem">Nomem</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`notadb' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_notadb">Notadb</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`notfound' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_notfound">Notfound</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`notice' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_notice">Notice</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`notice_recover_rollback' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_notice_recover_rollback">Notice_recover_rollback</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`notice_recover_wal' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_notice_recover_wal">Notice_recover_wal</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`ok' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_ok">Ok</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`perm' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_perm">Perm</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`primary_code' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_primary_code">primary_code</a> <span class="esymbol">(</span><span class="elocal">a_extended_code</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a><span class="esymbol">)</span><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`protocol' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_protocol">Protocol</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`range' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_range">Range</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`readonly' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_readonly">Readonly</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`readonly_cantlock' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_readonly_cantlock">Readonly_cantlock</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`readonly_dbmoved' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_readonly_dbmoved">Readonly_dbmoved</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`readonly_recovery' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_readonly_recovery">Readonly_recovery</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`readonly_rollback' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_readonly_rollback">Readonly_rollback</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`row' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_row">Row</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`schema' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_schema">Schema</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`toobig' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_toobig">Toobig</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`warning' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_warning">Warning</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+	<span title="`warning_autoindex' is declared in `Current'"><a class="efeature" href="../src/simple_sql_error_code_short.html#f_warning_autoindex">Warning_autoindex</a><span class="esymbol">:</span> <a class="eclass" href="../base/integer_32_chart.html">INTEGER_32</a></span>
+
+</pre><form class="nav" onsubmit="go_to('../',this.c.value);return false;">
+<div class="nav">
+<a class="nav hierarchy" href="../class_list.html">Classes</a>
+<a class="nav hierarchy" href="../cluster_list.html">Clusters</a>
+<a class="nav hierarchy" href="../cluster_hierarchy.html">Cluster hierarchy</a>
+<span class="nav class selected">Chart</span>
+<a class="nav class" href="simple_sql_error_code_links.html">Relations</a>
+<a class="nav class" href="simple_sql_error_code_short.html">Contracts</a>
+<span class="nav class goto">Go to: <input name="c" value="simple_sql_error_code"></span>
+</div></form><pre></pre>
+<p style="text-align:center;">Generated by <a href="http://www.eiffel.com">ISE EiffelStudio</a></p>
+</body>
+</html>
