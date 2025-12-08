@@ -144,8 +144,6 @@ feature -- Execution
 			-- Get first page of results.
 		do
 			Result := execute_page (Void)
-		ensure
-			result_not_void: Result /= Void
 		end
 
 	after (a_cursor: READABLE_STRING_8): SIMPLE_SQL_PAGE
@@ -154,8 +152,6 @@ feature -- Execution
 			cursor_not_empty: not a_cursor.is_empty
 		do
 			Result := execute_page (a_cursor.to_string_8)
-		ensure
-			result_not_void: Result /= Void
 		end
 
 feature {NONE} -- Implementation

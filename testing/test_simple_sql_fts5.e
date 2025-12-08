@@ -1,6 +1,6 @@
 note
 	description: "Tests for SIMPLE_SQL_FTS5 and SIMPLE_SQL_FTS5_QUERY"
-	testing: "type/manual"
+	testing: "covers"
 	testing: "execution/serial"
 
 class

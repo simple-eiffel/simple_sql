@@ -1,6 +1,6 @@
 note
 	description: "Tests for Phase 6 Atomic Operations: atomic, update_versioned, upsert, decrement_if, increment_if"
-	testing: "type/manual"
+	testing: "covers"
 	testing: "execution/serial"
 
 class

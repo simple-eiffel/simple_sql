@@ -123,8 +123,6 @@ feature -- JSON Path Queries
 			l_stmt := database.prepare (l_sql)
 			l_stmt.bind_text (1, a_json)
 			Result := l_stmt.execute_returning_result
-		ensure
-			result_not_void: Result /= Void
 		end
 
 feature -- JSON Modification

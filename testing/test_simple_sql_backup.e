@@ -1,6 +1,6 @@
 note
 	description: "Test backup operations between memory and filesystem"
-	testing: "type/manual"
+	testing: "covers"
 	testing: "execution/serial"
 
 class

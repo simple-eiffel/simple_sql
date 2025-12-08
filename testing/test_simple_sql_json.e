@@ -1,6 +1,6 @@
 note
 	description: "Test JSON storage using SIMPLE_JSON library"
-	testing: "type/manual"
+	testing: "covers"
 	testing: "execution/serial"
 
 class

@@ -1,6 +1,6 @@
 note
 	description: "Tests for CPM_APP consumer example"
-	testing: "type/manual"
+	testing: "covers"
 	testing: "execution/serial"
 
 class

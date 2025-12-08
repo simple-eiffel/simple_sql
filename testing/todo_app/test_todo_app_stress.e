@@ -1,6 +1,6 @@
 note
 	description: "Stress tests for TODO_APP exercising SIMPLE_SQL library"
-	testing: "type/manual"
+	testing: "covers"
 	testing: "execution/serial"
 
 class

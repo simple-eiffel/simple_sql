@@ -1,6 +1,6 @@
 note
 	description: "Tests for WMS_APP - Warehouse Management System"
-	testing: "type/manual"
+	testing: "covers"
 
 class
 	TEST_WMS_APP

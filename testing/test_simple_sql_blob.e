@@ -1,6 +1,6 @@
 note
 	description: "Test suite for BLOB handling in SIMPLE_SQL"
-	testing: "type/manual"
+	testing: "covers"
 	testing: "execution/serial"
 
 class

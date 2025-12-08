@@ -1,6 +1,6 @@
 note
 	description: "Test advanced JSON support using SQLite JSON1 extension"
-	testing: "type/manual"
+	testing: "covers"
 	testing: "execution/serial"
 
 class

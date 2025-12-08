@@ -1,6 +1,6 @@
 note
 	description: "Stress tests for HABIT_TRACKER_APP - complex scenarios and high volume"
-	testing: "type/manual"
+	testing: "covers"
 	testing: "execution/serial"
 
 class

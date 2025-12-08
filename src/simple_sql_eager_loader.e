@@ -176,8 +176,6 @@ feature -- Execution
 			end
 
 			create Result.make (l_main_result, l_related_results)
-		ensure
-			result_not_void: Result /= Void
 		end
 
 feature {NONE} -- Implementation

@@ -229,8 +229,6 @@ feature -- Nullable Accessors
 			else
 				Result := string_value (a_name).to_string_8
 			end
-		ensure
-			result_not_void: Result /= Void
 		end
 
 	integer_value_or_default (a_name: STRING_8; a_default: INTEGER): INTEGER

@@ -79,8 +79,6 @@ feature -- Query: All
 					Result.extend (row_to_entity (ic))
 				end
 			end
-		ensure
-			result_not_void: Result /= Void
 		end
 
 	find_all_ordered (a_order_by: READABLE_STRING_8): ARRAYED_LIST [G]
@@ -101,8 +99,6 @@ feature -- Query: All
 					Result.extend (row_to_entity (ic))
 				end
 			end
-		ensure
-			result_not_void: Result /= Void
 		end
 
 	find_all_limited (a_limit: INTEGER; a_offset: INTEGER): ARRAYED_LIST [G]
@@ -129,7 +125,6 @@ feature -- Query: All
 				end
 			end
 		ensure
-			result_not_void: Result /= Void
 			respects_limit: Result.count <= a_limit
 		end
 
@@ -190,8 +185,6 @@ feature -- Query: Conditional
 					Result.extend (row_to_entity (ic))
 				end
 			end
-		ensure
-			result_not_void: Result /= Void
 		end
 
 	find_where_ordered (a_conditions: READABLE_STRING_8; a_order_by: READABLE_STRING_8): ARRAYED_LIST [G]
@@ -214,8 +207,6 @@ feature -- Query: Conditional
 					Result.extend (row_to_entity (ic))
 				end
 			end
-		ensure
-			result_not_void: Result /= Void
 		end
 
 	find_first_where (a_conditions: READABLE_STRING_8): detachable G
@@ -442,8 +433,6 @@ feature {NONE} -- Implementation (Deferred)
 		require
 			row_not_void: a_row /= Void
 		deferred
-		ensure
-			result_not_void: Result /= Void
 		end
 
 	entity_to_columns (a_entity: G): HASH_TABLE [detachable ANY, STRING_8]
@@ -452,8 +441,6 @@ feature {NONE} -- Implementation (Deferred)
 		require
 			entity_not_void: a_entity /= Void
 		deferred
-		ensure
-			result_not_void: Result /= Void
 		end
 
 	entity_id (a_entity: G): INTEGER_64

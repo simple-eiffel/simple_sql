@@ -1,6 +1,6 @@
 note
 	description: "Tests for SIMPLE_SQL_MIGRATION and SIMPLE_SQL_MIGRATION_RUNNER"
-	testing: "type/manual"
+	testing: "covers"
 	testing: "execution/serial"
 
 class

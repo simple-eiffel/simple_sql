@@ -386,8 +386,6 @@ feature {NONE} -- Implementation
 			variant
 				a_template.count - i + 1
 			end
-		ensure
-			result_not_void: Result /= Void
 		end
 
 feature {NONE} -- Constants

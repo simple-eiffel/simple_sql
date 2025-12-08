@@ -75,8 +75,6 @@ feature -- Access
 					end
 				end
 			end
-		ensure
-			result_not_void: Result /= Void
 		end
 
 feature -- Status

@@ -1,6 +1,6 @@
 note
 	description: "Test online backup, export, and import operations"
-	testing: "type/manual"
+	testing: "covers"
 	testing: "execution/serial"
 
 class

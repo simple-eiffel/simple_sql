@@ -1,6 +1,6 @@
 note
 	description: "Test suite for SIMPLE_SQL_DATABASE using TEST_SET_BASE assertions"
-	testing: "type/manual"
+	testing: "covers"
 	testing: "execution/serial"
 
 class

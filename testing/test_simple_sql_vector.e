@@ -1,6 +1,6 @@
 note
 	description: "Test suite for vector embeddings: SIMPLE_SQL_VECTOR, SIMPLE_SQL_VECTOR_STORE, SIMPLE_SQL_SIMILARITY"
-	testing: "type/manual"
+	testing: "covers"
 	testing: "execution/isolated"
 
 class

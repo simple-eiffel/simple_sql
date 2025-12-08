@@ -8,7 +8,7 @@ note
 		- Bulk operation efficiency
 		- Edge cases around zero/negative quantities
 	]"
-	testing: "type/manual"
+	testing: "covers"
 
 class
 	TEST_WMS_STRESS

@@ -1,6 +1,6 @@
 note
 	description: "Stress tests for DMS_APP - N+1 problems, high volume, and performance scenarios"
-	testing: "type/manual"
+	testing: "covers"
 	testing: "execution/serial"
 
 class

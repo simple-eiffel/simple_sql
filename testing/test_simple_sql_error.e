@@ -1,6 +1,6 @@
 note
 	description: "Tests for SIMPLE_SQL_ERROR and SIMPLE_SQL_ERROR_CODE"
-	testing: "type/manual"
+	testing: "covers"
 	testing: "execution/serial"
 
 class

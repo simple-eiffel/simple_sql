@@ -1,6 +1,6 @@
 note
 	description: "Stress tests for CPM_APP with complex mock construction project"
-	testing: "type/manual"
+	testing: "covers"
 	testing: "execution/serial"
 
 class

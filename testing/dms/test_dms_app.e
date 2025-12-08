@@ -1,6 +1,6 @@
 note
 	description: "Comprehensive tests for DMS_APP - Document Management System"
-	testing: "type/manual"
+	testing: "covers"
 	testing: "execution/serial"
 
 class

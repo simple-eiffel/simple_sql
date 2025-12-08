@@ -1,6 +1,6 @@
 note
 	description: "Tests for SIMPLE_SQL_SCHEMA and related info classes"
-	testing: "type/manual"
+	testing: "covers"
 	testing: "execution/serial"
 
 class

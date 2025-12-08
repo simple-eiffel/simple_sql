@@ -139,7 +139,6 @@ feature -- Query
 				end
 			end
 		ensure
-			result_not_void: Result /= Void
 			consistent_with_count: not has_error implies Result.count.to_integer_64 = count
 		end
 
@@ -160,8 +159,6 @@ feature -- Query
 					end
 				end
 			end
-		ensure
-			result_not_void: Result /= Void
 		end
 
 feature -- Similarity Search
@@ -199,7 +196,6 @@ feature -- Similarity Search
 				end
 			end
 		ensure
-			result_not_void: Result /= Void
 			at_most_k: Result.count <= a_k
 			scores_valid: across Result as ic all ic.score >= -1.0 and ic.score <= 1.0 end
 		end
@@ -237,7 +233,6 @@ feature -- Similarity Search
 				end
 			end
 		ensure
-			result_not_void: Result /= Void
 			at_most_k: Result.count <= a_k
 			distances_non_negative: across Result as ic all ic.distance >= 0.0 end
 		end
@@ -267,7 +262,6 @@ feature -- Similarity Search
 			-- Sort by score descending
 			sort_by_score_descending (Result)
 		ensure
-			result_not_void: Result /= Void
 			all_above_threshold: across Result as ic all ic.score >= a_threshold end
 		end
 

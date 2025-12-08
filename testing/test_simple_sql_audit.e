@@ -1,6 +1,6 @@
 note
 	description: "Test automatic audit/change tracking"
-	testing: "type/manual"
+	testing: "covers"
 	testing: "execution/isolated"
 
 class

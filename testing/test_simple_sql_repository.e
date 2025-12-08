@@ -1,6 +1,6 @@
 note
 	description: "Test repository pattern implementation"
-	testing: "type/manual"
+	testing: "covers"
 	testing: "execution/isolated"
 
 class

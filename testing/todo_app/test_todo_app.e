@@ -1,6 +1,6 @@
 note
 	description: "Tests for TODO_APP consumer example"
-	testing: "type/manual"
+	testing: "covers"
 	testing: "execution/serial"
 
 class

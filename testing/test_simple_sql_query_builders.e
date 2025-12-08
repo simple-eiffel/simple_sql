@@ -1,6 +1,6 @@
 note
 	description: "Tests for SIMPLE_SQL_SELECT_BUILDER, INSERT_BUILDER, UPDATE_BUILDER, DELETE_BUILDER"
-	testing: "type/manual"
+	testing: "covers"
 	testing: "execution/serial"
 
 class

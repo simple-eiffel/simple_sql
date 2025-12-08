@@ -1,6 +1,6 @@
 note
 	description: "Tests for SIMPLE_SQL_PREPARED_STATEMENT"
-	testing: "type/manual"
+	testing: "covers"
 	testing: "execution/serial"
 
 class

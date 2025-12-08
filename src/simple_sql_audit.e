@@ -144,8 +144,6 @@ feature -- Querying
 			)
 			l_stmt.bind_integer (1, a_record_id)
 			Result := l_stmt.execute_returning_result
-		ensure
-			result_not_void: Result /= Void
 		end
 
 	get_changes_in_range (a_table: STRING_8; a_start: STRING_8; a_end: STRING_8): SIMPLE_SQL_RESULT
@@ -166,8 +164,6 @@ feature -- Querying
 			l_stmt.bind_text (1, a_start)
 			l_stmt.bind_text (2, a_end)
 			Result := l_stmt.execute_returning_result
-		ensure
-			result_not_void: Result /= Void
 		end
 
 	get_latest_changes (a_table: STRING_8; a_limit: INTEGER): SIMPLE_SQL_RESULT
@@ -184,8 +180,6 @@ feature -- Querying
 			)
 			l_stmt.bind_integer (1, a_limit.to_integer_64)
 			Result := l_stmt.execute_returning_result
-		ensure
-			result_not_void: Result /= Void
 		end
 
 	get_changes_by_operation (a_table: STRING_8; a_operation: STRING_8): SIMPLE_SQL_RESULT
@@ -203,8 +197,6 @@ feature -- Querying
 			)
 			l_stmt.bind_text (1, a_operation)
 			Result := l_stmt.execute_returning_result
-		ensure
-			result_not_void: Result /= Void
 		end
 
 feature -- Analysis
@@ -296,8 +288,6 @@ feature -- Analysis
 					l_changed.forth
 				end
 			end
-		ensure
-			result_not_void: Result /= Void
 		end
 
 feature {NONE} -- Implementation
@@ -523,8 +513,6 @@ feature {NONE} -- Implementation
 				i := i + 1
 				l_columns.forth
 			end
-		ensure
-			result_not_void: Result /= Void
 		end
 
 	get_primary_key (a_table: STRING_8): STRING_8

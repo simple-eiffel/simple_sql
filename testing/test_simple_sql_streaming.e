@@ -1,6 +1,6 @@
 note
 	description: "Test suite for SIMPLE_SQL streaming and cursor features"
-	testing: "type/manual"
+	testing: "covers"
 	testing: "execution/serial"
 
 class
