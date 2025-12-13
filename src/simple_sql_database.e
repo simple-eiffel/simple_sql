@@ -97,7 +97,9 @@ feature -- Access
 			create Result
 		end
 
-	changes_count: INTEGER
+	changes_count,
+	rows_affected,
+	modified_count: INTEGER
 			-- Number of rows modified by last operation
 		require
 			is_open: is_open
@@ -115,13 +117,17 @@ feature -- Access
 
 feature -- Status report
 
-	is_open: BOOLEAN
+	is_open,
+	connected,
+	is_connected: BOOLEAN
 			-- Is database connection open?
 		do
 			Result := not internal_db.is_closed
 		end
 
-	has_error: BOOLEAN
+	has_error,
+	failed,
+	error_occurred: BOOLEAN
 			-- Did last operation fail?
 		do
 			Result := last_structured_error /= Void
@@ -151,7 +157,11 @@ feature -- Error status queries
 
 feature -- Basic operations
 
-	execute (a_sql: READABLE_STRING_8)
+	execute,
+	run_sql,
+	exec,
+	run_statement,
+	perform (a_sql: READABLE_STRING_8)
 			-- Execute SQL statement (INSERT, UPDATE, DELETE, CREATE, etc)
 		require
 			is_open: is_open
@@ -172,7 +182,11 @@ feature -- Basic operations
 			set_error_from_exception (a_sql)
 		end
 
-	query (a_sql: READABLE_STRING_8): SIMPLE_SQL_RESULT
+	query,
+	select_rows,
+	fetch,
+	query_sql,
+	run_query (a_sql: READABLE_STRING_8): SIMPLE_SQL_RESULT
 			-- Execute query and return results
 		require
 			is_open: is_open
@@ -198,7 +212,10 @@ feature -- Basic operations
 
 feature -- Parameterized Operations (convenience methods)
 
-	execute_with_args (a_sql: READABLE_STRING_8; a_args: ARRAY [detachable ANY])
+	execute_with_args,
+	run_sql_with,
+	exec_with,
+	perform_with (a_sql: READABLE_STRING_8; a_args: ARRAY [detachable ANY])
 			-- Execute SQL with parameters. Use ? placeholders.
 			-- Supported types: INTEGER, INTEGER_64, REAL_64, STRING, BOOLEAN, Void (NULL)
 			-- Example: execute_with_args ("INSERT INTO t (a, b) VALUES (?, ?)", <<123, "text">>)
@@ -214,7 +231,10 @@ feature -- Parameterized Operations (convenience methods)
 			l_stmt.execute
 		end
 
-	query_with_args (a_sql: READABLE_STRING_8; a_args: ARRAY [detachable ANY]): SIMPLE_SQL_RESULT
+	query_with_args,
+	select_rows_with,
+	fetch_with,
+	query_sql_with (a_sql: READABLE_STRING_8; a_args: ARRAY [detachable ANY]): SIMPLE_SQL_RESULT
 			-- Execute query with parameters. Use ? placeholders.
 			-- Supported types: INTEGER, INTEGER_64, REAL_64, STRING, BOOLEAN, Void (NULL)
 			-- Example: query_with_args ("SELECT * FROM t WHERE id = ?", <<123>>)
@@ -315,7 +335,10 @@ feature {NONE} -- Error handling implementation
 
 feature -- Prepared Statements
 
-	prepare (a_sql: READABLE_STRING_8): SIMPLE_SQL_PREPARED_STATEMENT
+	prepare,
+	prepare_statement,
+	create_statement,
+	compile_sql (a_sql: READABLE_STRING_8): SIMPLE_SQL_PREPARED_STATEMENT
 			-- Create prepared statement for given SQL
 		require
 			is_open: is_open
@@ -558,7 +581,10 @@ feature -- Additional Accessors
 
 feature -- Atomic Operations (Phase 6)
 
-	atomic (a_operation: PROCEDURE)
+	atomic,
+	transaction,
+	within_transaction,
+	transact (a_operation: PROCEDURE)
 			-- Execute operation inside a transaction with automatic commit/rollback.
 			-- If operation raises exception, transaction is rolled back.
 			-- Example: db.atomic (agent my_multi_table_operation)

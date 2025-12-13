@@ -236,8 +236,8 @@ feature -- Analysis
 				if attached l_old_json as l_old and then attached l_new_json as l_new then
 					if not l_old.is_empty and not l_new.is_empty then
 						create l_json
-						l_old_val := l_json.parse (l_old)
-						l_new_val := l_json.parse (l_new)
+						l_old_val := l_json.deserialize (l_old)
+						l_new_val := l_json.deserialize (l_new)
 
 						if attached l_old_val as l_ov and then attached l_new_val as l_nv then
 							if l_ov.is_object and l_nv.is_object then
