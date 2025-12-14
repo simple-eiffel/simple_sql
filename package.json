@@ -1,0 +1,9 @@
+{
+  "name": "simple_sql",
+  "version": "0.1.0",
+  "description": "Simple Eiffel library: simple_sql",
+  "author": "Larry Rix",
+  "license": "MIT",
+  "category": "database",
+  "keywords": ["sql", "sqlite", "database", "query", "fts5"]
+}
