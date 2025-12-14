@@ -44,6 +44,28 @@ feature {NONE} -- Test Runners
 			run_test (agent lib_tests.test_transaction_rollback, "test_transaction_rollback")
 			run_test (agent lib_tests.test_prepared_statement, "test_prepared_statement")
 			run_test (agent lib_tests.test_row_column_access, "test_row_column_access")
+			-- ORM Field Tests
+			run_test (agent lib_tests.test_orm_field_make, "test_orm_field_make")
+			run_test (agent lib_tests.test_orm_field_primary_key, "test_orm_field_primary_key")
+			run_test (agent lib_tests.test_orm_field_sql_column, "test_orm_field_sql_column")
+			-- ORM Entity Tests
+			run_test (agent lib_tests.test_orm_entity_is_new, "test_orm_entity_is_new")
+			run_test (agent lib_tests.test_orm_entity_fields, "test_orm_entity_fields")
+			run_test (agent lib_tests.test_orm_entity_get_set_field, "test_orm_entity_get_set_field")
+			run_test (agent lib_tests.test_orm_entity_create_table_sql, "test_orm_entity_create_table_sql")
+			-- ORM CRUD Tests
+			run_test (agent lib_tests.test_orm_create_table, "test_orm_create_table")
+			run_test (agent lib_tests.test_orm_insert, "test_orm_insert")
+			run_test (agent lib_tests.test_orm_find_by_id, "test_orm_find_by_id")
+			run_test (agent lib_tests.test_orm_find_all, "test_orm_find_all")
+			run_test (agent lib_tests.test_orm_update, "test_orm_update")
+			run_test (agent lib_tests.test_orm_delete, "test_orm_delete")
+			run_test (agent lib_tests.test_orm_find_where, "test_orm_find_where")
+			run_test (agent lib_tests.test_orm_count, "test_orm_count")
+			-- ORM Repository Tests
+			run_test (agent lib_tests.test_orm_repository_crud, "test_orm_repository_crud")
+			run_test (agent lib_tests.test_orm_repository_custom_queries, "test_orm_repository_custom_queries")
+			run_test (agent lib_tests.test_orm_repository_find_by_email, "test_orm_repository_find_by_email")
 		end
 
 	run_simple_sql_tests
