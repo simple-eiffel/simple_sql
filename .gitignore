@@ -1,11 +1,8 @@
-# Open in notepad
-notepad .gitignore
-```
-
-**Paste this into the file:**
-```
-# Eiffel compiled/generated files
+# Eiffel build artifacts
 EIFGENs/
+Documentation/
+
+# Compiled files
 *.melted
 *.o
 *.obj
@@ -26,3 +23,4 @@ EIFGENs/
 # OS files
 .DS_Store
 Thumbs.db
+
