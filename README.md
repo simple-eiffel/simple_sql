@@ -8,6 +8,18 @@
 
 A production-quality, easy-to-use wrapper around the Eiffel SQLite3 library, providing a clean, intuitive interface for database operations with comprehensive error handling and Design by Contract principles.
 
+## Installation
+
+Set the ecosystem environment variable (one-time setup for all simple_* libraries):
+```
+SIMPLE_EIFFEL=D:\prod
+```
+
+Add to your ECF:
+```xml
+<library name="simple_sql" location="$SIMPLE_EIFFEL/simple_sql/simple_sql.ecf"/>
+```
+
 ## The Elevator Pitch
 
 SIMPLE_SQL isn't just another database wrapper - it's an API designed by *building real applications*.

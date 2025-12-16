@@ -74,19 +74,19 @@
             <pre><code>git clone https://github.com/yourorg/simple_sql.git D:/prod/simple_sql</code></pre>
 
             <h2>Step 2: Set Environment Variable</h2>
-            <p>Set the <code>SIMPLE_SQL</code> environment variable to point to the library location:</p>
+            <p>Set the <code>SIMPLE_EIFFEL</code> environment variable to point to the prod directory:</p>
 
             <h3>Windows</h3>
-            <pre><code>setx SIMPLE_SQL "D:\prod\simple_sql"</code></pre>
+            <pre><code>setx SIMPLE_EIFFEL "D:\prod"</code></pre>
 
             <h3>Linux/macOS</h3>
-            <pre><code>export SIMPLE_SQL="/path/to/simple_sql"</code></pre>
+            <pre><code>export SIMPLE_EIFFEL=/d/prod</code></pre>
 
             <h2>Step 3: Add to Your ECF File</h2>
             <p>Add SIMPLE_SQL as a library in your project's ECF file:</p>
             <pre><code>&lt;system name="my_app" xmlns="..."&gt;
     ...
-    &lt;library name="simple_sql" location="$SIMPLE_SQL/simple_sql.ecf"/&gt;
+    &lt;library name="simple_sql" location="$SIMPLE_EIFFEL/simple_sql/simple_sql.ecf"/&gt;
     ...
 &lt;/system&gt;</code></pre>
 
@@ -143,7 +143,7 @@
             <h3>Library Not Found</h3>
             <p>If EiffelStudio can't find the library:</p>
             <ol>
-                <li>Verify the <code>SIMPLE_SQL</code> environment variable is set</li>
+                <li>Verify the <code>SIMPLE_EIFFEL</code> environment variable is set</li>
                 <li>Restart EiffelStudio after setting environment variables</li>
                 <li>Check that the path contains <code>simple_sql.ecf</code></li>
             </ol>
