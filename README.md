@@ -176,7 +176,56 @@ Each mock application has its own test suite. When we add API improvements based
 - Unicode (STRING_32) support
 - Automatic resource management
 
-## Quick Start
+## Quick Start (Zero-Configuration)
+
+Use `SIMPLE_SQL_QUICK` for the simplest possible database operations:
+
+```eiffel
+local
+    db: SIMPLE_SQL_QUICK
+do
+    create db.make
+
+    -- Open or create database
+    db.open ("mydata.db")
+    -- Or use in-memory: db.memory
+
+    -- Create table with columns
+    db.create_table ("users", <<"id INTEGER PRIMARY KEY", "name TEXT", "age INTEGER">>)
+
+    -- Insert data
+    db.insert ("users", <<["name", "Alice"], ["age", "30"]>>)
+    db.insert ("users", <<["name", "Bob"], ["age", "25"]>>)
+
+    -- Query returns list of row dictionaries
+    across db.query ("SELECT * FROM users WHERE age > 20") as row loop
+        print (row.item ("name").out + ": " + row.item ("age").out + "%N")
+    end
+
+    -- Get single value
+    if attached db.query_value ("SELECT COUNT(*) FROM users") as count then
+        print ("Total users: " + count.out)
+    end
+
+    -- Update and delete
+    db.update ("users", <<["age", "31"]>>, "name = 'Alice'")
+    db.delete ("users", "age < 21")
+
+    -- Transactions
+    db.begin_transaction
+    db.insert ("users", <<["name", "Charlie"], ["age", "28"]>>)
+    db.commit
+
+    -- Error handling
+    if db.has_error then
+        print ("Error: " + db.last_error)
+    end
+
+    db.close
+end
+```
+
+## Standard API (Full Control)
 
 ```eiffel
 -- Create database
