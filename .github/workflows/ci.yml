@@ -49,7 +49,7 @@ jobs:
       run: |
         cd $SIMPLE_EIFFEL
         # Libraries with inline C code that need .o files for Linux
-        for lib in simple_env simple_process simple_mmap simple_system simple_watcher; do
+        for lib in simple_env simple_process simple_mmap simple_system simple_watcher eiffel_sqlite_2025; do
           if [ -d "$lib/Clib" ]; then
             echo "=== Compiling C code for $lib ==="
             cd "$lib/Clib"
