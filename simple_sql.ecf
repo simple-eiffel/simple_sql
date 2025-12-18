@@ -15,6 +15,7 @@
 			<concurrency support="scoop"/>
 			<void_safety support="all"/>
 		</capability>
+		<external_include location="$SIMPLE_EIFFEL/eiffel_sqlite_2025/Clib"/>
 		<library name="base" location="$ISE_LIBRARY\library\base\base.ecf"/>
 		<library name="base_extension" location="$ISE_LIBRARY\library\base_extension\base_extension.ecf"/>
 		<library name="simple_json" location="$SIMPLE_EIFFEL/simple_json/simple_json.ecf"/>
