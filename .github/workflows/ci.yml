@@ -56,8 +56,14 @@ jobs:
             rm -f *.o
             for cfile in *.c; do
               if [ -f "$cfile" ]; then
-                echo "  gcc -c -fPIC $cfile -o ${cfile%.c}.o"
-                gcc -c -fPIC "$cfile" -o "${cfile%.c}.o"
+                if [ "$lib" = "eiffel_sqlite_2025" ]; then
+                  # SQLite wrapper needs EiffelStudio headers
+                  echo "  gcc -c -fPIC -I$ISE_EIFFEL/studio/spec/$ISE_PLATFORM/include $cfile -o ${cfile%.c}.o"
+                  gcc -c -fPIC -I$ISE_EIFFEL/studio/spec/$ISE_PLATFORM/include "$cfile" -o "${cfile%.c}.o"
+                else
+                  echo "  gcc -c -fPIC $cfile -o ${cfile%.c}.o"
+                  gcc -c -fPIC "$cfile" -o "${cfile%.c}.o"
+                fi
               fi
             done
             ls -la *.o 2>/dev/null || echo "  Warning: No .o files generated"
