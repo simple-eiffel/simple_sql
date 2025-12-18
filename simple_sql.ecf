@@ -22,11 +22,11 @@
 		<library name="sqlite" location="$SIMPLE_EIFFEL/eiffel_sqlite_2025/sqlite_2025.ecf"/>
 		<cluster name="src" location=".\src\" recursive="true">
 			<file_rule>
-				<exclude>/cpm_app@</exclude>
-				<exclude>/dms@</exclude>
-				<exclude>/habit_tracker@</exclude>
-				<exclude>/todo_app@</exclude>
-				<exclude>/wms@</exclude>
+				<exclude>cpm_app</exclude>
+				<exclude>dms</exclude>
+				<exclude>habit_tracker</exclude>
+				<exclude>todo_app</exclude>
+				<exclude>wms</exclude>
 			</file_rule>
 		</cluster>
 	</target>
@@ -40,11 +40,11 @@
 		<library name="testing" location="$ISE_LIBRARY\library\testing\testing.ecf"/>
 		<cluster name="tests" location=".\testing\" recursive="true">
 			<file_rule>
-				<exclude>/cpm_app@</exclude>
-				<exclude>/dms@</exclude>
-				<exclude>/habit_tracker@</exclude>
-				<exclude>/todo_app@</exclude>
-				<exclude>/wms@</exclude>
+				<exclude>cpm_app</exclude>
+				<exclude>dms</exclude>
+				<exclude>habit_tracker</exclude>
+				<exclude>todo_app</exclude>
+				<exclude>wms</exclude>
 			</file_rule>
 		</cluster>
 	</target>
