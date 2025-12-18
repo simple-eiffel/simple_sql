@@ -75,8 +75,6 @@ jobs:
     - name: Find ECF and compile
       run: |
         export PATH="$ISE_EIFFEL/studio/spec/$ISE_PLATFORM/bin:$PATH"
-        # Add SQLite header path for C compilation
-        export CFLAGS="-I$SIMPLE_EIFFEL/eiffel_sqlite_2025/Clib"
         cd $GITHUB_WORKSPACE
 
         # Find the main ECF file (not in subdirectories)
@@ -95,9 +93,23 @@ jobs:
         fi
         echo "Using target: $TEST_TARGET"
 
-        # Clean and compile
+        # Clean and compile (Eiffel only, no C compile yet)
         rm -rf EIFGENs
-        ec -batch -config "$ECF_FILE" -target "$TEST_TARGET" -c_compile
+        ec -batch -config "$ECF_FILE" -target "$TEST_TARGET" -freeze
+
+        # Fix Makefile paths: $SIMPLE_EIFFEL gets mis-interpreted by make/shell
+        # Replace literal $SIMPLE_EIFFEL with the expanded path
+        cd EIFGENs/*/W_code
+        echo "Fixing Makefile paths in $(pwd)..."
+        for f in Makefile Makefile.SH; do
+          if [ -f "$f" ]; then
+            sed -i "s|\\\$SIMPLE_EIFFEL|$SIMPLE_EIFFEL|g" "$f"
+            sed -i "s|\$(SIMPLE_EIFFEL)|$SIMPLE_EIFFEL|g" "$f"
+          fi
+        done
+
+        # Now run C compilation
+        finish_freezing
       timeout-minutes: 20
 
     - name: Run tests
