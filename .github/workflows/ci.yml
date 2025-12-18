@@ -75,6 +75,8 @@ jobs:
     - name: Find ECF and compile
       run: |
         export PATH="$ISE_EIFFEL/studio/spec/$ISE_PLATFORM/bin:$PATH"
+        # Add SQLite header path for C compilation
+        export CFLAGS="-I$SIMPLE_EIFFEL/eiffel_sqlite_2025/Clib"
         cd $GITHUB_WORKSPACE
 
         # Find the main ECF file (not in subdirectories)
