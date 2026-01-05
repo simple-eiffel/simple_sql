@@ -121,20 +121,21 @@ feature -- Simple Queries
 			sql_not_empty: not a_sql.is_empty
 		local
 			l_row: STRING_TABLE [ANY]
+			res: SIMPLE_SQL_RESULT
+			i: INTEGER
 		do
 			create Result.make (10)
 			if attached database as db then
-				if attached db.query (a_sql) as cursor then
-					from cursor.start until cursor.after loop
-						create l_row.make (cursor.column_count)
-						across 1 |..| cursor.column_count as i loop
-							if attached cursor.column_name (i) as col_name then
-								l_row.put (cursor.value (i), col_name)
-							end
+				res := db.run_query (a_sql)
+				across res.rows as row loop
+					create l_row.make (row.count)
+					from i := 1 until i > row.count loop
+						if attached row [i] as val then
+							l_row.put (val, row.column_name (i))
 						end
-						Result.extend (l_row)
-						cursor.forth
+						i := i + 1
 					end
+					Result.extend (l_row)
 				end
 			end
 		ensure
@@ -147,13 +148,13 @@ feature -- Simple Queries
 		require
 			is_connected: is_connected
 			sql_not_empty: not a_sql.is_empty
+		local
+			res: SIMPLE_SQL_RESULT
 		do
 			if attached database as db then
-				if attached db.query (a_sql) as cursor then
-					cursor.start
-					if not cursor.after then
-						Result := cursor.value (1)
-					end
+				res := db.run_query (a_sql)
+				if not res.rows.is_empty and then attached res.rows.first as row then
+					Result := row [1]
 				end
 			end
 		end
