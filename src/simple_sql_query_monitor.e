@@ -139,9 +139,9 @@ feature -- Operations
 
 			if has_warnings then
 				Result.append ("%N!!! N+1 WARNINGS !!!%N")
-				across warnings as w loop
+				across warnings as ic_w loop
 					Result.append ("  - ")
-					Result.append (w)
+					Result.append (ic_w)
 					Result.append ("%N")
 				end
 			else
