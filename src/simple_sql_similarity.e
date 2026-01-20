@@ -272,23 +272,20 @@ feature -- Utility
 feature {NONE} -- Implementation
 
 	sort_scores_descending (a_list: ARRAYED_LIST [TUPLE [index: INTEGER; score: REAL_64]])
-			-- Sort in place by score descending using library quick sort
+			-- Sort in place by score descending.
 		local
-			l_sorter: QUICK_SORTER [TUPLE [index: INTEGER; score: REAL_64]]
-			l_comparator: AGENT_PART_COMPARATOR [TUPLE [index: INTEGER; score: REAL_64]]
+			l_sorter: SIMPLE_SORTER [TUPLE [index: INTEGER; score: REAL_64]]
 		do
-			create l_comparator.make (agent compare_scores_descending)
-			create l_sorter.make (l_comparator)
-			l_sorter.sort (a_list)
+			create l_sorter.make
+			l_sorter.sort_by_descending (a_list, agent similarity_score_key)
 		ensure
 			same_count: a_list.count = old a_list.count
 		end
 
-	compare_scores_descending (a, b: TUPLE [index: INTEGER; score: REAL_64]): BOOLEAN
-			-- Is `a` considered less than `b` for descending sort?
-			-- Returns True if a.score > b.score (higher scores come first)
+	similarity_score_key (a_item: TUPLE [index: INTEGER; score: REAL_64]): REAL_64
+			-- Extract score for sorting.
 		do
-			Result := a.score > b.score
+			Result := a_item.score
 		end
 
 	Tolerance: REAL_64 = 1.0e-10

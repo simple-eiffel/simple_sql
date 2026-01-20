@@ -428,37 +428,33 @@ feature {NONE} -- Implementation
 		end
 
 	sort_by_score_descending (a_list: ARRAYED_LIST [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; score: REAL_64]])
-			-- Sort in place by score descending using library quick sort
+			-- Sort in place by score descending.
 		local
-			l_sorter: QUICK_SORTER [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; score: REAL_64]]
-			l_comparator: AGENT_PART_COMPARATOR [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; score: REAL_64]]
+			l_sorter: SIMPLE_SORTER [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; score: REAL_64]]
 		do
-			create l_comparator.make (agent compare_scores_descending)
-			create l_sorter.make (l_comparator)
-			l_sorter.sort (a_list)
+			create l_sorter.make
+			l_sorter.sort_by_descending (a_list, agent score_key)
 		end
 
 	sort_by_distance_ascending (a_list: ARRAYED_LIST [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; distance: REAL_64]])
-			-- Sort in place by distance ascending using library quick sort
+			-- Sort in place by distance ascending.
 		local
-			l_sorter: QUICK_SORTER [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; distance: REAL_64]]
-			l_comparator: AGENT_PART_COMPARATOR [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; distance: REAL_64]]
+			l_sorter: SIMPLE_SORTER [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; distance: REAL_64]]
 		do
-			create l_comparator.make (agent compare_distances_ascending)
-			create l_sorter.make (l_comparator)
-			l_sorter.sort (a_list)
+			create l_sorter.make
+			l_sorter.sort_by (a_list, agent distance_key)
 		end
 
-	compare_scores_descending (a, b: TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; score: REAL_64]): BOOLEAN
-			-- Is `a` considered less than `b` for descending score sort?
+	score_key (a_item: TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; score: REAL_64]): REAL_64
+			-- Extract score for sorting.
 		do
-			Result := a.score > b.score
+			Result := a_item.score
 		end
 
-	compare_distances_ascending (a, b: TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; distance: REAL_64]): BOOLEAN
-			-- Is `a` considered less than `b` for ascending distance sort?
+	distance_key (a_item: TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; distance: REAL_64]): REAL_64
+			-- Extract distance for sorting.
 		do
-			Result := a.distance < b.distance
+			Result := a_item.distance
 		end
 
 	clear_error
