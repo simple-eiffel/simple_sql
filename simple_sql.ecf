@@ -21,6 +21,9 @@
 		<library name="simple_json" location="$SIMPLE_EIFFEL/simple_json/simple_json.ecf"/>
 		<library name="simple_sorter" location="$SIMPLE_EIFFEL/simple_sorter/simple_sorter.ecf"/>
 		<library name="sqlite" location="$SIMPLE_EIFFEL/eiffel_sqlite_2025/sqlite_2025.ecf"/>
+		<library name="simple_encoding" location="$SIMPLE_EIFFEL/simple_encoding/simple_encoding.ecf"/>
+		<library name="simple_factory" location="$SIMPLE_EIFFEL/simple_factory/simple_factory.ecf"/>
+		<library name="simple_reflection" location="$SIMPLE_EIFFEL/simple_reflection/simple_reflection.ecf"/>
 		<cluster name="src" location=".\src\" recursive="true">
 			<file_rule>
 				<exclude>cpm_app</exclude>

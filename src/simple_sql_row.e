@@ -264,6 +264,69 @@ feature -- Nullable Accessors
 			Result := integer_value (a_name) /= 0
 		end
 
+feature -- UTF-8 Validation (simple_encoding integration)
+
+	is_string_valid_utf8 (a_name: STRING_8): BOOLEAN
+			-- Is the string value at `a_name' valid UTF-8?
+			-- Returns True for NULL or non-string values.
+		require
+			has_column: has_column (a_name)
+		local
+			l_detector: SIMPLE_ENCODING_DETECTOR
+		do
+			if is_null (a_name) then
+				Result := True
+			elseif attached {READABLE_STRING_GENERAL} column_value (a_name) as l_str then
+				create l_detector.make
+				Result := l_detector.is_valid_utf8 (l_str.to_string_8)
+			else
+				Result := True -- Non-string values are considered valid
+			end
+		end
+
+	all_strings_valid_utf8: BOOLEAN
+			-- Are all string columns valid UTF-8?
+		local
+			i: INTEGER
+		do
+			Result := True
+			from
+				i := 1
+			until
+				i > count or not Result
+			loop
+				if attached {READABLE_STRING_GENERAL} values.i_th (i) then
+					Result := is_string_valid_utf8 (columns.i_th (i))
+				end
+				i := i + 1
+			variant
+				count - i + 1
+			end
+		end
+
+	detected_encoding (a_name: STRING_8): STRING
+			-- Detect encoding of string value at `a_name'.
+			-- Returns "UTF-8", "ASCII", "LATIN1", etc.
+		require
+			has_column: has_column (a_name)
+			not_null: not is_null (a_name)
+		local
+			l_detector: SIMPLE_ENCODING_DETECTOR
+		do
+			if attached {READABLE_STRING_GENERAL} column_value (a_name) as l_str then
+				create l_detector.make
+				if attached l_detector.detect_encoding (l_str.to_string_8) as l_enc then
+					Result := l_enc.to_string_8
+				else
+					Result := "UNKNOWN"
+				end
+			else
+				Result := "BINARY"
+			end
+		ensure
+			result_not_empty: not Result.is_empty
+		end
+
 feature {SIMPLE_SQL_RESULT, SIMPLE_SQL_CURSOR, SIMPLE_SQL_RESULT_STREAM} -- Element change
 
 	add_column (a_name: STRING_8; a_value: detachable ANY)

@@ -66,6 +66,13 @@ feature {NONE} -- Test Runners
 			run_test (agent lib_tests.test_orm_repository_crud, "test_orm_repository_crud")
 			run_test (agent lib_tests.test_orm_repository_custom_queries, "test_orm_repository_custom_queries")
 			run_test (agent lib_tests.test_orm_repository_find_by_email, "test_orm_repository_find_by_email")
+			-- Integration tests (simple_factory, simple_encoding, simple_reflection)
+			run_test (agent lib_tests.test_database_pool, "test_database_pool")
+			run_test (agent lib_tests.test_database_pool_by_path, "test_database_pool_by_path")
+			run_test (agent lib_tests.test_row_utf8_validation, "test_row_utf8_validation")
+			run_test (agent lib_tests.test_row_encoding_detection, "test_row_encoding_detection")
+			run_test (agent lib_tests.test_reflective_mapper_snake_case, "test_reflective_mapper_snake_case")
+			run_test (agent lib_tests.test_reflective_mapper_create_table_sql, "test_reflective_mapper_create_table_sql")
 		end
 
 	run_simple_sql_tests

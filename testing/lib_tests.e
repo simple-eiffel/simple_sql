@@ -569,4 +569,138 @@ feature -- Test: ORM Repository
 			db.close
 		end
 
+feature -- Test: Database Pool (simple_factory integration)
+
+	test_database_pool
+			-- Test database connection pooling.
+		note
+			testing: "covers/{SIMPLE_SQL_DATABASE_POOL}"
+		local
+			pool: SIMPLE_SQL_DATABASE_POOL
+			db1, db2: SIMPLE_SQL_DATABASE
+		do
+			create pool.make
+			assert_integers_equal ("initially empty", 0, pool.cached_count)
+
+			-- Get memory database (creates new)
+			db1 := pool.memory_database
+			assert_attached ("db created", db1)
+			assert_true ("db open", db1.is_open)
+			assert_integers_equal ("one cached", 1, pool.cached_count)
+			assert_true ("is cached", pool.is_cached (":memory:"))
+
+			-- Get same database (reuses cached)
+			db2 := pool.memory_database
+			assert_true ("same database", db1 = db2)
+			assert_integers_equal ("still one", 1, pool.cached_count)
+
+			-- Invalidate
+			pool.invalidate (":memory:")
+			assert_integers_equal ("cleared", 0, pool.cached_count)
+		end
+
+	test_database_pool_by_path
+			-- Test database pool with different paths.
+		note
+			testing: "covers/{SIMPLE_SQL_DATABASE_POOL}.database_for_path"
+		local
+			pool: SIMPLE_SQL_DATABASE_POOL
+			db1, db2: SIMPLE_SQL_DATABASE
+		do
+			create pool.make
+
+			-- Get two different databases
+			db1 := pool.database_for_path (":memory:")
+			db2 := pool.database_for_path (":memory:")
+
+			-- Should be same instance
+			assert_true ("same instance", db1 = db2)
+			assert_integers_equal ("one cached", 1, pool.cached_count)
+
+			-- Invalidate all
+			pool.invalidate_all
+			assert_integers_equal ("all cleared", 0, pool.cached_count)
+		end
+
+feature -- Test: UTF-8 Validation (simple_encoding integration)
+
+	test_row_utf8_validation
+			-- Test UTF-8 validation on row data.
+		note
+			testing: "covers/{SIMPLE_SQL_ROW}.is_string_valid_utf8"
+		local
+			db: SIMPLE_SQL_DATABASE
+			l_result: SIMPLE_SQL_RESULT
+		do
+			create db.make_memory
+			db.execute ("CREATE TABLE test (id INTEGER PRIMARY KEY, name TEXT)")
+			db.execute ("INSERT INTO test (name) VALUES ('Hello World')")
+			l_result := db.query ("SELECT * FROM test")
+			if not l_result.is_empty then
+				assert_true ("valid utf8", l_result.first.is_string_valid_utf8 ("name"))
+				assert_true ("all valid", l_result.first.all_strings_valid_utf8)
+			else
+				assert_true ("has result", False)
+			end
+			db.close
+		end
+
+	test_row_encoding_detection
+			-- Test encoding detection on row data.
+		note
+			testing: "covers/{SIMPLE_SQL_ROW}.detected_encoding"
+		local
+			db: SIMPLE_SQL_DATABASE
+			l_result: SIMPLE_SQL_RESULT
+			l_encoding: STRING
+		do
+			create db.make_memory
+			db.execute ("CREATE TABLE test (id INTEGER PRIMARY KEY, name TEXT)")
+			db.execute ("INSERT INTO test (name) VALUES ('ASCII only')")
+			l_result := db.query ("SELECT * FROM test")
+			if not l_result.is_empty then
+				l_encoding := l_result.first.detected_encoding ("name")
+				assert_true ("encoding detected", not l_encoding.is_empty)
+			else
+				assert_true ("has result", False)
+			end
+			db.close
+		end
+
+feature -- Test: Reflective Mapper (simple_reflection integration)
+
+	test_reflective_mapper_snake_case
+			-- Test snake_case conversion.
+		note
+			testing: "covers/{SIMPLE_SQL_REFLECTIVE_MAPPER}"
+		local
+			mapper: SIMPLE_SQL_REFLECTIVE_MAPPER
+			entity: SAMPLE_ORM_ENTITY
+			l_hash: HASH_TABLE [detachable ANY, STRING]
+		do
+			create mapper.make
+			create entity.make ("Test User", "test@example.com", 25)
+
+			-- Convert to hash
+			l_hash := mapper.object_to_hash (entity)
+			assert_true ("hash not empty", l_hash.count > 0)
+		end
+
+	test_reflective_mapper_create_table_sql
+			-- Test CREATE TABLE SQL generation.
+		note
+			testing: "covers/{SIMPLE_SQL_REFLECTIVE_MAPPER}.create_table_sql"
+		local
+			mapper: SIMPLE_SQL_REFLECTIVE_MAPPER
+			entity: SAMPLE_ORM_ENTITY
+			l_sql: STRING
+		do
+			create mapper.make
+			create entity.make_default
+
+			l_sql := mapper.create_table_sql (entity, "users")
+			assert_true ("has CREATE TABLE", l_sql.has_substring ("CREATE TABLE"))
+			assert_true ("has table name", l_sql.has_substring ("users"))
+		end
+
 end
