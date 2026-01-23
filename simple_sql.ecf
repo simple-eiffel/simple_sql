@@ -24,6 +24,7 @@
 		<library name="simple_encoding" location="$SIMPLE_EIFFEL/simple_encoding/simple_encoding.ecf"/>
 		<library name="simple_factory" location="$SIMPLE_EIFFEL/simple_factory/simple_factory.ecf"/>
 		<library name="simple_reflection" location="$SIMPLE_EIFFEL/simple_reflection/simple_reflection.ecf"/>
+		<library name="simple_mml" location="$SIMPLE_EIFFEL/simple_mml/simple_mml.ecf"/>
 		<cluster name="src" location=".\src\" recursive="true">
 			<file_rule>
 				<exclude>cpm_app</exclude>

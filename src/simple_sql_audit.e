@@ -8,6 +8,11 @@ note
 		- Old and new values as JSON
 		- List of changed fields
 
+		Model Queries (for contracts):
+		- model_audit_trail: MML_SEQUENCE [AUDIT_ENTRY] -- chronological audit entries
+		- model_tables: MML_SET [STRING] -- audited tables
+		- model_record_changes: MML_MAP [INTEGER_64, MML_SEQUENCE [AUDIT_ENTRY]] -- record_id -> changes
+
 		Example:
 			audit := db.audit
 			audit.enable_for_table ("users")
@@ -32,7 +37,6 @@ feature {NONE} -- Initialization
 	make (a_database: SIMPLE_SQL_DATABASE)
 			-- Initialize with database connection
 		require
-			database_not_void: a_database /= Void
 			database_open: a_database.is_open
 		do
 			database := a_database
@@ -44,6 +48,165 @@ feature -- Access
 
 	database: SIMPLE_SQL_DATABASE
 			-- Database connection
+
+feature -- Model Queries (for contracts)
+
+	model_audit_trail (a_table: STRING_8): MML_SEQUENCE [AUDIT_ENTRY]
+			-- Chronological sequence of all audit entries for table.
+			-- Entries are ordered by timestamp/audit_id (oldest first).
+		require
+			table_not_empty: not a_table.is_empty
+			has_audit: has_audit_table (a_table)
+		local
+			l_result: SIMPLE_SQL_RESULT
+			l_entry: AUDIT_ENTRY
+			l_old_values, l_new_values: detachable STRING_32
+			l_row: SIMPLE_SQL_ROW
+			i: INTEGER
+		do
+			create Result
+			l_result := database.query (
+				"SELECT * FROM " + audit_table_name (a_table) + " ORDER BY timestamp ASC, audit_id ASC"
+			)
+			from i := 1 until i > l_result.count loop
+				l_row := l_result [i]
+				l_old_values := l_row.string_value ("old_values")
+				l_new_values := l_row.string_value ("new_values")
+				create l_entry.make (
+					l_row.integer_64_value ("audit_id"),
+					l_row.integer_64_value ("record_id"),
+					a_table,
+					l_row.string_value ("operation").to_string_8,
+					l_row.string_value ("timestamp").to_string_8,
+					l_old_values,
+					l_new_values
+				)
+				Result := Result & l_entry
+				i := i + 1
+			end
+		ensure
+			chronological: is_chronological (Result)
+			all_valid_operations: Result.for_all (agent (idx: INTEGER; e: AUDIT_ENTRY): BOOLEAN do Result := e.is_valid_operation end)
+		end
+
+	model_tables: MML_SET [STRING_8]
+			-- Set of all tables that have auditing enabled.
+		local
+			l_result: SIMPLE_SQL_RESULT
+			l_name: STRING_8
+			l_row: SIMPLE_SQL_ROW
+			i: INTEGER
+		do
+			create Result
+			l_result := database.query (
+				"SELECT name FROM sqlite_master WHERE type='table' AND name LIKE '%%_audit'"
+			)
+			from i := 1 until i > l_result.count loop
+				l_row := l_result [i]
+				l_name := l_row.string_value ("name").to_string_8
+				-- Extract original table name by removing "_audit" suffix
+				if l_name.count > 6 then
+					l_name := l_name.substring (1, l_name.count - 6)
+					if is_enabled (l_name) then
+						Result := Result & l_name
+					end
+				end
+				i := i + 1
+			end
+		ensure
+			all_enabled: Result.for_all (agent is_enabled)
+		end
+
+	model_record_changes (a_table: STRING_8): MML_MAP [INTEGER_64, MML_SEQUENCE [AUDIT_ENTRY]]
+			-- Map from record_id to sequence of audit entries for that record.
+		require
+			table_not_empty: not a_table.is_empty
+			has_audit: has_audit_table (a_table)
+		local
+			l_trail: MML_SEQUENCE [AUDIT_ENTRY]
+			l_entry: AUDIT_ENTRY
+			l_record_id: INTEGER_64
+			l_existing: MML_SEQUENCE [AUDIT_ENTRY]
+			i: INTEGER
+		do
+			create Result
+			l_trail := model_audit_trail (a_table)
+			from i := 1 until i > l_trail.count loop
+				l_entry := l_trail [i]
+				l_record_id := l_entry.record_id
+				if Result.domain [l_record_id] then
+					l_existing := Result [l_record_id]
+					Result := Result.updated (l_record_id, l_existing & l_entry)
+				else
+					create l_existing.singleton (l_entry)
+					Result := Result.updated (l_record_id, l_existing)
+				end
+				i := i + 1
+			end
+		ensure
+			covers_all_entries: Result.domain.for_all (
+				agent (rec_id: INTEGER_64; tbl: STRING_8): BOOLEAN
+					local
+						seq: MML_SEQUENCE [AUDIT_ENTRY]
+					do
+						seq := model_record_changes (tbl) [rec_id]
+						Result := not seq.is_empty
+					end (?, a_table))
+		end
+
+	model_entry_count (a_table: STRING_8): INTEGER
+			-- Total number of audit entries for table.
+		require
+			table_not_empty: not a_table.is_empty
+			has_audit: has_audit_table (a_table)
+		do
+			Result := model_audit_trail (a_table).count
+		ensure
+			non_negative: Result >= 0
+			consistent_with_trail: Result = model_audit_trail (a_table).count
+		end
+
+feature -- Model Helpers (for contracts)
+
+	is_chronological (a_seq: MML_SEQUENCE [AUDIT_ENTRY]): BOOLEAN
+			-- Are entries in `a_seq' ordered chronologically?
+		local
+			i: INTEGER
+		do
+			Result := True
+			from i := 1 until i >= a_seq.count or not Result loop
+				Result := a_seq [i].is_before (a_seq [i + 1]) or
+					a_seq [i].timestamp.same_string (a_seq [i + 1].timestamp)
+				i := i + 1
+			end
+		ensure
+			empty_is_chronological: a_seq.is_empty implies Result
+			single_is_chronological: a_seq.count = 1 implies Result
+		end
+
+	model_entries_for_record (a_table: STRING_8; a_record_id: INTEGER_64): MML_SEQUENCE [AUDIT_ENTRY]
+			-- Sequence of audit entries for specific record.
+		require
+			table_not_empty: not a_table.is_empty
+			has_audit: has_audit_table (a_table)
+		local
+			l_trail: MML_SEQUENCE [AUDIT_ENTRY]
+			i: INTEGER
+		do
+			create Result
+			l_trail := model_audit_trail (a_table)
+			from i := 1 until i > l_trail.count loop
+				if l_trail [i].record_id = a_record_id then
+					Result := Result & l_trail [i]
+				end
+				i := i + 1
+			end
+		ensure
+			all_for_record: Result.for_all (
+				agent (idx: INTEGER; e: AUDIT_ENTRY; rec_id: INTEGER_64): BOOLEAN
+					do Result := e.record_id = rec_id end (?, ?, a_record_id))
+			subset_of_trail: Result.count <= model_audit_trail (a_table).count
+		end
 
 feature -- Status
 
@@ -132,7 +295,8 @@ feature -- Configuration
 feature -- Querying
 
 	get_changes_for_record (a_table: STRING_8; a_record_id: INTEGER_64): SIMPLE_SQL_RESULT
-			-- Get all audit entries for specific record
+			-- Get all audit entries for specific record.
+			-- Returns entries in reverse chronological order (newest first).
 		require
 			table_not_empty: not a_table.is_empty
 			has_audit: has_audit_table (a_table)
@@ -144,11 +308,14 @@ feature -- Querying
 			)
 			l_stmt.bind_integer (1, a_record_id)
 			Result := l_stmt.execute_returning_result
+		ensure
+			result_count_matches_model: Result.count = model_entries_for_record (a_table, a_record_id).count
 		end
 
 	get_changes_in_range (a_table: STRING_8; a_start: STRING_8; a_end: STRING_8): SIMPLE_SQL_RESULT
-			-- Get changes within time range
-			-- Times should be in ISO 8601 format: "YYYY-MM-DD HH:MM:SS"
+			-- Get changes within time range.
+			-- Times should be in ISO 8601 format: "YYYY-MM-DD HH:MM:SS".
+			-- Returns entries in reverse chronological order (newest first).
 		require
 			table_not_empty: not a_table.is_empty
 			has_audit: has_audit_table (a_table)
@@ -164,10 +331,13 @@ feature -- Querying
 			l_stmt.bind_text (1, a_start)
 			l_stmt.bind_text (2, a_end)
 			Result := l_stmt.execute_returning_result
+		ensure
+			subset_of_trail: Result.count <= model_audit_trail (a_table).count
 		end
 
 	get_latest_changes (a_table: STRING_8; a_limit: INTEGER): SIMPLE_SQL_RESULT
-			-- Get most recent N changes
+			-- Get most recent N changes.
+			-- Returns at most `a_limit' entries in reverse chronological order (newest first).
 		require
 			table_not_empty: not a_table.is_empty
 			has_audit: has_audit_table (a_table)
@@ -180,11 +350,15 @@ feature -- Querying
 			)
 			l_stmt.bind_integer (1, a_limit.to_integer_64)
 			Result := l_stmt.execute_returning_result
+		ensure
+			respects_limit: Result.count <= a_limit
+			subset_of_trail: Result.count <= model_audit_trail (a_table).count
 		end
 
 	get_changes_by_operation (a_table: STRING_8; a_operation: STRING_8): SIMPLE_SQL_RESULT
-			-- Get changes by operation type
-			-- a_operation: "INSERT", "UPDATE", or "DELETE"
+			-- Get changes by operation type.
+			-- a_operation: "INSERT", "UPDATE", or "DELETE".
+			-- Returns entries in reverse chronological order (newest first).
 		require
 			table_not_empty: not a_table.is_empty
 			has_audit: has_audit_table (a_table)
@@ -197,6 +371,8 @@ feature -- Querying
 			)
 			l_stmt.bind_text (1, a_operation)
 			Result := l_stmt.execute_returning_result
+		ensure
+			subset_of_trail: Result.count <= model_audit_trail (a_table).count
 		end
 
 feature -- Analysis
@@ -539,8 +715,15 @@ feature {NONE} -- Implementation
 		end
 
 invariant
-	database_not_void: database /= Void
+	-- Database state
 	is_interface_usable: database.internal_db.is_interface_usable
+
+	-- Model consistency: all tracked tables are properly configured
+	all_tables_properly_configured: model_tables.for_all (
+		agent (tbl: STRING_8): BOOLEAN
+			do
+				Result := has_audit_table (tbl) and is_enabled (tbl)
+			end)
 
 note
 	copyright: "Copyright (c) 2025, Larry Rix"
