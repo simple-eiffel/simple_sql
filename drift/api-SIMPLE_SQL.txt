@@ -1,0 +1,144 @@
+Eiffel Compilation Manager
+Version 25.02.9.8732 - win64
+
+Degree 6: Examining System
+Degree 5: Parsing Classes
+Degree 4: Analyzing Inheritance
+Degree 3: Checking Types
+Degree 2: Generating Byte Code
+-------------------------------------------------------------------------------
+
+Error code: Obsolete Call
+
+Warning: call uses obsolete feature.
+What to do: update to new feature at your earliest convenience. The
+  feature is still available but may be removed in the future.
+
+Class: SIMPLE_SQL_EXPORT
+Class: SIMPLE_SQL_EXPORT
+Feature: format_sql_value
+Obsolete feature: as_string_8: STRING_8 (class STRING_32)
+Obsolete message: 
+	For 32-bit strings:
+		- use explicit conversion `to_string_8` with a test that the string is made of ASCII characters only.
+	For 8-bit strings:
+		- consider changing the type of reattachment target to READABLE_STRING_8 or
+		- use explicit conversion `to_string_8` to avoid implicit performance penalty.
+	[2019-11-30]
+Line: 555
+  
+->      if a_row.is_null (l_col_name) then
+          Result := "NULL"
+
+-------------------------------------------------------------------------------
+
+Error code: Obsolete Call
+
+Warning: call uses obsolete feature.
+What to do: update to new feature at your earliest convenience. The
+  feature is still available but may be removed in the future.
+
+Class: SIMPLE_SQL_EXPORT
+Class: SIMPLE_SQL_EXPORT
+Feature: format_json_value
+Obsolete feature: as_string_8: STRING_8 (class STRING_32)
+Obsolete message: 
+	For 32-bit strings:
+		- use explicit conversion `to_string_8` with a test that the string is made of ASCII characters only.
+	For 8-bit strings:
+		- consider changing the type of reattachment target to READABLE_STRING_8 or
+		- use explicit conversion `to_string_8` to avoid implicit performance penalty.
+	[2019-11-30]
+Line: 504
+  
+->      if a_row.is_null (l_col_name) then
+          Result := "null"
+
+-------------------------------------------------------------------------------
+
+Error code: Obsolete Call
+
+Warning: call uses obsolete feature.
+What to do: update to new feature at your earliest convenience. The
+  feature is still available but may be removed in the future.
+
+Class: SIMPLE_SQL_EXPORT
+Class: SIMPLE_SQL_EXPORT
+Feature: format_csv_value
+Obsolete feature: as_string_8: STRING_8 (class STRING_32)
+Obsolete message: 
+	For 32-bit strings:
+		- use explicit conversion `to_string_8` with a test that the string is made of ASCII characters only.
+	For 8-bit strings:
+		- consider changing the type of reattachment target to READABLE_STRING_8 or
+		- use explicit conversion `to_string_8` to avoid implicit performance penalty.
+	[2019-11-30]
+Line: 455
+  
+->      if a_row.is_null (l_col_name) then
+          Result := ""
+
+-------------------------------------------------------------------------------
+
+Error code: Obsolete Call
+
+Warning: call uses obsolete feature.
+What to do: update to new feature at your earliest convenience. The
+  feature is still available but may be removed in the future.
+
+Class: SIMPLE_SQL_IMPORT
+Class: SIMPLE_SQL_IMPORT
+Feature: json_string_to_table
+Obsolete feature: as_string_8: STRING_8 (class STRING_32)
+Obsolete message: 
+	For 32-bit strings:
+		- use explicit conversion `to_string_8` with a test that the string is made of ASCII characters only.
+	For 8-bit strings:
+		- consider changing the type of reattachment target to READABLE_STRING_8 or
+		- use explicit conversion `to_string_8` to avoid implicit performance penalty.
+	[2019-11-30]
+Line: 234
+        if l_table_info = Void then
+->        create last_error.make_from_string ("Table not found: " + a_table_name.to_string_32)
+        else
+
+-------------------------------------------------------------------------------
+
+Warning code: Unused Local
+
+Warning: unreferenced local variable(s)
+What to do: Remove it if you don't plan to use it in the future.
+
+Class: SIMPLE_JSON_SCHEMA
+Class: SIMPLE_JSON_SCHEMA
+Feature: items_schema
+Unused local is: 
+	l_json: SIMPLE_JSON
+
+-------------------------------------------------------------------------------
+
+Error code: Obsolete Call
+
+Warning: call uses obsolete feature.
+What to do: update to new feature at your earliest convenience. The
+  feature is still available but may be removed in the future.
+
+Class: SIMPLE_JSON_STREAM
+Class: SIMPLE_JSON_STREAM
+Feature: parse_array
+Obsolete feature: as_string_8: STRING_8 (class STRING_32)
+Obsolete message: 
+	For 32-bit strings:
+		- use explicit conversion `to_string_8` with a test that the string is made of ASCII characters only.
+	For 8-bit strings:
+		- consider changing the type of reattachment target to READABLE_STRING_8 or
+		- use explicit conversion `to_string_8` to avoid implicit performance penalty.
+	[2019-11-30]
+Line: 140
+          else
+->          errors.extend (create {SIMPLE_JSON_ERROR}.make ("Cannot read file: " + l_path))
+          end
+
+-------------------------------------------------------------------------------
+System Recompiled.
+SIMPLE_SQL is not in the universe
