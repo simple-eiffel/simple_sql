@@ -339,7 +339,7 @@ feature -- User Management (CRUD Boilerplate Example #1)
 			-- Log audit
 			log_audit (l_user.id, "create", "user", l_user.id, Void, user_to_json (l_user))
 			-- Create root folder for user (discard result)
-			if attached create_root_folder (l_user.id) as l_root then
+			if attached create_root_folder (l_user.id) as al_l_root then
 				-- Root folder created
 			end
 			Result := l_user
@@ -394,7 +394,7 @@ feature -- User Management (CRUD Boilerplate Example #1)
 		local
 			l_old_json: STRING_8
 		do
-			if attached find_user (a_user.id) as l_old then
+			if attached find_user (a_user.id) as al_l_old then
 				l_old_json := user_to_json (l_old)
 			else
 				l_old_json := "{}"
@@ -763,9 +763,9 @@ feature -- Document Management (CRUD Boilerplate Example #3 + Versioning)
 			l_result: SIMPLE_SQL_RESULT
 		do
 			-- Get current state for audit
-			if attached find_document (a_document_id) as l_old then
+			if attached find_document (a_document_id) as al_l_old then
 				l_old_json := document_to_json (l_old)
-				l_new_version := l_old.current_version + 1
+				l_new_version := al_l_old.current_version + 1
 			else
 				l_old_json := "{}"
 				l_new_version := 1

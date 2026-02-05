@@ -31,8 +31,8 @@ feature {NONE} -- Initialization
 			timezone := a_timezone.to_string_8
 			total_xp := a_total_xp
 			level := a_level
-			if attached a_settings as s then
-				settings := s.to_string_8
+			if attached a_settings as al_s then
+				settings := al_s.to_string_8
 			end
 			created_at := a_created_at.to_string_8
 		ensure
@@ -183,8 +183,8 @@ feature -- Modification
 	set_settings (a_settings: detachable READABLE_STRING_8)
 			-- Update settings JSON.
 		do
-			if attached a_settings as s then
-				settings := s.to_string_8
+			if attached a_settings as al_s then
+				settings := al_s.to_string_8
 			else
 				settings := Void
 			end

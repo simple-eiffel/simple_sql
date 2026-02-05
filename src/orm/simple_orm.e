@@ -261,8 +261,8 @@ feature -- Query: Counting
 				.from_table (a_prototype.table_name)
 				.execute
 			if attached l_result and then not l_result.is_empty then
-				if attached {INTEGER_64} l_result.first.item (1) as l_count then
-					Result := l_count.to_integer_32
+				if attached {INTEGER_64} l_result.first.item (1) as al_l_count then
+					Result := al_l_count.to_integer_32
 				end
 			end
 		ensure
@@ -283,8 +283,8 @@ feature -- Query: Counting
 				.where (a_conditions)
 				.execute
 			if attached l_result and then not l_result.is_empty then
-				if attached {INTEGER_64} l_result.first.item (1) as l_count then
-					Result := l_count.to_integer_32
+				if attached {INTEGER_64} l_result.first.item (1) as al_l_count then
+					Result := al_l_count.to_integer_32
 				end
 			end
 		ensure

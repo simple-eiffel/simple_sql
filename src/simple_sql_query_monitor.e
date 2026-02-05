@@ -184,8 +184,8 @@ feature {NONE} -- Implementation
 		local
 			i: INTEGER
 			c: CHARACTER
-			in_string: BOOLEAN
-			in_number: BOOLEAN
+			l_in_string: BOOLEAN
+			l_in_number: BOOLEAN
 		do
 			create Result.make (a_sql.count)
 			from i := 1 until i > a_sql.count loop

@@ -23,7 +23,7 @@ feature {NONE} -- Initialization
 			id := a_id
 			owner_id := a_owner_id
 			name := a_name.to_string_8
-			color := if attached a_color as c then c.to_string_8 else "#808080" end
+			color := if attached a_color as al_c then c.to_string_8 else "#808080" end
 			created_at := a_created_at.to_string_8
 			cached_document_count := 0
 		end

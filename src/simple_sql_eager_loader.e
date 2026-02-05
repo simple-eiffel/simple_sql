@@ -205,7 +205,7 @@ feature {NONE} -- Implementation
 		do
 			create Result.make (200)
 			Result.append ("SELECT * FROM ")
-			if attached main_table as mt then
+			if attached main_table as al_mt then
 				Result.append (mt)
 			end
 
@@ -222,7 +222,7 @@ feature {NONE} -- Implementation
 			end
 
 			-- ORDER BY
-			if attached order_by_column as obc then
+			if attached order_by_column as al_obc then
 				Result.append (" ORDER BY ")
 				Result.append (obc)
 			end
@@ -267,7 +267,7 @@ feature {NONE} -- Implementation
 				l_first := False
 			end
 
-			if attached a_include.join_table as jt and then attached a_include.join_fk as jfk then
+			if attached a_include.join_table as jt and then attached a_include.join_fk as al_jfk then
 				-- Many-to-many: SELECT t.*, jt.main_fk FROM related t JOIN junction jt ON ...
 				create l_sql.make (200)
 				l_sql.append ("SELECT ")

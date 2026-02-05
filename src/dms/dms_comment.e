@@ -28,7 +28,7 @@ feature {NONE} -- Initialization
 			content := a_content.to_string_8
 			created_at := a_created_at.to_string_8
 			updated_at := a_updated_at.to_string_8
-			deleted_at := if attached a_deleted_at as d then d.to_string_8 else Void end
+			deleted_at := if attached a_deleted_at as al_d then d.to_string_8 else Void end
 			-- These will be set via eager loading or separate query (N+1 exposure)
 			cached_user_display_name := Void
 			cached_reply_count := 0
@@ -145,8 +145,8 @@ feature -- Modification
 			valid_parent: a_parent_id > 0
 		do
 			create parent_comment_id
-			if attached parent_comment_id as p then
-				p.set_item (a_parent_id)
+			if attached parent_comment_id as al_p then
+				al_p.set_item (a_parent_id)
 			end
 		ensure
 			is_reply: is_reply
@@ -164,7 +164,7 @@ feature -- Modification
 
 	set_deleted_at (a_timestamp: detachable READABLE_STRING_8)
 		do
-			deleted_at := if attached a_timestamp as t then t.to_string_8 else Void end
+			deleted_at := if attached a_timestamp as al_t then t.to_string_8 else Void end
 		end
 
 	soft_delete (a_timestamp: READABLE_STRING_8)

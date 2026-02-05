@@ -185,7 +185,7 @@ feature -- Migration Operations
 						l_migration := ic
 					end
 				end
-				if attached l_migration as l_m then
+				if attached l_migration as al_l_m then
 					Result := revert_migration (l_m)
 				else
 					last_error := "No migration found for version " + l_current.out
@@ -254,8 +254,8 @@ feature {NONE} -- Implementation
 			a_migration.up (database)
 			if database.has_error then
 				database.rollback_transaction
-				if attached database.last_error_message as l_msg then
-					last_error := "Migration " + a_migration.version.out + " failed: " + l_msg.to_string_8
+				if attached database.last_error_message as al_l_msg then
+					last_error := "Migration " + a_migration.version.out + " failed: " + al_l_msg.to_string_8
 				else
 					last_error := "Migration " + a_migration.version.out + " failed"
 				end
@@ -286,8 +286,8 @@ feature {NONE} -- Implementation
 			a_migration.down (database)
 			if database.has_error then
 				database.rollback_transaction
-				if attached database.last_error_message as l_msg then
-					last_error := "Rollback of migration " + a_migration.version.out + " failed: " + l_msg.to_string_8
+				if attached database.last_error_message as al_l_msg then
+					last_error := "Rollback of migration " + a_migration.version.out + " failed: " + al_l_msg.to_string_8
 				else
 					last_error := "Rollback of migration " + a_migration.version.out + " failed"
 				end

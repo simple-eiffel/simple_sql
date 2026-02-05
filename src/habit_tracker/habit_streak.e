@@ -27,8 +27,8 @@ feature {NONE} -- Initialization
 			habit_id := a_habit_id
 			user_id := a_user_id
 			start_date := a_start_date.to_string_8
-			if attached a_end_date as ed then
-				end_date := ed.to_string_8
+			if attached a_end_date as al_ed then
+				end_date := al_ed.to_string_8
 			end
 			length := a_length
 			is_active := a_is_active

@@ -450,8 +450,8 @@ feature -- Execution
 			has_database: has_database
 			has_table: has_table
 		do
-			if attached database as l_db then
-				Result := l_db.query (to_sql)
+			if attached database as al_l_db then
+				Result := al_l_db.query (to_sql)
 			end
 		end
 
@@ -483,9 +483,9 @@ feature -- Execution
 			columns.wipe_out
 			columns.extend ("COUNT(*)")
 			if attached execute as l_result and then not l_result.rows.is_empty then
-				if attached l_result.rows.first as l_row then
+				if attached l_result.rows.first as al_l_row then
 					-- Use item(1) to get the first column value, then cast to INTEGER_64
-					if attached {INTEGER_64} l_row.item (1) as l_count then
+					if attached {INTEGER_64} al_l_row.item (1) as al_l_count then
 						Result := l_count.to_integer_32
 					end
 				end
@@ -511,8 +511,8 @@ feature -- Streaming Execution
 			has_database: has_database
 			has_table: has_table
 		do
-			if attached database as l_db then
-				Result := l_db.query_cursor (to_sql)
+			if attached database as al_l_db then
+				Result := al_l_db.query_cursor (to_sql)
 			end
 		end
 
@@ -522,8 +522,8 @@ feature -- Streaming Execution
 			has_database: has_database
 			has_table: has_table
 		do
-			if attached database as l_db then
-				Result := l_db.create_stream (to_sql)
+			if attached database as al_l_db then
+				Result := al_l_db.create_stream (to_sql)
 			end
 		end
 
@@ -534,8 +534,8 @@ feature -- Streaming Execution
 			has_table: has_table
 			action_attached: a_action /= Void
 		do
-			if attached execute_stream as l_stream then
-				l_stream.for_each_do (a_action)
+			if attached execute_stream as al_l_stream then
+				al_l_stream.for_each_do (a_action)
 			end
 		end
 
@@ -738,7 +738,7 @@ feature {NONE} -- Implementation
 	effective_soft_delete_column: STRING_8
 			-- Column name to use for soft delete filtering.
 		do
-			if attached soft_delete_column as c then
+			if attached soft_delete_column as al_c then
 				Result := c
 			else
 				Result := "deleted_at"

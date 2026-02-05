@@ -366,9 +366,9 @@ feature -- Completion Management
 			)
 
 			-- Now calculate XP based on the updated streak
-			if attached find_habit (a_habit_id) as l_habit then
+			if attached find_habit (a_habit_id) as al_l_habit then
 				-- Calculate XP (base + streak bonus) using updated streak
-				l_xp := l_habit.total_xp_for_completion
+				l_xp := al_l_habit.total_xp_for_completion
 			else
 				l_xp := 10 -- Default if habit not found
 			end
@@ -421,8 +421,8 @@ feature -- Completion Management
 			)
 
 			-- Now calculate XP based on the updated streak
-			if attached find_habit (a_habit_id) as l_habit then
-				l_xp := l_habit.total_xp_for_completion
+			if attached find_habit (a_habit_id) as al_l_habit then
+				l_xp := al_l_habit.total_xp_for_completion
 			else
 				l_xp := 10 -- Default if habit not found
 			end

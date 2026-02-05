@@ -19,8 +19,8 @@ feature {NONE} -- Initialization
 			description := a_description.to_string_8
 			unit_of_measure := a_unit.to_string_8
 			min_stock_level := a_min_stock
-			if attached a_deleted_at as d then
-				deleted_at := d.to_string_8
+			if attached a_deleted_at as al_d then
+				deleted_at := al_d.to_string_8
 			end
 		end
 

@@ -162,9 +162,9 @@ feature -- Execution
 				current_values.wipe_out
 			end
 
-			if attached database as l_db then
-				l_db.execute (to_sql)
-				if not l_db.has_error then
+			if attached database as al_l_db then
+				al_l_db.execute (to_sql)
+				if not al_l_db.has_error then
 					Result := value_rows.count
 				end
 			end
@@ -183,10 +183,10 @@ feature -- Execution
 				current_values.wipe_out
 			end
 
-			if attached database as l_db then
-				l_db.execute (to_sql)
-				if not l_db.has_error then
-					Result := l_db.last_insert_rowid
+			if attached database as al_l_db then
+				al_l_db.execute (to_sql)
+				if not al_l_db.has_error then
+					Result := al_l_db.last_insert_rowid
 				end
 			end
 		end

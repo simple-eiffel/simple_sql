@@ -68,8 +68,8 @@ feature -- Access
 		do
 			create Result.make (5)
 			l_result := related_results.item (a_table.to_string_8)
-			if attached l_result as r then
-				across r.rows as ic loop
+			if attached l_result as al_r then
+				across al_r.rows as ic loop
 					if ic.integer_64_value ("_eager_fk") = a_main_id then
 						Result.extend (ic)
 					end
@@ -107,8 +107,8 @@ feature -- Status
 			l_result: detachable SIMPLE_SQL_RESULT
 		do
 			l_result := related_results.item (a_table.to_string_8)
-			if attached l_result as r then
-				Result := r.rows.count
+			if attached l_result as al_r then
+				Result := al_r.rows.count
 			end
 		end
 
@@ -120,8 +120,8 @@ feature -- Status
 			l_result: detachable SIMPLE_SQL_RESULT
 		do
 			l_result := related_results.item (a_table.to_string_8)
-			if attached l_result as r then
-				across r.rows as ic loop
+			if attached l_result as al_r then
+				across al_r.rows as ic loop
 					if ic.integer_64_value ("_eager_fk") = a_main_id then
 						Result := Result + 1
 					end

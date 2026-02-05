@@ -75,16 +75,16 @@ feature -- Access
 	last_error_message: detachable STRING_32
 			-- Error message from last failed operation
 		do
-			if attached last_structured_error as l_err then
-				Result := l_err.message
+			if attached last_structured_error as al_l_err then
+				Result := al_l_err.message
 			end
 		end
 
 	last_error_code: INTEGER
 			-- Error code from last operation (0 = success)
 		do
-			if attached last_structured_error as l_err then
-				Result := l_err.code
+			if attached last_structured_error as al_l_err then
+				Result := al_l_err.code
 			end
 		ensure
 			zero_when_no_error: not has_error implies Result = 0
@@ -313,9 +313,9 @@ feature {NONE} -- Error handling implementation
 			l_code: INTEGER
 			l_message: STRING_32
 		do
-			if attached internal_db.last_exception as l_exception then
-				l_code := l_exception.result_code
-				if attached l_exception.description as l_desc then
+			if attached internal_db.last_exception as al_l_exception then
+				l_code := al_l_exception.result_code
+				if attached al_l_exception.description as al_l_desc then
 					l_message := l_desc.to_string_32
 				else
 					l_message := "Unknown error"
@@ -552,8 +552,8 @@ feature -- Additional Accessors
 			l_result: SIMPLE_SQL_RESULT
 		do
 			create l_result.make ("SELECT last_insert_rowid();", internal_db)
-			if not l_result.rows.is_empty and then attached l_result.rows.first as l_row then
-				if attached {INTEGER_64} l_row.item (1) as l_id then
+			if not l_result.rows.is_empty and then attached l_result.rows.first as al_l_row then
+				if attached {INTEGER_64} l_row.item (1) as al_l_id then
 					Result := l_id
 				end
 			end
@@ -819,8 +819,8 @@ feature -- Query Monitoring (N+1 Detection)
 			if query_monitor = Void then
 				create query_monitor.make
 			end
-			if attached query_monitor as m then
-				m.enable
+			if attached query_monitor as al_m then
+				al_m.enable
 			end
 		ensure
 			enabled: attached query_monitor as m and then m.is_enabled
@@ -829,16 +829,16 @@ feature -- Query Monitoring (N+1 Detection)
 	disable_query_monitor
 			-- Disable N+1 query detection.
 		do
-			if attached query_monitor as m then
-				m.disable
+			if attached query_monitor as al_m then
+				al_m.disable
 			end
 		end
 
 	reset_query_monitor
 			-- Reset all monitoring data.
 		do
-			if attached query_monitor as m then
-				m.reset
+			if attached query_monitor as al_m then
+				al_m.reset
 			end
 		end
 
@@ -863,18 +863,18 @@ feature {NONE} -- Implementation
 			i: INTEGER
 		do
 			from i := a_args.lower until i > a_args.upper loop
-				if attached a_args.item (i) as l_arg then
-					if attached {INTEGER_64} l_arg as l_int64 then
+				if attached a_args.item (i) as al_l_arg then
+					if attached {INTEGER_64} l_arg as al_l_int64 then
 						a_stmt.bind_integer (i - a_args.lower + 1, l_int64)
-					elseif attached {INTEGER_32} l_arg as l_int32 then
+					elseif attached {INTEGER_32} l_arg as al_l_int32 then
 						a_stmt.bind_integer (i - a_args.lower + 1, l_int32.to_integer_64)
-					elseif attached {REAL_64} l_arg as l_real then
+					elseif attached {REAL_64} l_arg as al_l_real then
 						a_stmt.bind_real (i - a_args.lower + 1, l_real)
-					elseif attached {READABLE_STRING_GENERAL} l_arg as l_str then
+					elseif attached {READABLE_STRING_GENERAL} l_arg as al_l_str then
 						a_stmt.bind_text (i - a_args.lower + 1, l_str)
-					elseif attached {BOOLEAN} l_arg as l_bool then
+					elseif attached {BOOLEAN} l_arg as al_l_bool then
 						a_stmt.bind_integer (i - a_args.lower + 1, if l_bool then 1 else 0 end)
-					elseif attached {MANAGED_POINTER} l_arg as l_blob then
+					elseif attached {MANAGED_POINTER} l_arg as al_l_blob then
 						a_stmt.bind_blob (i - a_args.lower + 1, l_blob)
 					end
 				else

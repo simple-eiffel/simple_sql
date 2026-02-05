@@ -166,7 +166,7 @@ feature -- Mathematical operations
 	magnitude: REAL_64
 			-- Euclidean norm (L2 norm) of vector
 		local
-			sum: REAL_64
+			l_sum: REAL_64
 			i: INTEGER
 		do
 			from i := 1 until i > dimension loop
@@ -201,8 +201,8 @@ feature -- Mathematical operations
 	normalized: SIMPLE_SQL_VECTOR
 			-- Unit vector in same direction (magnitude = 1)
 		local
-			mag: REAL_64
-			norm_values: ARRAY [REAL_64]
+			l_mag: REAL_64
+			l_norm_values: ARRAY [REAL_64]
 			i: INTEGER
 		do
 			mag := magnitude
@@ -227,7 +227,7 @@ feature -- Mathematical operations
 		require
 			same_dimension: a_other.dimension = dimension
 		local
-			result_values: ARRAY [REAL_64]
+			l_result_values: ARRAY [REAL_64]
 			i: INTEGER
 		do
 			create result_values.make_filled (0.0, 1, dimension)
@@ -248,7 +248,7 @@ feature -- Mathematical operations
 		require
 			same_dimension: a_other.dimension = dimension
 		local
-			result_values: ARRAY [REAL_64]
+			l_result_values: ARRAY [REAL_64]
 			i: INTEGER
 		do
 			create result_values.make_filled (0.0, 1, dimension)
@@ -270,7 +270,7 @@ feature -- Mathematical operations
 			no_nan: not a_factor.is_nan
 			no_infinity: not a_factor.is_positive_infinity and not a_factor.is_negative_infinity
 		local
-			result_values: ARRAY [REAL_64]
+			l_result_values: ARRAY [REAL_64]
 			i: INTEGER
 		do
 			create result_values.make_filled (0.0, 1, dimension)

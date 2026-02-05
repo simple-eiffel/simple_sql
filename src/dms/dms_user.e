@@ -25,14 +25,14 @@ feature {NONE} -- Initialization
 			username := a_username.to_string_8
 			email := a_email.to_string_8
 			display_name := a_display_name.to_string_8
-			if attached a_preferences_json as prefs then
-				preferences_json := prefs.to_string_8
+			if attached a_preferences_json as al_prefs then
+				preferences_json := al_prefs.to_string_8
 			else
 				preferences_json := "{}"
 			end
 			created_at := a_created_at.to_string_8
 			updated_at := a_updated_at.to_string_8
-			deleted_at := if attached a_deleted_at as d then d.to_string_8 else Void end
+			deleted_at := if attached a_deleted_at as al_d then d.to_string_8 else Void end
 		ensure
 			id_set: id = a_id
 			username_set: username.same_string (a_username)
@@ -157,8 +157,8 @@ feature -- Modification
 	set_deleted_at (a_timestamp: detachable READABLE_STRING_8)
 			-- Set soft delete timestamp.
 		do
-			if attached a_timestamp as t then
-				deleted_at := t.to_string_8
+			if attached a_timestamp as al_t then
+				deleted_at := al_t.to_string_8
 			else
 				deleted_at := Void
 			end

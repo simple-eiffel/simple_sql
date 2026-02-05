@@ -220,7 +220,7 @@ feature -- Execution
 			is_query: is_query
 		do
 			execute
-			if attached last_result as l_result then
+			if attached last_result as al_l_result then
 				Result := l_result
 			else
 				create Result.make_empty
@@ -419,17 +419,17 @@ feature {NONE} -- Implementation
 		do
 			if a_value = Void then
 				Result := "NULL"
-			elseif attached {INTEGER_64} a_value as l_int then
+			elseif attached {INTEGER_64} a_value as al_l_int then
 				Result := l_int.out
-			elseif attached {INTEGER_32} a_value as l_int32 then
+			elseif attached {INTEGER_32} a_value as al_l_int32 then
 				Result := l_int32.out
-			elseif attached {REAL_64} a_value as l_real then
+			elseif attached {REAL_64} a_value as al_l_real then
 				Result := l_real.out
-			elseif attached {REAL_32} a_value as l_real32 then
+			elseif attached {REAL_32} a_value as al_l_real32 then
 				Result := l_real32.out
-			elseif attached {MANAGED_POINTER} a_value as l_blob then
+			elseif attached {MANAGED_POINTER} a_value as al_l_blob then
 				Result := blob_as_hex_literal (l_blob)
-			elseif attached {READABLE_STRING_GENERAL} a_value as l_string then
+			elseif attached {READABLE_STRING_GENERAL} a_value as al_l_string then
 				Result := escaped_string (l_string)
 			else
 				Result := "NULL"

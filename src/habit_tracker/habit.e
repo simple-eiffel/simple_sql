@@ -37,12 +37,12 @@ feature {NONE} -- Initialization
 			description := a_description.to_string_8
 			frequency_type := a_frequency_type.to_string_8
 			frequency_value := a_frequency_value
-			if attached a_frequency_days as fd then
-				frequency_days := fd.to_string_8
+			if attached a_frequency_days as al_fd then
+				frequency_days := al_fd.to_string_8
 			end
 			target_count := a_target_count
-			if attached a_reminder_time as rt then
-				reminder_time := rt.to_string_8
+			if attached a_reminder_time as al_rt then
+				reminder_time := al_rt.to_string_8
 			end
 			is_archived := a_is_archived
 			streak_current := a_streak_current
@@ -274,8 +274,8 @@ feature -- Modification
 	set_frequency_days (a_days: detachable READABLE_STRING_8)
 			-- Set custom frequency days JSON.
 		do
-			if attached a_days as d then
-				frequency_days := d.to_string_8
+			if attached a_days as al_d then
+				frequency_days := al_d.to_string_8
 			else
 				frequency_days := Void
 			end
@@ -284,8 +284,8 @@ feature -- Modification
 	set_reminder_time (a_time: detachable READABLE_STRING_8)
 			-- Set reminder time.
 		do
-			if attached a_time as t then
-				reminder_time := t.to_string_8
+			if attached a_time as al_t then
+				reminder_time := al_t.to_string_8
 			else
 				reminder_time := Void
 			end

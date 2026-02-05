@@ -51,7 +51,7 @@ feature {NONE} -- Workload Phases
 	run_warehouse_setup
 			-- Create warehouses.
 		local
-			w: WMS_WAREHOUSE
+			l_w: WMS_WAREHOUSE
 			i: INTEGER
 		do
 			print ("  Creating warehouses...%N")
@@ -67,7 +67,7 @@ feature {NONE} -- Workload Phases
 	run_product_setup
 			-- Create products.
 		local
-			p: WMS_PRODUCT
+			l_p: WMS_PRODUCT
 			i: INTEGER
 		do
 			print ("  Creating products...%N")
@@ -82,7 +82,7 @@ feature {NONE} -- Workload Phases
 	run_location_setup
 			-- Create locations in first warehouse.
 		local
-			loc: WMS_LOCATION
+			l_loc: WMS_LOCATION
 			aisle, rack, shelf, bin: INTEGER
 		do
 			print ("  Creating locations...%N")
@@ -111,7 +111,7 @@ feature {NONE} -- Workload Phases
 			-- Receive and transfer stock - the heavy lifting.
 		local
 			i, j, loc_idx: INTEGER
-			success: BOOLEAN
+			l_success: BOOLEAN
 			product_id, from_loc, to_loc: INTEGER_64
 		do
 			print ("  Running stock operations...%N")
@@ -146,10 +146,10 @@ feature {NONE} -- Workload Phases
 			-- Create and release reservations.
 		local
 			i, loc_idx: INTEGER
-			product_id: INTEGER_64
-			res: detachable WMS_RESERVATION
-			success: BOOLEAN
-			reservation_ids: ARRAYED_LIST [INTEGER_64]
+			l_product_id: INTEGER_64
+			l_res: detachable WMS_RESERVATION
+			l_success: BOOLEAN
+			l_reservation_ids: ARRAYED_LIST [INTEGER_64]
 		do
 			print ("  Running reservation operations...%N")
 			create reservation_ids.make (30)
@@ -181,16 +181,16 @@ feature {NONE} -- Workload Phases
 			-- Run various queries to exercise read paths.
 		local
 			i: INTEGER
-			warehouses: ARRAYED_LIST [WMS_WAREHOUSE]
-			locations: ARRAYED_LIST [WMS_LOCATION]
-			stock_list: ARRAYED_LIST [WMS_STOCK]
-			movements: ARRAYED_LIST [WMS_MOVEMENT]
-			reservations: ARRAYED_LIST [WMS_RESERVATION]
-			low_stock: ARRAYED_LIST [TUPLE [product: WMS_PRODUCT; total: INTEGER; min: INTEGER]]
+			l_warehouses: ARRAYED_LIST [WMS_WAREHOUSE]
+			l_locations: ARRAYED_LIST [WMS_LOCATION]
+			l_stock_list: ARRAYED_LIST [WMS_STOCK]
+			l_movements: ARRAYED_LIST [WMS_MOVEMENT]
+			l_reservations: ARRAYED_LIST [WMS_RESERVATION]
+			l_low_stock: ARRAYED_LIST [TUPLE [product: WMS_PRODUCT; total: INTEGER; min: INTEGER]]
 			total, available: INTEGER
-			w: detachable WMS_WAREHOUSE
-			p: detachable WMS_PRODUCT
-			loc: detachable WMS_LOCATION
+			l_w: detachable WMS_WAREHOUSE
+			l_p: detachable WMS_PRODUCT
+			l_loc: detachable WMS_LOCATION
 		do
 			print ("  Running query operations...%N")
 

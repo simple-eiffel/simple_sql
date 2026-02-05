@@ -198,15 +198,15 @@ feature -- SQL Generation
 			elseif not is_nullable then
 				Result.append (" NOT NULL")
 			end
-			if attached default_value as dv then
+			if attached default_value as al_dv then
 				Result.append (" DEFAULT ")
-				if attached {STRING} dv as s then
+				if attached {STRING} dv as al_s then
 					Result.append ("'")
 					Result.append (s)
 					Result.append ("'")
-				elseif attached {INTEGER} dv as i then
+				elseif attached {INTEGER} dv as al_i then
 					Result.append_integer (i)
-				elseif attached {BOOLEAN} dv as b then
+				elseif attached {BOOLEAN} dv as al_b then
 					if b then
 						Result.append ("1")
 					else

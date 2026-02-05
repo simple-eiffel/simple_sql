@@ -69,8 +69,8 @@ feature -- Database Operations
 	close
 			-- Close database connection.
 		do
-			if attached database as db then
-				db.close
+			if attached database as al_db then
+				al_db.close
 			end
 			database := Void
 		ensure
@@ -94,8 +94,8 @@ feature -- Status
 	last_error: STRING
 			-- Error message from last operation.
 		do
-			if attached database as db and then attached db.last_error_message as msg then
-				Result := msg.to_string_8
+			if attached database as db and then attached db.last_error_message as al_msg then
+				Result := al_msg.to_string_8
 			else
 				Result := ""
 			end
@@ -106,8 +106,8 @@ feature -- Status
 	rows_affected: INTEGER
 			-- Number of rows affected by last INSERT/UPDATE/DELETE.
 		do
-			if attached database as db then
-				Result := db.rows_affected
+			if attached database as al_db then
+				Result := al_db.rows_affected
 			end
 		end
 
@@ -121,16 +121,16 @@ feature -- Simple Queries
 			sql_not_empty: not a_sql.is_empty
 		local
 			l_row: STRING_TABLE [ANY]
-			res: SIMPLE_SQL_RESULT
+			l_res: SIMPLE_SQL_RESULT
 			i: INTEGER
 		do
 			create Result.make (10)
-			if attached database as db then
-				res := db.run_query (a_sql)
+			if attached database as al_db then
+				res := al_db.run_query (a_sql)
 				across res.rows as row loop
 					create l_row.make (row.count)
 					from i := 1 until i > row.count loop
-						if attached row [i] as val then
+						if attached row [i] as al_val then
 							l_row.put (val, row.column_name (i))
 						end
 						i := i + 1
@@ -149,11 +149,11 @@ feature -- Simple Queries
 			is_connected: is_connected
 			sql_not_empty: not a_sql.is_empty
 		local
-			res: SIMPLE_SQL_RESULT
+			l_res: SIMPLE_SQL_RESULT
 		do
-			if attached database as db then
-				res := db.run_query (a_sql)
-				if not res.rows.is_empty and then attached res.rows.first as row then
+			if attached database as al_db then
+				res := al_db.run_query (a_sql)
+				if not res.rows.is_empty and then attached res.rows.first as al_row then
 					Result := row [1]
 				end
 			end
@@ -165,8 +165,8 @@ feature -- Simple Queries
 			is_connected: is_connected
 			sql_not_empty: not a_sql.is_empty
 		do
-			if attached database as db then
-				db.execute (a_sql)
+			if attached database as al_db then
+				al_db.execute (a_sql)
 			end
 		end
 
@@ -178,8 +178,8 @@ feature -- Table Operations
 			is_connected: is_connected
 			table_not_empty: not a_table.is_empty
 		do
-			if attached query_value ("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='" + a_table + "'") as v then
-				Result := v.out.to_integer > 0
+			if attached query_value ("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='" + a_table + "'") as al_v then
+				Result := al_v.out.to_integer > 0
 			end
 		end
 
@@ -287,8 +287,8 @@ feature -- Row Operations
 			is_connected: is_connected
 			table_not_empty: not a_table.is_empty
 		do
-			if attached query_value ("SELECT COUNT(*) FROM " + a_table) as v then
-				Result := v.out.to_integer
+			if attached query_value ("SELECT COUNT(*) FROM " + a_table) as al_v then
+				Result := al_v.out.to_integer
 			end
 		end
 

@@ -43,8 +43,8 @@ feature -- Status report
 			l_stmt := database.prepare ("SELECT json_valid(?)")
 			l_stmt.bind_text (1, a_json)
 			l_result := l_stmt.execute_returning_result
-			if not l_result.is_empty and then attached l_result.first.item (1) as l_val then
-				if attached {INTEGER_64} l_val as l_int then
+			if not l_result.is_empty and then attached l_result.first.item (1) as al_l_val then
+				if attached {INTEGER_64} l_val as al_l_int then
 					Result := l_int /= 0
 				end
 			end
@@ -72,8 +72,8 @@ feature -- Status report
 			end
 			l_result := l_stmt.execute_returning_result
 			if not l_result.is_empty then
-				if attached l_result.first.item (1) as l_val then
-					Result := l_val.out.to_string_32
+				if attached l_result.first.item (1) as al_l_val then
+					Result := al_l_val.out.to_string_32
 				end
 			end
 		end
@@ -94,7 +94,7 @@ feature -- JSON Path Queries
 			l_stmt.bind_text (1, a_json)
 			l_stmt.bind_text (2, a_path)
 			l_result := l_stmt.execute_returning_result
-			if not l_result.is_empty and then attached l_result.first.item (1) as l_val then
+			if not l_result.is_empty and then attached l_result.first.item (1) as al_l_val then
 				Result := l_val.out.to_string_32
 			end
 		end
@@ -142,7 +142,7 @@ feature -- JSON Modification
 			l_stmt.bind_text (2, a_path)
 			bind_json_value (l_stmt, 3, a_value)
 			l_result := l_stmt.execute_returning_result
-			if not l_result.is_empty and then attached l_result.first.item (1) as l_val then
+			if not l_result.is_empty and then attached l_result.first.item (1) as al_l_val then
 				Result := l_val.out.to_string_8
 			else
 				Result := a_json
@@ -167,7 +167,7 @@ feature -- JSON Modification
 			l_stmt.bind_text (2, a_path)
 			bind_json_value (l_stmt, 3, a_value)
 			l_result := l_stmt.execute_returning_result
-			if not l_result.is_empty and then attached l_result.first.item (1) as l_val then
+			if not l_result.is_empty and then attached l_result.first.item (1) as al_l_val then
 				Result := l_val.out.to_string_8
 			else
 				Result := a_json
@@ -192,7 +192,7 @@ feature -- JSON Modification
 			l_stmt.bind_text (2, a_path)
 			bind_json_value (l_stmt, 3, a_value)
 			l_result := l_stmt.execute_returning_result
-			if not l_result.is_empty and then attached l_result.first.item (1) as l_val then
+			if not l_result.is_empty and then attached l_result.first.item (1) as al_l_val then
 				Result := l_val.out.to_string_8
 			else
 				Result := a_json
@@ -215,7 +215,7 @@ feature -- JSON Modification
 			l_stmt.bind_text (1, a_json)
 			l_stmt.bind_text (2, a_path)
 			l_result := l_stmt.execute_returning_result
-			if not l_result.is_empty and then attached l_result.first.item (1) as l_val then
+			if not l_result.is_empty and then attached l_result.first.item (1) as al_l_val then
 				Result := l_val.out.to_string_8
 			else
 				Result := a_json
@@ -254,7 +254,7 @@ feature -- JSON Creation
 			end
 
 			l_result := l_stmt.execute_returning_result
-			if not l_result.is_empty and then attached l_result.first.item (1) as l_val then
+			if not l_result.is_empty and then attached l_result.first.item (1) as al_l_val then
 				Result := l_val.out.to_string_8
 			else
 				Result := "[]"
@@ -295,7 +295,7 @@ feature -- JSON Creation
 			end
 
 			l_result := l_stmt.execute_returning_result
-			if not l_result.is_empty and then attached l_result.first.item (1) as l_val then
+			if not l_result.is_empty and then attached l_result.first.item (1) as al_l_val then
 				Result := l_val.out.to_string_8
 			else
 				Result := "{}"
@@ -326,7 +326,7 @@ feature -- JSON Aggregation
 			end
 
 			l_result := database.query (l_sql)
-			if not l_result.is_empty and then attached l_result.first.item (1) as l_val then
+			if not l_result.is_empty and then attached l_result.first.item (1) as al_l_val then
 				Result := l_val.out.to_string_8
 			else
 				Result := "[]"
@@ -358,7 +358,7 @@ feature -- JSON Aggregation
 			end
 
 			l_result := database.query (l_sql)
-			if not l_result.is_empty and then attached l_result.first.item (1) as l_val then
+			if not l_result.is_empty and then attached l_result.first.item (1) as al_l_val then
 				Result := l_val.out.to_string_8
 			else
 				Result := "{}"
@@ -377,15 +377,15 @@ feature {NONE} -- Implementation
 		do
 			if a_value = Void then
 				a_stmt.bind_null (a_index)
-			elseif attached {INTEGER_64} a_value as l_int then
+			elseif attached {INTEGER_64} a_value as al_l_int then
 				a_stmt.bind_integer (a_index, l_int)
-			elseif attached {INTEGER_32} a_value as l_int32 then
+			elseif attached {INTEGER_32} a_value as al_l_int32 then
 				a_stmt.bind_integer (a_index, l_int32.to_integer_64)
-			elseif attached {REAL_64} a_value as l_real then
+			elseif attached {REAL_64} a_value as al_l_real then
 				a_stmt.bind_real (a_index, l_real)
-			elseif attached {BOOLEAN} a_value as l_bool then
+			elseif attached {BOOLEAN} a_value as al_l_bool then
 				a_stmt.bind_integer (a_index, if l_bool then 1 else 0 end)
-			elseif attached {READABLE_STRING_GENERAL} a_value as l_string then
+			elseif attached {READABLE_STRING_GENERAL} a_value as al_l_string then
 				a_stmt.bind_text (a_index, l_string)
 			else
 				-- Default: convert to string

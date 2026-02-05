@@ -253,10 +253,10 @@ feature -- Execution
 			has_table: has_table
 			has_set_clauses: has_set_clauses
 		do
-			if attached database as l_db then
-				l_db.execute (to_sql)
-				if not l_db.has_error then
-					Result := l_db.changes_count
+			if attached database as al_l_db then
+				al_l_db.execute (to_sql)
+				if not al_l_db.has_error then
+					Result := al_l_db.changes_count
 				end
 			end
 		end
@@ -296,8 +296,8 @@ feature -- Output
 				end
 				Result.append (set_clauses [i].column)
 				Result.append (" = ")
-				if attached {SIMPLE_SQL_RAW_EXPRESSION} set_clauses [i].value as l_raw then
-					Result.append (l_raw.expression)
+				if attached {SIMPLE_SQL_RAW_EXPRESSION} set_clauses [i].value as al_l_raw then
+					Result.append (al_l_raw.expression)
 				else
 					Result.append (value_to_sql (set_clauses [i].value))
 				end

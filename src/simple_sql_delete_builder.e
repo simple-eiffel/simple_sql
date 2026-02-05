@@ -192,10 +192,10 @@ feature -- Execution
 			has_database: has_database
 			has_table: has_table
 		do
-			if attached database as l_db then
-				l_db.execute (to_sql)
-				if not l_db.has_error then
-					Result := l_db.changes_count
+			if attached database as al_l_db then
+				al_l_db.execute (to_sql)
+				if not al_l_db.has_error then
+					Result := al_l_db.changes_count
 				end
 			end
 		end

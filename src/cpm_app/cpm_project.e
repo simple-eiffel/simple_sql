@@ -30,11 +30,11 @@ feature {NONE} -- Initialization
 		do
 			id := a_id
 			name := a_name.to_string_8
-			if attached a_description as desc then
-				description := desc.to_string_8
+			if attached a_description as al_desc then
+				description := al_desc.to_string_8
 			end
-			if attached a_start_date as sd then
-				start_date := sd.to_string_8
+			if attached a_start_date as al_sd then
+				start_date := al_sd.to_string_8
 			end
 			calculated_duration := a_calculated_duration
 			created_at := a_created_at.to_string_8
@@ -107,8 +107,8 @@ feature -- Modification
 	set_description (a_description: detachable READABLE_STRING_8)
 			-- Update the description.
 		do
-			if attached a_description as desc then
-				description := desc.to_string_8
+			if attached a_description as al_desc then
+				description := al_desc.to_string_8
 			else
 				description := Void
 			end
@@ -117,8 +117,8 @@ feature -- Modification
 	set_start_date (a_start_date: detachable READABLE_STRING_8)
 			-- Update the start date.
 		do
-			if attached a_start_date as sd then
-				start_date := sd.to_string_8
+			if attached a_start_date as al_sd then
+				start_date := al_sd.to_string_8
 			else
 				start_date := Void
 			end
@@ -169,7 +169,7 @@ feature -- Output
 			Result.append (" (")
 			Result.append_integer (calculated_duration)
 			Result.append (" days)")
-			if attached start_date as sd then
+			if attached start_date as al_sd then
 				Result.append (" [Start: ")
 				Result.append (sd)
 				Result.append ("]")

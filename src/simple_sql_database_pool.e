@@ -82,8 +82,8 @@ feature -- Cache Management
 		do
 			if is_cached (a_path) then
 				-- Close the database before invalidating
-				if attached {SIMPLE_SQL_DATABASE} internal_cache.item (a_path) as l_db then
-					l_db.close
+				if attached {SIMPLE_SQL_DATABASE} internal_cache.item (a_path) as al_l_db then
+					al_l_db.close
 				end
 			end
 			internal_cache.invalidate (a_path)

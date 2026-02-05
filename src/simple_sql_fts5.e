@@ -67,9 +67,9 @@ feature -- Status
 			-- Check compile options for ENABLE_FTS5
 			l_result := database.query ("PRAGMA compile_options")
 			across l_result.rows as ic loop
-				if attached ic.item (1) as l_val then
+				if attached ic.item (1) as al_l_val then
 					-- Convert any type to string and check
-					create l_option.make_from_string (l_val.out)
+					create l_option.make_from_string (al_l_val.out)
 					l_option.to_upper
 					if l_option.has_substring ("FTS5") or l_option.has_substring ("ENABLE_FTS5") then
 						Result := True
@@ -328,7 +328,7 @@ feature -- Searching
 				"SELECT COUNT(*) as cnt FROM " + a_table.to_string_8 +
 				" WHERE " + a_table.to_string_8 + " MATCH '" + escaped_fts_query (a_query) + "'"
 			)
-			if not l_result.is_empty and then attached l_result.first as l_row then
+			if not l_result.is_empty and then attached l_result.first as al_l_row then
 				Result := l_row.integer_value ("cnt")
 			end
 		end
@@ -354,7 +354,7 @@ feature {NONE} -- Implementation
 		local
 			i: INTEGER
 			c: CHARACTER
-			has_apostrophe: BOOLEAN
+			l_has_apostrophe: BOOLEAN
 		do
 			-- Check if query contains apostrophe
 			across a_query as ic loop
@@ -405,13 +405,13 @@ feature {NONE} -- Implementation
 		do
 			if a_value = Void then
 				Result := "NULL"
-			elseif attached {READABLE_STRING_GENERAL} a_value as l_str then
+			elseif attached {READABLE_STRING_GENERAL} a_value as al_l_str then
 				Result := "'" + escaped_string (l_str) + "'"
-			elseif attached {INTEGER_64} a_value as l_int then
+			elseif attached {INTEGER_64} a_value as al_l_int then
 				Result := l_int.out
-			elseif attached {INTEGER_32} a_value as l_int then
+			elseif attached {INTEGER_32} a_value as al_l_int then
 				Result := l_int.out
-			elseif attached {REAL_64} a_value as l_real then
+			elseif attached {REAL_64} a_value as al_l_real then
 				Result := l_real.out
 			else
 				Result := "'" + escaped_string (a_value.out) + "'"

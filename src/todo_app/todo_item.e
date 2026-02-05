@@ -41,13 +41,13 @@ feature {NONE} -- Initialization
 		do
 			id := a_id
 			title := a_title.twin
-			if attached a_description as desc then
-				description := desc.twin
+			if attached a_description as al_desc then
+				description := al_desc.twin
 			end
 			priority := a_priority
 			is_completed := a_is_completed
-			if attached a_due_date as dd then
-				due_date := dd.twin
+			if attached a_due_date as al_dd then
+				due_date := al_dd.twin
 			end
 			created_at := a_created_at.twin
 			updated_at := a_updated_at.twin
@@ -81,14 +81,14 @@ feature {NONE} -- Initialization
 		do
 			id := a_id
 			title := a_title.twin
-			if attached a_description as desc then
-				description := desc.twin
+			if attached a_description as al_desc then
+				description := al_desc.twin
 			end
 			priority := a_priority
 			status := a_status.twin
 			is_completed := a_status.same_string (Status_completed)
-			if attached a_due_date as dd then
-				due_date := dd.twin
+			if attached a_due_date as al_dd then
+				due_date := al_dd.twin
 			end
 			context := a_context.twin
 			energy_level := a_energy_level
@@ -271,8 +271,8 @@ feature -- Modification
 	set_description (a_description: detachable READABLE_STRING_8)
 			-- Update the description.
 		do
-			if attached a_description as desc then
-				description := desc.twin
+			if attached a_description as al_desc then
+				description := al_desc.twin
 			else
 				description := Void
 			end
@@ -294,8 +294,8 @@ feature -- Modification
 	set_due_date (a_due_date: detachable READABLE_STRING_8)
 			-- Update the due date.
 		do
-			if attached a_due_date as dd then
-				due_date := dd.twin
+			if attached a_due_date as al_dd then
+				due_date := al_dd.twin
 			else
 				due_date := Void
 			end
@@ -523,7 +523,7 @@ feature -- Output
 			Result.append_integer (priority)
 			Result.append (") ")
 			Result.append (title)
-			if attached due_date as dd then
+			if attached due_date as al_dd then
 				Result.append (" [Due: ")
 				Result.append (dd)
 				Result.append ("]")

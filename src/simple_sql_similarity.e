@@ -134,7 +134,7 @@ feature -- Derived Metrics
 		require
 			same_dimension: a_vec1.dimension = a_vec2.dimension
 		local
-			diff: REAL_64
+			l_diff: REAL_64
 			i: INTEGER
 		do
 			from i := 1 until i > a_vec1.dimension loop
@@ -227,7 +227,7 @@ feature -- Batch Operations
 			at_least_two: a_vectors.count >= 2
 			same_dimensions: across a_vectors as ic all ic.dimension = a_vectors [a_vectors.lower].dimension end
 		local
-			total: REAL_64
+			l_total: REAL_64
 			count, i, j: INTEGER
 		do
 			from i := a_vectors.lower until i >= a_vectors.upper loop

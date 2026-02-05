@@ -32,14 +32,14 @@ feature {NONE} -- Initialization
 			content := a_content.to_string_8
 			mime_type := a_mime_type.to_string_8
 			file_size := a_file_size
-			checksum := if attached a_checksum as c then c.to_string_8 else Void end
+			checksum := if attached a_checksum as al_c then c.to_string_8 else Void end
 			current_version := a_current_version
-			metadata_json := if attached a_metadata_json as m then m.to_string_8 else "{}" end
+			metadata_json := if attached a_metadata_json as al_m then m.to_string_8 else "{}" end
 			created_at := a_created_at.to_string_8
 			updated_at := a_updated_at.to_string_8
-			deleted_at := if attached a_deleted_at as d then d.to_string_8 else Void end
-			expires_at := if attached a_expires_at as e then e.to_string_8 else Void end
-			last_accessed_at := if attached a_last_accessed_at as l then l.to_string_8 else Void end
+			deleted_at := if attached a_deleted_at as al_d then d.to_string_8 else Void end
+			expires_at := if attached a_expires_at as al_e then e.to_string_8 else Void end
+			last_accessed_at := if attached a_last_accessed_at as al_l then l.to_string_8 else Void end
 		end
 
 	make_new (a_owner_id, a_folder_id: INTEGER_64; a_title, a_content, a_mime_type: READABLE_STRING_8)
@@ -210,7 +210,7 @@ feature -- Modification
 
 	set_expires_at (a_timestamp: detachable READABLE_STRING_8)
 		do
-			expires_at := if attached a_timestamp as t then t.to_string_8 else Void end
+			expires_at := if attached a_timestamp as al_t then t.to_string_8 else Void end
 		end
 
 	set_last_accessed_at (a_timestamp: READABLE_STRING_8)
@@ -245,7 +245,7 @@ feature -- Modification
 
 	set_deleted_at (a_timestamp: detachable READABLE_STRING_8)
 		do
-			deleted_at := if attached a_timestamp as t then t.to_string_8 else Void end
+			deleted_at := if attached a_timestamp as al_t then t.to_string_8 else Void end
 		end
 
 	soft_delete (a_timestamp: READABLE_STRING_8)

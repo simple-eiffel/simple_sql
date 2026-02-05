@@ -38,8 +38,8 @@ feature {NONE} -- Initialization
 			if attached a_energy then
 				energy := a_energy.item
 			end
-			if attached a_notes as n then
-				notes := n.to_string_8
+			if attached a_notes as al_n then
+				notes := al_n.to_string_8
 			end
 			xp_earned := a_xp_earned
 		ensure
@@ -201,8 +201,8 @@ feature -- Modification
 	set_notes (a_notes: detachable READABLE_STRING_8)
 			-- Set completion notes.
 		do
-			if attached a_notes as n then
-				notes := n.to_string_8
+			if attached a_notes as al_n then
+				notes := al_n.to_string_8
 			else
 				notes := Void
 			end

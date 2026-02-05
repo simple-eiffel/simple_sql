@@ -87,7 +87,7 @@ feature -- Query
 			l_sql := "SELECT vector_data FROM " + table_name + " WHERE id = " + a_id.out
 			l_result := database.query (l_sql)
 			if not database.has_error and then l_result.count > 0 then
-				if attached l_result.first.blob_value ("vector_data") as l_blob then
+				if attached l_result.first.blob_value ("vector_data") as al_l_blob then
 					create Result.make_from_blob (l_blob)
 				end
 			elseif database.has_error then
@@ -153,7 +153,7 @@ feature -- Query
 			l_result := database.query ("SELECT id, vector_data, metadata FROM " + table_name + " ORDER BY id")
 			if not database.has_error then
 				across l_result.rows as ic loop
-					if attached ic.blob_value ("vector_data") as l_blob then
+					if attached ic.blob_value ("vector_data") as al_l_blob then
 						create l_vector.make_from_blob (l_blob)
 						Result.extend ([ic.integer_64_value ("id"), l_vector, ic.string_value ("metadata")])
 					end
@@ -290,8 +290,8 @@ feature -- Commands
 			l_stmt.execute
 
 			if l_stmt.has_error then
-				if attached l_stmt.last_error as l_error then
-					set_error (l_error.message)
+				if attached l_stmt.last_error as al_l_error then
+					set_error (al_l_error.message)
 				else
 					set_error ("Unknown error")
 				end
@@ -322,8 +322,8 @@ feature -- Commands
 			l_stmt.execute
 
 			if l_stmt.has_error then
-				if attached l_stmt.last_error as l_error then
-					set_error (l_error.message)
+				if attached l_stmt.last_error as al_l_error then
+					set_error (al_l_error.message)
 				else
 					set_error ("Unknown error")
 				end
@@ -352,8 +352,8 @@ feature -- Commands
 			l_stmt.execute
 
 			if l_stmt.has_error then
-				if attached l_stmt.last_error as l_error then
-					set_error (l_error.message)
+				if attached l_stmt.last_error as al_l_error then
+					set_error (al_l_error.message)
 				else
 					set_error ("Unknown error")
 				end

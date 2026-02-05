@@ -186,7 +186,7 @@ feature {NONE} -- Implementation
 	effective_soft_delete_column: STRING_8
 			-- Column name to use for soft delete.
 		do
-			if attached soft_delete_column as c then
+			if attached soft_delete_column as al_c then
 				Result := c
 			else
 				Result := "deleted_at"
@@ -319,8 +319,8 @@ feature {NONE} -- Implementation
 					Result.append (cursor_delimiter)
 				end
 				l_value := a_row.column_value (order_columns [i])
-				if attached l_value as v then
-					Result.append (v.out)
+				if attached l_value as al_v then
+					Result.append (al_v.out)
 				end
 				i := i + 1
 			end

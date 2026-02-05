@@ -351,9 +351,9 @@ feature -- SQL Dump Export
 				escape_sql_string (a_table_name.to_string_8) + "'"
 			)
 			if not l_schema.rows.is_empty then
-				if attached l_schema.rows.first.string_value ("sql") as l_create then
+				if attached l_schema.rows.first.string_value ("sql") as al_l_create then
 					-- Normalize to single line (replace newlines with spaces)
-					create l_create_sql.make_from_string (l_create.to_string_32)
+					create l_create_sql.make_from_string (al_l_create.to_string_32)
 					l_create_sql.replace_substring_all ("%N", " ")
 					l_create_sql.replace_substring_all ("%R", " ")
 					l_create_sql.replace_substring_all ("%T", " ")
@@ -454,16 +454,16 @@ feature {NONE} -- CSV Implementation
 
 			if a_row.is_null (l_col_name) then
 				Result := ""
-			elseif attached {INTEGER_64} a_row [a_index] as l_int then
+			elseif attached {INTEGER_64} a_row [a_index] as al_l_int then
 				create Result.make_from_string (l_int.out)
-			elseif attached {REAL_64} a_row [a_index] as l_real then
+			elseif attached {REAL_64} a_row [a_index] as al_l_real then
 				create Result.make_from_string (l_real.out)
-			elseif attached {MANAGED_POINTER} a_row [a_index] as l_blob then
+			elseif attached {MANAGED_POINTER} a_row [a_index] as al_l_blob then
 				-- Encode BLOB as "blob:HEXDATA" for CSV
 				create Result.make (l_blob.count * 2 + 10)
 				Result.append ("blob:")
 				Result.append (blob_to_hex (l_blob))
-			elseif attached {READABLE_STRING_GENERAL} a_row [a_index] as l_string then
+			elseif attached {READABLE_STRING_GENERAL} a_row [a_index] as al_l_string then
 				Result := escape_csv_value (l_string)
 			else
 				Result := ""
@@ -503,17 +503,17 @@ feature {NONE} -- JSON Implementation
 
 			if a_row.is_null (l_col_name) then
 				Result := "null"
-			elseif attached {INTEGER_64} a_row [a_index] as l_int then
+			elseif attached {INTEGER_64} a_row [a_index] as al_l_int then
 				create Result.make_from_string (l_int.out)
-			elseif attached {REAL_64} a_row [a_index] as l_real then
+			elseif attached {REAL_64} a_row [a_index] as al_l_real then
 				create Result.make_from_string (l_real.out)
-			elseif attached {MANAGED_POINTER} a_row [a_index] as l_blob then
+			elseif attached {MANAGED_POINTER} a_row [a_index] as al_l_blob then
 				-- Encode BLOB as JSON object with $blob marker
 				create Result.make (l_blob.count * 2 + 20)
 				Result.append ("{%"$blob%": %"")
 				Result.append (blob_to_hex (l_blob))
 				Result.append ("%"}")
-			elseif attached {READABLE_STRING_GENERAL} a_row [a_index] as l_string then
+			elseif attached {READABLE_STRING_GENERAL} a_row [a_index] as al_l_string then
 				create Result.make (l_string.count + 10)
 				Result.append_character ('"')
 				Result.append (escape_json_string (l_string))
@@ -554,17 +554,17 @@ feature {NONE} -- SQL Implementation
 
 			if a_row.is_null (l_col_name) then
 				Result := "NULL"
-			elseif attached {INTEGER_64} a_row [a_index] as l_int then
+			elseif attached {INTEGER_64} a_row [a_index] as al_l_int then
 				create Result.make_from_string (l_int.out)
-			elseif attached {REAL_64} a_row [a_index] as l_real then
+			elseif attached {REAL_64} a_row [a_index] as al_l_real then
 				create Result.make_from_string (l_real.out)
-			elseif attached {MANAGED_POINTER} a_row [a_index] as l_blob then
+			elseif attached {MANAGED_POINTER} a_row [a_index] as al_l_blob then
 				-- Encode BLOB using SQLite hex literal syntax: X'...'
 				create Result.make (l_blob.count * 2 + 4)
 				Result.append ("X'")
 				Result.append (blob_to_hex (l_blob))
 				Result.append_character ('%'')
-			elseif attached {READABLE_STRING_GENERAL} a_row [a_index] as l_string then
+			elseif attached {READABLE_STRING_GENERAL} a_row [a_index] as al_l_string then
 				create Result.make (l_string.count + 10)
 				Result.append_character ('%'')
 				Result.append (escape_sql_string (l_string.to_string_8).to_string_32)

@@ -172,8 +172,8 @@ feature -- CSV Import
 		rescue
 			database.rollback
 			rows_imported := 0
-			if attached (create {EXCEPTION_MANAGER}).last_exception as l_ex and then attached l_ex.description as l_desc then
-				create last_error.make_from_string (l_desc.to_string_32)
+			if attached (create {EXCEPTION_MANAGER}).last_exception as l_ex and then attached l_ex.description as al_l_desc then
+				create last_error.make_from_string (al_l_desc.to_string_32)
 			else
 				create last_error.make_from_string ("Unknown error during CSV import")
 			end
@@ -396,7 +396,7 @@ feature {NONE} -- CSV Parsing
 			Result.append ("INSERT INTO ")
 			Result.append (a_table.to_string_32)
 
-			if attached a_headers as l_hdrs then
+			if attached a_headers as al_l_hdrs then
 				Result.append (" (")
 				l_first := True
 				across l_hdrs as ic loop

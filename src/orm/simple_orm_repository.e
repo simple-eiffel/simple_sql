@@ -97,7 +97,7 @@ feature -- Query: All
 			l_list := orm.find_all (new_entity)
 			create Result.make (l_list.count)
 			across l_list as ic loop
-				if attached {G} ic as l_entity then
+				if attached {G} ic as al_l_entity then
 					Result.extend (l_entity)
 				end
 			end
@@ -113,7 +113,7 @@ feature -- Query: All
 			l_list := orm.find_all_ordered (new_entity, a_order_by)
 			create Result.make (l_list.count)
 			across l_list as ic loop
-				if attached {G} ic as l_entity then
+				if attached {G} ic as al_l_entity then
 					Result.extend (l_entity)
 				end
 			end
@@ -130,7 +130,7 @@ feature -- Query: All
 			l_list := orm.find_all_limited (new_entity, a_limit, a_offset)
 			create Result.make (l_list.count)
 			across l_list as ic loop
-				if attached {G} ic as l_entity then
+				if attached {G} ic as al_l_entity then
 					Result.extend (l_entity)
 				end
 			end
@@ -145,8 +145,8 @@ feature -- Query: By ID
 		require
 			valid_id: a_id > 0
 		do
-			if attached orm.find_by_id (new_entity, a_id) as l_entity then
-				if attached {G} l_entity as l_result then
+			if attached orm.find_by_id (new_entity, a_id) as al_l_entity then
+				if attached {G} l_entity as al_l_result then
 					Result := l_result
 				end
 			end
@@ -172,7 +172,7 @@ feature -- Query: Conditional
 			l_list := orm.find_where (new_entity, a_conditions)
 			create Result.make (l_list.count)
 			across l_list as ic loop
-				if attached {G} ic as l_entity then
+				if attached {G} ic as al_l_entity then
 					Result.extend (l_entity)
 				end
 			end
@@ -183,8 +183,8 @@ feature -- Query: Conditional
 		require
 			conditions_not_empty: not a_conditions.is_empty
 		do
-			if attached orm.find_first_where (new_entity, a_conditions) as l_entity then
-				if attached {G} l_entity as l_result then
+			if attached orm.find_first_where (new_entity, a_conditions) as al_l_entity then
+				if attached {G} l_entity as al_l_result then
 					Result := l_result
 				end
 			end

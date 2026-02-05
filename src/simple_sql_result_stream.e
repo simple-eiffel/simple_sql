@@ -183,8 +183,8 @@ feature {NONE} -- Implementation
 		do
 			l_sql_row := convert_row (a_row)
 			rows_processed := rows_processed + 1
-			if attached current_action as l_action then
-				Result := l_action.item ([l_sql_row])
+			if attached current_action as al_l_action then
+				Result := al_l_action.item ([l_sql_row])
 				if Result then
 					was_stopped_early := True
 				end
@@ -198,8 +198,8 @@ feature {NONE} -- Implementation
 		do
 			l_sql_row := convert_row (a_row)
 			rows_processed := rows_processed + 1
-			if attached current_procedure as l_proc then
-				l_proc.call ([l_sql_row])
+			if attached current_procedure as al_l_proc then
+				al_l_proc.call ([l_sql_row])
 			end
 			Result := False -- Continue processing
 		end

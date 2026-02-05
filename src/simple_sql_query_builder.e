@@ -73,33 +73,33 @@ feature {SIMPLE_SQL_QUERY_BUILDER} -- Implementation
 		do
 			if a_value = Void then
 				Result := "NULL"
-			elseif attached {BOOLEAN} a_value as l_bool then
+			elseif attached {BOOLEAN} a_value as al_l_bool then
 				if l_bool then
 					Result := "1"
 				else
 					Result := "0"
 				end
-			elseif attached {INTEGER_8} a_value as l_int then
+			elseif attached {INTEGER_8} a_value as al_l_int then
 				Result := l_int.out
-			elseif attached {INTEGER_16} a_value as l_int then
+			elseif attached {INTEGER_16} a_value as al_l_int then
 				Result := l_int.out
-			elseif attached {INTEGER_32} a_value as l_int then
+			elseif attached {INTEGER_32} a_value as al_l_int then
 				Result := l_int.out
-			elseif attached {INTEGER_64} a_value as l_int then
+			elseif attached {INTEGER_64} a_value as al_l_int then
 				Result := l_int.out
-			elseif attached {NATURAL_8} a_value as l_nat then
+			elseif attached {NATURAL_8} a_value as al_l_nat then
 				Result := l_nat.out
-			elseif attached {NATURAL_16} a_value as l_nat then
+			elseif attached {NATURAL_16} a_value as al_l_nat then
 				Result := l_nat.out
-			elseif attached {NATURAL_32} a_value as l_nat then
+			elseif attached {NATURAL_32} a_value as al_l_nat then
 				Result := l_nat.out
-			elseif attached {NATURAL_64} a_value as l_nat then
+			elseif attached {NATURAL_64} a_value as al_l_nat then
 				Result := l_nat.out
-			elseif attached {REAL_32} a_value as l_real then
+			elseif attached {REAL_32} a_value as al_l_real then
 				Result := l_real.out
-			elseif attached {REAL_64} a_value as l_real then
+			elseif attached {REAL_64} a_value as al_l_real then
 				Result := l_real.out
-			elseif attached {READABLE_STRING_GENERAL} a_value as l_string then
+			elseif attached {READABLE_STRING_GENERAL} a_value as al_l_string then
 				Result := escaped_string (l_string)
 			else
 				-- Unknown type, use string representation

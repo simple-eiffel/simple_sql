@@ -234,8 +234,8 @@ feature {NONE} -- Implementation
 				total_pages := backup_pagecount (l_backup)
 
 				-- Notify initial progress
-				if attached progress_callback as l_callback then
-					l_callback.call ([pages_remaining, total_pages])
+				if attached progress_callback as al_l_callback then
+					al_l_callback.call ([pages_remaining, total_pages])
 				end
 
 				-- Perform backup steps
@@ -246,8 +246,8 @@ feature {NONE} -- Implementation
 					l_result = Backup_done or (l_result /= Backup_ok and l_result /= Backup_done)
 				loop
 					-- Notify progress
-					if attached progress_callback as l_callback then
-						l_callback.call ([pages_remaining, total_pages])
+					if attached progress_callback as al_l_callback then
+						al_l_callback.call ([pages_remaining, total_pages])
 					end
 
 					-- Optional sleep for throttling

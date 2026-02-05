@@ -22,8 +22,8 @@ feature {NONE} -- Initialization
 			name := a_name.to_string_8
 			declared_type := a_type.to_string_8
 			is_not_null := a_notnull
-			if attached a_default as l_default then
-				default_value := l_default.to_string_8
+			if attached a_default as al_l_default then
+				default_value := al_l_default.to_string_8
 			end
 			primary_key_index := a_pk
 		ensure
@@ -147,7 +147,7 @@ feature -- Output
 			if is_not_null then
 				Result.append (" NOT NULL")
 			end
-			if attached default_value as l_default then
+			if attached default_value as al_l_default then
 				Result.append (" DEFAULT ")
 				Result.append (l_default)
 			end

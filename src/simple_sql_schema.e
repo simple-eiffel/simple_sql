@@ -36,8 +36,8 @@ feature -- Table Queries
 		do
 			create Result.make (20)
 			Result.compare_objects
-			if attached database.query ("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name") as l_result then
-				across l_result.rows as ic loop
+			if attached database.query ("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name") as al_l_result then
+				across al_l_result.rows as ic loop
 					l_name := ic.string_value ("name")
 					if not l_name.is_empty then
 						Result.extend (l_name.to_string_8)
@@ -53,8 +53,8 @@ feature -- Table Queries
 		do
 			create Result.make (10)
 			Result.compare_objects
-			if attached database.query ("SELECT name FROM sqlite_master WHERE type='view' ORDER BY name") as l_result then
-				across l_result.rows as ic loop
+			if attached database.query ("SELECT name FROM sqlite_master WHERE type='view' ORDER BY name") as al_l_result then
+				across al_l_result.rows as ic loop
 					l_name := ic.string_value ("name")
 					if not l_name.is_empty then
 						Result.extend (l_name.to_string_8)
@@ -68,8 +68,8 @@ feature -- Table Queries
 		require
 			name_not_empty: not a_name.is_empty
 		do
-			if attached database.query ("SELECT 1 FROM sqlite_master WHERE type='table' AND name='" + a_name.to_string_8 + "'") as l_result then
-				Result := not l_result.rows.is_empty
+			if attached database.query ("SELECT 1 FROM sqlite_master WHERE type='table' AND name='" + a_name.to_string_8 + "'") as al_l_result then
+				Result := not al_l_result.rows.is_empty
 			end
 		end
 
@@ -78,8 +78,8 @@ feature -- Table Queries
 		require
 			name_not_empty: not a_name.is_empty
 		do
-			if attached database.query ("SELECT 1 FROM sqlite_master WHERE type='view' AND name='" + a_name.to_string_8 + "'") as l_result then
-				Result := not l_result.rows.is_empty
+			if attached database.query ("SELECT 1 FROM sqlite_master WHERE type='view' AND name='" + a_name.to_string_8 + "'") as al_l_result then
+				Result := not al_l_result.rows.is_empty
 			end
 		end
 
@@ -95,8 +95,8 @@ feature -- Table Info
 			l_sql_str: STRING_32
 		do
 			-- Get table type
-			if attached database.query ("SELECT type, sql FROM sqlite_master WHERE name='" + a_table.to_string_8 + "'") as l_master then
-				if not l_master.rows.is_empty and then attached l_master.rows.first as l_row then
+			if attached database.query ("SELECT type, sql FROM sqlite_master WHERE name='" + a_table.to_string_8 + "'") as al_l_master then
+				if not al_l_master.rows.is_empty and then attached al_l_master.rows.first as al_l_row then
 					l_type_str := l_row.string_value ("type")
 					if l_type_str.is_empty then
 						l_type := "table"
@@ -126,8 +126,8 @@ feature -- Column Queries
 			table_not_empty: not a_table.is_empty
 		do
 			create Result.make (10)
-			if attached database.query ("PRAGMA table_info('" + a_table.to_string_8 + "')") as l_result then
-				across l_result.rows as ic loop
+			if attached database.query ("PRAGMA table_info('" + a_table.to_string_8 + "')") as al_l_result then
+				across al_l_result.rows as ic loop
 					Result.extend (row_to_column_info (ic))
 				end
 			end
@@ -142,8 +142,8 @@ feature -- Column Queries
 		do
 			create Result.make (10)
 			Result.compare_objects
-			if attached database.query ("PRAGMA table_info('" + a_table.to_string_8 + "')") as l_result then
-				across l_result.rows as ic loop
+			if attached database.query ("PRAGMA table_info('" + a_table.to_string_8 + "')") as al_l_result then
+				across al_l_result.rows as ic loop
 					l_name := ic.string_value ("name")
 					if not l_name.is_empty then
 						Result.extend (l_name.to_string_8)
@@ -165,8 +165,8 @@ feature -- Index Queries
 			l_origin_str: STRING_8
 		do
 			create Result.make (5)
-			if attached database.query ("PRAGMA index_list('" + a_table.to_string_8 + "')") as l_result then
-				across l_result.rows as ic loop
+			if attached database.query ("PRAGMA index_list('" + a_table.to_string_8 + "')") as al_l_result then
+				across al_l_result.rows as ic loop
 					l_name := ic.string_value ("name")
 					if not l_name.is_empty then
 						l_origin := ic.string_value ("origin")
@@ -206,8 +206,8 @@ feature -- Foreign Key Queries
 		do
 			create Result.make (3)
 			l_current_id := -1
-			if attached database.query ("PRAGMA foreign_key_list('" + a_table.to_string_8 + "')") as l_result then
-				across l_result.rows as ic loop
+			if attached database.query ("PRAGMA foreign_key_list('" + a_table.to_string_8 + "')") as al_l_result then
+				across al_l_result.rows as ic loop
 					if ic.integer_value ("id") /= l_current_id then
 						-- New foreign key
 						l_current_id := ic.integer_value ("id")
@@ -242,8 +242,8 @@ feature -- Schema Version
 	user_version: INTEGER
 			-- Get PRAGMA user_version (useful for migrations)
 		do
-			if attached database.query ("PRAGMA user_version") as l_result then
-				if not l_result.rows.is_empty and then attached l_result.rows.first as l_row then
+			if attached database.query ("PRAGMA user_version") as al_l_result then
+				if not al_l_result.rows.is_empty and then attached al_l_result.rows.first as al_l_row then
 					Result := l_row.integer_value ("user_version")
 				end
 			end
@@ -260,8 +260,8 @@ feature -- Schema Version
 	schema_version: INTEGER
 			-- Get PRAGMA schema_version (internal SQLite version, changes on schema modification)
 		do
-			if attached database.query ("PRAGMA schema_version") as l_result then
-				if not l_result.rows.is_empty and then attached l_result.rows.first as l_row then
+			if attached database.query ("PRAGMA schema_version") as al_l_result then
+				if not al_l_result.rows.is_empty and then attached al_l_result.rows.first as al_l_row then
 					Result := l_row.integer_value ("schema_version")
 				end
 			end
@@ -272,8 +272,8 @@ feature {NONE} -- Implementation
 	load_columns (a_table_info: SIMPLE_SQL_TABLE_INFO)
 			-- Load columns into table info
 		do
-			if attached database.query ("PRAGMA table_info('" + a_table_info.name + "')") as l_result then
-				across l_result.rows as ic loop
+			if attached database.query ("PRAGMA table_info('" + a_table_info.name + "')") as al_l_result then
+				across al_l_result.rows as ic loop
 					a_table_info.add_column (row_to_column_info (ic))
 				end
 			end
@@ -287,8 +287,8 @@ feature {NONE} -- Implementation
 			l_origin: STRING_32
 			l_origin_str: STRING_8
 		do
-			if attached database.query ("PRAGMA index_list('" + a_table_info.name + "')") as l_result then
-				across l_result.rows as ic loop
+			if attached database.query ("PRAGMA index_list('" + a_table_info.name + "')") as al_l_result then
+				across al_l_result.rows as ic loop
 					l_name := ic.string_value ("name")
 					if not l_name.is_empty then
 						l_origin := ic.string_value ("origin")
@@ -315,8 +315,8 @@ feature {NONE} -- Implementation
 		local
 			l_name: STRING_32
 		do
-			if attached database.query ("PRAGMA index_info('" + a_index.name + "')") as l_result then
-				across l_result.rows as ic loop
+			if attached database.query ("PRAGMA index_info('" + a_index.name + "')") as al_l_result then
+				across al_l_result.rows as ic loop
 					l_name := ic.string_value ("name")
 					if not l_name.is_empty then
 						a_index.add_column (l_name.to_string_8)
@@ -337,8 +337,8 @@ feature {NONE} -- Implementation
 			l_to: STRING_32
 		do
 			l_current_id := -1
-			if attached database.query ("PRAGMA foreign_key_list('" + a_table_info.name + "')") as l_result then
-				across l_result.rows as ic loop
+			if attached database.query ("PRAGMA foreign_key_list('" + a_table_info.name + "')") as al_l_result then
+				across al_l_result.rows as ic loop
 					if ic.integer_value ("id") /= l_current_id then
 						l_current_id := ic.integer_value ("id")
 						l_to_table := ic.string_value ("table")

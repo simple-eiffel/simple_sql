@@ -225,15 +225,15 @@ feature {NONE} -- Implementation
 		do
 			if a_value = Void then
 				Result := Void
-			elseif attached {BOOLEAN} a_value as l_bool then
+			elseif attached {BOOLEAN} a_value as al_l_bool then
 				Result := if l_bool then 1 else 0 end
-			elseif attached {INTEGER} a_value as l_int then
+			elseif attached {INTEGER} a_value as al_l_int then
 				Result := l_int.to_integer_64
-			elseif attached {INTEGER_64} a_value as l_int64 then
+			elseif attached {INTEGER_64} a_value as al_l_int64 then
 				Result := l_int64
-			elseif attached {REAL_64} a_value as l_real then
+			elseif attached {REAL_64} a_value as al_l_real then
 				Result := l_real
-			elseif attached {READABLE_STRING_GENERAL} a_value as l_str then
+			elseif attached {READABLE_STRING_GENERAL} a_value as al_l_str then
 				Result := l_str.to_string_8
 			else
 				-- Convert other types to string representation
@@ -265,32 +265,32 @@ feature {NONE} -- Implementation
 				create l_internal
 				l_type_name := l_internal.type_name_of_type (a_field.field_type_id).as_upper
 				if l_type_name.has_substring ("BOOLEAN") then
-					if attached {INTEGER_64} a_value as l_int then
+					if attached {INTEGER_64} a_value as al_l_int then
 						Result := l_int /= 0
-					elseif attached {INTEGER} a_value as l_int32 then
+					elseif attached {INTEGER} a_value as al_l_int32 then
 						Result := l_int32 /= 0
 					else
 						Result := False
 					end
 				elseif l_type_name.has_substring ("INTEGER_64") then
-					if attached {INTEGER_64} a_value as l_int64 then
+					if attached {INTEGER_64} a_value as al_l_int64 then
 						Result := l_int64
-					elseif attached {INTEGER} a_value as l_int32 then
+					elseif attached {INTEGER} a_value as al_l_int32 then
 						Result := l_int32.to_integer_64
 					end
 				elseif l_type_name.has_substring ("INTEGER") then
-					if attached {INTEGER_64} a_value as l_int64 then
-						Result := l_int64.to_integer_32
-					elseif attached {INTEGER} a_value as l_int32 then
+					if attached {INTEGER_64} a_value as al_l_int64 then
+						Result := al_l_int64.to_integer_32
+					elseif attached {INTEGER} a_value as al_l_int32 then
 						Result := l_int32
 					end
 				elseif l_type_name.has_substring ("REAL") or l_type_name.has_substring ("DOUBLE") then
-					if attached {REAL_64} a_value as l_real then
+					if attached {REAL_64} a_value as al_l_real then
 						Result := l_real
 					end
 				elseif l_type_name.has_substring ("STRING") then
-					if attached {READABLE_STRING_GENERAL} a_value as l_str then
-						Result := l_str.to_string_32
+					if attached {READABLE_STRING_GENERAL} a_value as al_l_str then
+						Result := al_l_str.to_string_32
 					end
 				else
 					Result := a_value

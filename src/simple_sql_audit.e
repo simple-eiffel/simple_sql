@@ -147,7 +147,7 @@ feature -- Model Queries (for contracts)
 			covers_all_entries: Result.domain.for_all (
 				agent (rec_id: INTEGER_64; tbl: STRING_8): BOOLEAN
 					local
-						seq: MML_SEQUENCE [AUDIT_ENTRY]
+						l_seq: MML_SEQUENCE [AUDIT_ENTRY]
 					do
 						seq := model_record_changes (tbl) [rec_id]
 						Result := not seq.is_empty
@@ -409,13 +409,13 @@ feature -- Analysis
 				l_new_json := l_result.first.string_value ("new_values")
 
 				-- Both must be present and valid for comparison
-				if attached l_old_json as l_old and then attached l_new_json as l_new then
-					if not l_old.is_empty and not l_new.is_empty then
+				if attached l_old_json as l_old and then attached l_new_json as al_l_new then
+					if not l_old.is_empty and not al_l_new.is_empty then
 						create l_json
 						l_old_val := l_json.deserialize (l_old)
 						l_new_val := l_json.deserialize (l_new)
 
-						if attached l_old_val as l_ov and then attached l_new_val as l_nv then
+						if attached l_old_val as l_ov and then attached l_new_val as al_l_nv then
 							if l_ov.is_object and l_nv.is_object then
 								l_old_obj := l_ov.as_object
 								l_new_obj := l_nv.as_object
@@ -431,7 +431,7 @@ feature -- Analysis
 									l_new_item := l_new_obj.item (l_keys.item)
 
 									-- Check if values differ (simple string comparison)
-									if attached l_old_item as l_oi and then attached l_new_item as l_ni then
+									if attached l_old_item as l_oi and then attached l_new_item as al_l_ni then
 										if not l_oi.to_json_string.same_string (l_ni.to_json_string) then
 											l_changed.extend (l_keys.item)
 										end

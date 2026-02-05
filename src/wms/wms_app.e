@@ -270,11 +270,11 @@ feature -- Stock Operations (FRICTION ZONE)
 		do
 			l_stock := find_stock (a_product_id, a_location_id)
 
-			if attached l_stock as s then
+			if attached l_stock as al_s then
 				-- Update existing stock using increment_if (always succeeds when row exists)
-				if database.increment_if ("stock", "quantity", a_quantity, "id = ?", <<s.id>>) then
+				if database.increment_if ("stock", "quantity", a_quantity, "id = ?", <<al_s.id>>) then
 					-- Also increment version
-					database.execute_with_args ("UPDATE stock SET version = version + 1, updated_at = datetime('now') WHERE id = ?", <<s.id>>)
+					database.execute_with_args ("UPDATE stock SET version = version + 1, updated_at = datetime('now') WHERE id = ?", <<al_s.id>>)
 				end
 			else
 				-- Insert new stock record
@@ -333,9 +333,9 @@ feature -- Stock Operations (FRICTION ZONE)
 
 				-- Increment or create destination
 				l_to_stock := find_stock (a_product_id, a_to_location)
-				if attached l_to_stock as ts then
-					if database.increment_if ("stock", "quantity", a_quantity, "id = ?", <<ts.id>>) then
-						database.execute_with_args ("UPDATE stock SET version = version + 1, updated_at = datetime('now') WHERE id = ?", <<ts.id>>)
+				if attached l_to_stock as al_ts then
+					if database.increment_if ("stock", "quantity", a_quantity, "id = ?", <<al_ts.id>>) then
+						database.execute_with_args ("UPDATE stock SET version = version + 1, updated_at = datetime('now') WHERE id = ?", <<al_ts.id>>)
 					end
 				else
 					database.execute_with_args (

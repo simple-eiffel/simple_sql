@@ -27,7 +27,7 @@ feature {NONE} -- Initialization
 			name := a_name.to_string_8
 			description := a_description.to_string_8
 			applied_at := a_applied_at.to_string_8
-			checksum := if attached a_checksum as c then c.to_string_8 else Void end
+			checksum := if attached a_checksum as al_c then c.to_string_8 else Void end
 			execution_time_ms := a_execution_time_ms
 		end
 

@@ -32,8 +32,8 @@ feature {NONE} -- Initialization
 			id := a_id
 			code := a_code.to_string_8
 			name := a_name.to_string_8
-			if attached a_description as desc then
-				description := desc.to_string_8
+			if attached a_description as al_desc then
+				description := al_desc.to_string_8
 			end
 			duration := a_duration
 			early_start := a_early_start
@@ -157,8 +157,8 @@ feature -- Modification
 	set_description (a_description: detachable READABLE_STRING_8)
 			-- Update the description.
 		do
-			if attached a_description as desc then
-				description := desc.to_string_8
+			if attached a_description as al_desc then
+				description := al_desc.to_string_8
 			else
 				description := Void
 			end

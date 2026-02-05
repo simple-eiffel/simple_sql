@@ -283,7 +283,7 @@ feature -- Execution
 			l_result: SIMPLE_SQL_RESULT
 		do
 			l_result := database.query (to_count_sql)
-			if not l_result.is_empty and then attached l_result.first as l_row then
+			if not l_result.is_empty and then attached l_result.first as al_l_row then
 				Result := l_row.integer_value ("cnt")
 			end
 		end
@@ -408,26 +408,26 @@ feature -- Implementation
 			end
 
 			-- Add snippet if requested
-			if attached snippet_column as l_snip_col then
+			if attached snippet_column as al_l_snip_col then
 				a_sql.append (", snippet(")
 				a_sql.append (table_name)
 				a_sql.append (", ")
 				l_col_idx := column_index (l_snip_col)
 				a_sql.append (l_col_idx.out)
 				a_sql.append (", '")
-				if attached snippet_start_tag as l_tag then
+				if attached snippet_start_tag as al_l_tag then
 					a_sql.append (l_tag)
 				else
 					a_sql.append ("<b>")
 				end
 				a_sql.append ("', '")
-				if attached snippet_end_tag as l_tag then
+				if attached snippet_end_tag as al_l_tag then
 					a_sql.append (l_tag)
 				else
 					a_sql.append ("</b>")
 				end
 				a_sql.append ("', '")
-				if attached snippet_ellipsis as l_ellip then
+				if attached snippet_ellipsis as al_l_ellip then
 					a_sql.append (l_ellip)
 				else
 					a_sql.append ("...")
@@ -438,20 +438,20 @@ feature -- Implementation
 			end
 
 			-- Add highlight if requested
-			if attached highlight_column as l_high_col then
+			if attached highlight_column as al_l_high_col then
 				a_sql.append (", highlight(")
 				a_sql.append (table_name)
 				a_sql.append (", ")
 				l_col_idx := column_index (l_high_col)
 				a_sql.append (l_col_idx.out)
 				a_sql.append (", '")
-				if attached highlight_start_tag as l_tag then
+				if attached highlight_start_tag as al_l_tag then
 					a_sql.append (l_tag)
 				else
 					a_sql.append ("<b>")
 				end
 				a_sql.append ("', '")
-				if attached highlight_end_tag as l_tag then
+				if attached highlight_end_tag as al_l_tag then
 					a_sql.append (l_tag)
 				else
 					a_sql.append ("</b>")
@@ -472,7 +472,7 @@ feature -- Implementation
 				end
 				l_first := False
 
-				if attached ic.column as l_col then
+				if attached ic.column as al_l_col then
 					-- Column-specific match
 					a_sql.append (l_col)
 					a_sql.append (" MATCH '")

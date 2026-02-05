@@ -470,7 +470,7 @@ feature {NONE} -- Implementation: CPM Algorithm
 				-- Reduce in-degree of successors
 				l_succs := successors (l_activity.id)
 				across l_succs as succ loop
-					if attached l_in_degree.item (succ.id) as deg then
+					if attached l_in_degree.item (succ.id) as al_deg then
 						l_deg := deg - 1
 						l_in_degree.force (l_deg, succ.id)
 						if l_deg = 0 then
@@ -510,9 +510,9 @@ feature {NONE} -- Implementation: CPM Algorithm
 				else
 					l_max_ef := 0
 					across l_pred_ids as pred_id loop
-						if attached l_activity_map.item (pred_id) as l_pred then
+						if attached l_activity_map.item (pred_id) as al_l_pred then
 							l_lag := get_lag (pred_id, ic.id)
-							l_max_ef := l_max_ef.max (l_pred.early_finish + l_lag)
+							l_max_ef := l_max_ef.max (al_l_pred.early_finish + l_lag)
 						end
 					end
 					ic.set_schedule (l_max_ef, l_max_ef + ic.duration, 0, 0, 0, False)
@@ -540,18 +540,18 @@ feature {NONE} -- Implementation: CPM Algorithm
 			end
 
 			from i := a_sorted.count until i < 1 loop
-				if attached a_sorted.i_th (i) as l_activity then
-					l_succ_ids := successor_ids (l_activity.id)
+				if attached a_sorted.i_th (i) as al_l_activity then
+					l_succ_ids := successor_ids (al_l_activity.id)
 					if l_succ_ids.is_empty then
 						-- End activity: LF = project duration
 						l_lf := a_project_duration
-						l_ls := l_lf - l_activity.duration
+						l_ls := l_lf - al_l_activity.duration
 					else
 						-- LF = min(LS of successors - lag)
 						l_min_lf := {INTEGER}.max_value
 						across l_succ_ids as succ_id loop
-							if attached l_activity_map.item (succ_id) as l_succ then
-								l_lag := get_lag (l_activity.id, succ_id)
+							if attached l_activity_map.item (succ_id) as al_l_succ then
+								l_lag := get_lag (al_l_activity.id, succ_id)
 								l_min_lf := l_min_lf.min (l_succ.late_start - l_lag)
 							end
 						end
