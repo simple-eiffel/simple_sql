@@ -86,12 +86,12 @@ feature -- Access
 			result_attached: Result /= Void
 		end
 
-	item alias "[]" (i: INTEGER): SIMPLE_SQL_ROW
+	item alias "[]" (a_i: INTEGER): SIMPLE_SQL_ROW
 			-- Row at index `i'
 		require
-			valid_index: i >= 1 and i <= count
+			valid_index: a_i >= 1 and a_i <= count
 		do
-			Result := rows.i_th (i)
+			Result := rows.i_th (a_i)
 		ensure
 			result_attached: Result /= Void
 		end

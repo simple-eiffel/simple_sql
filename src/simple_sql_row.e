@@ -90,20 +90,20 @@ feature -- Access
 			end
 		end
 
-	item alias "[]" (i: INTEGER): detachable ANY
+	item alias "[]" (a_i: INTEGER): detachable ANY
 			-- Value at index
 		require
-			valid_index: i >= 1 and i <= count
+			valid_index: a_i >= 1 and a_i <= count
 		do
-			Result := values.i_th (i)
+			Result := values.i_th (a_i)
 		end
 
-	column_name (i: INTEGER): STRING_8
+	column_name (a_i: INTEGER): STRING_8
 			-- Column name at index
 		require
-			valid_index: i >= 1 and i <= count
+			valid_index: a_i >= 1 and a_i <= count
 		do
-			Result := columns.i_th (i)
+			Result := columns.i_th (a_i)
 		ensure
 			result_attached: Result /= Void
 		end

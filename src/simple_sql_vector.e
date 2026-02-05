@@ -289,18 +289,18 @@ feature -- Mathematical operations
 
 feature -- Comparison
 
-	is_equal (other: like Current): BOOLEAN
+	is_equal (a_other: like Current): BOOLEAN
 			-- Are vectors equal (within floating point tolerance)?
 			-- Uses hybrid tolerance: max(absolute, relative * max(|a|, |b|))
 		local
 			i: INTEGER
 			diff, max_abs, threshold: REAL_64
 		do
-			if dimension = other.dimension then
+			if dimension = a_other.dimension then
 				Result := True
 				from i := 1 until i > dimension or not Result loop
-					diff := (values [i] - other.values [i]).abs
-					max_abs := values [i].abs.max (other.values [i].abs)
+					diff := (values [i] - a_other.values [i]).abs
+					max_abs := values [i].abs.max (a_other.values [i].abs)
 					threshold := Absolute_tolerance.max (Relative_tolerance * max_abs)
 					Result := diff <= threshold
 					i := i + 1
@@ -309,8 +309,8 @@ feature -- Comparison
 				end
 			end
 		ensure then
-			reflexive: other = Current implies Result
-			symmetric: Result implies other.is_equal (Current)
+			reflexive: a_other = Current implies Result
+			symmetric: Result implies a_other.is_equal (Current)
 		end
 
 	is_zero: BOOLEAN

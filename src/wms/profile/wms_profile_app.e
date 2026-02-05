@@ -73,7 +73,7 @@ feature {NONE} -- Workload Phases
 			print ("  Creating products...%N")
 			create product_ids.make (100)
 			from i := 1 until i > 100 loop
-				p := wms.create_product ("SKU" + i.out.as_string_8.to_string_8, "Product " + i.out, "EA")
+				p := wms.create_product ("SKU" + i.out.to_string_8.to_string_8, "Product " + i.out, "EA")
 				product_ids.extend (p.id)
 				i := i + 1
 			end

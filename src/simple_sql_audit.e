@@ -720,9 +720,9 @@ invariant
 
 	-- Model consistency: all tracked tables are properly configured
 	all_tables_properly_configured: model_tables.for_all (
-		agent (tbl: STRING_8): BOOLEAN
+		agent (a_tbl: STRING_8): BOOLEAN
 			do
-				Result := has_audit_table (tbl) and is_enabled (tbl)
+				Result := has_audit_table (a_tbl) and is_enabled (a_tbl)
 			end)
 
 note

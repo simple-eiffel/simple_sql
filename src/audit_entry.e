@@ -115,39 +115,39 @@ feature -- Status
 
 feature -- Comparison
 
-	is_equal (other: like Current): BOOLEAN
+	is_equal (a_other: like Current): BOOLEAN
 			-- Are entries equal based on audit_id?
 		do
-			Result := audit_id = other.audit_id
+			Result := audit_id = a_other.audit_id
 		end
 
-	is_before (other: AUDIT_ENTRY): BOOLEAN
+	is_before (a_other: AUDIT_ENTRY): BOOLEAN
 			-- Does this entry come chronologically before `other'?
 			-- Based on timestamp comparison (lexicographic for ISO 8601).
 		do
-			Result := timestamp < other.timestamp or
-				(timestamp.same_string (other.timestamp) and audit_id < other.audit_id)
+			Result := timestamp < a_other.timestamp or
+				(timestamp.same_string (a_other.timestamp) and audit_id < a_other.audit_id)
 		ensure
-			definition: Result = (timestamp < other.timestamp or
-				(timestamp.same_string (other.timestamp) and audit_id < other.audit_id))
+			definition: Result = (timestamp < a_other.timestamp or
+				(timestamp.same_string (a_other.timestamp) and audit_id < a_other.audit_id))
 		end
 
-	same_record (other: AUDIT_ENTRY): BOOLEAN
+	same_record (a_other: AUDIT_ENTRY): BOOLEAN
 			-- Do both entries refer to the same record?
 		do
-			Result := record_id = other.record_id and table_name.same_string (other.table_name)
+			Result := record_id = a_other.record_id and table_name.same_string (a_other.table_name)
 		ensure
-			definition: Result = (record_id = other.record_id and table_name.same_string (other.table_name))
+			definition: Result = (record_id = a_other.record_id and table_name.same_string (a_other.table_name))
 		end
 
 feature {NONE} -- Implementation
 
-	is_valid_operation_string (op: STRING_8): BOOLEAN
+	is_valid_operation_string (a_op: STRING_8): BOOLEAN
 			-- Is `op' a valid operation string?
 		do
-			Result := op.is_case_insensitive_equal ("INSERT") or
-				op.is_case_insensitive_equal ("UPDATE") or
-				op.is_case_insensitive_equal ("DELETE")
+			Result := a_op.is_case_insensitive_equal ("INSERT") or
+				a_op.is_case_insensitive_equal ("UPDATE") or
+				a_op.is_case_insensitive_equal ("DELETE")
 		end
 
 invariant

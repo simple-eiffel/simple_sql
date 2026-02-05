@@ -408,10 +408,10 @@ feature {NONE} -- Implementation
 			Result := l_result
 		end
 
-	is_identifier_char (c: CHARACTER_8): BOOLEAN
+	is_identifier_char (a_c: CHARACTER_8): BOOLEAN
 			-- Is character valid in identifier (alphanumeric or underscore)?
 		do
-			Result := c.is_alpha_numeric or c = '_'
+			Result := a_c.is_alpha_numeric or a_c = '_'
 		end
 
 	value_as_sql (a_value: detachable ANY): STRING_8
