@@ -351,7 +351,7 @@ feature {NONE} -- Implementation: Test Data Builder
 		do
 			-- ========== PHASE 1: SITE WORK ==========
 			l_site_survey := a_app.add_activity_with_description (a_project_id, "SW-01", "Site Survey & Layout", "Topographic survey and construction staking", 5)
-			l_permits := a_app.add_activity_with_description (a_project_id, "SW-02", "Obtain Permits", "Building permit, environmental permits", 20)
+			l_permits := a_app.add_activity_with_description (a_project_id, "SW-02", "Obtain Permits", "Building permit, environmental l_permits", 20)
 			l_site_clear := a_app.add_activity_with_description (a_project_id, "SW-03", "Site Clearing", "Clear vegetation, demo existing structures", 10)
 			l_excavation := a_app.add_activity_with_description (a_project_id, "SW-04", "Mass Excavation", "Excavate for foundation and parking", 15)
 			l_soil_test := a_app.add_activity_with_description (a_project_id, "SW-05", "Soil Compaction Testing", "Verify soil bearing capacity", 3)
@@ -364,7 +364,7 @@ feature {NONE} -- Implementation: Test Data Builder
 
 			-- ========== PHASE 2: FOUNDATION ==========
 			l_found_layout := a_app.add_activity_with_description (a_project_id, "FD-01", "Foundation Layout", "Mark foundation locations", 3)
-			l_footings := a_app.add_activity_with_description (a_project_id, "FD-02", "Footings", "Pour concrete footings", 12)
+			l_footings := a_app.add_activity_with_description (a_project_id, "FD-02", "Footings", "Pour concrete l_footings", 12)
 			l_found_walls := a_app.add_activity_with_description (a_project_id, "FD-03", "Foundation Walls", "Form and pour foundation walls", 15)
 			l_waterproof := a_app.add_activity_with_description (a_project_id, "FD-04", "Waterproofing", "Apply foundation waterproofing", 5)
 			l_backfill := a_app.add_activity_with_description (a_project_id, "FD-05", "Backfill", "Backfill around foundation", 7)
@@ -382,7 +382,7 @@ feature {NONE} -- Implementation: Test Data Builder
 			l_garage_walls := a_app.add_activity_with_description (a_project_id, "PG-02", "Garage Walls", "Precast garage walls", 12)
 			l_garage_roof := a_app.add_activity_with_description (a_project_id, "PG-03", "Garage Roof Deck", "Pour garage roof/plaza deck", 8)
 			l_garage_mep := a_app.add_activity_with_description (a_project_id, "PG-04", "Garage MEP", "Lighting, ventilation, fire suppression", 15)
-			l_garage_finish := a_app.add_activity_with_description (a_project_id, "PG-05", "Garage Finish", "Striping, signage, equipment", 7)
+			l_garage_finish := a_app.add_activity_with_description (a_project_id, "PG-05", "Garage Finish", "Striping, l_signage, equipment", 7)
 
 			l_ignored := a_app.add_dependency (l_found_complete.id, l_garage_slab.id)
 			l_ignored := a_app.add_dependency (l_garage_slab.id, l_garage_walls.id)
@@ -438,10 +438,10 @@ feature {NONE} -- Implementation: Test Data Builder
 
 			-- ========== PHASE 7: INTERIOR ==========
 			l_int_frame := a_app.add_activity_with_description (a_project_id, "IN-01", "Interior Framing", "Metal stud partitions all floors", 18)
-			l_drywall := a_app.add_activity_with_description (a_project_id, "IN-02", "Drywall", "Hang and finish drywall", 20)
+			l_drywall := a_app.add_activity_with_description (a_project_id, "IN-02", "Drywall", "Hang and finish l_drywall", 20)
 			l_ceiling := a_app.add_activity_with_description (a_project_id, "IN-03", "Ceiling Grid & Tile", "Install suspended ceilings", 12)
 			l_flooring := a_app.add_activity_with_description (a_project_id, "IN-04", "Flooring", "Carpet, tile, VCT", 15)
-			l_paint := a_app.add_activity_with_description (a_project_id, "IN-05", "Painting", "Prime and paint all surfaces", 14)
+			l_paint := a_app.add_activity_with_description (a_project_id, "IN-05", "Painting", "Prime and l_paint all surfaces", 14)
 
 			l_ignored := a_app.add_dependency (l_envelope_complete.id, l_int_frame.id)
 			l_ignored := a_app.add_dependency (l_plumb_rough.id, l_int_frame.id)
@@ -453,9 +453,9 @@ feature {NONE} -- Implementation: Test Data Builder
 			l_ignored := a_app.add_dependency (l_paint.id, l_flooring.id)
 
 			-- ========== PHASE 8: MEP FINISH ==========
-			l_plumb_finish := a_app.add_activity_with_description (a_project_id, "MF-01", "Plumbing Fixtures", "Install fixtures, test systems", 10)
+			l_plumb_finish := a_app.add_activity_with_description (a_project_id, "MF-01", "Plumbing Fixtures", "Install l_fixtures, test systems", 10)
 			l_hvac_finish := a_app.add_activity_with_description (a_project_id, "MF-02", "HVAC Finish", "Install diffusers, TAB, commissioning", 12)
-			l_elec_finish := a_app.add_activity_with_description (a_project_id, "MF-03", "Electrical Finish", "Devices, fixtures, panel terminations", 10)
+			l_elec_finish := a_app.add_activity_with_description (a_project_id, "MF-03", "Electrical Finish", "Devices, l_fixtures, panel terminations", 10)
 			l_fire_test := a_app.add_activity_with_description (a_project_id, "MF-04", "Fire System Testing", "Test and certify fire systems", 5)
 			l_mep_complete := a_app.add_activity (a_project_id, "MS-04", "MEP Complete", 0)
 
@@ -470,12 +470,12 @@ feature {NONE} -- Implementation: Test Data Builder
 			l_ignored := a_app.add_dependency (l_fire_test.id, l_mep_complete.id)
 
 			-- ========== PHASE 9: FINISHES & CLOSEOUT ==========
-			l_elevator := a_app.add_activity_with_description (a_project_id, "CL-01", "Elevator Installation", "Install and certify elevator", 30)
-			l_fixtures := a_app.add_activity_with_description (a_project_id, "CL-02", "Specialties & Fixtures", "Toilet accessories, signage, misc", 8)
-			l_signage := a_app.add_activity_with_description (a_project_id, "CL-03", "Final Signage", "ADA signage, wayfinding", 5)
+			l_elevator := a_app.add_activity_with_description (a_project_id, "CL-01", "Elevator Installation", "Install and certify l_elevator", 30)
+			l_fixtures := a_app.add_activity_with_description (a_project_id, "CL-02", "Specialties & Fixtures", "Toilet accessories, l_signage, misc", 8)
+			l_signage := a_app.add_activity_with_description (a_project_id, "CL-03", "Final Signage", "ADA l_signage, wayfinding", 5)
 			l_landscape := a_app.add_activity_with_description (a_project_id, "CL-04", "Landscaping", "Plantings, irrigation, hardscape", 20)
-			l_punchlist := a_app.add_activity_with_description (a_project_id, "CL-05", "Punchlist", "Complete punchlist items", 10)
-			l_final_insp := a_app.add_activity_with_description (a_project_id, "CL-06", "Final Inspections", "Building dept, fire marshal, elevator", 7)
+			l_punchlist := a_app.add_activity_with_description (a_project_id, "CL-05", "Punchlist", "Complete l_punchlist items", 10)
+			l_final_insp := a_app.add_activity_with_description (a_project_id, "CL-06", "Final Inspections", "Building dept, fire marshal, l_elevator", 7)
 			l_turnover := a_app.add_activity_with_description (a_project_id, "CL-07", "Owner Training & Turnover", "Train owner, deliver O&M manuals", 5)
 			l_project_complete := a_app.add_activity (a_project_id, "MS-05", "Project Complete", 0)
 

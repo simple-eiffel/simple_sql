@@ -88,7 +88,7 @@ feature -- Query
 			l_result := database.query (l_sql)
 			if not database.has_error and then l_result.count > 0 then
 				if attached l_result.first.blob_value ("vector_data") as al_l_blob then
-					create Result.make_from_blob (l_blob)
+					create Result.make_from_blob (al_l_blob)
 				end
 			elseif database.has_error then
 				set_error (database.last_error_message)
@@ -154,7 +154,7 @@ feature -- Query
 			if not database.has_error then
 				across l_result.rows as ic loop
 					if attached ic.blob_value ("vector_data") as al_l_blob then
-						create l_vector.make_from_blob (l_blob)
+						create l_vector.make_from_blob (al_l_blob)
 						Result.extend ([ic.integer_64_value ("id"), l_vector, ic.string_value ("metadata")])
 					end
 				end

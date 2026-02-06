@@ -232,7 +232,7 @@ feature -- Command: Custom
 			else
 				l_is_completed := 0
 			end
-			l_columns.put (l_is_completed, "is_completed")
+			l_columns.put (l_is_completed, "l_is_completed")
 			l_columns.put ("datetime('now')", "updated_at")
 			Result := update_where (l_columns, "id = " + a_id.out) = 1
 		end
@@ -295,18 +295,18 @@ feature {NONE} -- Implementation
 			l_parent_id: INTEGER_64
 			l_created_at, l_updated_at: STRING_8
 		do
-			l_id := a_row.integer_64_value ("id")
-			l_title := a_row.string_value ("title").to_string_8
+			l_id := a_row.integer_64_value ("l_id")
+			l_title := a_row.string_value ("l_title").to_string_8
 
-			if not a_row.is_null ("description") then
-				l_description := a_row.string_value ("description").to_string_8
+			if not a_row.is_null ("l_description") then
+				l_description := a_row.string_value ("l_description").to_string_8
 			end
 
-			l_priority := a_row.integer_value ("priority")
+			l_priority := a_row.integer_value ("l_priority")
 
 			-- Read status, with fallback for old databases
-			if a_row.has_column ("status") and then not a_row.is_null ("status") then
-				l_status := a_row.string_value ("status").to_string_8
+			if a_row.has_column ("l_status") and then not a_row.is_null ("l_status") then
+				l_status := a_row.string_value ("l_status").to_string_8
 			else
 				-- Legacy: derive from is_completed
 				if a_row.integer_value ("is_completed") = 1 then
@@ -316,19 +316,19 @@ feature {NONE} -- Implementation
 				end
 			end
 
-			if not a_row.is_null ("due_date") then
-				l_due_date := a_row.string_value ("due_date").to_string_8
+			if not a_row.is_null ("l_due_date") then
+				l_due_date := a_row.string_value ("l_due_date").to_string_8
 			end
 
 			-- Read new columns with defaults for old databases
-			if a_row.has_column ("context") and then not a_row.is_null ("context") then
-				l_context := a_row.string_value ("context").to_string_8
+			if a_row.has_column ("l_context") and then not a_row.is_null ("l_context") then
+				l_context := a_row.string_value ("l_context").to_string_8
 			else
 				l_context := ""
 			end
 
-			if a_row.has_column ("energy_level") then
-				l_energy_level := a_row.integer_value ("energy_level")
+			if a_row.has_column ("l_energy_level") then
+				l_energy_level := a_row.integer_value ("l_energy_level")
 				if l_energy_level < 1 or l_energy_level > 3 then
 					l_energy_level := 2
 				end
@@ -336,20 +336,20 @@ feature {NONE} -- Implementation
 				l_energy_level := 2
 			end
 
-			if a_row.has_column ("estimated_minutes") then
-				l_estimated_minutes := a_row.integer_value ("estimated_minutes")
+			if a_row.has_column ("l_estimated_minutes") then
+				l_estimated_minutes := a_row.integer_value ("l_estimated_minutes")
 			end
 
-			if a_row.has_column ("actual_minutes") then
-				l_actual_minutes := a_row.integer_value ("actual_minutes")
+			if a_row.has_column ("l_actual_minutes") then
+				l_actual_minutes := a_row.integer_value ("l_actual_minutes")
 			end
 
-			if a_row.has_column ("parent_id") then
-				l_parent_id := a_row.integer_64_value ("parent_id")
+			if a_row.has_column ("l_parent_id") then
+				l_parent_id := a_row.integer_64_value ("l_parent_id")
 			end
 
-			l_created_at := a_row.string_value ("created_at").to_string_8
-			l_updated_at := a_row.string_value ("updated_at").to_string_8
+			l_created_at := a_row.string_value ("l_created_at").to_string_8
+			l_updated_at := a_row.string_value ("l_updated_at").to_string_8
 
 			create Result.make_full (l_id, l_title, l_description, l_priority, l_status,
 				l_due_date, l_context, l_energy_level, l_estimated_minutes, l_actual_minutes,

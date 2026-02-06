@@ -191,21 +191,21 @@ feature {NONE} -- Implementation
 			from i := 1 until i > a_sql.count loop
 				c := a_sql.item (i)
 				if c = '%'' then
-					if in_string then
-						in_string := False
+					if l_in_string then
+						l_in_string := False
 						Result.append_character ('?')
 					else
-						in_string := True
+						l_in_string := True
 					end
-				elseif in_string then
+				elseif l_in_string then
 					-- Skip string content
-				elseif c.is_digit and not in_number then
-					in_number := True
+				elseif c.is_digit and not l_in_number then
+					l_in_number := True
 					Result.append_character ('?')
-				elseif c.is_digit and in_number then
+				elseif c.is_digit and l_in_number then
 					-- Skip digits
-				elseif in_number and not c.is_digit then
-					in_number := False
+				elseif l_in_number and not c.is_digit then
+					l_in_number := False
 					Result.append_character (c)
 				else
 					Result.append_character (c)

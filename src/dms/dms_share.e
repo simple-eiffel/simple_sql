@@ -30,10 +30,10 @@ feature {NONE} -- Initialization
 			owner_id := a_owner_id
 			shared_with_user_id := a_shared_with_user_id
 			permissions_json := a_permissions_json.to_string_8
-			share_link := if attached a_share_link as al_l then l.to_string_8 else Void end
-			expires_at := if attached a_expires_at as al_e then e.to_string_8 else Void end
+			share_link := if attached a_share_link as al_l then al_l.to_string_8 else Void end
+			expires_at := if attached a_expires_at as al_e then al_e.to_string_8 else Void end
 			created_at := a_created_at.to_string_8
-			revoked_at := if attached a_revoked_at as al_r then r.to_string_8 else Void end
+			revoked_at := if attached a_revoked_at as al_r then al_r.to_string_8 else Void end
 		end
 
 	make_new (a_owner_id, a_shared_with_user_id: INTEGER_64; a_permissions_json: READABLE_STRING_8)
@@ -241,7 +241,7 @@ feature -- Modification
 
 	set_expires_at (a_timestamp: detachable READABLE_STRING_8)
 		do
-			expires_at := if attached a_timestamp as al_t then t.to_string_8 else Void end
+			expires_at := if attached a_timestamp as al_t then al_t.to_string_8 else Void end
 		end
 
 	set_created_at (a_timestamp: READABLE_STRING_8)

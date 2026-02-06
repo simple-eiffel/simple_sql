@@ -44,8 +44,8 @@ feature -- Status report
 			l_stmt.bind_text (1, a_json)
 			l_result := l_stmt.execute_returning_result
 			if not l_result.is_empty and then attached l_result.first.item (1) as al_l_val then
-				if attached {INTEGER_64} l_val as al_l_int then
-					Result := l_int /= 0
+				if attached {INTEGER_64} al_l_val as al_l_int then
+					Result := al_l_int /= 0
 				end
 			end
 		end
@@ -95,7 +95,7 @@ feature -- JSON Path Queries
 			l_stmt.bind_text (2, a_path)
 			l_result := l_stmt.execute_returning_result
 			if not l_result.is_empty and then attached l_result.first.item (1) as al_l_val then
-				Result := l_val.out.to_string_32
+				Result := al_l_val.out.to_string_32
 			end
 		end
 
@@ -143,7 +143,7 @@ feature -- JSON Modification
 			bind_json_value (l_stmt, 3, a_value)
 			l_result := l_stmt.execute_returning_result
 			if not l_result.is_empty and then attached l_result.first.item (1) as al_l_val then
-				Result := l_val.out.to_string_8
+				Result := al_l_val.out.to_string_8
 			else
 				Result := a_json
 			end
@@ -168,7 +168,7 @@ feature -- JSON Modification
 			bind_json_value (l_stmt, 3, a_value)
 			l_result := l_stmt.execute_returning_result
 			if not l_result.is_empty and then attached l_result.first.item (1) as al_l_val then
-				Result := l_val.out.to_string_8
+				Result := al_l_val.out.to_string_8
 			else
 				Result := a_json
 			end
@@ -193,7 +193,7 @@ feature -- JSON Modification
 			bind_json_value (l_stmt, 3, a_value)
 			l_result := l_stmt.execute_returning_result
 			if not l_result.is_empty and then attached l_result.first.item (1) as al_l_val then
-				Result := l_val.out.to_string_8
+				Result := al_l_val.out.to_string_8
 			else
 				Result := a_json
 			end
@@ -216,7 +216,7 @@ feature -- JSON Modification
 			l_stmt.bind_text (2, a_path)
 			l_result := l_stmt.execute_returning_result
 			if not l_result.is_empty and then attached l_result.first.item (1) as al_l_val then
-				Result := l_val.out.to_string_8
+				Result := al_l_val.out.to_string_8
 			else
 				Result := a_json
 			end
@@ -255,7 +255,7 @@ feature -- JSON Creation
 
 			l_result := l_stmt.execute_returning_result
 			if not l_result.is_empty and then attached l_result.first.item (1) as al_l_val then
-				Result := l_val.out.to_string_8
+				Result := al_l_val.out.to_string_8
 			else
 				Result := "[]"
 			end
@@ -296,7 +296,7 @@ feature -- JSON Creation
 
 			l_result := l_stmt.execute_returning_result
 			if not l_result.is_empty and then attached l_result.first.item (1) as al_l_val then
-				Result := l_val.out.to_string_8
+				Result := al_l_val.out.to_string_8
 			else
 				Result := "{}"
 			end
@@ -327,7 +327,7 @@ feature -- JSON Aggregation
 
 			l_result := database.query (l_sql)
 			if not l_result.is_empty and then attached l_result.first.item (1) as al_l_val then
-				Result := l_val.out.to_string_8
+				Result := al_l_val.out.to_string_8
 			else
 				Result := "[]"
 			end
@@ -359,7 +359,7 @@ feature -- JSON Aggregation
 
 			l_result := database.query (l_sql)
 			if not l_result.is_empty and then attached l_result.first.item (1) as al_l_val then
-				Result := l_val.out.to_string_8
+				Result := al_l_val.out.to_string_8
 			else
 				Result := "{}"
 			end
@@ -378,15 +378,15 @@ feature {NONE} -- Implementation
 			if a_value = Void then
 				a_stmt.bind_null (a_index)
 			elseif attached {INTEGER_64} a_value as al_l_int then
-				a_stmt.bind_integer (a_index, l_int)
+				a_stmt.bind_integer (a_index, al_l_int)
 			elseif attached {INTEGER_32} a_value as al_l_int32 then
-				a_stmt.bind_integer (a_index, l_int32.to_integer_64)
+				a_stmt.bind_integer (a_index, al_l_int32.to_integer_64)
 			elseif attached {REAL_64} a_value as al_l_real then
-				a_stmt.bind_real (a_index, l_real)
+				a_stmt.bind_real (a_index, al_l_real)
 			elseif attached {BOOLEAN} a_value as al_l_bool then
-				a_stmt.bind_integer (a_index, if l_bool then 1 else 0 end)
+				a_stmt.bind_integer (a_index, if al_l_bool then 1 else 0 end)
 			elseif attached {READABLE_STRING_GENERAL} a_value as al_l_string then
-				a_stmt.bind_text (a_index, l_string)
+				a_stmt.bind_text (a_index, al_l_string)
 			else
 				-- Default: convert to string
 				a_stmt.bind_text (a_index, a_value.out)

@@ -65,7 +65,7 @@ feature -- Commands: CRUD
 			create l_item.make_new (a_title, a_priority)
 			l_id := repository.insert (l_item)
 			check attached repository.find_by_id (l_id) as al_l_saved then
-				Result := l_saved
+				Result := al_l_saved
 			end
 		ensure
 			result_saved: not Result.is_new
@@ -88,7 +88,7 @@ feature -- Commands: CRUD
 			l_item.set_due_date (a_due_date)
 			l_id := repository.insert (l_item)
 			check attached repository.find_by_id (l_id) as al_l_saved then
-				Result := l_saved
+				Result := al_l_saved
 			end
 		ensure
 			result_saved: not Result.is_new

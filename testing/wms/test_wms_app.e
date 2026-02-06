@@ -129,7 +129,7 @@ feature -- Test: Stock - Basic Operations
 
 			l_success := l_app.receive_stock (l_prod.id, l_loc.id, 100, "PO-001", 1)
 
-			assert ("success", l_success)
+			assert ("l_success", l_success)
 
 			l_stock := l_app.find_stock (l_prod.id, l_loc.id)
 			assert ("stock_created", attached l_stock)
@@ -346,7 +346,7 @@ feature -- Test: Reservations
 
 			if attached l_res as r then
 				l_released := l_app.release_reservation (r.id)
-				assert ("released", l_released)
+				assert ("l_released", l_released)
 
 				-- Stock should be fully available again
 				if attached l_app.find_stock (l_prod.id, l_loc.id) as s then

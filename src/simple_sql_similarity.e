@@ -138,8 +138,8 @@ feature -- Derived Metrics
 			i: INTEGER
 		do
 			from i := 1 until i > a_vec1.dimension loop
-				diff := a_vec1 [i] - a_vec2 [i]
-				Result := Result + diff * diff
+				l_diff := a_vec1 [i] - a_vec2 [i]
+				Result := Result + l_diff * l_diff
 				i := i + 1
 			variant
 				a_vec1.dimension - i + 1
@@ -232,14 +232,14 @@ feature -- Batch Operations
 		do
 			from i := a_vectors.lower until i >= a_vectors.upper loop
 				from j := i + 1 until j > a_vectors.upper loop
-					total := total + cosine_similarity (a_vectors [i], a_vectors [j])
+					l_total := l_total + cosine_similarity (a_vectors [i], a_vectors [j])
 					count := count + 1
 					j := j + 1
 				end
 				i := i + 1
 			end
 			if count > 0 then
-				Result := total / count
+				Result := l_total / count
 			end
 		end
 

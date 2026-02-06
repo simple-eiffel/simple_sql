@@ -206,7 +206,7 @@ feature {NONE} -- Implementation
 			create Result.make (200)
 			Result.append ("SELECT * FROM ")
 			if attached main_table as al_mt then
-				Result.append (mt)
+				Result.append (al_mt)
 			end
 
 			-- WHERE clauses
@@ -224,7 +224,7 @@ feature {NONE} -- Implementation
 			-- ORDER BY
 			if attached order_by_column as al_obc then
 				Result.append (" ORDER BY ")
-				Result.append (obc)
+				Result.append (al_obc)
 			end
 
 			-- LIMIT
@@ -285,7 +285,7 @@ feature {NONE} -- Implementation
 				l_sql.append (".id = ")
 				l_sql.append (jt)
 				l_sql.append (".")
-				l_sql.append (jfk)
+				l_sql.append (al_jfk)
 				l_sql.append (" WHERE ")
 				l_sql.append (jt)
 				l_sql.append (".")

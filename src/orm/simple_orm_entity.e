@@ -29,9 +29,9 @@ note
 				set_field_value (a_name: STRING; a_value: detachable ANY)
 					do
 						if a_name.same_string ("email") then
-							if attached {STRING} a_value as al_s then email := s end
+							if attached {STRING} a_value as al_s then email := al_s end
 						elseif a_name.same_string ("name") then
-							if attached {STRING} a_value as al_s then name := s end
+							if attached {STRING} a_value as al_s then name := al_s end
 						end
 					end
 			end

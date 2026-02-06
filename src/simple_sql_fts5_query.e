@@ -284,7 +284,7 @@ feature -- Execution
 		do
 			l_result := database.query (to_count_sql)
 			if not l_result.is_empty and then attached l_result.first as al_l_row then
-				Result := l_row.integer_value ("cnt")
+				Result := al_l_row.integer_value ("cnt")
 			end
 		end
 
@@ -412,23 +412,23 @@ feature -- Implementation
 				a_sql.append (", snippet(")
 				a_sql.append (table_name)
 				a_sql.append (", ")
-				l_col_idx := column_index (l_snip_col)
+				l_col_idx := column_index (al_l_snip_col)
 				a_sql.append (l_col_idx.out)
 				a_sql.append (", '")
 				if attached snippet_start_tag as al_l_tag then
-					a_sql.append (l_tag)
+					a_sql.append (al_l_tag)
 				else
 					a_sql.append ("<b>")
 				end
 				a_sql.append ("', '")
 				if attached snippet_end_tag as al_l_tag then
-					a_sql.append (l_tag)
+					a_sql.append (al_l_tag)
 				else
 					a_sql.append ("</b>")
 				end
 				a_sql.append ("', '")
 				if attached snippet_ellipsis as al_l_ellip then
-					a_sql.append (l_ellip)
+					a_sql.append (al_l_ellip)
 				else
 					a_sql.append ("...")
 				end
@@ -442,17 +442,17 @@ feature -- Implementation
 				a_sql.append (", highlight(")
 				a_sql.append (table_name)
 				a_sql.append (", ")
-				l_col_idx := column_index (l_high_col)
+				l_col_idx := column_index (al_l_high_col)
 				a_sql.append (l_col_idx.out)
 				a_sql.append (", '")
 				if attached highlight_start_tag as al_l_tag then
-					a_sql.append (l_tag)
+					a_sql.append (al_l_tag)
 				else
 					a_sql.append ("<b>")
 				end
 				a_sql.append ("', '")
 				if attached highlight_end_tag as al_l_tag then
-					a_sql.append (l_tag)
+					a_sql.append (al_l_tag)
 				else
 					a_sql.append ("</b>")
 				end
@@ -474,7 +474,7 @@ feature -- Implementation
 
 				if attached ic.column as al_l_col then
 					-- Column-specific match
-					a_sql.append (l_col)
+					a_sql.append (al_l_col)
 					a_sql.append (" MATCH '")
 					a_sql.append (escaped_fts_query (ic.query))
 					a_sql.append ("'")
@@ -549,7 +549,7 @@ feature -- Implementation
 		do
 			l_result := database.query ("PRAGMA table_info('" + table_name + "')")
 			across l_result.rows as ic loop
-				l_name := ic.string_value ("name")
+				l_name := ic.string_value ("l_name")
 				if l_name.same_string (a_column.to_string_32) then
 					Result := ic.integer_value ("cid")
 				end

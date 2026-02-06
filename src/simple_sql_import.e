@@ -399,7 +399,7 @@ feature {NONE} -- CSV Parsing
 			if attached a_headers as al_l_hdrs then
 				Result.append (" (")
 				l_first := True
-				across l_hdrs as ic loop
+				across al_l_hdrs as ic loop
 					if not l_first then
 						Result.append (", ")
 					end

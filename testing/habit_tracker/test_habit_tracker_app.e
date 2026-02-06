@@ -96,7 +96,7 @@ feature -- Test routines: Category Management
 			l_cat: HABIT_CATEGORY
 		do
 			create l_app.make
-			l_user := l_app.create_user ("catuser", "cat@example.com", "UTC")
+			l_user := l_app.create_user ("catuser", "l_cat@example.com", "UTC")
 			l_cat := l_app.create_category (l_user.id, "Health")
 
 			assert_false ("is_saved", l_cat.is_new)
@@ -150,7 +150,7 @@ feature -- Test routines: Habit Management
 			l_habit: HABIT
 		do
 			create l_app.make
-			l_user := l_app.create_user ("habituser", "habit@example.com", "UTC")
+			l_user := l_app.create_user ("habituser", "l_habit@example.com", "UTC")
 			l_habit := l_app.create_habit (l_user.id, "Drink Water", "daily")
 
 			assert_false ("is_saved", l_habit.is_new)

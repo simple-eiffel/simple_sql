@@ -640,7 +640,7 @@ feature -- Test: UTF-8 Validation (simple_encoding integration)
 				assert_true ("valid utf8", l_result.first.is_string_valid_utf8 ("name"))
 				assert_true ("all valid", l_result.first.all_strings_valid_utf8)
 			else
-				assert_true ("has result", False)
+				assert_true ("has l_result", False)
 			end
 			db.close
 		end
@@ -660,9 +660,9 @@ feature -- Test: UTF-8 Validation (simple_encoding integration)
 			l_result := db.query ("SELECT * FROM test")
 			if not l_result.is_empty then
 				l_encoding := l_result.first.detected_encoding ("name")
-				assert_true ("encoding detected", not l_encoding.is_empty)
+				assert_true ("l_encoding detected", not l_encoding.is_empty)
 			else
-				assert_true ("has result", False)
+				assert_true ("has l_result", False)
 			end
 			db.close
 		end
@@ -683,7 +683,7 @@ feature -- Test: Reflective Mapper (simple_reflection integration)
 
 			-- Convert to hash
 			l_hash := mapper.object_to_hash (entity)
-			assert_true ("hash not empty", l_hash.count > 0)
+			assert_true ("l_hash not empty", l_hash.count > 0)
 		end
 
 	test_reflective_mapper_create_table_sql

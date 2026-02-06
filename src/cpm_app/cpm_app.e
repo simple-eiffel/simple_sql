@@ -456,7 +456,7 @@ feature {NONE} -- Implementation: CPM Algorithm
 
 			-- Start with activities that have no predecessors
 			across a_activities as ic loop
-				if attached l_in_degree.item (ic.id) as deg and then deg = 0 then
+				if attached l_in_degree.item (ic.id) as l_deg and then l_deg = 0 then
 					l_queue.extend (ic)
 				end
 			end
@@ -471,7 +471,7 @@ feature {NONE} -- Implementation: CPM Algorithm
 				l_succs := successors (l_activity.id)
 				across l_succs as succ loop
 					if attached l_in_degree.item (succ.id) as al_deg then
-						l_deg := deg - 1
+						l_deg := al_deg - 1
 						l_in_degree.force (l_deg, succ.id)
 						if l_deg = 0 then
 							-- Find the activity object
@@ -552,13 +552,13 @@ feature {NONE} -- Implementation: CPM Algorithm
 						across l_succ_ids as succ_id loop
 							if attached l_activity_map.item (succ_id) as al_l_succ then
 								l_lag := get_lag (al_l_activity.id, succ_id)
-								l_min_lf := l_min_lf.min (l_succ.late_start - l_lag)
+								l_min_lf := l_min_lf.min (al_l_succ.late_start - l_lag)
 							end
 						end
 						l_lf := l_min_lf
-						l_ls := l_lf - l_activity.duration
+						l_ls := l_lf - al_l_activity.duration
 					end
-					l_activity.set_schedule (l_activity.early_start, l_activity.early_finish, l_ls, l_lf, 0, False)
+					al_l_activity.set_schedule (al_l_activity.early_start, al_l_activity.early_finish, l_ls, l_lf, 0, False)
 				end
 				i := i - 1
 			end

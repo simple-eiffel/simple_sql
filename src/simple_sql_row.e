@@ -278,7 +278,7 @@ feature -- UTF-8 Validation (simple_encoding integration)
 				Result := True
 			elseif attached {READABLE_STRING_GENERAL} column_value (a_name) as al_l_str then
 				create l_detector.make
-				Result := l_detector.is_valid_utf8 (l_str.to_string_8)
+				Result := l_detector.is_valid_utf8 (al_l_str.to_string_8)
 			else
 				Result := True -- Non-string values are considered valid
 			end
@@ -316,7 +316,7 @@ feature -- UTF-8 Validation (simple_encoding integration)
 			if attached {READABLE_STRING_GENERAL} column_value (a_name) as al_l_str then
 				create l_detector.make
 				if attached l_detector.detect_encoding (al_l_str.to_string_8) as al_l_enc then
-					Result := l_enc.to_string_8
+					Result := al_l_enc.to_string_8
 				else
 					Result := "UNKNOWN"
 				end

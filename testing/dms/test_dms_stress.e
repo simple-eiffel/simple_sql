@@ -152,7 +152,7 @@ feature -- Test routines: High Volume
 				l_doc := l_app.create_document (l_user.id, l_root.id, "Tagged Doc", "Content")
 
 				from i := 1 until i > 30 loop
-					l_tag := l_app.create_tag (l_user.id, "tag" + i.out)
+					l_tag := l_app.create_tag (l_user.id, "l_tag" + i.out)
 					l_app.tag_document (l_doc.id, l_tag.id, l_user.id)
 					i := i + 1
 				end

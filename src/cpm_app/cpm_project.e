@@ -171,7 +171,7 @@ feature -- Output
 			Result.append (" days)")
 			if attached start_date as al_sd then
 				Result.append (" [Start: ")
-				Result.append (sd)
+				Result.append (al_sd)
 				Result.append ("]")
 			end
 		end

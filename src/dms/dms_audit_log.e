@@ -27,10 +27,10 @@ feature {NONE} -- Initialization
 			action := a_action.to_string_8
 			entity_type := a_entity_type.to_string_8
 			entity_id := a_entity_id
-			old_value_json := if attached a_old_value_json as al_o then o.to_string_8 else Void end
-			new_value_json := if attached a_new_value_json as al_n then n.to_string_8 else Void end
-			ip_address := if attached a_ip_address as al_ip then ip.to_string_8 else Void end
-			user_agent := if attached a_user_agent as al_ua then ua.to_string_8 else Void end
+			old_value_json := if attached a_old_value_json as al_o then al_o.to_string_8 else Void end
+			new_value_json := if attached a_new_value_json as al_n then al_n.to_string_8 else Void end
+			ip_address := if attached a_ip_address as al_ip then al_ip.to_string_8 else Void end
+			user_agent := if attached a_user_agent as al_ua then al_ua.to_string_8 else Void end
 			created_at := a_created_at.to_string_8
 		end
 

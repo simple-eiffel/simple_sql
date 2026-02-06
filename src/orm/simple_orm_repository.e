@@ -98,7 +98,7 @@ feature -- Query: All
 			create Result.make (l_list.count)
 			across l_list as ic loop
 				if attached {G} ic as al_l_entity then
-					Result.extend (l_entity)
+					Result.extend (al_l_entity)
 				end
 			end
 		end
@@ -114,7 +114,7 @@ feature -- Query: All
 			create Result.make (l_list.count)
 			across l_list as ic loop
 				if attached {G} ic as al_l_entity then
-					Result.extend (l_entity)
+					Result.extend (al_l_entity)
 				end
 			end
 		end
@@ -131,7 +131,7 @@ feature -- Query: All
 			create Result.make (l_list.count)
 			across l_list as ic loop
 				if attached {G} ic as al_l_entity then
-					Result.extend (l_entity)
+					Result.extend (al_l_entity)
 				end
 			end
 		ensure
@@ -146,8 +146,8 @@ feature -- Query: By ID
 			valid_id: a_id > 0
 		do
 			if attached orm.find_by_id (new_entity, a_id) as al_l_entity then
-				if attached {G} l_entity as al_l_result then
-					Result := l_result
+				if attached {G} al_l_entity as al_l_result then
+					Result := al_l_result
 				end
 			end
 		end
@@ -173,7 +173,7 @@ feature -- Query: Conditional
 			create Result.make (l_list.count)
 			across l_list as ic loop
 				if attached {G} ic as al_l_entity then
-					Result.extend (l_entity)
+					Result.extend (al_l_entity)
 				end
 			end
 		end
@@ -184,8 +184,8 @@ feature -- Query: Conditional
 			conditions_not_empty: not a_conditions.is_empty
 		do
 			if attached orm.find_first_where (new_entity, a_conditions) as al_l_entity then
-				if attached {G} l_entity as al_l_result then
-					Result := l_result
+				if attached {G} al_l_entity as al_l_result then
+					Result := al_l_result
 				end
 			end
 		end

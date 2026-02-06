@@ -138,7 +138,7 @@ feature -- Test routines: INSERT Tracking
 			l_db.execute ("INSERT INTO users VALUES (1, 'Alice', 30)")
 
 			l_result := l_audit.get_changes_for_record ("users", 1)
-			l_new_values := l_result.first.string_value ("new_values")
+			l_new_values := l_result.first.string_value ("l_new_values")
 
 			-- Parse JSON
 			create l_json
@@ -212,7 +212,7 @@ feature -- Test routines: UPDATE Tracking
 			l_result := l_audit.get_changes_by_operation ("users", "UPDATE")
 			assert_false ("has_update", l_result.is_empty)
 
-			l_audit_id := l_result.first.integer_value ("audit_id")
+			l_audit_id := l_result.first.integer_value ("l_audit_id")
 			l_changed := l_audit.get_changed_fields ("users", l_audit_id)
 
 			-- Only 'age' should have changed

@@ -70,8 +70,8 @@ feature -- Model Queries (for contracts)
 			)
 			from i := 1 until i > l_result.count loop
 				l_row := l_result [i]
-				l_old_values := l_row.string_value ("old_values")
-				l_new_values := l_row.string_value ("new_values")
+				l_old_values := l_row.string_value ("l_old_values")
+				l_new_values := l_row.string_value ("l_new_values")
 				create l_entry.make (
 					l_row.integer_64_value ("audit_id"),
 					l_row.integer_64_value ("record_id"),
@@ -99,11 +99,11 @@ feature -- Model Queries (for contracts)
 		do
 			create Result
 			l_result := database.query (
-				"SELECT name FROM sqlite_master WHERE type='table' AND name LIKE '%%_audit'"
+				"SELECT l_name FROM sqlite_master WHERE type='table' AND l_name LIKE '%%_audit'"
 			)
 			from i := 1 until i > l_result.count loop
 				l_row := l_result [i]
-				l_name := l_row.string_value ("name").to_string_8
+				l_name := l_row.string_value ("l_name").to_string_8
 				-- Extract original table name by removing "_audit" suffix
 				if l_name.count > 6 then
 					l_name := l_name.substring (1, l_name.count - 6)
@@ -149,8 +149,8 @@ feature -- Model Queries (for contracts)
 					local
 						l_seq: MML_SEQUENCE [AUDIT_ENTRY]
 					do
-						seq := model_record_changes (tbl) [rec_id]
-						Result := not seq.is_empty
+						l_seq := model_record_changes (tbl) [rec_id]
+						Result := not l_seq.is_empty
 					end (?, a_table))
 		end
 
@@ -413,12 +413,12 @@ feature -- Analysis
 					if not l_old.is_empty and not al_l_new.is_empty then
 						create l_json
 						l_old_val := l_json.deserialize (l_old)
-						l_new_val := l_json.deserialize (l_new)
+						l_new_val := l_json.deserialize (al_l_new)
 
 						if attached l_old_val as l_ov and then attached l_new_val as al_l_nv then
-							if l_ov.is_object and l_nv.is_object then
+							if l_ov.is_object and al_l_nv.is_object then
 								l_old_obj := l_ov.as_object
-								l_new_obj := l_nv.as_object
+								l_new_obj := al_l_nv.as_object
 								l_keys := l_old_obj.keys
 
 								-- Compare each field
@@ -432,7 +432,7 @@ feature -- Analysis
 
 									-- Check if values differ (simple string comparison)
 									if attached l_old_item as l_oi and then attached l_new_item as al_l_ni then
-										if not l_oi.to_json_string.same_string (l_ni.to_json_string) then
+										if not l_oi.to_json_string.same_string (al_l_ni.to_json_string) then
 											l_changed.extend (l_keys.item)
 										end
 									elseif (l_old_item = Void) /= (l_new_item = Void) then

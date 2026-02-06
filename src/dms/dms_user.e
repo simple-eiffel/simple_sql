@@ -32,7 +32,7 @@ feature {NONE} -- Initialization
 			end
 			created_at := a_created_at.to_string_8
 			updated_at := a_updated_at.to_string_8
-			deleted_at := if attached a_deleted_at as al_d then d.to_string_8 else Void end
+			deleted_at := if attached a_deleted_at as al_d then al_d.to_string_8 else Void end
 		ensure
 			id_set: id = a_id
 			username_set: username.same_string (a_username)

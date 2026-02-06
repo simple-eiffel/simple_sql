@@ -209,7 +209,7 @@ feature -- Location Operations
 			l_code: STRING_8
 		do
 			l_code := a_aisle + "-" + a_rack + "-" + a_shelf + "-" + a_bin
-			database.execute_with_args ("INSERT INTO locations (warehouse_id, code, aisle, rack, shelf, bin) VALUES (?, ?, ?, ?, ?, ?);",
+			database.execute_with_args ("INSERT INTO locations (warehouse_id, l_code, aisle, rack, shelf, bin) VALUES (?, ?, ?, ?, ?, ?);",
 				<<a_warehouse_id, l_code, a_aisle, a_rack, a_shelf, a_bin>>)
 			l_id := database.last_insert_rowid
 			create Result.make_new (a_warehouse_id, a_aisle, a_rack, a_shelf, a_bin)
@@ -272,14 +272,14 @@ feature -- Stock Operations (FRICTION ZONE)
 
 			if attached l_stock as al_s then
 				-- Update existing stock using increment_if (always succeeds when row exists)
-				if database.increment_if ("stock", "quantity", a_quantity, "id = ?", <<al_s.id>>) then
+				if database.increment_if ("l_stock", "quantity", a_quantity, "id = ?", <<al_s.id>>) then
 					-- Also increment version
-					database.execute_with_args ("UPDATE stock SET version = version + 1, updated_at = datetime('now') WHERE id = ?", <<al_s.id>>)
+					database.execute_with_args ("UPDATE l_stock SET version = version + 1, updated_at = datetime('now') WHERE id = ?", <<al_s.id>>)
 				end
 			else
 				-- Insert new stock record
 				database.execute_with_args (
-					"INSERT INTO stock (product_id, location_id, quantity, version) VALUES (?, ?, ?, 1);",
+					"INSERT INTO l_stock (product_id, location_id, quantity, version) VALUES (?, ?, ?, 1);",
 					<<a_product_id, a_location_id, a_quantity>>)
 			end
 
@@ -440,7 +440,7 @@ feature -- Reservation Operations (FRICTION ZONE)
 
 					-- Try to reserve with version check and availability check
 					database.execute_with_args (
-						"UPDATE stock SET reserved_quantity = reserved_quantity + ?, version = version + 1, updated_at = datetime('now') WHERE id = ? AND version = ? AND (quantity - reserved_quantity) >= ?;",
+						"UPDATE l_stock SET reserved_quantity = reserved_quantity + ?, l_version = l_version + 1, updated_at = datetime('now') WHERE l_id = ? AND l_version = ? AND (quantity - reserved_quantity) >= ?;",
 						<<a_quantity, s.id, l_version, a_quantity>>)
 					l_rows_affected := database.changes_count
 
@@ -471,14 +471,14 @@ feature -- Reservation Operations (FRICTION ZONE)
 			l_product_id, l_location_id: INTEGER_64
 			l_quantity: INTEGER
 		do
-			l_result := database.query_with_args ("SELECT product_id, location_id, quantity FROM reservations WHERE id = ?;", <<a_reservation_id>>)
+			l_result := database.query_with_args ("SELECT l_product_id, l_location_id, l_quantity FROM reservations WHERE id = ?;", <<a_reservation_id>>)
 			if not l_result.rows.is_empty then
-				l_product_id := l_result.rows.first.integer_64_value ("product_id")
-				l_location_id := l_result.rows.first.integer_64_value ("location_id")
-				l_quantity := l_result.rows.first.integer_value ("quantity")
+				l_product_id := l_result.rows.first.integer_64_value ("l_product_id")
+				l_location_id := l_result.rows.first.integer_64_value ("l_location_id")
+				l_quantity := l_result.rows.first.integer_value ("l_quantity")
 
 				database.begin_transaction
-				database.execute_with_args ("UPDATE stock SET reserved_quantity = reserved_quantity - ?, version = version + 1 WHERE product_id = ? AND location_id = ?;",
+				database.execute_with_args ("UPDATE stock SET reserved_quantity = reserved_quantity - ?, version = version + 1 WHERE l_product_id = ? AND l_location_id = ?;",
 					<<l_quantity, l_product_id, l_location_id>>)
 				database.execute_with_args ("DELETE FROM reservations WHERE id = ?;", <<a_reservation_id>>)
 				database.commit

@@ -310,21 +310,21 @@ feature {NONE} -- Implementation
 			if a_value = Void then
 				Result := "NULL"
 			elseif attached {INTEGER_64} a_value as al_l_int then
-				Result := l_int.out
+				Result := al_l_int.out
 			elseif attached {INTEGER_32} a_value as al_l_int32 then
-				Result := l_int32.out
+				Result := al_l_int32.out
 			elseif attached {INTEGER} a_value as al_l_int_native then
-				Result := l_int_native.out
+				Result := al_l_int_native.out
 			elseif attached {REAL_64} a_value as al_l_real then
-				Result := l_real.out
+				Result := al_l_real.out
 			elseif attached {BOOLEAN} a_value as al_l_bool then
-				if l_bool then
+				if al_l_bool then
 					Result := "1"
 				else
 					Result := "0"
 				end
 			elseif attached {READABLE_STRING_GENERAL} a_value as al_l_string then
-				Result := escaped_string (l_string)
+				Result := escaped_string (al_l_string)
 			else
 				Result := "NULL"
 			end

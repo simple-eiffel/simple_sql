@@ -316,7 +316,7 @@ feature {NONE} -- Error handling implementation
 			if attached internal_db.last_exception as al_l_exception then
 				l_code := al_l_exception.result_code
 				if attached al_l_exception.description as al_l_desc then
-					l_message := l_desc.to_string_32
+					l_message := al_l_desc.to_string_32
 				else
 					l_message := "Unknown error"
 				end
@@ -553,8 +553,8 @@ feature -- Additional Accessors
 		do
 			create l_result.make ("SELECT last_insert_rowid();", internal_db)
 			if not l_result.rows.is_empty and then attached l_result.rows.first as al_l_row then
-				if attached {INTEGER_64} l_row.item (1) as al_l_id then
-					Result := l_id
+				if attached {INTEGER_64} al_l_row.item (1) as al_l_id then
+					Result := al_l_id
 				end
 			end
 		end
@@ -864,18 +864,18 @@ feature {NONE} -- Implementation
 		do
 			from i := a_args.lower until i > a_args.upper loop
 				if attached a_args.item (i) as al_l_arg then
-					if attached {INTEGER_64} l_arg as al_l_int64 then
-						a_stmt.bind_integer (i - a_args.lower + 1, l_int64)
-					elseif attached {INTEGER_32} l_arg as al_l_int32 then
-						a_stmt.bind_integer (i - a_args.lower + 1, l_int32.to_integer_64)
-					elseif attached {REAL_64} l_arg as al_l_real then
-						a_stmt.bind_real (i - a_args.lower + 1, l_real)
-					elseif attached {READABLE_STRING_GENERAL} l_arg as al_l_str then
-						a_stmt.bind_text (i - a_args.lower + 1, l_str)
-					elseif attached {BOOLEAN} l_arg as al_l_bool then
-						a_stmt.bind_integer (i - a_args.lower + 1, if l_bool then 1 else 0 end)
-					elseif attached {MANAGED_POINTER} l_arg as al_l_blob then
-						a_stmt.bind_blob (i - a_args.lower + 1, l_blob)
+					if attached {INTEGER_64} al_l_arg as al_l_int64 then
+						a_stmt.bind_integer (i - a_args.lower + 1, al_l_int64)
+					elseif attached {INTEGER_32} al_l_arg as al_l_int32 then
+						a_stmt.bind_integer (i - a_args.lower + 1, al_l_int32.to_integer_64)
+					elseif attached {REAL_64} al_l_arg as al_l_real then
+						a_stmt.bind_real (i - a_args.lower + 1, al_l_real)
+					elseif attached {READABLE_STRING_GENERAL} al_l_arg as al_l_str then
+						a_stmt.bind_text (i - a_args.lower + 1, al_l_str)
+					elseif attached {BOOLEAN} al_l_arg as al_l_bool then
+						a_stmt.bind_integer (i - a_args.lower + 1, if al_l_bool then 1 else 0 end)
+					elseif attached {MANAGED_POINTER} al_l_arg as al_l_blob then
+						a_stmt.bind_blob (i - a_args.lower + 1, al_l_blob)
 					end
 				else
 					a_stmt.bind_null (i - a_args.lower + 1)

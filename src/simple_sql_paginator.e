@@ -187,7 +187,7 @@ feature {NONE} -- Implementation
 			-- Column name to use for soft delete.
 		do
 			if attached soft_delete_column as al_c then
-				Result := c
+				Result := al_c
 			else
 				Result := "deleted_at"
 			end

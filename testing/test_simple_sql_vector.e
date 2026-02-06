@@ -278,7 +278,7 @@ feature -- Test routines: SIMPLE_SQL_VECTOR_STORE CRUD
 			refute ("no_error", l_store.has_error)
 
 			l_retrieved := l_store.find_by_id (l_id)
-			assert_attached ("retrieved", l_retrieved)
+			assert_attached ("l_retrieved", l_retrieved)
 			if attached l_retrieved as l_r then
 				assert_true ("same_values", l_vec.is_equal (l_r))
 			end

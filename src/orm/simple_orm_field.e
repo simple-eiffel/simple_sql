@@ -200,20 +200,20 @@ feature -- SQL Generation
 			end
 			if attached default_value as al_dv then
 				Result.append (" DEFAULT ")
-				if attached {STRING} dv as al_s then
+				if attached {STRING} al_dv as al_s then
 					Result.append ("'")
-					Result.append (s)
+					Result.append (al_s)
 					Result.append ("'")
-				elseif attached {INTEGER} dv as al_i then
-					Result.append_integer (i)
-				elseif attached {BOOLEAN} dv as al_b then
-					if b then
+				elseif attached {INTEGER} al_dv as al_i then
+					Result.append_integer (al_i)
+				elseif attached {BOOLEAN} al_dv as al_b then
+					if al_b then
 						Result.append ("1")
 					else
 						Result.append ("0")
 					end
 				else
-					Result.append (dv.out)
+					Result.append (al_dv.out)
 				end
 			end
 		end

@@ -89,7 +89,7 @@ feature -- Test routines: High Volume
 			l_cats: ARRAYED_LIST [HABIT_CATEGORY]
 		do
 			create l_app.make
-			l_user := l_app.create_user ("manycats", "cats@example.com", "UTC")
+			l_user := l_app.create_user ("manycats", "l_cats@example.com", "UTC")
 
 			from i := 1 until i > 20 loop
 				l_ignored := l_app.create_category (l_user.id, "Category " + i.out)
@@ -167,9 +167,9 @@ feature -- Test routines: Complex Scenarios
 			create l_app.make
 
 			-- Create three users
-			l_alice := l_app.create_user ("alice", "alice@example.com", "America/New_York")
-			l_bob := l_app.create_user ("bob", "bob@example.com", "Europe/London")
-			l_charlie := l_app.create_user ("charlie", "charlie@example.com", "Asia/Tokyo")
+			l_alice := l_app.create_user ("l_alice", "l_alice@example.com", "America/New_York")
+			l_bob := l_app.create_user ("l_bob", "l_bob@example.com", "Europe/London")
+			l_charlie := l_app.create_user ("l_charlie", "l_charlie@example.com", "Asia/Tokyo")
 
 			-- Each has a habit
 			l_alice_habit := l_app.create_habit (l_alice.id, "Alice Habit", "daily")

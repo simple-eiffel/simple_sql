@@ -399,13 +399,13 @@ feature -- Test routines: Integration
 		do
 			-- Store JSON in table
 			db.execute ("CREATE TABLE documents (data TEXT)")
-			db.execute ("INSERT INTO documents VALUES ('{%"user%":{%"name%":%"Alice%",%"age%":30}}')")
+			db.execute ("INSERT INTO documents VALUES ('{%"user%":{%"l_name%":%"Alice%",%"age%":30}}')")
 
 			-- Query using JSON path
-			l_result := db.query ("SELECT json_extract(data, '$.user.name') as name FROM documents")
+			l_result := db.query ("SELECT json_extract(data, '$.user.name') as l_name FROM documents")
 			assert_false ("result_not_empty", l_result.is_empty)
 
-			l_name := l_result.first.string_value ("name")
+			l_name := l_result.first.string_value ("l_name")
 			assert_true ("name_extracted", l_name.has_substring ("Alice"))
 		end
 

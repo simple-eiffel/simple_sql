@@ -329,7 +329,7 @@ feature -- Searching
 				" WHERE " + a_table.to_string_8 + " MATCH '" + escaped_fts_query (a_query) + "'"
 			)
 			if not l_result.is_empty and then attached l_result.first as al_l_row then
-				Result := l_row.integer_value ("cnt")
+				Result := al_l_row.integer_value ("cnt")
 			end
 		end
 
@@ -359,13 +359,13 @@ feature {NONE} -- Implementation
 			-- Check if query contains apostrophe
 			across a_query as ic loop
 				if ic.item = '%'' then
-					has_apostrophe := True
+					l_has_apostrophe := True
 				end
 			end
 
 			create Result.make (a_query.count + 10)
 
-			if has_apostrophe then
+			if l_has_apostrophe then
 				-- Use double-quote phrase matching for apostrophes
 				Result.append_character ('"')
 				from i := 1 until i > a_query.count loop
@@ -406,13 +406,13 @@ feature {NONE} -- Implementation
 			if a_value = Void then
 				Result := "NULL"
 			elseif attached {READABLE_STRING_GENERAL} a_value as al_l_str then
-				Result := "'" + escaped_string (l_str) + "'"
+				Result := "'" + escaped_string (al_l_str) + "'"
 			elseif attached {INTEGER_64} a_value as al_l_int then
-				Result := l_int.out
+				Result := al_l_int.out
 			elseif attached {INTEGER_32} a_value as al_l_int then
-				Result := l_int.out
+				Result := al_l_int.out
 			elseif attached {REAL_64} a_value as al_l_real then
-				Result := l_real.out
+				Result := al_l_real.out
 			else
 				Result := "'" + escaped_string (a_value.out) + "'"
 			end
@@ -444,7 +444,7 @@ feature {NONE} -- Implementation
 		do
 			l_result := database.query ("PRAGMA table_info('" + a_table.to_string_8 + "')")
 			across l_result.rows as ic loop
-				l_name := ic.string_value ("name")
+				l_name := ic.string_value ("l_name")
 				if l_name.same_string (a_column.to_string_32) then
 					Result := ic.integer_value ("cid")
 				end

@@ -486,7 +486,7 @@ feature -- Execution
 				if attached l_result.rows.first as al_l_row then
 					-- Use item(1) to get the first column value, then cast to INTEGER_64
 					if attached {INTEGER_64} al_l_row.item (1) as al_l_count then
-						Result := l_count.to_integer_32
+						Result := al_l_count.to_integer_32
 					end
 				end
 			end
@@ -739,7 +739,7 @@ feature {NONE} -- Implementation
 			-- Column name to use for soft delete filtering.
 		do
 			if attached soft_delete_column as al_c then
-				Result := c
+				Result := al_c
 			else
 				Result := "deleted_at"
 			end

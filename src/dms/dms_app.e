@@ -337,7 +337,7 @@ feature -- User Management (CRUD Boilerplate Example #1)
 				l_user.set_updated_at (l_result.first.string_value ("updated_at").to_string_8)
 			end
 			-- Log audit
-			log_audit (l_user.id, "create", "user", l_user.id, Void, user_to_json (l_user))
+			log_audit (l_user.id, "create", "l_user", l_user.id, Void, user_to_json (l_user))
 			-- Create root folder for user (discard result)
 			if attached create_root_folder (l_user.id) as al_l_root then
 				-- Root folder created
@@ -395,7 +395,7 @@ feature -- User Management (CRUD Boilerplate Example #1)
 			l_old_json: STRING_8
 		do
 			if attached find_user (a_user.id) as al_l_old then
-				l_old_json := user_to_json (l_old)
+				l_old_json := user_to_json (al_l_old)
 			else
 				l_old_json := "{}"
 			end
@@ -507,7 +507,7 @@ feature -- Folder Management (CRUD Boilerplate Example #2 + Hierarchy)
 				l_folder.set_created_at (l_result.first.string_value ("created_at").to_string_8)
 				l_folder.set_updated_at (l_result.first.string_value ("updated_at").to_string_8)
 			end
-			log_audit (a_owner_id, "create", "folder", l_folder.id, Void, Void)
+			log_audit (a_owner_id, "create", "l_folder", l_folder.id, Void, Void)
 			Result := l_folder
 		ensure
 			result_saved: not Result.is_new
@@ -633,9 +633,9 @@ feature -- Folder Management (CRUD Boilerplate Example #2 + Hierarchy)
 			l_result: SIMPLE_SQL_RESULT
 		do
 			-- Get folder path
-			l_result := database.query_with_args ("SELECT path FROM folders WHERE id = ?", <<a_folder_id>>)
+			l_result := database.query_with_args ("SELECT l_path FROM folders WHERE id = ?", <<a_folder_id>>)
 			if not l_result.is_empty then
-				l_path := l_result.first.string_value ("path").to_string_8
+				l_path := l_result.first.string_value ("l_path").to_string_8
 
 				-- Soft delete folder
 				database.execute_with_args (
@@ -645,13 +645,13 @@ feature -- Folder Management (CRUD Boilerplate Example #2 + Hierarchy)
 
 				-- Soft delete all subfolders
 				database.execute_with_args (
-					"UPDATE folders SET deleted_at = datetime('now') WHERE path LIKE ?",
+					"UPDATE folders SET deleted_at = datetime('now') WHERE l_path LIKE ?",
 					<<l_path + "/%%">>
 				)
 
 				-- Soft delete all documents in folder and subfolders
 				database.execute_with_args (
-					"UPDATE documents SET deleted_at = datetime('now') WHERE folder_id IN (SELECT id FROM folders WHERE path LIKE ? OR id = ?)",
+					"UPDATE documents SET deleted_at = datetime('now') WHERE folder_id IN (SELECT id FROM folders WHERE l_path LIKE ? OR id = ?)",
 					<<l_path + "/%%", a_folder_id>>
 				)
 
@@ -764,7 +764,7 @@ feature -- Document Management (CRUD Boilerplate Example #3 + Versioning)
 		do
 			-- Get current state for audit
 			if attached find_document (a_document_id) as al_l_old then
-				l_old_json := document_to_json (l_old)
+				l_old_json := document_to_json (al_l_old)
 				l_new_version := al_l_old.current_version + 1
 			else
 				l_old_json := "{}"
@@ -927,7 +927,7 @@ feature -- Document Version Management
 			l_version := find_document_version (a_document_id, a_version_number)
 			if attached l_version then
 				update_document (a_document_id, l_version.title, l_version.content, a_restored_by,
-					"Restored from version " + a_version_number.out)
+					"Restored from l_version " + a_version_number.out)
 			end
 		end
 
@@ -968,7 +968,7 @@ feature -- Comment Management (N+1 Problem Exposure)
 				l_comment.set_created_at (l_result.first.string_value ("created_at").to_string_8)
 				l_comment.set_updated_at (l_result.first.string_value ("updated_at").to_string_8)
 			end
-			log_audit (a_user_id, "comment", "document", a_document_id, Void, Void)
+			log_audit (a_user_id, "l_comment", "document", a_document_id, Void, Void)
 			Result := l_comment
 		ensure
 			result_saved: not Result.is_new
@@ -1193,7 +1193,7 @@ feature -- Sharing (JSON Permissions)
 			if not l_result.is_empty then
 				l_share.set_created_at (l_result.first.string_value ("created_at").to_string_8)
 			end
-			log_audit (a_owner_id, "share", "document", a_document_id, Void, a_permissions_json)
+			log_audit (a_owner_id, "l_share", "document", a_document_id, Void, a_permissions_json)
 			Result := l_share
 		ensure
 			result_saved: not Result.is_new
@@ -1287,12 +1287,12 @@ feature -- Full-Text Search (FTS5)
 		do
 			create Result.make (20)
 			l_result := database.query_with_args (
-				"SELECT d.*, snippet(documents_fts, 1, '<b>', '</b>', '...', 32) as snippet FROM documents d JOIN documents_fts fts ON d.id = fts.rowid WHERE documents_fts MATCH ? AND d.owner_id = ? AND d.deleted_at IS NULL ORDER BY rank",
+				"SELECT d.*, l_snippet(documents_fts, 1, '<b>', '</b>', '...', 32) as l_snippet FROM documents d JOIN documents_fts fts ON d.id = fts.rowid WHERE documents_fts MATCH ? AND d.owner_id = ? AND d.deleted_at IS NULL ORDER BY rank",
 				<<a_query, a_owner_id>>
 			)
 			across l_result.rows as ic loop
 				l_doc := row_to_document (ic)
-				l_snippet := ic.string_value ("snippet").to_string_8
+				l_snippet := ic.string_value ("l_snippet").to_string_8
 				Result.extend ([l_doc, l_snippet])
 			end
 		end

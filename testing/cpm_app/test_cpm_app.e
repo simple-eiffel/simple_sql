@@ -445,7 +445,7 @@ feature -- Test routines: Statistics
 
 			l_start := l_app.add_activity (l_project.id, "START", "Start", 0)
 			l_a := l_app.add_activity (l_project.id, "A", "Critical", 10)
-			l_b := l_app.add_activity (l_project.id, "B", "Non-critical", 5)
+			l_b := l_app.add_activity (l_project.id, "B", "Non-l_critical", 5)
 			l_finish := l_app.add_activity (l_project.id, "FINISH", "Finish", 0)
 
 			l_ignored := l_app.add_dependency (l_start.id, l_a.id)

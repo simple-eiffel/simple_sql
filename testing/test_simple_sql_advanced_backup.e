@@ -523,7 +523,7 @@ feature -- BLOB Round-Trip Tests
 			l_db.close
 
 			-- Verify CSV contains blob: prefix with hex data
-			assert_string_contains ("has_blob_prefix", l_csv, "blob:ABCD")
+			assert_string_contains ("has_blob_prefix", l_csv, "l_blob:ABCD")
 		end
 
 	test_import_csv_with_blob
@@ -542,7 +542,7 @@ feature -- BLOB Round-Trip Tests
 			l_db.execute ("CREATE TABLE blobs (id TEXT, data BLOB)")
 
 			-- CSV with blob: encoded data (0xDE, 0xAD, 0xBE, 0xEF)
-			l_csv := "id,data%N1,blob:DEADBEEF"
+			l_csv := "id,data%N1,l_blob:DEADBEEF"
 
 			l_import := backup_helper.importer (l_db)
 			l_import.csv_string_to_table (l_csv, "blobs")

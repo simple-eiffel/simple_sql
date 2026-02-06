@@ -525,7 +525,7 @@ feature -- Output
 			Result.append (title)
 			if attached due_date as al_dd then
 				Result.append (" [Due: ")
-				Result.append (dd)
+				Result.append (al_dd)
 				Result.append ("]")
 			end
 		end

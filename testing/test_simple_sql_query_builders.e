@@ -245,7 +245,7 @@ feature -- Test routines: INSERT Builder
 			l_id: INTEGER_64
 		do
 			create l_db.make_memory
-			l_db.execute ("CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT)")
+			l_db.execute ("CREATE TABLE users (l_id INTEGER PRIMARY KEY, name TEXT)")
 
 			l_id := l_db.insert_builder.into ("users").set ("name", "Alice").execute_returning_id
 			assert_equal ("first_id", {INTEGER_64} 1, l_id)

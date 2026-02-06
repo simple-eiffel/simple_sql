@@ -124,7 +124,7 @@ feature -- Category Management
 			create l_cat.make_new (a_user_id, a_name)
 			l_cat.set_sort_order (l_sort_order)
 			database.execute_with_args (
-				"INSERT INTO categories (user_id, name, color, icon, sort_order) VALUES (?, ?, ?, ?, ?)",
+				"INSERT INTO categories (user_id, name, color, icon, l_sort_order) VALUES (?, ?, ?, ?, ?)",
 				<<a_user_id, a_name, l_cat.color, l_cat.icon, l_sort_order>>
 			)
 			l_cat.set_id (database.last_insert_rowid)
@@ -148,7 +148,7 @@ feature -- Category Management
 			l_sort_order := next_category_sort_order (a_user_id)
 			create l_cat.make (0, a_user_id, a_name, a_color, a_icon, l_sort_order)
 			database.execute_with_args (
-				"INSERT INTO categories (user_id, name, color, icon, sort_order) VALUES (?, ?, ?, ?, ?)",
+				"INSERT INTO categories (user_id, name, color, icon, l_sort_order) VALUES (?, ?, ?, ?, ?)",
 				<<a_user_id, a_name, a_color, a_icon, l_sort_order>>
 			)
 			l_cat.set_id (database.last_insert_rowid)

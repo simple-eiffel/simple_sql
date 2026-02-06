@@ -41,7 +41,7 @@ feature -- Test routines: User Management
 			l_user := l_app.create_user ("findme", "find@example.com", "Find Me")
 
 			l_found := l_app.find_user (l_user.id)
-			assert ("found", attached l_found)
+			assert ("l_found", attached l_found)
 			if attached l_found as f then
 				assert_equal ("same_username", l_user.username, f.username)
 			end
@@ -170,7 +170,7 @@ feature -- Test routines: Folder Management
 			l_folder: DMS_FOLDER
 		do
 			create l_app.make
-			l_user := l_app.create_user ("folderuser", "folder@example.com", "Folder User")
+			l_user := l_app.create_user ("folderuser", "l_folder@example.com", "Folder User")
 
 			l_root := l_app.user_root_folder (l_user.id)
 			assert ("has_root", attached l_root)
@@ -218,7 +218,7 @@ feature -- Test routines: Folder Management
 			l_children: ARRAYED_LIST [DMS_FOLDER]
 		do
 			create l_app.make
-			l_user := l_app.create_user ("childrenuser", "children@example.com", "Children User")
+			l_user := l_app.create_user ("childrenuser", "l_children@example.com", "Children User")
 
 			if attached l_app.user_root_folder (l_user.id) as l_root then
 				l_ignored := l_app.create_folder (l_user.id, l_root.id, "Folder1")
@@ -313,7 +313,7 @@ feature -- Test routines: Document Management
 			l_doc: DMS_DOCUMENT
 		do
 			create l_app.make
-			l_user := l_app.create_user ("docuser", "doc@example.com", "Doc User")
+			l_user := l_app.create_user ("docuser", "l_doc@example.com", "Doc User")
 
 			if attached l_app.user_root_folder (l_user.id) as l_root then
 				l_doc := l_app.create_document (l_user.id, l_root.id, "My Document", "This is the content.")
@@ -409,7 +409,7 @@ feature -- Test routines: Document Management
 			l_versions: ARRAYED_LIST [DMS_DOCUMENT_VERSION]
 		do
 			create l_app.make
-			l_user := l_app.create_user ("versionsuser", "versions@example.com", "Versions User")
+			l_user := l_app.create_user ("versionsuser", "l_versions@example.com", "Versions User")
 
 			if attached l_app.user_root_folder (l_user.id) as l_root then
 				l_doc := l_app.create_document (l_user.id, l_root.id, "Multi Version", "Version 1")
@@ -529,7 +529,7 @@ feature -- Test routines: Comments
 			l_comment: DMS_COMMENT
 		do
 			create l_app.make
-			l_user := l_app.create_user ("commentuser", "comment@example.com", "Comment User")
+			l_user := l_app.create_user ("commentuser", "l_comment@example.com", "Comment User")
 
 			if attached l_app.user_root_folder (l_user.id) as l_root then
 				l_doc := l_app.create_document (l_user.id, l_root.id, "Commented Doc", "Content")
@@ -551,12 +551,12 @@ feature -- Test routines: Comments
 			l_comment, l_reply: DMS_COMMENT
 		do
 			create l_app.make
-			l_user := l_app.create_user ("replyuser", "reply@example.com", "Reply User")
+			l_user := l_app.create_user ("replyuser", "l_reply@example.com", "Reply User")
 
 			if attached l_app.user_root_folder (l_user.id) as l_root then
 				l_doc := l_app.create_document (l_user.id, l_root.id, "Reply Doc", "Content")
-				l_comment := l_app.add_comment (l_doc.id, l_user.id, "Original comment")
-				l_reply := l_app.reply_to_comment (l_doc.id, l_user.id, l_comment.id, "This is a reply")
+				l_comment := l_app.add_comment (l_doc.id, l_user.id, "Original l_comment")
+				l_reply := l_app.reply_to_comment (l_doc.id, l_user.id, l_comment.id, "This is a l_reply")
 
 				assert ("reply_saved", not l_reply.is_new)
 				assert ("is_reply", l_reply.is_reply)
@@ -602,7 +602,7 @@ feature -- Test routines: Comments
 
 			if attached l_app.user_root_folder (l_user.id) as l_root then
 				l_doc := l_app.create_document (l_user.id, l_root.id, "Eager Doc", "Content")
-				l_ignored := l_app.add_comment (l_doc.id, l_user.id, "Comment with user")
+				l_ignored := l_app.add_comment (l_doc.id, l_user.id, "Comment with l_user")
 
 				l_comments := l_app.document_comments_with_users (l_doc.id)
 				assert_equal ("one_comment", 1, l_comments.count)
@@ -646,7 +646,7 @@ feature -- Test routines: Tags
 			l_tag: DMS_TAG
 		do
 			create l_app.make
-			l_user := l_app.create_user ("taguser", "tag@example.com", "Tag User")
+			l_user := l_app.create_user ("taguser", "l_tag@example.com", "Tag User")
 			l_tag := l_app.create_tag (l_user.id, "important")
 
 			assert ("tag_saved", not l_tag.is_new)

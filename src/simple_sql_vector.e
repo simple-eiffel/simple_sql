@@ -170,12 +170,12 @@ feature -- Mathematical operations
 			i: INTEGER
 		do
 			from i := 1 until i > dimension loop
-				sum := sum + values [i] * values [i]
+				l_sum := l_sum + values [i] * values [i]
 				i := i + 1
 			variant
 				dimension - i + 1
 			end
-			Result := {DOUBLE_MATH}.sqrt (sum)
+			Result := {DOUBLE_MATH}.sqrt (l_sum)
 		ensure
 			non_negative: Result >= 0.0
 			zero_iff_zero_vector: (Result = 0.0) = is_zero
@@ -205,17 +205,17 @@ feature -- Mathematical operations
 			l_norm_values: ARRAY [REAL_64]
 			i: INTEGER
 		do
-			mag := magnitude
-			create norm_values.make_filled (0.0, 1, dimension)
-			if mag > 0.0 then
+			l_mag := magnitude
+			create l_norm_values.make_filled (0.0, 1, dimension)
+			if l_mag > 0.0 then
 				from i := 1 until i > dimension loop
-					norm_values [i] := values [i] / mag
+					l_norm_values [i] := values [i] / l_mag
 					i := i + 1
 				variant
 					dimension - i + 1
 				end
 			end
-			create Result.make_from_array (norm_values)
+			create Result.make_from_array (l_norm_values)
 		ensure
 			same_dimension: Result.dimension = dimension
 			unit_magnitude_when_nonzero: magnitude > 0.0 implies (Result.magnitude - 1.0).abs < 1.0e-10
@@ -230,14 +230,14 @@ feature -- Mathematical operations
 			l_result_values: ARRAY [REAL_64]
 			i: INTEGER
 		do
-			create result_values.make_filled (0.0, 1, dimension)
+			create l_result_values.make_filled (0.0, 1, dimension)
 			from i := 1 until i > dimension loop
-				result_values [i] := values [i] + a_other.values [i]
+				l_result_values [i] := values [i] + a_other.values [i]
 				i := i + 1
 			variant
 				dimension - i + 1
 			end
-			create Result.make_from_array (result_values)
+			create Result.make_from_array (l_result_values)
 		ensure
 			same_dimension: Result.dimension = dimension
 			commutative: Result ~ a_other.add (Current)
@@ -251,14 +251,14 @@ feature -- Mathematical operations
 			l_result_values: ARRAY [REAL_64]
 			i: INTEGER
 		do
-			create result_values.make_filled (0.0, 1, dimension)
+			create l_result_values.make_filled (0.0, 1, dimension)
 			from i := 1 until i > dimension loop
-				result_values [i] := values [i] - a_other.values [i]
+				l_result_values [i] := values [i] - a_other.values [i]
 				i := i + 1
 			variant
 				dimension - i + 1
 			end
-			create Result.make_from_array (result_values)
+			create Result.make_from_array (l_result_values)
 		ensure
 			same_dimension: Result.dimension = dimension
 			self_minus_self_is_zero: a_other ~ Current implies Result.is_zero
@@ -273,14 +273,14 @@ feature -- Mathematical operations
 			l_result_values: ARRAY [REAL_64]
 			i: INTEGER
 		do
-			create result_values.make_filled (0.0, 1, dimension)
+			create l_result_values.make_filled (0.0, 1, dimension)
 			from i := 1 until i > dimension loop
-				result_values [i] := values [i] * a_factor
+				l_result_values [i] := values [i] * a_factor
 				i := i + 1
 			variant
 				dimension - i + 1
 			end
-			create Result.make_from_array (result_values)
+			create Result.make_from_array (l_result_values)
 		ensure
 			same_dimension: Result.dimension = dimension
 			scale_by_zero_is_zero: a_factor = 0.0 implies Result.is_zero

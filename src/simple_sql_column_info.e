@@ -149,7 +149,7 @@ feature -- Output
 			end
 			if attached default_value as al_l_default then
 				Result.append (" DEFAULT ")
-				Result.append (l_default)
+				Result.append (al_l_default)
 			end
 		end
 

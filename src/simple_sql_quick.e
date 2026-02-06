@@ -126,12 +126,12 @@ feature -- Simple Queries
 		do
 			create Result.make (10)
 			if attached database as al_db then
-				res := al_db.run_query (a_sql)
-				across res.rows as row loop
-					create l_row.make (row.count)
-					from i := 1 until i > row.count loop
-						if attached row [i] as al_val then
-							l_row.put (val, row.column_name (i))
+				l_res := al_db.run_query (a_sql)
+				across l_res.rows as l_row loop
+					create l_row.make (l_row.count)
+					from i := 1 until i > l_row.count loop
+						if attached l_row [i] as al_val then
+							l_row.put (al_val, l_row.column_name (i))
 						end
 						i := i + 1
 					end
@@ -152,9 +152,9 @@ feature -- Simple Queries
 			l_res: SIMPLE_SQL_RESULT
 		do
 			if attached database as al_db then
-				res := al_db.run_query (a_sql)
-				if not res.rows.is_empty and then attached res.rows.first as al_row then
-					Result := row [1]
+				l_res := al_db.run_query (a_sql)
+				if not l_res.rows.is_empty and then attached l_res.rows.first as al_row then
+					Result := al_row [1]
 				end
 			end
 		end

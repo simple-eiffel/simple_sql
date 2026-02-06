@@ -56,9 +56,9 @@ feature {NONE} -- Workload Phases
 		do
 			print ("  Creating warehouses...%N")
 			from i := 1 until i > 5 loop
-				w := wms.create_warehouse ("WH" + i.out, "Warehouse " + i.out)
+				l_w := wms.create_warehouse ("WH" + i.out, "Warehouse " + i.out)
 				if i = 1 then
-					warehouse_id := w.id
+					warehouse_id := l_w.id
 				end
 				i := i + 1
 			end
@@ -73,8 +73,8 @@ feature {NONE} -- Workload Phases
 			print ("  Creating products...%N")
 			create product_ids.make (100)
 			from i := 1 until i > 100 loop
-				p := wms.create_product ("SKU" + i.out.to_string_8.to_string_8, "Product " + i.out, "EA")
-				product_ids.extend (p.id)
+				l_p := wms.create_product ("SKU" + i.out.to_string_8.to_string_8, "Product " + i.out, "EA")
+				product_ids.extend (l_p.id)
 				i := i + 1
 			end
 		end
@@ -91,12 +91,12 @@ feature {NONE} -- Workload Phases
 				from rack := 1 until rack > 4 loop
 					from shelf := 1 until shelf > 5 loop
 						from bin := 1 until bin > 2 loop
-							loc := wms.create_location (warehouse_id,
+							l_loc := wms.create_location (warehouse_id,
 								"A" + aisle.out,
 								"R" + rack.out,
 								"S" + shelf.out,
 								"B" + bin.out)
-							location_ids.extend (loc.id)
+							location_ids.extend (l_loc.id)
 							bin := bin + 1
 						end
 						shelf := shelf + 1
@@ -123,7 +123,7 @@ feature {NONE} -- Workload Phases
 				-- Receive at 3 different locations per product
 				from j := 1 until j > 3 loop
 					loc_idx := ((i * 7 + j * 13) \\ location_ids.count) + 1
-					success := wms.receive_stock (product_id, location_ids [loc_idx], 100 + (i * j), "RCV-" + i.out + "-" + j.out, 1)
+					l_success := wms.receive_stock (product_id, location_ids [loc_idx], 100 + (i * j), "RCV-" + i.out + "-" + j.out, 1)
 					j := j + 1
 				end
 				i := i + 1
@@ -136,7 +136,7 @@ feature {NONE} -- Workload Phases
 				from_loc := location_ids [((i * 5) \\ location_ids.count) + 1]
 				to_loc := location_ids [((i * 7 + 1) \\ location_ids.count) + 1]
 				if from_loc /= to_loc then
-					success := wms.transfer_stock (product_id, from_loc, to_loc, 10, "TRF-" + i.out, 1)
+					l_success := wms.transfer_stock (product_id, from_loc, to_loc, 10, "TRF-" + i.out, 1)
 				end
 				i := i + 1
 			end
@@ -152,24 +152,24 @@ feature {NONE} -- Workload Phases
 			l_reservation_ids: ARRAYED_LIST [INTEGER_64]
 		do
 			print ("  Running reservation operations...%N")
-			create reservation_ids.make (30)
+			create l_reservation_ids.make (30)
 
 			-- Create reservations
 			print ("    Creating reservations...%N")
 			from i := 1 until i > 30 loop
-				product_id := product_ids [((i * 11) \\ product_ids.count) + 1]
+				l_product_id := product_ids [((i * 11) \\ product_ids.count) + 1]
 				loc_idx := ((i * 13) \\ location_ids.count) + 1
-				res := wms.reserve_stock (product_id, location_ids [loc_idx], 5, "ORD-" + i.out, 1, 60)
-				if attached res then
-					reservation_ids.extend (res.id)
+				l_res := wms.reserve_stock (l_product_id, location_ids [loc_idx], 5, "ORD-" + i.out, 1, 60)
+				if attached l_res then
+					l_reservation_ids.extend (l_res.id)
 				end
 				i := i + 1
 			end
 
 			-- Release half of them
 			print ("    Releasing reservations...%N")
-			from i := 1 until i > reservation_ids.count // 2 loop
-				success := wms.release_reservation (reservation_ids [i])
+			from i := 1 until i > l_reservation_ids.count // 2 loop
+				l_success := wms.release_reservation (l_reservation_ids [i])
 				i := i + 1
 			end
 
@@ -195,24 +195,24 @@ feature {NONE} -- Workload Phases
 			print ("  Running query operations...%N")
 
 			-- Query all warehouses
-			warehouses := wms.all_warehouses
+			l_warehouses := wms.all_warehouses
 
 			-- Query locations for each warehouse
-			across warehouses as wh loop
-				locations := wms.warehouse_locations (wh.id)
+			across l_warehouses as wh loop
+				l_locations := wms.warehouse_locations (wh.id)
 			end
 
 			-- Find operations
 			from i := 1 until i > 20 loop
-				w := wms.find_warehouse (i.to_integer_64)
-				p := wms.find_product (product_ids [((i * 3) \\ product_ids.count) + 1])
-				loc := wms.find_location (location_ids [((i * 5) \\ location_ids.count) + 1])
+				l_w := wms.find_warehouse (i.to_integer_64)
+				l_p := wms.find_product (product_ids [((i * 3) \\ product_ids.count) + 1])
+				l_loc := wms.find_location (location_ids [((i * 5) \\ location_ids.count) + 1])
 				i := i + 1
 			end
 
 			-- Stock queries
 			from i := 1 until i > 50 loop
-				stock_list := wms.stock_at_location (location_ids [((i * 7) \\ location_ids.count) + 1])
+				l_stock_list := wms.stock_at_location (location_ids [((i * 7) \\ location_ids.count) + 1])
 				total := wms.total_stock_for_product (product_ids [((i * 3) \\ product_ids.count) + 1])
 				available := wms.available_stock_for_product (product_ids [((i * 5) \\ product_ids.count) + 1])
 				i := i + 1
@@ -220,19 +220,19 @@ feature {NONE} -- Workload Phases
 
 			-- Movement queries
 			from i := 1 until i > 30 loop
-				movements := wms.movements_for_product (product_ids [((i * 11) \\ product_ids.count) + 1], 20)
-				movements := wms.movements_at_location (location_ids [((i * 13) \\ location_ids.count) + 1], 20)
+				l_movements := wms.movements_for_product (product_ids [((i * 11) \\ product_ids.count) + 1], 20)
+				l_movements := wms.movements_at_location (location_ids [((i * 13) \\ location_ids.count) + 1], 20)
 				i := i + 1
 			end
 
 			-- Reservation queries
 			from i := 1 until i > 20 loop
-				reservations := wms.reservations_for_order ("ORD-" + i.out)
+				l_reservations := wms.reservations_for_order ("ORD-" + i.out)
 				i := i + 1
 			end
 
 			-- Low stock report
-			low_stock := wms.products_below_min_stock
+			l_low_stock := wms.products_below_min_stock
 		end
 
 end

@@ -27,9 +27,9 @@ feature {NONE} -- Initialization
 			title := a_title.to_string_8
 			content := a_content.to_string_8
 			file_size := a_file_size
-			checksum := if attached a_checksum as al_c then c.to_string_8 else Void end
+			checksum := if attached a_checksum as al_c then al_c.to_string_8 else Void end
 			created_by := a_created_by
-			change_summary := if attached a_change_summary as al_s then s.to_string_8 else Void end
+			change_summary := if attached a_change_summary as al_s then al_s.to_string_8 else Void end
 			created_at := a_created_at.to_string_8
 		end
 
@@ -50,7 +50,7 @@ feature {NONE} -- Initialization
 			content := a_content.to_string_8
 			file_size := a_content.count.to_integer_64
 			created_by := a_created_by
-			change_summary := if attached a_change_summary as al_s then s.to_string_8 else Void end
+			change_summary := if attached a_change_summary as al_s then al_s.to_string_8 else Void end
 			created_at := ""
 		ensure
 			is_new: id = 0

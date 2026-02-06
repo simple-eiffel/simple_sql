@@ -221,7 +221,7 @@ feature -- Execution
 		do
 			execute
 			if attached last_result as al_l_result then
-				Result := l_result
+				Result := al_l_result
 			else
 				create Result.make_empty
 			end
@@ -420,17 +420,17 @@ feature {NONE} -- Implementation
 			if a_value = Void then
 				Result := "NULL"
 			elseif attached {INTEGER_64} a_value as al_l_int then
-				Result := l_int.out
+				Result := al_l_int.out
 			elseif attached {INTEGER_32} a_value as al_l_int32 then
-				Result := l_int32.out
+				Result := al_l_int32.out
 			elseif attached {REAL_64} a_value as al_l_real then
-				Result := l_real.out
+				Result := al_l_real.out
 			elseif attached {REAL_32} a_value as al_l_real32 then
-				Result := l_real32.out
+				Result := al_l_real32.out
 			elseif attached {MANAGED_POINTER} a_value as al_l_blob then
-				Result := blob_as_hex_literal (l_blob)
+				Result := blob_as_hex_literal (al_l_blob)
 			elseif attached {READABLE_STRING_GENERAL} a_value as al_l_string then
-				Result := escaped_string (l_string)
+				Result := escaped_string (al_l_string)
 			else
 				Result := "NULL"
 			end
