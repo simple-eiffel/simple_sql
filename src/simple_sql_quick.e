@@ -1,34 +1,26 @@
 note
 	description: "[
-		Zero-configuration SQLite facade for beginners.
+		Zero-configuration SQLite facade for beginners. Provides one-liner
+		database operations requiring no SQL knowledge for basic tasks.
+		Wraps SIMPLE_SQL_DATABASE with simplified method signatures using
+		string-based column/value tuples instead of parameterized queries.
 
-		One-liner database operations - no SQL knowledge required for basic tasks.
 		For full control, use SIMPLE_SQL_DATABASE directly.
 
-		Quick Start Examples:
+		Quick Start:
 			create db.make
-
-			-- Open/create a database file
 			db.open ("mydata.db")
-
-			-- Or use in-memory database
-			db.memory
-
-			-- Simple queries
+			db.create_table ("users", <<"id INTEGER PRIMARY KEY", "name TEXT">>)
+			db.insert ("users", <<["name", "alice"]>>)
 			across db.query ("SELECT * FROM users") as row loop
-				print (row.item ("name").out + "%N")
+				print (row.item ["name"].out)
 			end
-
-			-- Insert data with a table
-			db.insert ("users", <<"name", "alice">>, <<"age", "30">>)
-
-			-- Execute any SQL
-			db.execute ("UPDATE users SET age = 31 WHERE name = 'alice'")
-
-			-- Cleanup
 			db.close
 	]"
-	author: "Larry Rix"
+	purpose: "Simplified SQLite API for beginners with zero-configuration operations"
+	collaborators: "SIMPLE_SQL_DATABASE, SIMPLE_SQL_RESULT"
+	design_pattern: "Facade"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -42,6 +34,8 @@ feature {NONE} -- Initialization
 
 	make
 			-- Create quick SQL facade.
+		note
+			semantic_role: "Deferred initialization, actual database created on open/memory call"
 		do
 			-- Database created on open
 		end
@@ -50,6 +44,8 @@ feature -- Database Operations
 
 	open (a_path: STRING)
 			-- Open or create database file.
+		note
+			semantic_role: "Opens a persistent database file, the primary way to start working with Quick"
 		require
 			path_not_empty: not a_path.is_empty
 		do
@@ -60,6 +56,8 @@ feature -- Database Operations
 
 	memory
 			-- Create in-memory database (lost when closed).
+		note
+			semantic_role: "Creates an ephemeral in-memory database for testing and temporary work"
 		do
 			create database.make_memory
 		ensure
@@ -68,6 +66,8 @@ feature -- Database Operations
 
 	close
 			-- Close database connection.
+		note
+			semantic_role: "Releases database connection and clears the internal reference"
 		do
 			if attached database as al_db then
 				al_db.close
@@ -81,18 +81,24 @@ feature -- Status
 
 	is_connected: BOOLEAN
 			-- Is database connection open?
+		note
+			semantic_role: "Connection state predicate used as precondition guard on all operations"
 		do
 			Result := attached database as db and then db.is_open
 		end
 
 	has_error: BOOLEAN
 			-- Did last operation fail?
+		note
+			semantic_role: "Error state predicate for checking operation success"
 		do
 			Result := attached database as db and then db.has_error
 		end
 
 	last_error: STRING
 			-- Error message from last operation.
+		note
+			semantic_role: "Error message accessor for simple diagnostic output"
 		do
 			if attached database as db and then attached db.last_error_message as al_msg then
 				Result := al_msg.to_string_8
@@ -105,6 +111,8 @@ feature -- Status
 
 	rows_affected: INTEGER
 			-- Number of rows affected by last INSERT/UPDATE/DELETE.
+		note
+			semantic_role: "Modification count for verifying the effect of write operations"
 		do
 			if attached database as al_db then
 				Result := al_db.rows_affected
@@ -116,6 +124,8 @@ feature -- Simple Queries
 	query (a_sql: STRING): ARRAYED_LIST [STRING_TABLE [ANY]]
 			-- Execute SELECT query and return list of row dictionaries.
 			-- Example: db.query ("SELECT * FROM users WHERE age > 21")
+		note
+			semantic_role: "Simplified query returning dictionary rows instead of SIMPLE_SQL_ROW objects"
 		require
 			is_connected: is_connected
 			sql_not_empty: not a_sql.is_empty
@@ -127,11 +137,11 @@ feature -- Simple Queries
 			create Result.make (10)
 			if attached database as al_db then
 				l_res := al_db.run_query (a_sql)
-				across l_res.rows as l_row loop
-					create l_row.make (l_row.count)
-					from i := 1 until i > l_row.count loop
-						if attached l_row [i] as al_val then
-							l_row.put (al_val, l_row.column_name (i))
+				across l_res.rows as ic_row loop
+					create l_row.make (ic_row.count)
+					from i := 1 until i > ic_row.count loop
+						if attached ic_row [i] as al_val then
+							l_row.put (al_val, ic_row.column_name (i))
 						end
 						i := i + 1
 					end
@@ -145,6 +155,8 @@ feature -- Simple Queries
 	query_value (a_sql: STRING): detachable ANY
 			-- Execute query and return single value (first column of first row).
 			-- Example: db.query_value ("SELECT COUNT(*) FROM users")
+		note
+			semantic_role: "Scalar query shortcut for aggregate and single-value lookups"
 		require
 			is_connected: is_connected
 			sql_not_empty: not a_sql.is_empty
@@ -161,6 +173,8 @@ feature -- Simple Queries
 
 	execute (a_sql: STRING)
 			-- Execute SQL statement (INSERT, UPDATE, DELETE, CREATE, etc.).
+		note
+			semantic_role: "Raw SQL execution for statements that don't return results"
 		require
 			is_connected: is_connected
 			sql_not_empty: not a_sql.is_empty
@@ -174,6 +188,8 @@ feature -- Table Operations
 
 	table_exists (a_table: STRING): BOOLEAN
 			-- Does table exist?
+		note
+			semantic_role: "Table existence check for guarding create_table and other DDL operations"
 		require
 			is_connected: is_connected
 			table_not_empty: not a_table.is_empty
@@ -186,6 +202,8 @@ feature -- Table Operations
 	create_table (a_table: STRING; a_columns: ARRAY [STRING])
 			-- Create table with columns.
 			-- Example: db.create_table ("users", <<"id INTEGER PRIMARY KEY", "name TEXT", "age INTEGER">>)
+		note
+			semantic_role: "DDL helper generating CREATE TABLE IF NOT EXISTS from column definition strings"
 		require
 			is_connected: is_connected
 			table_not_empty: not a_table.is_empty
@@ -209,6 +227,8 @@ feature -- Table Operations
 
 	drop_table (a_table: STRING)
 			-- Drop table if exists.
+		note
+			semantic_role: "DDL helper for unconditional table removal"
 		require
 			is_connected: is_connected
 			table_not_empty: not a_table.is_empty
@@ -221,6 +241,8 @@ feature -- Row Operations
 	insert (a_table: STRING; a_values: ARRAY [TUPLE [column: STRING; value: STRING]])
 			-- Insert row into table.
 			-- Example: db.insert ("users", <<["name", "alice"], ["age", "30"]>>)
+		note
+			semantic_role: "Simplified row insertion using string-typed column/value tuples"
 		require
 			is_connected: is_connected
 			table_not_empty: not a_table.is_empty
@@ -248,6 +270,8 @@ feature -- Row Operations
 	update (a_table: STRING; a_values: ARRAY [TUPLE [column: STRING; value: STRING]]; a_where: STRING)
 			-- Update rows matching condition.
 			-- Example: db.update ("users", <<["age", "31"]>>, "name = 'alice'")
+		note
+			semantic_role: "Simplified row update using string-typed column/value tuples with WHERE clause"
 		require
 			is_connected: is_connected
 			table_not_empty: not a_table.is_empty
@@ -273,6 +297,8 @@ feature -- Row Operations
 	delete (a_table: STRING; a_where: STRING)
 			-- Delete rows matching condition.
 			-- Example: db.delete ("users", "age < 18")
+		note
+			semantic_role: "Simplified row deletion with WHERE clause"
 		require
 			is_connected: is_connected
 			table_not_empty: not a_table.is_empty
@@ -283,6 +309,8 @@ feature -- Row Operations
 
 	count (a_table: STRING): INTEGER
 			-- Count rows in table.
+		note
+			semantic_role: "Convenience row counter for quick table size checks"
 		require
 			is_connected: is_connected
 			table_not_empty: not a_table.is_empty
@@ -296,6 +324,8 @@ feature -- Transactions
 
 	begin_transaction
 			-- Start transaction.
+		note
+			semantic_role: "Starts a transaction for grouping multiple Quick operations atomically"
 		require
 			is_connected: is_connected
 		do
@@ -304,6 +334,8 @@ feature -- Transactions
 
 	commit
 			-- Commit transaction.
+		note
+			semantic_role: "Makes all changes within the current Quick transaction permanent"
 		require
 			is_connected: is_connected
 		do
@@ -312,6 +344,8 @@ feature -- Transactions
 
 	rollback
 			-- Rollback transaction.
+		note
+			semantic_role: "Discards all changes within the current Quick transaction"
 		require
 			is_connected: is_connected
 		do
@@ -327,6 +361,8 @@ feature {NONE} -- Implementation
 
 	escape_string (a_value: STRING): STRING
 			-- Escape single quotes for SQL safety.
+		note
+			semantic_role: "Minimal SQL injection prevention by doubling single quotes in string literals"
 		do
 			Result := a_value.twin
 			Result.replace_substring_all ("'", "''")
@@ -334,5 +370,12 @@ feature {NONE} -- Implementation
 
 invariant
 	error_message_when_error: has_error implies not last_error.is_empty
+
+note
+	copyright: "Copyright (c) 2025, Larry Rix"
+	license: "MIT License"
+	source: "[
+		SIMPLE_SQL - High-level SQLite API for Eiffel
+	]"
 
 end

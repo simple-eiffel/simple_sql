@@ -19,6 +19,9 @@ note
 			csv_string := export.table_csv_string ("users")
 			json_string := export.table_json_string ("users")
 	]"
+	purpose: "Multi-format database export to CSV, JSON, and SQL dump with BLOB encoding support"
+	collaborators: "SIMPLE_SQL_DATABASE, SIMPLE_SQL_RESULT, SIMPLE_SQL_ROW, SIMPLE_SQL_SCHEMA"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -32,6 +35,8 @@ feature {NONE} -- Initialization
 
 	make (a_database: SIMPLE_SQL_DATABASE)
 			-- Create export helper for `a_database`
+		note
+			semantic_role: "Captures database reference and initializes format-specific defaults"
 		require
 			database_attached: a_database /= Void
 			database_open: a_database.is_open
@@ -66,6 +71,9 @@ feature -- Configuration
 
 	set_csv_delimiter (a_char: CHARACTER)
 			-- Set CSV delimiter character
+		note
+			semantic_role: "Overrides the default comma delimiter for CSV output"
+			modifies: "csv_delimiter"
 		do
 			csv_delimiter := a_char
 		ensure
@@ -74,6 +82,9 @@ feature -- Configuration
 
 	set_csv_quote_char (a_char: CHARACTER)
 			-- Set CSV quote character
+		note
+			semantic_role: "Overrides the default double-quote character for CSV quoting"
+			modifies: "csv_quote_char"
 		do
 			csv_quote_char := a_char
 		ensure
@@ -82,6 +93,9 @@ feature -- Configuration
 
 	set_csv_include_headers (a_value: BOOLEAN)
 			-- Set whether to include headers in CSV
+		note
+			semantic_role: "Toggles column header row emission in CSV output"
+			modifies: "csv_include_headers"
 		do
 			csv_include_headers := a_value
 		ensure
@@ -90,6 +104,9 @@ feature -- Configuration
 
 	set_json_pretty_print (a_value: BOOLEAN)
 			-- Set whether to pretty-print JSON
+		note
+			semantic_role: "Toggles indented formatting versus compact JSON output"
+			modifies: "json_pretty_print"
 		do
 			json_pretty_print := a_value
 		ensure
@@ -100,6 +117,8 @@ feature -- CSV Export
 
 	table_to_csv (a_table_name: READABLE_STRING_GENERAL; a_file_path: READABLE_STRING_GENERAL)
 			-- Export table to CSV file
+		note
+			semantic_role: "Writes table contents as CSV to a file on disk"
 		require
 			table_name_not_empty: not a_table_name.is_empty
 			file_path_not_empty: not a_file_path.is_empty
@@ -115,6 +134,8 @@ feature -- CSV Export
 
 	table_csv_string (a_table_name: READABLE_STRING_GENERAL): STRING_32
 			-- Get table contents as CSV string
+		note
+			semantic_role: "Generates CSV text with optional headers from all rows in a table"
 		require
 			table_name_not_empty: not a_table_name.is_empty
 		local
@@ -155,6 +176,8 @@ feature -- CSV Export
 
 	database_to_csv (a_directory_path: READABLE_STRING_GENERAL)
 			-- Export all tables to CSV files in directory (one file per table)
+		note
+			semantic_role: "Exports each table as a separate CSV file into a directory"
 		require
 			directory_path_not_empty: not a_directory_path.is_empty
 		local
@@ -180,6 +203,8 @@ feature -- JSON Export
 
 	table_to_json (a_table_name: READABLE_STRING_GENERAL; a_file_path: READABLE_STRING_GENERAL)
 			-- Export table to JSON file (as array of objects)
+		note
+			semantic_role: "Writes table contents as a JSON array of objects to a file"
 		require
 			table_name_not_empty: not a_table_name.is_empty
 			file_path_not_empty: not a_file_path.is_empty
@@ -195,6 +220,8 @@ feature -- JSON Export
 
 	table_json_string (a_table_name: READABLE_STRING_GENERAL): STRING_32
 			-- Get table contents as JSON array of objects
+		note
+			semantic_role: "Generates a JSON array of objects with optional pretty-printing from all rows"
 		require
 			table_name_not_empty: not a_table_name.is_empty
 		local
@@ -258,6 +285,8 @@ feature -- JSON Export
 
 	database_to_json (a_file_path: READABLE_STRING_GENERAL)
 			-- Export entire database to JSON file (as object with table arrays)
+		note
+			semantic_role: "Writes all tables as a JSON object keyed by table name to a file"
 		require
 			file_path_not_empty: not a_file_path.is_empty
 		local
@@ -272,6 +301,8 @@ feature -- JSON Export
 
 	database_json_string: STRING_32
 			-- Get entire database as JSON object with table arrays
+		note
+			semantic_role: "Generates a JSON object containing all tables as named array properties"
 		local
 			l_schema: SIMPLE_SQL_SCHEMA
 			l_tables: ARRAYED_LIST [STRING_8]
@@ -318,6 +349,8 @@ feature -- SQL Dump Export
 
 	table_to_sql (a_table_name: READABLE_STRING_GENERAL; a_file_path: READABLE_STRING_GENERAL)
 			-- Export table to SQL file (CREATE TABLE + INSERT statements)
+		note
+			semantic_role: "Writes schema DDL and INSERT statements for a table to a file"
 		require
 			table_name_not_empty: not a_table_name.is_empty
 			file_path_not_empty: not a_file_path.is_empty
@@ -334,6 +367,8 @@ feature -- SQL Dump Export
 	table_sql_string (a_table_name: READABLE_STRING_GENERAL): STRING_32
 			-- Get table as SQL statements (CREATE TABLE + INSERTs)
 			-- All statements are single-line for reliable parsing
+		note
+			semantic_role: "Generates CREATE TABLE DDL and INSERT statements as single-line SQL"
 		require
 			table_name_not_empty: not a_table_name.is_empty
 		local
@@ -385,6 +420,8 @@ feature -- SQL Dump Export
 
 	database_to_sql (a_file_path: READABLE_STRING_GENERAL)
 			-- Export entire database to SQL file
+		note
+			semantic_role: "Writes a complete SQL dump of all tables wrapped in a transaction to a file"
 		require
 			file_path_not_empty: not a_file_path.is_empty
 		local
@@ -399,6 +436,8 @@ feature -- SQL Dump Export
 
 	database_sql_string: STRING_32
 			-- Get entire database as SQL dump string
+		note
+			semantic_role: "Generates a transactional SQL dump of all tables with schema and data"
 		local
 			l_schema: SIMPLE_SQL_SCHEMA
 			l_tables: ARRAYED_LIST [STRING_8]
@@ -427,6 +466,8 @@ feature {NONE} -- CSV Implementation
 
 	escape_csv_value (a_value: READABLE_STRING_GENERAL): STRING_32
 			-- Escape value for CSV (quote if contains delimiter or quote)
+		note
+			semantic_role: "Wraps values in quotes and escapes internal quotes when CSV-special characters are present"
 		local
 			l_needs_quote: BOOLEAN
 		do
@@ -447,8 +488,10 @@ feature {NONE} -- CSV Implementation
 	format_csv_value (a_row: SIMPLE_SQL_ROW; a_index: INTEGER): STRING_32
 			-- Format row value for CSV output
 			-- BLOBs are encoded as "blob:HEXDATA" for later identification
+		note
+			semantic_role: "Converts a row cell to its CSV representation with type-appropriate formatting"
 		local
-			l_col_name: STRING_32
+			l_col_name: STRING_8
 		do
 			l_col_name := a_row.column_name (a_index)
 
@@ -474,6 +517,8 @@ feature {NONE} -- JSON Implementation
 
 	escape_json_string (a_value: READABLE_STRING_GENERAL): STRING_32
 			-- Escape string for JSON
+		note
+			semantic_role: "Escapes control characters and backslashes for JSON string literals"
 		local
 			i: INTEGER
 			c: CHARACTER_32
@@ -496,8 +541,10 @@ feature {NONE} -- JSON Implementation
 	format_json_value (a_row: SIMPLE_SQL_ROW; a_index: INTEGER): STRING_32
 			-- Format row value for JSON output
 			-- BLOBs are encoded as {"$blob": "HEXDATA"} object for later identification
+		note
+			semantic_role: "Converts a row cell to its JSON representation with BLOB marker encoding"
 		local
-			l_col_name: STRING_32
+			l_col_name: STRING_8
 		do
 			l_col_name := a_row.column_name (a_index)
 
@@ -527,6 +574,8 @@ feature {NONE} -- SQL Implementation
 
 	escape_sql_string (a_value: READABLE_STRING_8): STRING_8
 			-- Escape string for SQL (double single quotes)
+		note
+			semantic_role: "Doubles single quotes for safe SQL string embedding"
 		local
 			i: INTEGER
 			c: CHARACTER
@@ -547,8 +596,10 @@ feature {NONE} -- SQL Implementation
 	format_sql_value (a_row: SIMPLE_SQL_ROW; a_index: INTEGER): STRING_32
 			-- Format row value for SQL INSERT statement
 			-- BLOBs are encoded using SQLite X'HEXDATA' syntax
+		note
+			semantic_role: "Converts a row cell to its SQL literal with hex encoding for BLOBs"
 		local
-			l_col_name: STRING_32
+			l_col_name: STRING_8
 		do
 			l_col_name := a_row.column_name (a_index)
 
@@ -578,6 +629,8 @@ feature {NONE} -- BLOB Encoding
 
 	blob_to_hex (a_blob: MANAGED_POINTER): STRING_32
 			-- Convert BLOB to uppercase hexadecimal string
+		note
+			semantic_role: "Converts a MANAGED_POINTER blob to uppercase hexadecimal string"
 		local
 			i: INTEGER
 			l_byte: NATURAL_8
@@ -594,6 +647,8 @@ feature {NONE} -- BLOB Encoding
 
 	byte_to_hex (a_byte: NATURAL_8): STRING_32
 			-- Convert single byte to two hex characters (uppercase)
+		note
+			semantic_role: "Converts a single byte to a two-character hex representation"
 		local
 			l_high, l_low: NATURAL_8
 		do
@@ -608,6 +663,8 @@ feature {NONE} -- BLOB Encoding
 
 	hex_char (a_nibble: NATURAL_8): CHARACTER_32
 			-- Convert nibble (0-15) to hex character
+		note
+			semantic_role: "Maps a nibble value (0-15) to its hexadecimal character"
 		require
 			valid_nibble: a_nibble <= 15
 		local

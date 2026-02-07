@@ -16,6 +16,9 @@ note
 			-- Import SQL dump
 			import.sql_file ("dump.sql")
 	]"
+	purpose: "Multi-format database import from CSV, JSON, and SQL dump with transactional safety"
+	collaborators: "SIMPLE_SQL_DATABASE, SIMPLE_SQL_SCHEMA, SIMPLE_SQL_TABLE_INFO, SIMPLE_SQL_EXPORT"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -29,6 +32,8 @@ feature {NONE} -- Initialization
 
 	make (a_database: SIMPLE_SQL_DATABASE)
 			-- Create import helper for `a_database`
+		note
+			semantic_role: "Captures database reference and sets default CSV parsing configuration"
 		require
 			database_attached: a_database /= Void
 			database_open: a_database.is_open
@@ -57,6 +62,8 @@ feature -- Status
 
 	had_error: BOOLEAN
 			-- Did the last operation fail?
+		note
+			semantic_role: "Checks whether a non-void last_error indicates a failed import"
 		do
 			Result := last_error /= Void
 		end
@@ -74,6 +81,9 @@ feature -- Configuration
 
 	set_csv_delimiter (a_char: CHARACTER)
 			-- Set CSV delimiter character
+		note
+			semantic_role: "Configures the field separator for CSV parsing"
+			modifies: "csv_delimiter"
 		do
 			csv_delimiter := a_char
 		ensure
@@ -82,6 +92,9 @@ feature -- Configuration
 
 	set_csv_quote_char (a_char: CHARACTER)
 			-- Set CSV quote character
+		note
+			semantic_role: "Configures the quoting character for CSV field escaping"
+			modifies: "csv_quote_char"
 		do
 			csv_quote_char := a_char
 		ensure
@@ -90,6 +103,9 @@ feature -- Configuration
 
 	set_csv_has_headers (a_value: BOOLEAN)
 			-- Set whether CSV has header row
+		note
+			semantic_role: "Controls whether the first CSV line is treated as column headers"
+			modifies: "csv_has_headers"
 		do
 			csv_has_headers := a_value
 		ensure
@@ -100,6 +116,8 @@ feature -- CSV Import
 
 	csv_to_table (a_file_path: READABLE_STRING_GENERAL; a_table_name: READABLE_STRING_GENERAL)
 			-- Import CSV file into existing table
+		note
+			semantic_role: "Reads a CSV file into memory and delegates to csv_string_to_table"
 		require
 			file_path_not_empty: not a_file_path.is_empty
 			table_name_not_empty: not a_table_name.is_empty
@@ -126,6 +144,9 @@ feature -- CSV Import
 
 	csv_string_to_table (a_csv: READABLE_STRING_GENERAL; a_table_name: READABLE_STRING_GENERAL)
 			-- Import CSV string into existing table
+		note
+			semantic_role: "Parses CSV lines within a transaction, using first row as headers if configured"
+			modifies: "last_error, rows_imported"
 		require
 			csv_not_empty: not a_csv.is_empty
 			table_name_not_empty: not a_table_name.is_empty
@@ -183,6 +204,8 @@ feature -- JSON Import
 
 	json_to_table (a_file_path: READABLE_STRING_GENERAL; a_table_name: READABLE_STRING_GENERAL)
 			-- Import JSON file (array of objects) into existing table
+		note
+			semantic_role: "Reads a JSON file into memory and delegates to json_string_to_table"
 		require
 			file_path_not_empty: not a_file_path.is_empty
 			table_name_not_empty: not a_table_name.is_empty
@@ -210,6 +233,9 @@ feature -- JSON Import
 	json_string_to_table (a_json: READABLE_STRING_GENERAL; a_table_name: READABLE_STRING_GENERAL)
 			-- Import JSON string (array of objects) into existing table
 			-- Uses SQLite's JSON functions for parsing
+		note
+			semantic_role: "Builds INSERT...SELECT from json_each() to import JSON array into a table"
+			modifies: "last_error, rows_imported"
 		require
 			json_not_empty: not a_json.is_empty
 			table_name_not_empty: not a_table_name.is_empty
@@ -231,7 +257,7 @@ feature -- JSON Import
 			l_table_info := l_schema.table_info (a_table_name.to_string_8)
 
 			if l_table_info = Void then
-				create last_error.make_from_string ("Table not found: " + a_table_name.to_string_32)
+				create last_error.make_from_string ({STRING_32} "Table not found: " + a_table_name.to_string_32)
 			else
 				create l_columns.make (l_table_info.columns.count)
 				across l_table_info.columns as ic loop
@@ -283,6 +309,8 @@ feature -- SQL Import
 
 	sql_file (a_file_path: READABLE_STRING_GENERAL)
 			-- Execute SQL file (for restoring from dump)
+		note
+			semantic_role: "Reads a SQL dump file into memory and delegates to sql_string"
 		require
 			file_path_not_empty: not a_file_path.is_empty
 			file_exists: (create {RAW_FILE}.make_with_name (a_file_path)).exists
@@ -303,6 +331,9 @@ feature -- SQL Import
 
 	sql_string (a_sql: READABLE_STRING_8)
 			-- Execute SQL statements (for restoring from dump)
+		note
+			semantic_role: "Splits SQL dump into individual statements and executes them sequentially"
+			modifies: "last_error, rows_imported"
 		require
 			sql_not_empty: not a_sql.is_empty
 		local
@@ -351,6 +382,8 @@ feature {NONE} -- CSV Parsing
 
 	parse_csv_line (a_line: READABLE_STRING_GENERAL): ARRAYED_LIST [STRING_32]
 			-- Parse a CSV line into list of values
+		note
+			semantic_role: "RFC-aware CSV parser handling quoted fields, escaped quotes, and delimiters"
 		local
 			l_current: STRING_32
 			l_in_quotes: BOOLEAN
@@ -388,6 +421,8 @@ feature {NONE} -- CSV Parsing
 	build_insert_sql (a_table: READABLE_STRING_GENERAL; a_headers: detachable ARRAYED_LIST [STRING_32]; a_values: ARRAYED_LIST [STRING_32]): STRING_32
 			-- Build INSERT statement from values
 			-- Detects "blob:HEXDATA" values and converts to X'HEXDATA' syntax
+		note
+			semantic_role: "Constructs INSERT SQL with optional column names and blob-aware value formatting"
 		local
 			l_first: BOOLEAN
 			l_value: STRING_32
@@ -436,6 +471,8 @@ feature {NONE} -- SQL Escaping
 
 	escape_sql_string (a_value: READABLE_STRING_8): STRING_8
 			-- Escape string for SQL (double single quotes)
+		note
+			semantic_role: "Doubles single quotes for safe SQL string embedding"
 		local
 			i: INTEGER
 			c: CHARACTER
