@@ -135,6 +135,7 @@ feature -- Element Change
 			columns.extend (a_column)
 		ensure
 			column_added: columns.has (a_column)
+			count_increased: columns.count = old columns.count + 1
 		end
 
 	add_index (a_index: SIMPLE_SQL_INDEX_INFO)
@@ -145,6 +146,7 @@ feature -- Element Change
 			indexes.extend (a_index)
 		ensure
 			index_added: indexes.has (a_index)
+			count_increased: indexes.count = old indexes.count + 1
 		end
 
 	add_foreign_key (a_fk: SIMPLE_SQL_FOREIGN_KEY_INFO)
@@ -155,6 +157,7 @@ feature -- Element Change
 			foreign_keys.extend (a_fk)
 		ensure
 			fk_added: foreign_keys.has (a_fk)
+			count_increased: foreign_keys.count = old foreign_keys.count + 1
 		end
 
 	set_sql (a_sql: READABLE_STRING_8)
@@ -165,6 +168,41 @@ feature -- Element Change
 			sql := a_sql.to_string_8
 		ensure
 			sql_set: attached sql as l_sql and then l_sql.same_string (a_sql)
+		end
+
+feature -- Model Queries
+
+	columns_model: MML_SEQUENCE [SIMPLE_SQL_COLUMN_INFO]
+			-- Mathematical model of column definitions in order.
+		do
+			create Result
+			across columns as ic loop
+				Result := Result & ic
+			end
+		ensure
+			count_matches: Result.count = columns.count
+		end
+
+	indexes_model: MML_SEQUENCE [SIMPLE_SQL_INDEX_INFO]
+			-- Mathematical model of indexes in order.
+		do
+			create Result
+			across indexes as ic loop
+				Result := Result & ic
+			end
+		ensure
+			count_matches: Result.count = indexes.count
+		end
+
+	foreign_keys_model: MML_SEQUENCE [SIMPLE_SQL_FOREIGN_KEY_INFO]
+			-- Mathematical model of foreign keys in order.
+		do
+			create Result
+			across foreign_keys as ic loop
+				Result := Result & ic
+			end
+		ensure
+			count_matches: Result.count = foreign_keys.count
 		end
 
 feature -- Output
@@ -198,5 +236,10 @@ invariant
 	columns_attached: attached columns
 	indexes_attached: attached indexes
 	foreign_keys_attached: attached foreign_keys
+
+	-- Model consistency
+	model_columns_count: columns_model.count = column_count
+	model_indexes_count: indexes_model.count = indexes.count
+	model_fkeys_count: foreign_keys_model.count = foreign_keys.count
 
 end

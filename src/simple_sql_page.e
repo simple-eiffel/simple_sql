@@ -60,6 +60,19 @@ feature -- Status
 			Result := not has_more
 		end
 
+feature -- Model Queries
+
+	items_model: MML_SEQUENCE [SIMPLE_SQL_ROW]
+			-- Mathematical model of page items in order.
+		do
+			create Result
+			across items as ic loop
+				Result := Result & ic
+			end
+		ensure
+			count_matches: Result.count = items.count
+		end
+
 feature -- Iteration
 
 	first: detachable SIMPLE_SQL_ROW
@@ -81,6 +94,9 @@ feature -- Iteration
 invariant
 	items_attached: items /= Void
 	cursor_when_more: has_more implies next_cursor /= Void
+
+	-- Model consistency
+	model_items_count: items_model.count = count
 
 note
 	copyright: "Copyright (c) 2025, Larry Rix"

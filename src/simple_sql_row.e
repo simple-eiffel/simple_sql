@@ -327,6 +327,30 @@ feature -- UTF-8 Validation (simple_encoding integration)
 			result_not_empty: not Result.is_empty
 		end
 
+feature -- Model Queries
+
+	columns_model: MML_SEQUENCE [STRING_8]
+			-- Mathematical model of column names in order.
+		do
+			create Result
+			across columns as ic loop
+				Result := Result & ic
+			end
+		ensure
+			count_matches: Result.count = columns.count
+		end
+
+	values_model: MML_SEQUENCE [detachable ANY]
+			-- Mathematical model of column values in order.
+		do
+			create Result
+			across values as ic loop
+				Result := Result & ic
+			end
+		ensure
+			count_matches: Result.count = values.count
+		end
+
 feature {SIMPLE_SQL_RESULT, SIMPLE_SQL_CURSOR, SIMPLE_SQL_RESULT_STREAM} -- Element change
 
 	add_column (a_name: STRING_8; a_value: detachable ANY)
@@ -338,12 +362,18 @@ feature {SIMPLE_SQL_RESULT, SIMPLE_SQL_CURSOR, SIMPLE_SQL_RESULT_STREAM} -- Elem
 			values.extend (a_value)
 		ensure
 			count_increased: count = old count + 1
+			column_added: columns_model.last = a_name
+			value_added: values_model.last = a_value
 		end
 
 invariant
 	columns_attached: columns /= Void
 	values_attached: values /= Void
 	same_count: columns.count = values.count
+
+	-- Model consistency
+	model_columns_count: columns_model.count = count
+	model_values_count: values_model.count = count
 
 note
 	copyright: "Copyright (c) 2025, Larry Rix"

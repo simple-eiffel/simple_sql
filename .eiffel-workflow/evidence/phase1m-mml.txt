@@ -1,0 +1,71 @@
+# Phase 1m MML Coverage Report
+# Project: D:\prod\simple_sql
+# Date: 2026-02-06
+# Mode: retrofit
+
+## Collection Attributes Found (Core Classes)
+| Class | Attribute | Type | MML Type |
+|-------|-----------|------|----------|
+| SIMPLE_SQL_ROW | columns | ARRAYED_LIST [STRING_8] | MML_SEQUENCE [STRING_8] |
+| SIMPLE_SQL_ROW | values | ARRAYED_LIST [detachable ANY] | MML_SEQUENCE [detachable ANY] |
+| SIMPLE_SQL_RESULT | rows | ARRAYED_LIST [SIMPLE_SQL_ROW] | MML_SEQUENCE [SIMPLE_SQL_ROW] |
+| SIMPLE_SQL_PAGE | items | ARRAYED_LIST [SIMPLE_SQL_ROW] | MML_SEQUENCE [SIMPLE_SQL_ROW] |
+| SIMPLE_SQL_TABLE_INFO | columns | ARRAYED_LIST [SIMPLE_SQL_COLUMN_INFO] | MML_SEQUENCE [SIMPLE_SQL_COLUMN_INFO] |
+| SIMPLE_SQL_TABLE_INFO | indexes | ARRAYED_LIST [SIMPLE_SQL_INDEX_INFO] | MML_SEQUENCE [SIMPLE_SQL_INDEX_INFO] |
+| SIMPLE_SQL_TABLE_INFO | foreign_keys | ARRAYED_LIST [SIMPLE_SQL_FOREIGN_KEY_INFO] | MML_SEQUENCE [SIMPLE_SQL_FOREIGN_KEY_INFO] |
+| SIMPLE_SQL_MIGRATION_RUNNER | migrations | ARRAYED_LIST [SIMPLE_SQL_MIGRATION] | MML_SEQUENCE [SIMPLE_SQL_MIGRATION] |
+
+## Excluded from MML (by design)
+- Builder classes (select_builder, insert_builder, etc.): Ephemeral SQL construction, not domain state
+- Application demo classes (dms, wms, todo_app, cpm_app, habit_tracker): Demo code
+- Query result functions returning ARRAYED_LIST: Function returns, not instance state
+- SIMPLE_SQL_AUDIT: Already has model queries (model_audit_trail)
+- HASH_TABLE caches/bindings: Internal implementation, not domain model
+
+## Model Queries Added/Verified
+| Class | Query | MML Type | Status |
+|-------|-------|----------|--------|
+| SIMPLE_SQL_ROW | columns_model | MML_SEQUENCE [STRING_8] | ADDED |
+| SIMPLE_SQL_ROW | values_model | MML_SEQUENCE [detachable ANY] | ADDED |
+| SIMPLE_SQL_RESULT | rows_model | MML_SEQUENCE [SIMPLE_SQL_ROW] | ADDED |
+| SIMPLE_SQL_PAGE | items_model | MML_SEQUENCE [SIMPLE_SQL_ROW] | ADDED |
+| SIMPLE_SQL_TABLE_INFO | columns_model | MML_SEQUENCE [SIMPLE_SQL_COLUMN_INFO] | ADDED |
+| SIMPLE_SQL_TABLE_INFO | indexes_model | MML_SEQUENCE [SIMPLE_SQL_INDEX_INFO] | ADDED |
+| SIMPLE_SQL_TABLE_INFO | foreign_keys_model | MML_SEQUENCE [SIMPLE_SQL_FOREIGN_KEY_INFO] | ADDED |
+| SIMPLE_SQL_MIGRATION_RUNNER | migrations_model | MML_SEQUENCE [SIMPLE_SQL_MIGRATION] | ADDED |
+| SIMPLE_SQL_AUDIT | model_audit_trail | MML_SEQUENCE [AUDIT_ENTRY] | VERIFIED (pre-existing) |
+
+## Contracts Strengthened
+- Postconditions added/enriched: 5
+  - SIMPLE_SQL_ROW.add_column: column_added, value_added (model-based)
+  - SIMPLE_SQL_TABLE_INFO.add_column: count_increased
+  - SIMPLE_SQL_TABLE_INFO.add_index: count_increased
+  - SIMPLE_SQL_TABLE_INFO.add_foreign_key: count_increased
+  - SIMPLE_SQL_MIGRATION_RUNNER.add: count_increased
+- Preconditions added/enriched: 0
+- Frame conditions added: 0
+- Invariants added/enriched: 8
+  - SIMPLE_SQL_ROW: model_columns_count, model_values_count
+  - SIMPLE_SQL_RESULT: model_rows_count
+  - SIMPLE_SQL_PAGE: model_items_count
+  - SIMPLE_SQL_TABLE_INFO: model_columns_count, model_indexes_count, model_fkeys_count
+  - SIMPLE_SQL_MIGRATION_RUNNER: model_migrations_count
+
+## ECF
+simple_mml already present in ECF — no update needed.
+
+## Compilation
+Command: /d/prod/ec.sh test -config simple_sql.ecf -target simple_sql_tests
+Output: System Recompiled. C compilation completed.
+Warnings: 0
+Status: PASS
+
+## Tests
+Command: ./EIFGENs/simple_sql_tests/F_code/simple_sql.exe
+Output: 52 passed, 0 failed - ALL TESTS PASSED
+Status: PASS
+
+## Coverage Assessment
+FULL - All 8 core collection attributes mapped with model queries and invariants.
+Pre-existing SIMPLE_SQL_AUDIT model queries verified. Builder classes, demo apps,
+and ephemeral query results correctly excluded from MML scope.

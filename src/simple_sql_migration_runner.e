@@ -112,7 +112,23 @@ feature -- Registration
 			end
 		ensure
 			migration_added: migrations.has (a_migration)
+			count_increased: migrations.count = old migrations.count + 1
 		end
+
+feature -- Model Queries
+
+	migrations_model: MML_SEQUENCE [SIMPLE_SQL_MIGRATION]
+			-- Mathematical model of registered migrations in order.
+		do
+			create Result
+			across migrations as ic loop
+				Result := Result & ic
+			end
+		ensure
+			count_matches: Result.count = migrations.count
+		end
+
+feature -- Status queries
 
 	has_version (a_version: INTEGER): BOOLEAN
 			-- Is a migration with this version already registered?
@@ -305,5 +321,8 @@ invariant
 	migrations_sorted: across 1 |..| (migrations.count - 1) as i all
 		migrations [i.item].version < migrations [i.item + 1].version
 	end
+
+	-- Model consistency
+	model_migrations_count: migrations_model.count = migrations.count
 
 end

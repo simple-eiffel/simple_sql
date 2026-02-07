@@ -96,6 +96,19 @@ feature -- Access
 			result_attached: Result /= Void
 		end
 
+feature -- Model Queries
+
+	rows_model: MML_SEQUENCE [SIMPLE_SQL_ROW]
+			-- Mathematical model of result rows in order.
+		do
+			create Result
+			across rows as ic loop
+				Result := Result & ic
+			end
+		ensure
+			count_matches: Result.count = rows.count
+		end
+
 feature {NONE} -- Implementation
 
 	collect_row (a_row: SQLITE_RESULT_ROW): BOOLEAN
@@ -124,6 +137,9 @@ feature {NONE} -- Constants
 
 invariant
 	rows_attached: rows /= Void
+
+	-- Model consistency
+	model_rows_count: rows_model.count = count
 
 note
 	copyright: "Copyright (c) 2025, Larry Rix"
