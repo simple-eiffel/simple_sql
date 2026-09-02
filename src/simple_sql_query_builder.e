@@ -1,5 +1,14 @@
 note
-	description: "Base class for fluent SQL query builders"
+	description: "[
+		An abstract base class for fluent SQL query builders.
+		Provides shared infrastructure for identifier quoting, value-to-SQL
+		conversion, string escaping, and optional database attachment for
+		direct execution, deferring `to_sql` to concrete descendants.
+		Establishes the common builder foundation for the simple_sql library.
+	]"
+	purpose: "Provide shared SQL-generation utilities for concrete query builders"
+	collaborators: "SIMPLE_SQL_DATABASE"
+	design_pattern: "Template Method"
 	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -23,6 +32,12 @@ feature -- Element Change
 
 	set_database (a_database: SIMPLE_SQL_DATABASE)
 			-- Set database for execution
+		note
+			semantic_role: "[
+				Attaches a live database connection
+				enabling direct query execution.
+			]"
+			modifies: "database"
 		require
 			database_open: a_database.is_open
 		do
@@ -35,6 +50,11 @@ feature -- Status
 
 	has_database: BOOLEAN
 			-- Is a database set for execution?
+		note
+			semantic_role: "[
+				Execution readiness predicate guarding
+				all execute operations.
+			]"
 		do
 			Result := attached database
 		end
@@ -44,6 +64,12 @@ feature {SIMPLE_SQL_QUERY_BUILDER} -- Implementation
 	escaped_string (a_string: READABLE_STRING_GENERAL): STRING_8
 			-- Escape `a_string` for safe SQL inclusion
 			-- Single quotes are doubled, result is wrapped in quotes
+		note
+			semantic_role: "[
+				SQL injection prevention by doubling
+				single quotes and wrapping in quote
+				delimiters.
+			]"
 		local
 			i: INTEGER
 			c: CHARACTER_32
@@ -70,6 +96,12 @@ feature {SIMPLE_SQL_QUERY_BUILDER} -- Implementation
 
 	value_to_sql (a_value: detachable ANY): STRING_8
 			-- Convert `a_value` to SQL literal representation
+		note
+			semantic_role: "[
+				Type-dispatching converter mapping
+				Eiffel values to their SQL literal
+				equivalents.
+			]"
 		do
 			if a_value = Void then
 				Result := "NULL"
@@ -112,6 +144,12 @@ feature {SIMPLE_SQL_QUERY_BUILDER} -- Implementation
 	identifier (a_name: READABLE_STRING_8): STRING_8
 			-- Quote identifier if it contains special characters or is a reserved word
 			-- Uses double quotes for SQL standard identifier quoting
+		note
+			semantic_role: "[
+				Conditionally wraps identifiers in
+				double quotes when they conflict with
+				SQL syntax.
+			]"
 		do
 			if needs_quoting (a_name) then
 				create Result.make (a_name.count + 2)
@@ -127,6 +165,12 @@ feature {SIMPLE_SQL_QUERY_BUILDER} -- Implementation
 
 	needs_quoting (a_name: READABLE_STRING_8): BOOLEAN
 			-- Does `a_name` need quoting as an identifier?
+		note
+			semantic_role: "[
+				Detects identifiers requiring quoting
+				due to special characters or reserved
+				word collision.
+			]"
 		local
 			i: INTEGER
 			c: CHARACTER_8
@@ -159,6 +203,11 @@ feature {SIMPLE_SQL_QUERY_BUILDER} -- Implementation
 
 	is_reserved_word (a_name: READABLE_STRING_8): BOOLEAN
 			-- Is `a_name` a SQL reserved word?
+		note
+			semantic_role: "[
+				Case-insensitive check against the
+				cached set of common SQL reserved words.
+			]"
 		local
 			l_upper: STRING_8
 		do
@@ -168,6 +217,11 @@ feature {SIMPLE_SQL_QUERY_BUILDER} -- Implementation
 
 	reserved_words: ARRAYED_SET [STRING_8]
 			-- Common SQL reserved words
+		note
+			semantic_role: "[
+				Once-computed set of SQL reserved words
+				used by identifier quoting logic.
+			]"
 		once
 			create Result.make (50)
 			Result.compare_objects
@@ -221,5 +275,13 @@ feature {SIMPLE_SQL_QUERY_BUILDER} -- Implementation
 			Result.extend ("DEFAULT")
 			Result.extend ("CONSTRAINT")
 		end
+
+note
+	copyright: "Copyright (c) 2025, Larry Rix"
+	license: "MIT License"
+	source: "[
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
+	]"
 
 end

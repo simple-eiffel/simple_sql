@@ -1,5 +1,14 @@
 note
-	description: "Information about a database column from schema introspection"
+	description: "[
+		A structured metadata record for a single SQLite column as reported by
+		PRAGMA table_info.
+		Captures position, name, declared type, nullability, default value, and
+		primary key participation, with type affinity classification following
+		SQLite's affinity determination rules.
+		Provides schema introspection data used throughout the simple_sql library.
+	]"
+	purpose: "Represent column metadata with SQLite type affinity classification"
+	collaborators: "SIMPLE_SQL_TABLE_INFO, SIMPLE_SQL_SCHEMA"
 	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -15,6 +24,12 @@ feature {NONE} -- Initialization
 	make (a_cid: INTEGER; a_name: READABLE_STRING_8; a_type: READABLE_STRING_8;
 			a_notnull: BOOLEAN; a_default: detachable READABLE_STRING_8; a_pk: INTEGER)
 			-- Create column info from PRAGMA table_info results
+		note
+			semantic_role: "[
+				Captures all PRAGMA table_info fields
+				into structured attributes for schema
+				introspection queries.
+			]"
 		require
 			name_not_empty: not a_name.is_empty
 		do
@@ -58,18 +73,35 @@ feature -- Status
 
 	is_nullable: BOOLEAN
 			-- Can this column contain NULL?
+		note
+			semantic_role: "[
+				Inverse of is_not_null for readability
+				in nullable-aware code paths.
+			]"
 		do
 			Result := not is_not_null
 		end
 
 	is_primary_key: BOOLEAN
 			-- Is this column part of the primary key?
+		note
+			semantic_role: "[
+				Primary key participation predicate for
+				filtering key columns from non-key
+				columns.
+			]"
 		do
 			Result := primary_key_index > 0
 		end
 
 	has_default: BOOLEAN
 			-- Does this column have a default value?
+		note
+			semantic_role: "[
+				Default value presence check for
+				determining whether INSERT can omit
+				this column.
+			]"
 		do
 			Result := attached default_value
 		end
@@ -78,6 +110,11 @@ feature -- Type Classification
 
 	is_integer_type: BOOLEAN
 			-- Is this an integer-affinity type?
+		note
+			semantic_role: "[
+				SQLite integer affinity detection based
+				on declared type substring matching.
+			]"
 		local
 			l_upper: STRING_8
 		do
@@ -87,6 +124,11 @@ feature -- Type Classification
 
 	is_text_type: BOOLEAN
 			-- Is this a text-affinity type?
+		note
+			semantic_role: "[
+				SQLite text affinity detection based on
+				declared type substring matching.
+			]"
 		local
 			l_upper: STRING_8
 		do
@@ -98,6 +140,11 @@ feature -- Type Classification
 
 	is_real_type: BOOLEAN
 			-- Is this a real-affinity type?
+		note
+			semantic_role: "[
+				SQLite real affinity detection based on
+				declared type substring matching.
+			]"
 		local
 			l_upper: STRING_8
 		do
@@ -109,6 +156,12 @@ feature -- Type Classification
 
 	is_blob_type: BOOLEAN
 			-- Is this a blob-affinity type?
+		note
+			semantic_role: "[
+				SQLite blob affinity detection, also
+				defaulting typeless columns to blob
+				per SQLite rules.
+			]"
 		local
 			l_upper: STRING_8
 		do
@@ -118,6 +171,12 @@ feature -- Type Classification
 
 	sqlite_affinity: STRING_8
 			-- SQLite type affinity (INTEGER, TEXT, REAL, BLOB, NUMERIC)
+		note
+			semantic_role: "[
+				Resolves the declared type to one of
+				SQLite's five type affinities for
+				type-aware processing.
+			]"
 		do
 			if is_integer_type then
 				Result := "INTEGER"
@@ -136,6 +195,11 @@ feature -- Output
 
 	description: STRING_8
 			-- Human-readable description
+		note
+			semantic_role: "[
+				Generates a DDL-like summary string
+				for display in schema reports.
+			]"
 		do
 			create Result.make (50)
 			Result.append (name)
@@ -157,5 +221,13 @@ invariant
 	name_not_empty: not name.is_empty
 	declared_type_attached: attached declared_type
 	primary_key_index_valid: primary_key_index >= 0
+
+note
+	copyright: "Copyright (c) 2025, Larry Rix"
+	license: "MIT License"
+	source: "[
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
+	]"
 
 end

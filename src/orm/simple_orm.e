@@ -26,7 +26,10 @@ note
 			-- Delete
 			orm.delete (entity)
 	]"
-	author: "Larry Rix"
+	purpose: "Prototype-based ORM facade with automatic entity-to-column mapping and CRUD operations"
+	collaborators: "SIMPLE_SQL_DATABASE, SIMPLE_ORM_ENTITY, SIMPLE_SQL_RESULT, SIMPLE_SQL_ROW, SIMPLE_SQL_SELECT_BUILDER, SIMPLE_SQL_INSERT_BUILDER, SIMPLE_SQL_UPDATE_BUILDER, SIMPLE_SQL_DELETE_BUILDER"
+	design_pattern: "Facade"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -40,6 +43,11 @@ feature {NONE} -- Initialization
 
 	make (a_database: SIMPLE_SQL_DATABASE)
 			-- Create ORM with database connection.
+		note
+			semantic_role: "[
+				Captures database reference for all ORM
+				operations.
+			]"
 		require
 			database_open: a_database.is_open
 		do
@@ -57,6 +65,11 @@ feature -- Schema Operations
 
 	create_table (a_prototype: SIMPLE_ORM_ENTITY)
 			-- Create table for entity type if it doesn't exist.
+		note
+			semantic_role: "[
+				Delegates DDL generation to the entity
+				and executes it.
+			]"
 		require
 			prototype_attached: a_prototype /= Void
 		do
@@ -65,6 +78,11 @@ feature -- Schema Operations
 
 	drop_table (a_prototype: SIMPLE_ORM_ENTITY)
 			-- Drop table for entity type if it exists.
+		note
+			semantic_role: "[
+				Executes DROP TABLE IF EXISTS for the
+				entity's table.
+			]"
 		require
 			prototype_attached: a_prototype /= Void
 		do
@@ -73,6 +91,11 @@ feature -- Schema Operations
 
 	table_exists (a_prototype: SIMPLE_ORM_ENTITY): BOOLEAN
 			-- Does table for this entity type exist?
+		note
+			semantic_role: "[
+				Delegates table existence check to the
+				schema inspector.
+			]"
 		require
 			prototype_attached: a_prototype /= Void
 		do
@@ -83,6 +106,11 @@ feature -- Query: All
 
 	find_all (a_prototype: SIMPLE_ORM_ENTITY): ARRAYED_LIST [SIMPLE_ORM_ENTITY]
 			-- Find all entities of this type.
+		note
+			semantic_role: "[
+				Selects all rows and maps each to a new
+				entity via prototype cloning.
+			]"
 		require
 			prototype_attached: a_prototype /= Void
 		local
@@ -105,6 +133,11 @@ feature -- Query: All
 
 	find_all_ordered (a_prototype: SIMPLE_ORM_ENTITY; a_order_by: READABLE_STRING_8): ARRAYED_LIST [SIMPLE_ORM_ENTITY]
 			-- Find all entities ordered by column(s).
+		note
+			semantic_role: "[
+				Selects all rows with ORDER BY and maps
+				via prototype cloning.
+			]"
 		require
 			prototype_attached: a_prototype /= Void
 			order_not_empty: not a_order_by.is_empty
@@ -129,6 +162,11 @@ feature -- Query: All
 
 	find_all_limited (a_prototype: SIMPLE_ORM_ENTITY; a_limit, a_offset: INTEGER): ARRAYED_LIST [SIMPLE_ORM_ENTITY]
 			-- Find entities with pagination.
+		note
+			semantic_role: "[
+				Selects a page of rows with LIMIT/OFFSET
+				and maps via prototype cloning.
+			]"
 		require
 			prototype_attached: a_prototype /= Void
 			positive_limit: a_limit > 0
@@ -162,6 +200,11 @@ feature -- Query: By ID
 
 	find_by_id (a_prototype: SIMPLE_ORM_ENTITY; a_id: INTEGER_64): detachable SIMPLE_ORM_ENTITY
 			-- Find entity by primary key, or Void if not found.
+		note
+			semantic_role: "[
+				Queries a single row by primary key and
+				populates a cloned prototype.
+			]"
 		require
 			prototype_attached: a_prototype /= Void
 			valid_id: a_id > 0
@@ -184,6 +227,11 @@ feature -- Query: By ID
 
 	exists (a_prototype: SIMPLE_ORM_ENTITY; a_id: INTEGER_64): BOOLEAN
 			-- Does an entity with this ID exist?
+		note
+			semantic_role: "[
+				Checks for row existence by primary key
+				without loading data.
+			]"
 		require
 			prototype_attached: a_prototype /= Void
 			valid_id: a_id > 0
@@ -203,6 +251,11 @@ feature -- Query: Conditional
 
 	find_where (a_prototype: SIMPLE_ORM_ENTITY; a_conditions: READABLE_STRING_8): ARRAYED_LIST [SIMPLE_ORM_ENTITY]
 			-- Find all entities matching conditions.
+		note
+			semantic_role: "[
+				Selects rows matching WHERE and maps via
+				prototype cloning.
+			]"
 		require
 			prototype_attached: a_prototype /= Void
 			conditions_not_empty: not a_conditions.is_empty
@@ -227,6 +280,11 @@ feature -- Query: Conditional
 
 	find_first_where (a_prototype: SIMPLE_ORM_ENTITY; a_conditions: READABLE_STRING_8): detachable SIMPLE_ORM_ENTITY
 			-- Find first entity matching conditions.
+		note
+			semantic_role: "[
+				Selects the first row matching WHERE and
+				populates a cloned prototype.
+			]"
 		require
 			prototype_attached: a_prototype /= Void
 			conditions_not_empty: not a_conditions.is_empty
@@ -251,6 +309,11 @@ feature -- Query: Counting
 
 	count (a_prototype: SIMPLE_ORM_ENTITY): INTEGER
 			-- Total count of entities.
+		note
+			semantic_role: "[
+				Returns the COUNT(*) of all rows in the
+				entity's table.
+			]"
 		require
 			prototype_attached: a_prototype /= Void
 		local
@@ -271,6 +334,11 @@ feature -- Query: Counting
 
 	count_where (a_prototype: SIMPLE_ORM_ENTITY; a_conditions: READABLE_STRING_8): INTEGER
 			-- Count of entities matching conditions.
+		note
+			semantic_role: "[
+				Returns the COUNT(*) of rows matching a
+				WHERE clause.
+			]"
 		require
 			prototype_attached: a_prototype /= Void
 			conditions_not_empty: not a_conditions.is_empty
@@ -296,6 +364,11 @@ feature -- Command: Insert
 	insert (a_entity: SIMPLE_ORM_ENTITY): INTEGER_64
 			-- Insert entity and return new primary key.
 			-- Returns 0 if insert failed.
+		note
+			semantic_role: "[
+				Maps entity to columns via to_column_hash
+				and executes INSERT returning ID.
+			]"
 		require
 			entity_attached: a_entity /= Void
 			entity_is_new: a_entity.is_new
@@ -327,6 +400,11 @@ feature -- Command: Update
 	update (a_entity: SIMPLE_ORM_ENTITY): BOOLEAN
 			-- Update entity by its primary key.
 			-- Returns True if exactly one row was updated.
+		note
+			semantic_role: "[
+				Maps entity to columns and executes UPDATE
+				with primary key WHERE clause.
+			]"
 		require
 			entity_attached: a_entity /= Void
 			entity_persisted: a_entity.is_persisted
@@ -356,6 +434,11 @@ feature -- Command: Save (Insert or Update)
 	save (a_entity: SIMPLE_ORM_ENTITY): INTEGER_64
 			-- Insert new entity or update existing.
 			-- Returns entity ID (new or existing).
+		note
+			semantic_role: "[
+				Dispatches to insert or update based on
+				entity persistence state.
+			]"
 		require
 			entity_attached: a_entity /= Void
 		do
@@ -373,6 +456,11 @@ feature -- Command: Delete
 	delete (a_entity: SIMPLE_ORM_ENTITY): BOOLEAN
 			-- Delete entity by primary key.
 			-- Returns True if exactly one row was deleted.
+		note
+			semantic_role: "[
+				Executes DELETE by primary key from the
+				entity's table.
+			]"
 		require
 			entity_attached: a_entity /= Void
 			entity_persisted: a_entity.is_persisted
@@ -389,6 +477,11 @@ feature -- Command: Delete
 	delete_by_id (a_prototype: SIMPLE_ORM_ENTITY; a_id: INTEGER_64): BOOLEAN
 			-- Delete entity by ID.
 			-- Returns True if exactly one row was deleted.
+		note
+			semantic_role: "[
+				Executes DELETE by primary key using the
+				prototype's table metadata.
+			]"
 		require
 			prototype_attached: a_prototype /= Void
 			valid_id: a_id > 0
@@ -405,6 +498,11 @@ feature -- Command: Delete
 	delete_where (a_prototype: SIMPLE_ORM_ENTITY; a_conditions: READABLE_STRING_8): INTEGER
 			-- Delete all entities matching conditions.
 			-- Returns number of rows deleted.
+		note
+			semantic_role: "[
+				Executes DELETE for all rows matching a
+				WHERE clause.
+			]"
 		require
 			prototype_attached: a_prototype /= Void
 			conditions_not_empty: not a_conditions.is_empty
@@ -420,6 +518,11 @@ feature -- Command: Delete
 	delete_all (a_prototype: SIMPLE_ORM_ENTITY): INTEGER
 			-- Delete all entities from table (use with caution!).
 			-- Returns number of rows deleted.
+		note
+			semantic_role: "[
+				Removes all rows from the entity's table
+				via raw DELETE.
+			]"
 		require
 			prototype_attached: a_prototype /= Void
 		do
@@ -433,12 +536,22 @@ feature -- Status
 
 	has_error: BOOLEAN
 			-- Did the last operation cause an error?
+		note
+			semantic_role: "[
+				Delegates error status check to the
+				database.
+			]"
 		do
 			Result := database.has_error
 		end
 
 	last_error_message: detachable STRING_32
 			-- Error message from last failed operation.
+		note
+			semantic_role: "[
+				Delegates error message retrieval to the
+				database.
+			]"
 		do
 			Result := database.last_error_message
 		end
@@ -448,6 +561,11 @@ feature {NONE} -- Implementation
 	new_entity_from_prototype (a_prototype: SIMPLE_ORM_ENTITY): SIMPLE_ORM_ENTITY
 			-- Create new entity instance using prototype's twin.
 			-- Entities must implement proper `twin` or provide factory.
+		note
+			semantic_role: "[
+				Clones the prototype to create a fresh
+				entity for row population.
+			]"
 		do
 			Result := a_prototype.twin
 		end
@@ -459,5 +577,9 @@ invariant
 note
 	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"
+	source: "[
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
+	]"
 
 end

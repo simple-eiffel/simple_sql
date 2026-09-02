@@ -1,18 +1,15 @@
 note
 	description: "[
-		SQLite PRAGMA configuration for performance tuning and database settings.
-
-		Provides named creation procedures for common configurations:
-			- make_default: Standard SQLite defaults
-			- make_wal: WAL mode with sensible defaults
-			- make_performance: Optimized for speed (some durability tradeoff)
-			- make_safe: Maximum durability, slower writes
-
-		Usage:
-			create db.make ("mydb.sqlite")
-			create config.make_wal
-			config.apply (db)
+		A configuration object encapsulating SQLite PRAGMA settings for journal mode,
+		synchronous level, cache size, busy timeout, foreign keys, and memory-mapped I/O.
+		Offers named creation procedures for common profiles (default, WAL, performance,
+		safe) and applies all settings to a SIMPLE_SQL_DATABASE in one operation.
+		Provides strategy-based performance tuning for the simple_sql library.
 	]"
+	purpose: "Encapsulate and apply named PRAGMA configuration profiles for SQLite databases"
+	collaborators: "SIMPLE_SQL_DATABASE"
+	design_pattern: "Strategy"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -30,6 +27,12 @@ feature {NONE} -- Initialization
 
 	make_default
 			-- Standard SQLite defaults (DELETE journal, FULL synchronous)
+		note
+			semantic_role: "[
+				Establishes conservative default
+				configuration matching out-of-the-box
+				SQLite behavior.
+			]"
 		do
 			journal_mode := Journal_delete
 			synchronous := Synchronous_full
@@ -45,6 +48,11 @@ feature {NONE} -- Initialization
 	make_wal
 			-- WAL mode with sensible defaults for concurrent read/write
 			-- Good balance of performance and durability
+		note
+			semantic_role: "[
+				Configures WAL mode balancing concurrent
+				access performance with data durability.
+			]"
 		do
 			journal_mode := Journal_wal
 			synchronous := Synchronous_normal
@@ -60,6 +68,12 @@ feature {NONE} -- Initialization
 	make_performance
 			-- Maximum performance configuration
 			-- WARNING: Reduced durability - may lose recent commits on crash
+		note
+			semantic_role: "[
+				Configures maximum throughput with
+				explicit durability tradeoff for
+				batch operations.
+			]"
 		do
 			journal_mode := Journal_wal
 			synchronous := Synchronous_off
@@ -75,6 +89,12 @@ feature {NONE} -- Initialization
 	make_safe
 			-- Maximum durability configuration
 			-- Slower writes but guarantees data integrity
+		note
+			semantic_role: "[
+				Configures maximum data integrity
+				guarantees at the cost of write
+				throughput.
+			]"
 		do
 			journal_mode := Journal_wal
 			synchronous := Synchronous_extra
@@ -89,6 +109,11 @@ feature {NONE} -- Initialization
 
 	make_custom
 			-- Create with all defaults, caller sets individual values
+		note
+			semantic_role: "[
+				Starts with defaults, allowing caller
+				to customize individual PRAGMA settings.
+			]"
 		do
 			make_default
 		end
@@ -117,6 +142,13 @@ feature -- Element change
 
 	set_journal_mode (a_mode: INTEGER)
 			-- Set journal mode
+		note
+			semantic_role: "[
+				Selects the journaling strategy
+				controlling crash recovery and
+				concurrency behavior.
+			]"
+			modifies: "journal_mode"
 		require
 			valid_mode: a_mode >= Journal_delete and a_mode <= Journal_off
 		do
@@ -127,6 +159,12 @@ feature -- Element change
 
 	set_synchronous (a_level: INTEGER)
 			-- Set synchronous level
+		note
+			semantic_role: "[
+				Controls fsync frequency balancing write
+				performance against durability guarantees.
+			]"
+			modifies: "synchronous"
 		require
 			valid_level: a_level >= Synchronous_off and a_level <= Synchronous_extra
 		do
@@ -137,6 +175,12 @@ feature -- Element change
 
 	set_cache_size (a_size: INTEGER)
 			-- Set cache size (positive = pages, negative = KB)
+		note
+			semantic_role: "[
+				Adjusts the page cache size affecting
+				memory usage and read performance.
+			]"
+			modifies: "cache_size"
 		do
 			cache_size := a_size
 		ensure
@@ -145,6 +189,12 @@ feature -- Element change
 
 	set_busy_timeout (a_timeout: INTEGER)
 			-- Set busy timeout in milliseconds
+		note
+			semantic_role: "[
+				Configures how long SQLite waits when
+				another connection holds a lock.
+			]"
+			modifies: "busy_timeout"
 		require
 			non_negative: a_timeout >= 0
 		do
@@ -155,6 +205,12 @@ feature -- Element change
 
 	set_foreign_keys (a_enabled: BOOLEAN)
 			-- Enable or disable foreign key constraints
+		note
+			semantic_role: "[
+				Toggles foreign key enforcement, which
+				SQLite disables by default.
+			]"
+			modifies: "foreign_keys"
 		do
 			foreign_keys := a_enabled
 		ensure
@@ -163,6 +219,13 @@ feature -- Element change
 
 	set_mmap_size (a_size: INTEGER_64)
 			-- Set memory-mapped I/O size (0 = disabled)
+		note
+			semantic_role: "[
+				Configures memory-mapped I/O for
+				potential read performance improvement
+				on large databases.
+			]"
+			modifies: "mmap_size"
 		require
 			non_negative: a_size >= 0
 		do
@@ -175,6 +238,11 @@ feature -- Operations
 
 	apply (a_database: SIMPLE_SQL_DATABASE)
 			-- Apply this configuration to the database
+		note
+			semantic_role: "[
+				Executes all configured PRAGMAs against
+				the target database in one operation.
+			]"
 		require
 			database_attached: a_database /= Void
 			database_open: a_database.is_open
@@ -206,6 +274,12 @@ feature -- Query
 
 	journal_mode_string: STRING_8
 			-- Journal mode as string for PRAGMA
+		note
+			semantic_role: "[
+				Converts integer journal mode constant
+				to the string expected by PRAGMA
+				journal_mode.
+			]"
 		do
 			inspect journal_mode
 			when Journal_delete then Result := "DELETE"
@@ -223,6 +297,12 @@ feature -- Query
 
 	synchronous_string: STRING_8
 			-- Synchronous mode as string
+		note
+			semantic_role: "[
+				Converts integer synchronous constant
+				to the string expected by PRAGMA
+				synchronous.
+			]"
 		do
 			inspect synchronous
 			when Synchronous_off then Result := "OFF"
@@ -280,8 +360,8 @@ note
 	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"
 	source: "[
-		SIMPLE_SQL - High-level SQLite API for Eiffel
-		PRAGMA reference: https://www.sqlite.org/pragma.html
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
 	]"
 
 end

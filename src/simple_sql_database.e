@@ -1,17 +1,17 @@
 note
 	description: "[
-		High-level SQLite database API for simple, safe database operations.
-		Simplifies the sqlite3 library for common use cases with automatic resource management.
-
-		Error Handling:
-			- `has_error`: Check if last operation failed
-			- `last_structured_error`: Full error with code, message, SQL context
-			- `last_error_code`: Quick access to error code constant
-			- `last_error_message`: Quick access to error message string
-			- `error_codes`: Access to SIMPLE_SQL_ERROR_CODE for comparisons
+		The primary facade for all SQLite database operations in the simple_sql library.
+		Wraps ISE's SQLITE_DATABASE with a high-level API providing execute, query,
+		prepared statements, transactions, query builders, streaming, and N+1 detection.
+		Serves as the single entry point to all database subsystems including schema,
+		FTS5, JSON, audit, and PRAGMA configuration.
 	]"
+	purpose: "Provide a high-level, contract-driven facade for SQLite database operations"
+	collaborators: "SQLITE_DATABASE, SIMPLE_SQL_RESULT, SIMPLE_SQL_ROW, SIMPLE_SQL_PREPARED_STATEMENT, SIMPLE_SQL_SCHEMA, SIMPLE_SQL_ERROR, SIMPLE_SQL_QUERY_MONITOR"
+	design_pattern: "Facade"
 	EIS: "name=API Reference", "src=../docs/api/database.html", "protocol=URI", "tag=documentation"
 	EIS: "name=Getting Started", "src=../docs/getting-started.html", "protocol=URI", "tag=tutorial"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -30,6 +30,11 @@ feature {NONE} -- Initialization
 
 	make (a_file_name: READABLE_STRING_GENERAL)
 			-- Create/open database file in read-write mode
+		note
+			semantic_role: "[
+				Opens or creates a persistent database
+				file for read-write operations.
+			]"
 		require
 			file_name_not_empty: not a_file_name.is_empty
 		do
@@ -42,6 +47,11 @@ feature {NONE} -- Initialization
 
 	make_memory
 			-- Create in-memory database
+		note
+			semantic_role: "[
+				Creates an ephemeral in-memory database
+				for testing and temporary operations.
+			]"
 		do
 			create internal_db.make (create {SQLITE_IN_MEMORY_SOURCE})
 			internal_db.open_create_read_write
@@ -53,6 +63,11 @@ feature {NONE} -- Initialization
 
 	make_read_only (a_file_name: READABLE_STRING_GENERAL)
 			-- Open existing database file in read-only mode
+		note
+			semantic_role: "[
+				Opens an existing database in read-only
+				mode for safe concurrent access.
+			]"
 		require
 			file_name_not_empty: not a_file_name.is_empty
 			file_exists: (create {RAW_FILE}.make_with_name (a_file_name)).exists
@@ -74,6 +89,12 @@ feature -- Access
 
 	last_error_message: detachable STRING_32
 			-- Error message from last failed operation
+		note
+			semantic_role: "[
+				Convenience accessor extracting error
+				message from structured error for
+				quick diagnostics.
+			]"
 		do
 			if attached last_structured_error as al_l_err then
 				Result := al_l_err.message
@@ -82,6 +103,12 @@ feature -- Access
 
 	last_error_code: INTEGER
 			-- Error code from last operation (0 = success)
+		note
+			semantic_role: "[
+				Convenience accessor extracting error
+				code from structured error for
+				programmatic error handling.
+			]"
 		do
 			if attached last_structured_error as al_l_err then
 				Result := al_l_err.code
@@ -93,6 +120,12 @@ feature -- Access
 	error_codes: SIMPLE_SQL_ERROR_CODE
 			-- Access to error code constants for comparisons
 			-- Usage: if db.last_error_code = db.error_codes.constraint then ...
+		note
+			semantic_role: "[
+				Provides error code constants for
+				programmatic comparison without
+				hardcoded integers.
+			]"
 		once
 			create Result
 		end
@@ -101,6 +134,11 @@ feature -- Access
 	rows_affected,
 	modified_count: INTEGER
 			-- Number of rows modified by last operation
+		note
+			semantic_role: "[
+				Reports modification count for verifying
+				INSERT/UPDATE/DELETE effects.
+			]"
 		require
 			is_open: is_open
 		do
@@ -109,6 +147,12 @@ feature -- Access
 
 	is_in_transaction: BOOLEAN
 			-- Is database currently in a transaction?
+		note
+			semantic_role: "[
+				Transaction state predicate for
+				precondition guards on commit and
+				rollback.
+			]"
 		require
 			is_open: is_open
 		do
@@ -121,6 +165,12 @@ feature -- Status report
 	connected,
 	is_connected: BOOLEAN
 			-- Is database connection open?
+		note
+			semantic_role: "[
+				Connection state predicate used as
+				precondition guard on all database
+				operations.
+			]"
 		do
 			Result := not internal_db.is_closed
 		end
@@ -129,6 +179,11 @@ feature -- Status report
 	failed,
 	error_occurred: BOOLEAN
 			-- Did last operation fail?
+		note
+			semantic_role: "[
+				Error state predicate for checking
+				operation success before proceeding.
+			]"
 		do
 			Result := last_structured_error /= Void
 		ensure
@@ -139,18 +194,34 @@ feature -- Error status queries
 
 	is_constraint_error: BOOLEAN
 			-- Was last error a constraint violation?
+		note
+			semantic_role: "[
+				Constraint violation classification for
+				handling UNIQUE, NOT NULL, and CHECK
+				failures.
+			]"
 		do
 			Result := attached last_structured_error as l_err and then l_err.is_constraint_violation
 		end
 
 	is_busy_error: BOOLEAN
 			-- Was last error due to database being busy/locked?
+		note
+			semantic_role: "[
+				Busy/locked classification for retry
+				logic in concurrent access scenarios.
+			]"
 		do
 			Result := attached last_structured_error as l_err and then l_err.is_busy
 		end
 
 	is_readonly_error: BOOLEAN
 			-- Was last error due to readonly database?
+		note
+			semantic_role: "[
+				Readonly classification for detecting
+				write attempts on read-only connections.
+			]"
 		do
 			Result := attached last_structured_error as l_err and then l_err.is_readonly
 		end
@@ -163,6 +234,11 @@ feature -- Basic operations
 	run_statement,
 	perform (a_sql: READABLE_STRING_8)
 			-- Execute SQL statement (INSERT, UPDATE, DELETE, CREATE, etc)
+		note
+			semantic_role: "[
+				Primary command execution entry point
+				for all non-query SQL statements.
+			]"
 		require
 			is_open: is_open
 			sql_not_empty: not a_sql.is_empty
@@ -188,6 +264,11 @@ feature -- Basic operations
 	query_sql,
 	run_query (a_sql: READABLE_STRING_8): SIMPLE_SQL_RESULT
 			-- Execute query and return results
+		note
+			semantic_role: "[
+				Primary query execution entry point
+				returning eagerly-loaded result rows.
+			]"
 		require
 			is_open: is_open
 			sql_not_empty: not a_sql.is_empty
@@ -219,6 +300,12 @@ feature -- Parameterized Operations (convenience methods)
 			-- Execute SQL with parameters. Use ? placeholders.
 			-- Supported types: INTEGER, INTEGER_64, REAL_64, STRING, BOOLEAN, Void (NULL)
 			-- Example: execute_with_args ("INSERT INTO t (a, b) VALUES (?, ?)", <<123, "text">>)
+		note
+			semantic_role: "[
+				Parameterized command execution
+				preventing SQL injection via bind
+				variables.
+			]"
 		require
 			is_open: is_open
 			sql_not_empty: not a_sql.is_empty
@@ -238,6 +325,11 @@ feature -- Parameterized Operations (convenience methods)
 			-- Execute query with parameters. Use ? placeholders.
 			-- Supported types: INTEGER, INTEGER_64, REAL_64, STRING, BOOLEAN, Void (NULL)
 			-- Example: query_with_args ("SELECT * FROM t WHERE id = ?", <<123>>)
+		note
+			semantic_role: "[
+				Parameterized query execution preventing
+				SQL injection via bind variables.
+			]"
 		require
 			is_open: is_open
 			sql_not_empty: not a_sql.is_empty
@@ -252,6 +344,11 @@ feature -- Parameterized Operations (convenience methods)
 
 	begin_transaction
 			-- Begin transaction (deferred mode)
+		note
+			semantic_role: "[
+				Starts a deferred transaction for
+				grouping multiple operations atomically.
+			]"
 		require
 			is_open: is_open
 		do
@@ -261,6 +358,11 @@ feature -- Parameterized Operations (convenience methods)
 
 	commit
 			-- Commit current transaction
+		note
+			semantic_role: "[
+				Makes all changes within the current
+				transaction permanent.
+			]"
 		require
 			is_open: is_open
 			in_transaction: is_in_transaction
@@ -271,6 +373,11 @@ feature -- Parameterized Operations (convenience methods)
 
 	rollback
 			-- Rollback current transaction
+		note
+			semantic_role: "[
+				Discards all changes within the current
+				transaction, restoring previous state.
+			]"
 		require
 			is_open: is_open
 			in_transaction: is_in_transaction
@@ -281,6 +388,11 @@ feature -- Parameterized Operations (convenience methods)
 
 	close
 			-- Close database connection
+		note
+			semantic_role: "[
+				Releases the database connection and
+				associated resources.
+			]"
 		do
 			if not internal_db.is_closed then
 				internal_db.close
@@ -293,6 +405,12 @@ feature {NONE} -- Error handling implementation
 
 	clear_error
 			-- Clear any previous error
+		note
+			semantic_role: "[
+				Resets error state before each operation
+				so has_error reflects only the latest
+				operation.
+			]"
 		do
 			last_structured_error := Void
 		ensure
@@ -301,6 +419,12 @@ feature {NONE} -- Error handling implementation
 
 	check_and_set_error (a_sql: READABLE_STRING_GENERAL)
 			-- Check internal_db for error and set structured error if found
+		note
+			semantic_role: "[
+				Translates internal SQLite error state
+				into structured SIMPLE_SQL_ERROR after
+				operation completion.
+			]"
 		do
 			if internal_db.has_error then
 				set_error_from_exception (a_sql)
@@ -309,6 +433,12 @@ feature {NONE} -- Error handling implementation
 
 	set_error_from_exception (a_sql: READABLE_STRING_GENERAL)
 			-- Set structured error from internal_db exception
+		note
+			semantic_role: "[
+				Captures SQLite exception details into
+				structured error with code, message,
+				and SQL context.
+			]"
 		local
 			l_code: INTEGER
 			l_message: STRING_32
@@ -340,6 +470,12 @@ feature -- Prepared Statements
 	create_statement,
 	compile_sql (a_sql: READABLE_STRING_8): SIMPLE_SQL_PREPARED_STATEMENT
 			-- Create prepared statement for given SQL
+		note
+			semantic_role: "[
+				Creates a reusable prepared statement
+				for repeated execution with different
+				parameters.
+			]"
 		require
 			is_open: is_open
 			sql_not_empty: not a_sql.is_empty
@@ -353,6 +489,11 @@ feature -- Query Builders
 
 	select_builder: SIMPLE_SQL_SELECT_BUILDER
 			-- Create SELECT query builder for this database
+		note
+			semantic_role: "[
+				Factory for fluent SELECT query
+				construction bound to this database.
+			]"
 		require
 			is_open: is_open
 		do
@@ -364,6 +505,11 @@ feature -- Query Builders
 
 	insert_builder: SIMPLE_SQL_INSERT_BUILDER
 			-- Create INSERT query builder for this database
+		note
+			semantic_role: "[
+				Factory for fluent INSERT statement
+				construction bound to this database.
+			]"
 		require
 			is_open: is_open
 		do
@@ -375,6 +521,11 @@ feature -- Query Builders
 
 	update_builder: SIMPLE_SQL_UPDATE_BUILDER
 			-- Create UPDATE query builder for this database
+		note
+			semantic_role: "[
+				Factory for fluent UPDATE statement
+				construction bound to this database.
+			]"
 		require
 			is_open: is_open
 		do
@@ -386,6 +537,11 @@ feature -- Query Builders
 
 	delete_builder: SIMPLE_SQL_DELETE_BUILDER
 			-- Create DELETE query builder for this database
+		note
+			semantic_role: "[
+				Factory for fluent DELETE statement
+				construction bound to this database.
+			]"
 		require
 			is_open: is_open
 		do
@@ -397,6 +553,12 @@ feature -- Query Builders
 
 	eager_loader: SIMPLE_SQL_EAGER_LOADER
 			-- Create eager loader to prevent N+1 queries.
+		note
+			semantic_role: "[
+				Factory for batch loading related
+				records, preventing N+1 query
+				performance problems.
+			]"
 		require
 			is_open: is_open
 		do
@@ -407,6 +569,11 @@ feature -- Query Builders
 
 	paginator (a_table: READABLE_STRING_8): SIMPLE_SQL_PAGINATOR
 			-- Create paginator for cursor-based pagination.
+		note
+			semantic_role: "[
+				Factory for cursor-based pagination
+				delivering bounded result pages.
+			]"
 		require
 			is_open: is_open
 			table_not_empty: not a_table.is_empty
@@ -421,6 +588,12 @@ feature -- Streaming and Cursor Queries
 	query_cursor (a_sql: READABLE_STRING_8): SIMPLE_SQL_CURSOR
 			-- Execute query returning lazy cursor for row-by-row iteration
 			-- Use for large result sets to avoid loading all rows into memory
+		note
+			semantic_role: "[
+				Lazy row-by-row iteration for large
+				result sets without full memory
+				allocation.
+			]"
 		require
 			is_open: is_open
 			sql_not_empty: not a_sql.is_empty
@@ -434,6 +607,12 @@ feature -- Streaming and Cursor Queries
 	query_stream (a_sql: READABLE_STRING_8; a_action: FUNCTION [SIMPLE_SQL_ROW, BOOLEAN])
 			-- Execute query and process each row via callback action
 			-- Action returns True to stop early, False to continue
+		note
+			semantic_role: "[
+				Callback-driven row processing for
+				streaming results with early
+				termination support.
+			]"
 		require
 			is_open: is_open
 			sql_not_empty: not a_sql.is_empty
@@ -449,6 +628,12 @@ feature -- Streaming and Cursor Queries
 	create_stream (a_sql: READABLE_STRING_8): SIMPLE_SQL_RESULT_STREAM
 			-- Create stream object for advanced streaming operations
 			-- (for_each, aggregate, collect_first, etc.)
+		note
+			semantic_role: "[
+				Factory for advanced streaming operations
+				including aggregation and partial
+				collection.
+			]"
 		require
 			is_open: is_open
 			sql_not_empty: not a_sql.is_empty
@@ -463,6 +648,11 @@ feature -- Schema Introspection
 
 	schema: SIMPLE_SQL_SCHEMA
 			-- Create schema inspector for this database
+		note
+			semantic_role: "[
+				Factory for runtime schema discovery
+				via SQLite PRAGMAs.
+			]"
 		require
 			is_open: is_open
 		do
@@ -475,6 +665,11 @@ feature -- Full-Text Search
 
 	fts5: SIMPLE_SQL_FTS5
 			-- Create FTS5 full-text search manager for this database
+		note
+			semantic_role: "[
+				Factory for full-text search operations
+				using SQLite's FTS5 extension.
+			]"
 		require
 			is_open: is_open
 		do
@@ -487,6 +682,11 @@ feature -- JSON Support
 
 	json: SIMPLE_SQL_JSON
 			-- Create JSON helper for advanced JSON operations (JSON1 extension)
+		note
+			semantic_role: "[
+				Factory for JSON operations using
+				SQLite's JSON1 extension.
+			]"
 		require
 			is_open: is_open
 		do
@@ -499,6 +699,11 @@ feature -- Audit/Change Tracking
 
 	audit: SIMPLE_SQL_AUDIT
 			-- Create audit manager for automatic change tracking
+		note
+			semantic_role: "[
+				Factory for automatic change tracking
+				with trigger-based audit trails.
+			]"
 		require
 			is_open: is_open
 		do
@@ -512,6 +717,11 @@ feature -- BLOB Utilities
 	read_blob_from_file (a_file_path: STRING_32): detachable MANAGED_POINTER
 			-- Read binary file into MANAGED_POINTER for use with BLOB columns
 			-- Returns Void if file cannot be read
+		note
+			semantic_role: "[
+				File-to-BLOB bridge for inserting
+				binary file contents into BLOB columns.
+			]"
 		require
 			file_path_not_empty: not a_file_path.is_empty
 		local
@@ -531,6 +741,11 @@ feature -- BLOB Utilities
 	write_blob_to_file (a_blob: MANAGED_POINTER; a_file_path: STRING_32)
 			-- Write BLOB data (MANAGED_POINTER) to file
 			-- Creates or overwrites the file at a_file_path
+		note
+			semantic_role: "[
+				BLOB-to-file bridge for extracting
+				binary column data to the filesystem.
+			]"
 		require
 			blob_not_void: a_blob /= Void
 			file_path_not_empty: not a_file_path.is_empty
@@ -546,6 +761,12 @@ feature -- Additional Accessors
 
 	last_insert_rowid: INTEGER_64
 			-- Row ID of last inserted row
+		note
+			semantic_role: "[
+				Retrieves SQLite's last_insert_rowid
+				for obtaining auto-generated primary
+				keys.
+			]"
 		require
 			is_open: is_open
 		local
@@ -561,6 +782,12 @@ feature -- Additional Accessors
 
 	commit_transaction
 			-- Commit current transaction (alias for commit)
+		note
+			semantic_role: "[
+				Named alias for commit providing
+				explicit transaction lifecycle
+				semantics.
+			]"
 		require
 			is_open: is_open
 			in_transaction: is_in_transaction
@@ -571,6 +798,12 @@ feature -- Additional Accessors
 
 	rollback_transaction
 			-- Rollback current transaction (alias for rollback)
+		note
+			semantic_role: "[
+				Named alias for rollback providing
+				explicit transaction lifecycle
+				semantics.
+			]"
 		require
 			is_open: is_open
 			in_transaction: is_in_transaction
@@ -588,6 +821,11 @@ feature -- Atomic Operations (Phase 6)
 			-- Execute operation inside a transaction with automatic commit/rollback.
 			-- If operation raises exception, transaction is rolled back.
 			-- Example: db.atomic (agent my_multi_table_operation)
+		note
+			semantic_role: "[
+				Agent-wrapped transaction execution
+				with automatic rollback on failure.
+			]"
 		require
 			is_open: is_open
 			not_in_transaction: not is_in_transaction
@@ -614,6 +852,12 @@ feature -- Atomic Operations (Phase 6)
 			-- Returns [True, new_version] on success, [False, 0] if version mismatch (concurrent modification).
 			-- The version column is automatically incremented.
 			-- Example: result := db.update_versioned ("stock", 42, 5, "quantity = quantity + ?", <<10>>)
+		note
+			semantic_role: "[
+				Optimistic locking update that detects
+				concurrent modifications via version
+				column comparison.
+			]"
 		require
 			is_open: is_open
 			table_not_empty: not a_table.is_empty
@@ -659,6 +903,12 @@ feature -- Atomic Operations (Phase 6)
 			-- Insert row or update if conflict on specified columns.
 			-- Uses SQLite's INSERT ... ON CONFLICT DO UPDATE syntax.
 			-- Example: db.upsert ("stock", <<"product_id", "location_id", "quantity">>, <<1, 2, 100>>, <<"product_id", "location_id">>)
+		note
+			semantic_role: "[
+				Atomic insert-or-update using SQLite's
+				ON CONFLICT clause for idempotent
+				writes.
+			]"
 		require
 			is_open: is_open
 			table_not_empty: not a_table.is_empty
@@ -743,6 +993,12 @@ feature -- Atomic Operations (Phase 6)
 			-- Returns True if decrement succeeded, False if condition not met.
 			-- Prevents race condition of SELECT-then-UPDATE pattern.
 			-- Example: success := db.decrement_if ("stock", "quantity", 10, "id = ? AND quantity >= ?", <<stock_id, 10>>)
+		note
+			semantic_role: "[
+				Atomic conditional decrement preventing
+				race conditions in inventory-style
+				operations.
+			]"
 		require
 			is_open: is_open
 			table_not_empty: not a_table.is_empty
@@ -778,6 +1034,11 @@ feature -- Atomic Operations (Phase 6)
 			-- Atomically increment column if condition is met.
 			-- Returns True if increment succeeded, False if condition not met.
 			-- Example: success := db.increment_if ("stock", "quantity", 5, "id = ?", <<stock_id>>)
+		note
+			semantic_role: "[
+				Atomic conditional increment for safe
+				concurrent counter and quantity updates.
+			]"
 		require
 			is_open: is_open
 			table_not_empty: not a_table.is_empty
@@ -815,6 +1076,11 @@ feature -- Query Monitoring (N+1 Detection)
 
 	enable_query_monitor
 			-- Enable N+1 query detection.
+		note
+			semantic_role: "[
+				Activates runtime query pattern
+				monitoring for N+1 detection.
+			]"
 		do
 			if query_monitor = Void then
 				create query_monitor.make
@@ -828,6 +1094,11 @@ feature -- Query Monitoring (N+1 Detection)
 
 	disable_query_monitor
 			-- Disable N+1 query detection.
+		note
+			semantic_role: "[
+				Deactivates query monitoring to
+				eliminate monitoring overhead.
+			]"
 		do
 			if attached query_monitor as al_m then
 				al_m.disable
@@ -836,6 +1107,11 @@ feature -- Query Monitoring (N+1 Detection)
 
 	reset_query_monitor
 			-- Reset all monitoring data.
+		note
+			semantic_role: "[
+				Clears accumulated query monitoring
+				data for a fresh measurement interval.
+			]"
 		do
 			if attached query_monitor as al_m then
 				al_m.reset
@@ -851,6 +1127,12 @@ feature {NONE} -- Implementation
 
 	dispose
 			-- <Precursor>
+		note
+			semantic_role: "[
+				DISPOSABLE callback ensuring database
+				connection cleanup on garbage
+				collection.
+			]"
 		do
 			if not internal_db.is_closed then
 				internal_db.close
@@ -859,6 +1141,11 @@ feature {NONE} -- Implementation
 
 	bind_args (a_stmt: SIMPLE_SQL_PREPARED_STATEMENT; a_args: ARRAY [detachable ANY])
 			-- Bind array of arguments to prepared statement.
+		note
+			semantic_role: "[
+				Maps Eiffel values to SQLite parameter
+				types for prepared statement execution.
+			]"
 		local
 			i: INTEGER
 		do
@@ -895,7 +1182,8 @@ note
 	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"
 	source: "[
-		SIMPLE_SQL - High-level SQLite API for Eiffel
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
 	]"
 
 end

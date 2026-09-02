@@ -1,13 +1,13 @@
 note
 	description: "[
-		Structured error information from SQLite operations.
-		Captures error code, message, SQL statement, and context.
-
-		Usage:
-			if db.has_error then
-				print (db.last_error.full_description)
-			end
+		Structured error information from an SQLite operation.
+		Captures error code, message, and originating SQL while classifying
+		errors into categories and detecting specific constraint violations.
+		Provides diagnostic output for the simple_sql error-handling pipeline.
 	]"
+	purpose: "Represent and classify SQLite errors for contract-driven error handling"
+	collaborators: "SIMPLE_SQL_ERROR_CODE"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -22,6 +22,11 @@ feature {NONE} -- Initialization
 
 	make (a_code: INTEGER; a_message: READABLE_STRING_GENERAL)
 			-- Create error with code and message
+		note
+			semantic_role: "[
+				Constructs error from SQLite result code
+				and message with no SQL context.
+			]"
 		require
 			message_not_void: a_message /= Void
 		do
@@ -38,6 +43,11 @@ feature {NONE} -- Initialization
 
 	make_with_sql (a_code: INTEGER; a_message: READABLE_STRING_GENERAL; a_sql: READABLE_STRING_GENERAL)
 			-- Create error with code, message, and originating SQL
+		note
+			semantic_role: "[
+				Constructs error with the originating SQL
+				statement for diagnostic context.
+			]"
 		require
 			message_not_void: a_message /= Void
 			sql_not_void: a_sql /= Void
@@ -71,6 +81,11 @@ feature -- Derived Access
 
 	code_name: STRING_8
 			-- Human-readable name for the error code
+		note
+			semantic_role: "[
+				Maps primary error code to its
+				SQLITE_* constant name.
+			]"
 		do
 			Result := error_codes.name (code)
 		ensure
@@ -79,6 +94,11 @@ feature -- Derived Access
 
 	extended_code_name: STRING_8
 			-- Human-readable name for the extended error code
+		note
+			semantic_role: "[
+				Maps extended error code to its
+				SQLITE_*_* constant name.
+			]"
 		do
 			Result := error_codes.name (extended_code)
 		ensure
@@ -89,36 +109,66 @@ feature -- Status
 
 	is_constraint_violation: BOOLEAN
 			-- Is this a constraint violation error?
+		note
+			semantic_role: "[
+				Checks primary code against
+				SQLITE_CONSTRAINT.
+			]"
 		do
 			Result := code = error_codes.constraint
 		end
 
 	is_busy: BOOLEAN
 			-- Is this a database busy/locked error?
+		note
+			semantic_role: "[
+				Checks for SQLITE_BUSY or SQLITE_LOCKED
+				indicating contention.
+			]"
 		do
 			Result := code = error_codes.busy or code = error_codes.locked
 		end
 
 	is_readonly: BOOLEAN
 			-- Is this a readonly database error?
+		note
+			semantic_role: "[
+				Checks for SQLITE_READONLY indicating
+				write attempt on read-only database.
+			]"
 		do
 			Result := code = error_codes.readonly
 		end
 
 	is_io_error: BOOLEAN
 			-- Is this an I/O error?
+		note
+			semantic_role: "[
+				Checks for SQLITE_IOERR indicating
+				disk-level failure.
+			]"
 		do
 			Result := code = error_codes.ioerr
 		end
 
 	is_corrupt: BOOLEAN
 			-- Is this a database corruption error?
+		note
+			semantic_role: "[
+				Checks for SQLITE_CORRUPT indicating
+				malformed database image.
+			]"
 		do
 			Result := code = error_codes.corrupt
 		end
 
 	is_permission_error: BOOLEAN
 			-- Is this a permission denied error?
+		note
+			semantic_role: "[
+				Checks for SQLITE_PERM or SQLITE_AUTH
+				permission failures.
+			]"
 		do
 			Result := code = error_codes.perm or code = error_codes.auth
 		end
@@ -127,30 +177,55 @@ feature -- Specific Constraint Violations
 
 	is_unique_violation: BOOLEAN
 			-- Is this a UNIQUE constraint violation?
+		note
+			semantic_role: "[
+				Checks extended code for
+				SQLITE_CONSTRAINT_UNIQUE.
+			]"
 		do
 			Result := extended_code = error_codes.constraint_unique
 		end
 
 	is_primary_key_violation: BOOLEAN
 			-- Is this a PRIMARY KEY constraint violation?
+		note
+			semantic_role: "[
+				Checks extended code for
+				SQLITE_CONSTRAINT_PRIMARYKEY.
+			]"
 		do
 			Result := extended_code = error_codes.constraint_primarykey
 		end
 
 	is_foreign_key_violation: BOOLEAN
 			-- Is this a FOREIGN KEY constraint violation?
+		note
+			semantic_role: "[
+				Checks extended code for
+				SQLITE_CONSTRAINT_FOREIGNKEY.
+			]"
 		do
 			Result := extended_code = error_codes.constraint_foreignkey
 		end
 
 	is_not_null_violation: BOOLEAN
 			-- Is this a NOT NULL constraint violation?
+		note
+			semantic_role: "[
+				Checks extended code for
+				SQLITE_CONSTRAINT_NOTNULL.
+			]"
 		do
 			Result := extended_code = error_codes.constraint_notnull
 		end
 
 	is_check_violation: BOOLEAN
 			-- Is this a CHECK constraint violation?
+		note
+			semantic_role: "[
+				Checks extended code for
+				SQLITE_CONSTRAINT_CHECK.
+			]"
 		do
 			Result := extended_code = error_codes.constraint_check
 		end
@@ -159,6 +234,11 @@ feature -- Output
 
 	description: STRING_32
 			-- Brief error description
+		note
+			semantic_role: "[
+				Formats code name and message into
+				a single diagnostic line.
+			]"
 		do
 			create Result.make (code_name.count + message.count + 10)
 			Result.append_string_general (code_name)
@@ -170,6 +250,11 @@ feature -- Output
 
 	full_description: STRING_32
 			-- Full error description including SQL if available
+		note
+			semantic_role: "[
+				Formats multi-line diagnostic output with
+				code, message, and originating SQL.
+			]"
 		do
 			create Result.make (100)
 			Result.append_string_general ("Error: ")
@@ -193,6 +278,11 @@ feature {NONE} -- Implementation
 
 	error_codes: SIMPLE_SQL_ERROR_CODE
 			-- Error code constants
+		note
+			semantic_role: "[
+				Once-cached access to the error code
+				enumeration singleton.
+			]"
 		once
 			create Result
 		end
@@ -201,6 +291,12 @@ feature -- Element Change
 
 	set_extended_code (a_extended_code: INTEGER)
 			-- Set extended code and update primary code
+		note
+			semantic_role: "[
+				Updates both extended and primary codes
+				maintaining their bit-mask relationship.
+			]"
+			modifies: "extended_code, code"
 		do
 			extended_code := a_extended_code
 			code := error_codes.primary_code (a_extended_code)
@@ -218,7 +314,8 @@ note
 	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"
 	source: "[
-		SIMPLE_SQL - High-level SQLite API for Eiffel
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
 	]"
 
 end

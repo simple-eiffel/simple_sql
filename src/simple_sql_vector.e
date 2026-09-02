@@ -25,6 +25,9 @@ note
 			normalized := vec.normalized
 			dot := vec.dot_product (other_vec)
 	]"
+	purpose: "IEEE 754 vector with BLOB serialization and linear algebra operations for embedding search"
+	collaborators: "SIMPLE_SQL_VECTOR_STORE, SIMPLE_SQL_SIMILARITY"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -48,6 +51,11 @@ feature {NONE} -- Initialization
 	make_from_array (a_values: ARRAY [REAL_64])
 			-- Create vector from array of values
 			-- Note: Input array bounds are remapped to 1-based indexing
+		note
+			semantic_role: "[
+				Copies values into a 1-based internal
+				array with NaN/infinity validation.
+			]"
 		require
 			values_not_empty: not a_values.is_empty
 			no_nan_input: across a_values.lower |..| a_values.upper as idx all not a_values [idx].is_nan end
@@ -69,6 +77,11 @@ feature {NONE} -- Initialization
 
 	make_from_blob (a_blob: MANAGED_POINTER)
 			-- Create vector from BLOB data (IEEE 754 double-precision, little-endian)
+		note
+			semantic_role: "[
+				Deserializes a BLOB of packed REAL_64
+				values into the internal array.
+			]"
 		require
 			blob_not_void: a_blob /= Void
 			blob_valid_size: a_blob.count \\ Real_64_bytes = 0
@@ -90,6 +103,11 @@ feature {NONE} -- Initialization
 
 	make_zero (a_dimension: INTEGER)
 			-- Create zero vector of given dimension
+		note
+			semantic_role: "[
+				Allocates a zero-filled vector of the
+				specified dimensionality.
+			]"
 		require
 			positive_dimension: a_dimension > 0
 		do
@@ -103,12 +121,22 @@ feature -- Access
 
 	dimension: INTEGER
 			-- Number of elements in vector
+		note
+			semantic_role: "[
+				Returns the vector dimensionality from the
+				underlying array count.
+			]"
 		do
 			Result := values.count
 		end
 
 	item alias "[]" (a_index: INTEGER): REAL_64 assign put
 			-- Element at index (1-based)
+		note
+			semantic_role: "[
+				Provides indexed read access to vector
+				components.
+			]"
 		require
 			valid_index: a_index >= 1 and a_index <= dimension
 		do
@@ -118,10 +146,37 @@ feature -- Access
 	values: ARRAY [REAL_64]
 			-- Underlying array of values
 
+feature -- Model Queries
+
+	values_model: MML_SEQUENCE [REAL_64]
+			-- Mathematical model of vector values in order.
+		note
+			semantic_role: "[
+				MML specification of vector values for
+				formal postcondition verification.
+			]"
+		local
+			i: INTEGER
+		do
+			create Result
+			from i := 1 until i > dimension loop
+				Result := Result & values [i]
+				i := i + 1
+			end
+		ensure
+			count_matches: Result.count = dimension
+		end
+
 feature -- Element change
 
 	put (a_value: REAL_64; a_index: INTEGER)
 			-- Set element at index
+		note
+			semantic_role: "[
+				Sets a single vector component with
+				NaN/infinity validation.
+			]"
+			modifies: "values"
 		require
 			valid_index: a_index >= 1 and a_index <= dimension
 			no_nan: not a_value.is_nan
@@ -131,12 +186,18 @@ feature -- Element change
 		ensure
 			value_set: item (a_index) = a_value
 			dimension_unchanged: dimension = old dimension
+			model_updated: values_model |=| old values_model.replaced_at (a_index, a_value)
 		end
 
 feature -- Conversion
 
 	to_blob: MANAGED_POINTER
 			-- Convert to BLOB for SQLite storage (IEEE 754 double-precision, little-endian)
+		note
+			semantic_role: "[
+				Serializes the vector to a packed BLOB of
+				little-endian REAL_64 values.
+			]"
 		local
 			i: INTEGER
 		do
@@ -154,6 +215,11 @@ feature -- Conversion
 
 	to_array: ARRAY [REAL_64]
 			-- Copy of values as array
+		note
+			semantic_role: "[
+				Returns a defensive copy of the underlying
+				value array.
+			]"
 		do
 			Result := values.twin
 		ensure
@@ -165,6 +231,11 @@ feature -- Mathematical operations
 
 	magnitude: REAL_64
 			-- Euclidean norm (L2 norm) of vector
+		note
+			semantic_role: "[
+				Computes the L2 norm as square root of
+				sum of squared components.
+			]"
 		local
 			l_sum: REAL_64
 			i: INTEGER
@@ -183,6 +254,11 @@ feature -- Mathematical operations
 
 	dot_product (a_other: SIMPLE_SQL_VECTOR): REAL_64
 			-- Dot product with another vector
+		note
+			semantic_role: "[
+				Computes the inner product by summing
+				component-wise products.
+			]"
 		require
 			same_dimension: a_other.dimension = dimension
 		local
@@ -200,6 +276,11 @@ feature -- Mathematical operations
 
 	normalized: SIMPLE_SQL_VECTOR
 			-- Unit vector in same direction (magnitude = 1)
+		note
+			semantic_role: "[
+				Returns a unit vector by dividing each
+				component by the magnitude.
+			]"
 		local
 			l_mag: REAL_64
 			l_norm_values: ARRAY [REAL_64]
@@ -224,6 +305,11 @@ feature -- Mathematical operations
 
 	add (a_other: SIMPLE_SQL_VECTOR): SIMPLE_SQL_VECTOR
 			-- Vector addition
+		note
+			semantic_role: "[
+				Returns a new vector from component-wise
+				addition.
+			]"
 		require
 			same_dimension: a_other.dimension = dimension
 		local
@@ -245,6 +331,11 @@ feature -- Mathematical operations
 
 	subtract (a_other: SIMPLE_SQL_VECTOR): SIMPLE_SQL_VECTOR
 			-- Vector subtraction
+		note
+			semantic_role: "[
+				Returns a new vector from component-wise
+				subtraction.
+			]"
 		require
 			same_dimension: a_other.dimension = dimension
 		local
@@ -266,6 +357,11 @@ feature -- Mathematical operations
 
 	scale (a_factor: REAL_64): SIMPLE_SQL_VECTOR
 			-- Scalar multiplication
+		note
+			semantic_role: "[
+				Returns a new vector with each component
+				multiplied by the scalar.
+			]"
 		require
 			no_nan: not a_factor.is_nan
 			no_infinity: not a_factor.is_positive_infinity and not a_factor.is_negative_infinity
@@ -292,6 +388,11 @@ feature -- Comparison
 	is_equal (a_other: like Current): BOOLEAN
 			-- Are vectors equal (within floating point tolerance)?
 			-- Uses hybrid tolerance: max(absolute, relative * max(|a|, |b|))
+		note
+			semantic_role: "[
+				Compares vectors using hybrid
+				absolute/relative tolerance per component.
+			]"
 		local
 			i: INTEGER
 			diff, max_abs, threshold: REAL_64
@@ -316,6 +417,11 @@ feature -- Comparison
 	is_zero: BOOLEAN
 			-- Is this a zero vector?
 			-- Uses absolute tolerance (relative tolerance meaningless near zero)
+		note
+			semantic_role: "[
+				Tests whether all components are within
+				absolute tolerance of zero.
+			]"
 		local
 			i: INTEGER
 		do
@@ -334,6 +440,11 @@ feature -- Output
 
 	out: STRING
 			-- String representation
+		note
+			semantic_role: "[
+				Formats the vector as a bracketed
+				comma-separated list of values.
+			]"
 		local
 			i: INTEGER
 		do
@@ -373,5 +484,14 @@ invariant
 	consistent_upper_bound: values.upper = dimension
 	no_nan_values: across 1 |..| dimension as i all not values [i].is_nan end
 	no_infinite_values: across 1 |..| dimension as i all not values [i].is_positive_infinity and not values [i].is_negative_infinity end
+	model_count_consistent: values_model.count = dimension
+
+note
+	copyright: "Copyright (c) 2025, Larry Rix"
+	license: "MIT License"
+	source: "[
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
+	]"
 
 end

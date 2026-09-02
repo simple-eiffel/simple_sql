@@ -1,10 +1,13 @@
 note
 	description: "[
-		Helper utilities for storing and retrieving JSON data in SQLite.
-		Demonstrates two approaches:
-		1. TEXT column with SQLite's json functions
-		2. BLOB column with SIMPLE_JSON serialization
+		Helper utilities for storing and retrieving JSON data in SQLite columns.
+		Supports both TEXT columns with native json_extract queries and BLOB
+		columns for serialized storage.
+		Complements SIMPLE_SQL_JSON with table-level JSON storage patterns for simple_sql.
 	]"
+	purpose: "Store and query JSON in SQLite TEXT and BLOB columns"
+	collaborators: "SIMPLE_SQL_DATABASE, SIMPLE_SQL_RESULT"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -15,6 +18,11 @@ feature -- JSON as TEXT (SQLite native)
 
 	create_json_text_table (a_db: SIMPLE_SQL_DATABASE; a_table_name: STRING_8)
 			-- Create table with JSON TEXT column
+		note
+			semantic_role: "[
+				DDL helper creating a table with id
+				and json_data TEXT column.
+			]"
 		require
 			db_attached: a_db /= Void
 			db_open: a_db.is_open
@@ -30,6 +38,11 @@ feature -- JSON as TEXT (SQLite native)
 
 	insert_json_text (a_db: SIMPLE_SQL_DATABASE; a_table_name: STRING_8; a_json_string: STRING_8)
 			-- Insert JSON as TEXT
+		note
+			semantic_role: "[
+				Inserts a JSON string into the TEXT
+				column with single-quote escaping.
+			]"
 		require
 			db_attached: a_db /= Void
 			db_open: a_db.is_open
@@ -49,6 +62,11 @@ feature -- JSON as TEXT (SQLite native)
 	query_json_path (a_db: SIMPLE_SQL_DATABASE; a_table_name: STRING_8; a_json_path: STRING_8): SIMPLE_SQL_RESULT
 			-- Query JSON using json_extract path syntax
 			-- Example: a_json_path = "$.user.name"
+		note
+			semantic_role: "[
+				Executes json_extract query using
+				SQLite's native JSON path syntax.
+			]"
 		require
 			db_attached: a_db /= Void
 			db_open: a_db.is_open
@@ -68,6 +86,11 @@ feature -- JSON as BLOB (SIMPLE_JSON)
 
 	create_json_blob_table (a_db: SIMPLE_SQL_DATABASE; a_table_name: STRING_8)
 			-- Create table with JSON BLOB column
+		note
+			semantic_role: "[
+				DDL helper creating a table with id
+				and json_blob BLOB column.
+			]"
 		require
 			db_attached: a_db /= Void
 			db_open: a_db.is_open
@@ -85,6 +108,11 @@ feature {NONE} -- Implementation
 
 	escape_json_string (a_json: STRING_8): STRING_8
 			-- Escape single quotes in JSON string for SQL
+		note
+			semantic_role: "[
+				Doubles single quotes in JSON text for
+				safe SQL string literal embedding.
+			]"
 		local
 			i: INTEGER
 		do
@@ -108,8 +136,8 @@ note
 	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"
 	source: "[
-		SIMPLE_SQL - High-level SQLite API for Eiffel
-		Demonstrates both TEXT (json functions) and BLOB (SIMPLE_JSON) approaches
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
 	]"
 
 end

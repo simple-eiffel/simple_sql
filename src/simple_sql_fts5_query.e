@@ -1,20 +1,14 @@
 note
 	description: "[
-		Fluent query builder for FTS5 full-text search queries.
-
-		Provides a chainable API for constructing complex FTS5 queries
-		with MATCH expressions, BM25 ranking, snippets, and highlights.
-
-		Usage:
-			results := db.fts5.query_builder ("documents")
-				.match ("search terms")
-				.in_column ("body")
-				.with_rank
-				.with_snippets ("body", "<mark>", "</mark>")
-				.order_by_rank
-				.limit (20)
-				.execute
+		Fluent builder for constructing FTS5 full-text search queries.
+		Chains MATCH expressions, BM25 ranking, snippet/highlight options,
+		ordering, and pagination into executable SQL.
+		Provides the query-composition layer for simple_sql full-text search.
 	]"
+	purpose: "Build and execute FTS5 queries with MATCH, ranking, and snippets"
+	collaborators: "SIMPLE_SQL_DATABASE, SIMPLE_SQL_FTS5, SIMPLE_SQL_RESULT, SIMPLE_SQL_CURSOR"
+	design_pattern: "Builder"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -28,6 +22,12 @@ feature {NONE} -- Initialization
 
 	make (a_database: SIMPLE_SQL_DATABASE; a_table: READABLE_STRING_8)
 			-- Create FTS5 query builder for table
+		note
+			semantic_role: "[
+				Captures database and table references
+				and initializes empty builder
+				collections.
+			]"
 		require
 			database_open: a_database.is_open
 			table_not_empty: not a_table.is_empty
@@ -55,6 +55,11 @@ feature -- Query Building - Match
 
 	match (a_query: READABLE_STRING_8): like Current
 			-- Add MATCH expression for entire table
+		note
+			semantic_role: "[
+				Appends a table-wide MATCH expression
+				to the query.
+			]"
 		require
 			query_not_empty: not a_query.is_empty
 		do
@@ -66,6 +71,11 @@ feature -- Query Building - Match
 
 	match_column (a_column: READABLE_STRING_8; a_query: READABLE_STRING_8): like Current
 			-- Add MATCH expression for specific column
+		note
+			semantic_role: "[
+				Appends a column-scoped MATCH
+				expression to the query.
+			]"
 		require
 			column_not_empty: not a_column.is_empty
 			query_not_empty: not a_query.is_empty
@@ -78,6 +88,11 @@ feature -- Query Building - Match
 
 	match_phrase (a_phrase: READABLE_STRING_8): like Current
 			-- Add phrase MATCH (exact phrase in quotes)
+		note
+			semantic_role: "[
+				Wraps the phrase in double quotes for
+				FTS5 exact phrase matching.
+			]"
 		require
 			phrase_not_empty: not a_phrase.is_empty
 		do
@@ -87,6 +102,11 @@ feature -- Query Building - Match
 
 	match_prefix (a_prefix: READABLE_STRING_8): like Current
 			-- Add prefix MATCH (word starting with prefix)
+		note
+			semantic_role: "[
+				Appends an FTS5 prefix query with
+				trailing asterisk.
+			]"
 		require
 			prefix_not_empty: not a_prefix.is_empty
 		do
@@ -96,6 +116,11 @@ feature -- Query Building - Match
 
 	match_near (a_term1, a_term2: READABLE_STRING_8; a_distance: INTEGER): like Current
 			-- Add NEAR match (terms within distance of each other)
+		note
+			semantic_role: "[
+				Constructs an FTS5 NEAR() proximity
+				expression.
+			]"
 		require
 			term1_not_empty: not a_term1.is_empty
 			term2_not_empty: not a_term2.is_empty
@@ -108,6 +133,11 @@ feature -- Query Building - Match
 	match_boolean (a_expression: READABLE_STRING_8): like Current
 			-- Add boolean MATCH expression (AND, OR, NOT operators)
 			-- Example: "sqlite AND database NOT tutorial"
+		note
+			semantic_role: "[
+				Passes a raw FTS5 boolean expression
+				through to MATCH.
+			]"
 		require
 			expression_not_empty: not a_expression.is_empty
 		do
@@ -119,6 +149,11 @@ feature -- Query Building - Select
 
 	select_column (a_column: READABLE_STRING_8): like Current
 			-- Add column to SELECT
+		note
+			semantic_role: "[
+				Adds a single column to the explicit
+				SELECT list.
+			]"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -129,6 +164,11 @@ feature -- Query Building - Select
 
 	select_columns_list (a_columns: ARRAY [READABLE_STRING_8]): like Current
 			-- Add multiple columns to SELECT
+		note
+			semantic_role: "[
+				Adds multiple columns to the explicit
+				SELECT list.
+			]"
 		require
 			columns_not_empty: not a_columns.is_empty
 		local
@@ -146,6 +186,11 @@ feature -- Query Building - Ranking and Snippets
 
 	with_rank: like Current
 			-- Include BM25 rank score in results
+		note
+			semantic_role: "[
+				Enables BM25 rank column in SELECT
+				output.
+			]"
 		do
 			include_rank := True
 			Result := Current
@@ -156,6 +201,11 @@ feature -- Query Building - Ranking and Snippets
 	with_rank_weights (a_weights: ARRAY [REAL_64]): like Current
 			-- Include BM25 rank with custom column weights
 			-- Higher weight = more important column
+		note
+			semantic_role: "[
+				Enables BM25 rank with per-column
+				weight configuration.
+			]"
 		require
 			weights_not_empty: not a_weights.is_empty
 		do
@@ -166,6 +216,11 @@ feature -- Query Building - Ranking and Snippets
 
 	with_snippets (a_column: READABLE_STRING_8; a_start_tag, a_end_tag: READABLE_STRING_8): like Current
 			-- Include snippet with highlighted matches
+		note
+			semantic_role: "[
+				Configures snippet() output with
+				default token limit.
+			]"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -180,6 +235,11 @@ feature -- Query Building - Ranking and Snippets
 
 	with_snippets_config (a_column: READABLE_STRING_8; a_start_tag, a_end_tag, a_ellipsis: READABLE_STRING_8; a_max_tokens: INTEGER): like Current
 			-- Include snippet with full configuration
+		note
+			semantic_role: "[
+				Configures snippet() output with custom
+				ellipsis and token limit.
+			]"
 		require
 			column_not_empty: not a_column.is_empty
 			max_tokens_positive: a_max_tokens > 0
@@ -194,6 +254,11 @@ feature -- Query Building - Ranking and Snippets
 
 	with_highlight (a_column: READABLE_STRING_8; a_start_tag, a_end_tag: READABLE_STRING_8): like Current
 			-- Include full column content with highlighted matches
+		note
+			semantic_role: "[
+				Configures highlight() for full-column
+				match highlighting.
+			]"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -209,6 +274,11 @@ feature -- Query Building - Ordering
 
 	order_by_rank: like Current
 			-- Order results by BM25 rank (best matches first)
+		note
+			semantic_role: "[
+				Enables BM25 ranking and adds rank
+				to ORDER BY.
+			]"
 		do
 			include_rank := True
 			order_clauses.extend ("rank")
@@ -217,6 +287,10 @@ feature -- Query Building - Ordering
 
 	order_by (a_column: READABLE_STRING_8): like Current
 			-- Order by column ascending
+		note
+			semantic_role: "[
+				Appends an ascending ORDER BY clause.
+			]"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -226,6 +300,10 @@ feature -- Query Building - Ordering
 
 	order_by_desc (a_column: READABLE_STRING_8): like Current
 			-- Order by column descending
+		note
+			semantic_role: "[
+				Appends a descending ORDER BY clause.
+			]"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -237,6 +315,11 @@ feature -- Query Building - Limit/Offset
 
 	limit (a_count: INTEGER): like Current
 			-- Limit number of results
+		note
+			semantic_role: "[
+				Sets the LIMIT clause for result count
+				restriction.
+			]"
 		require
 			count_positive: a_count > 0
 		do
@@ -248,6 +331,11 @@ feature -- Query Building - Limit/Offset
 
 	offset (a_offset: INTEGER): like Current
 			-- Skip first N results
+		note
+			semantic_role: "[
+				Sets the OFFSET clause for result
+				pagination.
+			]"
 		require
 			offset_non_negative: a_offset >= 0
 		do
@@ -261,6 +349,11 @@ feature -- Execution
 
 	execute: SIMPLE_SQL_RESULT
 			-- Execute query and return results
+		note
+			semantic_role: "[
+				Generates SQL from builder state and
+				executes via database query.
+			]"
 		require
 			has_match: not match_expressions.is_empty
 		do
@@ -269,6 +362,11 @@ feature -- Execution
 
 	execute_cursor: SIMPLE_SQL_CURSOR
 			-- Execute query returning lazy cursor
+		note
+			semantic_role: "[
+				Generates SQL and returns a lazy cursor
+				for streaming results.
+			]"
 		require
 			has_match: not match_expressions.is_empty
 		do
@@ -277,6 +375,11 @@ feature -- Execution
 
 	count: INTEGER
 			-- Execute COUNT query
+		note
+			semantic_role: "[
+				Generates COUNT SQL and extracts the
+				integer result.
+			]"
 		require
 			has_match: not match_expressions.is_empty
 		local
@@ -292,6 +395,11 @@ feature -- SQL Generation
 
 	to_sql: STRING_8
 			-- Generate SQL query string
+		note
+			semantic_role: "[
+				Assembles the full SELECT...FROM...
+				WHERE MATCH...ORDER BY...LIMIT SQL.
+			]"
 		require
 			has_match: not match_expressions.is_empty
 		do
@@ -308,6 +416,11 @@ feature -- SQL Generation
 
 	to_count_sql: STRING_8
 			-- Generate COUNT SQL query string
+		note
+			semantic_role: "[
+				Assembles a COUNT(*) query with the
+				same MATCH clause.
+			]"
 		require
 			has_match: not match_expressions.is_empty
 		do
@@ -316,6 +429,59 @@ feature -- SQL Generation
 			Result.append (table_name)
 			Result.append (" WHERE ")
 			append_match_clause (Result)
+		end
+
+feature -- Model Queries
+
+	select_columns_model: MML_SEQUENCE [STRING_8]
+			-- Mathematical model of selected columns in order.
+		note
+			semantic_role: "[
+				Provides an MML sequence model of
+				selected columns for contract
+				verification.
+			]"
+		do
+			create Result
+			across select_columns as ic loop
+				Result := Result & ic
+			end
+		ensure
+			count_matches: Result.count = select_columns.count
+		end
+
+	match_expressions_model: MML_SEQUENCE [TUPLE [column: detachable STRING_8; query: STRING_8]]
+			-- Mathematical model of MATCH expressions in order.
+		note
+			semantic_role: "[
+				Provides an MML sequence model of
+				MATCH expressions for contract
+				verification.
+			]"
+		do
+			create Result
+			across match_expressions as ic loop
+				Result := Result & ic
+			end
+		ensure
+			count_matches: Result.count = match_expressions.count
+		end
+
+	order_clauses_model: MML_SEQUENCE [STRING_8]
+			-- Mathematical model of ORDER BY clauses in order.
+		note
+			semantic_role: "[
+				Provides an MML sequence model of
+				ORDER BY clauses for contract
+				verification.
+			]"
+		do
+			create Result
+			across order_clauses as ic loop
+				Result := Result & ic
+			end
+		ensure
+			count_matches: Result.count = order_clauses.count
 		end
 
 feature -- Implementation
@@ -370,6 +536,12 @@ feature -- Implementation
 
 	append_select_clause (a_sql: STRING_8)
 			-- Append SELECT columns to SQL
+		note
+			semantic_role: "[
+				Builds SELECT clause with optional
+				rank, snippet, and highlight
+				expressions.
+			]"
 		local
 			l_col_idx, idx: INTEGER
 		do
@@ -462,6 +634,11 @@ feature -- Implementation
 
 	append_match_clause (a_sql: STRING_8)
 			-- Append MATCH clause to SQL
+		note
+			semantic_role: "[
+				Builds WHERE clause with AND-joined
+				MATCH expressions.
+			]"
 		local
 			l_first: BOOLEAN
 		do
@@ -490,6 +667,11 @@ feature -- Implementation
 
 	append_order_clause (a_sql: STRING_8)
 			-- Append ORDER BY clause to SQL
+		note
+			semantic_role: "[
+				Appends comma-separated ORDER BY clause
+				if any ordering is specified.
+			]"
 		local
 			i: INTEGER
 		do
@@ -511,6 +693,11 @@ feature -- Implementation
 
 	append_limit_clause (a_sql: STRING_8)
 			-- Append LIMIT/OFFSET clause to SQL
+		note
+			semantic_role: "[
+				Appends LIMIT and optional OFFSET
+				clause.
+			]"
 		do
 			if limit_count > 0 then
 				a_sql.append (" LIMIT ")
@@ -524,6 +711,11 @@ feature -- Implementation
 
 	escaped_fts_query (a_query: STRING_8): STRING_8
 			-- Escape special characters in FTS5 query
+		note
+			semantic_role: "[
+				Doubles single quotes for safe embedding
+				in SQL string literals.
+			]"
 		local
 			i: INTEGER
 			c: CHARACTER
@@ -543,6 +735,11 @@ feature -- Implementation
 
 	column_index (a_column: STRING_8): INTEGER
 			-- Get 0-based index of column in FTS5 table
+		note
+			semantic_role: "[
+				Looks up column ordinal position via
+				PRAGMA table_info.
+			]"
 		local
 			l_result: SIMPLE_SQL_RESULT
 			l_name: STRING_32
@@ -563,5 +760,9 @@ invariant
 note
 	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"
+	source: "[
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
+	]"
 
 end

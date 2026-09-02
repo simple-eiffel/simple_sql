@@ -1,13 +1,13 @@
 note
 	description: "[
-		SQLite error codes as enumerated constants.
-		Provides human-readable names for all SQLite result codes.
-
-		Usage:
-			if db.last_error_code = {SIMPLE_SQL_ERROR_CODE}.constraint then
-				-- handle constraint violation
-			end
+		Enumeration of SQLite primary and extended result codes as named constants.
+		Maps integer error codes to human-readable SQLITE_* names and classifies
+		them as success or error.
+		Serves as the canonical code reference for simple_sql error handling.
 	]"
+	purpose: "Define and name-resolve SQLite result codes for error classification"
+	collaborators: ""
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -226,6 +226,11 @@ feature -- Query
 
 	name (a_code: INTEGER): STRING_8
 			-- Human-readable name for error code
+		note
+			semantic_role: "[
+				Maps integer error codes to their
+				SQLITE_* symbolic constant names.
+			]"
 		do
 			inspect a_code
 			when ok then Result := "SQLITE_OK"
@@ -281,12 +286,22 @@ feature -- Query
 
 	is_success (a_code: INTEGER): BOOLEAN
 			-- Is this a success code?
+		note
+			semantic_role: "[
+				Classifies result codes as successful
+				(OK, DONE, ROW).
+			]"
 		do
 			Result := a_code = ok or a_code = done or a_code = row
 		end
 
 	is_error (a_code: INTEGER): BOOLEAN
 			-- Is this an error code?
+		note
+			semantic_role: "[
+				Classifies result codes as errors
+				(anything not success).
+			]"
 		do
 			Result := not is_success (a_code)
 		end
@@ -294,6 +309,11 @@ feature -- Query
 	primary_code (a_extended_code: INTEGER): INTEGER
 			-- Extract primary result code from extended code
 			-- Extended codes have primary code in lower 8 bits
+		note
+			semantic_role: "[
+				Bit-masks extended code to extract the
+				primary 8-bit result code.
+			]"
 		do
 			Result := a_extended_code & 0xFF
 		end
@@ -302,8 +322,8 @@ note
 	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"
 	source: "[
-		SIMPLE_SQL - High-level SQLite API for Eiffel
-		Error codes from https://www.sqlite.org/rescode.html
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
 	]"
 
 end

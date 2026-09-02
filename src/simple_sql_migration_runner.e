@@ -1,5 +1,14 @@
 note
-	description: "Runs database migrations using PRAGMA user_version for tracking"
+	description: "[
+		Runner that applies and reverts schema migrations in version order using
+		PRAGMA user_version for tracking.
+		Maintains a sorted registry of SIMPLE_SQL_MIGRATION objects and executes
+		them within transaction boundaries with rollback on failure.
+		Orchestrates simple_sql schema evolution for reproducible upgrades and downgrades.
+	]"
+	purpose: "Execute ordered schema migrations with transactional safety and version tracking"
+	collaborators: "SIMPLE_SQL_DATABASE, SIMPLE_SQL_SCHEMA, SIMPLE_SQL_MIGRATION"
+	design_pattern: "Command"
 	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -14,6 +23,12 @@ feature {NONE} -- Initialization
 
 	make (a_database: SIMPLE_SQL_DATABASE)
 			-- Create migration runner for database
+		note
+			semantic_role: "[
+				Binds the runner to a database and
+				initializes the migration registry with
+				schema inspector for version tracking.
+			]"
 		require
 			database_open: a_database.is_open
 		do
@@ -38,12 +53,23 @@ feature -- Access
 
 	current_version: INTEGER
 			-- Current database schema version
+		note
+			semantic_role: "[
+				Queries the database PRAGMA user_version
+				to determine current schema state.
+			]"
 		do
 			Result := schema.user_version
 		end
 
 	latest_version: INTEGER
 			-- Highest migration version registered
+		note
+			semantic_role: "[
+				Reports the highest registered migration
+				version, defining the target for full
+				upgrade.
+			]"
 		do
 			if not migrations.is_empty then
 				Result := migrations.last.version
@@ -52,6 +78,12 @@ feature -- Access
 
 	pending_migrations: ARRAYED_LIST [SIMPLE_SQL_MIGRATION]
 			-- Migrations that haven't been applied yet
+		note
+			semantic_role: "[
+				Computes the ordered list of unapplied
+				migrations by filtering against
+				current_version.
+			]"
 		local
 			l_current: INTEGER
 		do
@@ -71,18 +103,35 @@ feature -- Status
 
 	has_error: BOOLEAN
 			-- Did the last operation fail?
+		note
+			semantic_role: "[
+				Error state predicate for checking
+				whether the last migration operation
+				failed.
+			]"
 		do
 			Result := not last_error.is_empty
 		end
 
 	has_pending: BOOLEAN
 			-- Are there pending migrations?
+		note
+			semantic_role: "[
+				Pending migration predicate for deciding
+				whether a migrate call is needed.
+			]"
 		do
 			Result := current_version < latest_version
 		end
 
 	is_current: BOOLEAN
 			-- Is database at latest version?
+		note
+			semantic_role: "[
+				Schema currency check, true when
+				database is at the latest registered
+				migration version.
+			]"
 		do
 			Result := current_version = latest_version
 		end
@@ -91,6 +140,13 @@ feature -- Registration
 
 	add (a_migration: SIMPLE_SQL_MIGRATION)
 			-- Register a migration
+		note
+			semantic_role: "[
+				Registers a migration in version-sorted
+				order, building the ordered registry
+				that migrate/rollback traverses.
+			]"
+			modifies: "migrations"
 		require
 			migration_attached: attached a_migration
 			unique_version: not has_version (a_migration.version)
@@ -113,12 +169,19 @@ feature -- Registration
 		ensure
 			migration_added: migrations.has (a_migration)
 			count_increased: migrations.count = old migrations.count + 1
+			model_has_migration: migrations_model.has (a_migration)
+			model_count: migrations_model.count = old migrations_model.count + 1
 		end
 
 feature -- Model Queries
 
 	migrations_model: MML_SEQUENCE [SIMPLE_SQL_MIGRATION]
 			-- Mathematical model of registered migrations in order.
+		note
+			semantic_role: "[
+				MML specification of migration ordering
+				for formal contract verification.
+			]"
 		do
 			create Result
 			across migrations as ic loop
@@ -132,6 +195,12 @@ feature -- Status queries
 
 	has_version (a_version: INTEGER): BOOLEAN
 			-- Is a migration with this version already registered?
+		note
+			semantic_role: "[
+				Version uniqueness check used as
+				precondition for add to prevent
+				duplicate registrations.
+			]"
 		do
 			across migrations as ic loop
 				if ic.version = a_version then
@@ -145,6 +214,12 @@ feature -- Migration Operations
 	migrate: BOOLEAN
 			-- Run all pending migrations
 			-- Returns True if successful
+		note
+			semantic_role: "[
+				Applies all pending migrations in
+				version order, the primary upgrade
+				entry point.
+			]"
 		do
 			Result := migrate_to (latest_version)
 		end
@@ -152,6 +227,12 @@ feature -- Migration Operations
 	migrate_to (a_target_version: INTEGER): BOOLEAN
 			-- Migrate to specific version (up or down)
 			-- Returns True if successful
+		note
+			semantic_role: "[
+				Bidirectional version targeting that
+				applies or reverts migrations to reach
+				a specific schema version.
+			]"
 		require
 			valid_version: a_target_version >= 0
 		local
@@ -173,6 +254,11 @@ feature -- Migration Operations
 	migrate_one: BOOLEAN
 			-- Run the next pending migration only
 			-- Returns True if successful
+		note
+			semantic_role: "[
+				Single-step migration for controlled
+				incremental upgrades.
+			]"
 		local
 			l_pending: like pending_migrations
 		do
@@ -188,6 +274,11 @@ feature -- Migration Operations
 	rollback: BOOLEAN
 			-- Rollback the last migration
 			-- Returns True if successful
+		note
+			semantic_role: "[
+				Reverts the most recent migration, the
+				primary undo entry point.
+			]"
 		local
 			l_current: INTEGER
 			l_migration: detachable SIMPLE_SQL_MIGRATION
@@ -215,6 +306,11 @@ feature -- Migration Operations
 	rollback_all: BOOLEAN
 			-- Rollback all migrations
 			-- Returns True if successful
+		note
+			semantic_role: "[
+				Full schema revert to version 0, used
+				for clean-slate testing and development.
+			]"
 		do
 			Result := migrate_to (0)
 		end
@@ -222,6 +318,11 @@ feature -- Migration Operations
 	reset: BOOLEAN
 			-- Rollback all then migrate all (fresh start)
 			-- Returns True if successful
+		note
+			semantic_role: "[
+				Rollback-then-migrate sequence for fresh
+				schema rebuild during development.
+			]"
 		do
 			if rollback_all then
 				Result := migrate
@@ -232,6 +333,12 @@ feature {NONE} -- Implementation
 
 	migrate_up_to (a_target: INTEGER): BOOLEAN
 			-- Apply migrations up to target version
+		note
+			semantic_role: "[
+				Forward migration loop applying each
+				pending migration up to the target
+				version.
+			]"
 		local
 			l_current: INTEGER
 		do
@@ -246,6 +353,12 @@ feature {NONE} -- Implementation
 
 	migrate_down_to (a_target: INTEGER): BOOLEAN
 			-- Revert migrations down to target version
+		note
+			semantic_role: "[
+				Reverse migration loop reverting each
+				applied migration down to the target
+				version.
+			]"
 		local
 			l_current, i: INTEGER
 		do
@@ -263,6 +376,12 @@ feature {NONE} -- Implementation
 
 	apply_migration (a_migration: SIMPLE_SQL_MIGRATION): BOOLEAN
 			-- Apply a single migration
+		note
+			semantic_role: "[
+				Transaction-wrapped single migration
+				application with error capture and
+				version stamping.
+			]"
 		require
 			migration_attached: attached a_migration
 		do
@@ -285,6 +404,12 @@ feature {NONE} -- Implementation
 
 	revert_migration (a_migration: SIMPLE_SQL_MIGRATION): BOOLEAN
 			-- Revert a single migration
+		note
+			semantic_role: "[
+				Transaction-wrapped single migration
+				reversal with previous version
+				restoration.
+			]"
 		require
 			migration_attached: attached a_migration
 		local
@@ -324,5 +449,13 @@ invariant
 
 	-- Model consistency
 	model_migrations_count: migrations_model.count = migrations.count
+
+note
+	copyright: "Copyright (c) 2025, Larry Rix"
+	license: "MIT License"
+	source: "[
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
+	]"
 
 end

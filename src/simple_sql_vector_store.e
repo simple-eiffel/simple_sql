@@ -29,6 +29,9 @@ note
 			-- Find similar vectors
 			results := store.find_nearest (query_vector, 10)  -- Top 10
 	]"
+	purpose: "Persistent vector store with BLOB storage, metadata, and KNN similarity search"
+	collaborators: "SIMPLE_SQL_DATABASE, SIMPLE_SQL_VECTOR, SIMPLE_SQL_SIMILARITY, SIMPLE_SQL_PREPARED_STATEMENT, SIMPLE_SQL_RESULT, SIMPLE_SORTER"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -42,6 +45,12 @@ feature {NONE} -- Initialization
 
 	make (a_database: SIMPLE_SQL_DATABASE; a_table_name: STRING_8)
 			-- Create vector store using specified table
+		note
+			semantic_role: "[
+				Captures database and table name,
+				initializes similarity calculator, and
+				ensures table exists.
+			]"
 		require
 			database_open: a_database.is_open
 			table_name_valid: not a_table_name.is_empty
@@ -68,6 +77,11 @@ feature -- Access
 
 	has_error: BOOLEAN
 			-- Did last operation fail?
+		note
+			semantic_role: "[
+				Checks whether a non-void error message
+				indicates a failed operation.
+			]"
 		do
 			Result := last_error_message /= Void
 		end
@@ -79,6 +93,11 @@ feature -- Query
 
 	find_by_id (a_id: INTEGER_64): detachable SIMPLE_SQL_VECTOR
 			-- Retrieve vector by ID, Void if not found
+		note
+			semantic_role: "[
+				Queries vector BLOB by primary key and
+				deserializes to SIMPLE_SQL_VECTOR.
+			]"
 		local
 			l_sql: STRING_8
 			l_result: SIMPLE_SQL_RESULT
@@ -97,6 +116,11 @@ feature -- Query
 
 	find_metadata_by_id (a_id: INTEGER_64): detachable STRING_32
 			-- Retrieve metadata JSON by ID
+		note
+			semantic_role: "[
+				Queries the metadata JSON string for a
+				vector by primary key.
+			]"
 		local
 			l_sql: STRING_8
 			l_result: SIMPLE_SQL_RESULT
@@ -113,6 +137,11 @@ feature -- Query
 
 	count: INTEGER_64
 			-- Total number of vectors stored
+		note
+			semantic_role: "[
+				Returns the row count from the vector
+				table.
+			]"
 		local
 			l_result: SIMPLE_SQL_RESULT
 		do
@@ -127,6 +156,11 @@ feature -- Query
 
 	all_ids: ARRAYED_LIST [INTEGER_64]
 			-- All vector IDs in store
+		note
+			semantic_role: "[
+				Returns all primary key IDs ordered
+				ascending.
+			]"
 		local
 			l_result: SIMPLE_SQL_RESULT
 		do
@@ -144,6 +178,11 @@ feature -- Query
 
 	find_all: ARRAYED_LIST [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; metadata: detachable STRING_32]]
 			-- All vectors with their IDs and metadata
+		note
+			semantic_role: "[
+				Loads all vectors with metadata for
+				in-memory similarity operations.
+			]"
 		local
 			l_result: SIMPLE_SQL_RESULT
 			l_vector: SIMPLE_SQL_VECTOR
@@ -165,6 +204,11 @@ feature -- Similarity Search
 
 	find_nearest (a_query: SIMPLE_SQL_VECTOR; a_k: INTEGER): ARRAYED_LIST [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; score: REAL_64]]
 			-- Find K nearest neighbors by cosine similarity
+		note
+			semantic_role: "[
+				Brute-force KNN search scoring all vectors
+				by cosine similarity.
+			]"
 		require
 			k_positive: a_k > 0
 			query_valid: a_query.dimension > 0
@@ -202,6 +246,11 @@ feature -- Similarity Search
 
 	find_nearest_euclidean (a_query: SIMPLE_SQL_VECTOR; a_k: INTEGER): ARRAYED_LIST [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; distance: REAL_64]]
 			-- Find K nearest neighbors by Euclidean distance
+		note
+			semantic_role: "[
+				Brute-force KNN search scoring all vectors
+				by Euclidean distance.
+			]"
 		require
 			k_positive: a_k > 0
 			query_valid: a_query.dimension > 0
@@ -239,6 +288,11 @@ feature -- Similarity Search
 
 	find_within_threshold (a_query: SIMPLE_SQL_VECTOR; a_threshold: REAL_64): ARRAYED_LIST [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; score: REAL_64]]
 			-- Find all vectors with cosine similarity >= threshold
+		note
+			semantic_role: "[
+				Filters vectors by minimum cosine
+				similarity threshold.
+			]"
 		require
 			valid_threshold: a_threshold >= -1.0 and a_threshold <= 1.0
 			query_valid: a_query.dimension > 0
@@ -269,6 +323,12 @@ feature -- Commands
 
 	insert (a_vector: SIMPLE_SQL_VECTOR; a_metadata: detachable READABLE_STRING_GENERAL): INTEGER_64
 			-- Insert vector with optional metadata, return new ID
+		note
+			semantic_role: "[
+				Serializes vector to BLOB and inserts with
+				dimension and optional JSON metadata.
+			]"
+			modifies: "last_error_message"
 		require
 			vector_valid: a_vector.dimension > 0
 		local
@@ -306,6 +366,12 @@ feature -- Commands
 
 	update (a_id: INTEGER_64; a_vector: SIMPLE_SQL_VECTOR): BOOLEAN
 			-- Update vector data for existing ID
+		note
+			semantic_role: "[
+				Replaces the BLOB and dimension for an
+				existing vector row.
+			]"
+			modifies: "last_error_message"
 		require
 			positive_id: a_id > 0
 			vector_valid: a_vector.dimension > 0
@@ -336,6 +402,12 @@ feature -- Commands
 
 	update_metadata (a_id: INTEGER_64; a_metadata: detachable READABLE_STRING_GENERAL): BOOLEAN
 			-- Update metadata for existing ID
+		note
+			semantic_role: "[
+				Replaces the metadata JSON for an existing
+				vector row.
+			]"
+			modifies: "last_error_message"
 		require
 			positive_id: a_id > 0
 		local
@@ -366,6 +438,11 @@ feature -- Commands
 
 	delete (a_id: INTEGER_64): BOOLEAN
 			-- Delete vector by ID
+		note
+			semantic_role: "[
+				Removes a vector row by primary key.
+			]"
+			modifies: "last_error_message"
 		require
 			positive_id: a_id > 0
 		local
@@ -386,6 +463,11 @@ feature -- Commands
 
 	delete_all: INTEGER
 			-- Delete all vectors, return count deleted
+		note
+			semantic_role: "[
+				Removes all rows from the vector table.
+			]"
+			modifies: "last_error_message"
 		local
 			l_sql: STRING_8
 		do
@@ -405,6 +487,10 @@ feature -- Commands
 
 	exists (a_id: INTEGER_64): BOOLEAN
 			-- Does vector with this ID exist?
+		note
+			semantic_role: "[
+				Checks for row existence by primary key.
+			]"
 		require
 			positive_id: a_id > 0
 		local
@@ -420,6 +506,11 @@ feature {NONE} -- Implementation
 
 	ensure_table_exists
 			-- Create table if it doesn't exist
+		note
+			semantic_role: "[
+				Executes CREATE TABLE IF NOT EXISTS for
+				the vector storage schema.
+			]"
 		local
 			l_sql: STRING_8
 		do
@@ -429,6 +520,11 @@ feature {NONE} -- Implementation
 
 	sort_by_score_descending (a_list: ARRAYED_LIST [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; score: REAL_64]])
 			-- Sort in place by score descending.
+		note
+			semantic_role: "[
+				Delegates to SIMPLE_SORTER for descending
+				score ordering.
+			]"
 		local
 			l_sorter: SIMPLE_SORTER [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; score: REAL_64]]
 		do
@@ -438,6 +534,11 @@ feature {NONE} -- Implementation
 
 	sort_by_distance_ascending (a_list: ARRAYED_LIST [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; distance: REAL_64]])
 			-- Sort in place by distance ascending.
+		note
+			semantic_role: "[
+				Delegates to SIMPLE_SORTER for ascending
+				distance ordering.
+			]"
 		local
 			l_sorter: SIMPLE_SORTER [TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; distance: REAL_64]]
 		do
@@ -447,18 +548,33 @@ feature {NONE} -- Implementation
 
 	score_key (a_item: TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; score: REAL_64]): REAL_64
 			-- Extract score for sorting.
+		note
+			semantic_role: "[
+				Key extractor agent for score-based
+				sorting.
+			]"
 		do
 			Result := a_item.score
 		end
 
 	distance_key (a_item: TUPLE [id: INTEGER_64; vector: SIMPLE_SQL_VECTOR; distance: REAL_64]): REAL_64
 			-- Extract distance for sorting.
+		note
+			semantic_role: "[
+				Key extractor agent for distance-based
+				sorting.
+			]"
 		do
 			Result := a_item.distance
 		end
 
 	clear_error
 			-- Clear error state
+		note
+			semantic_role: "[
+				Resets the error message to Void.
+			]"
+			modifies: "last_error_message"
 		do
 			last_error_message := Void
 		ensure
@@ -467,6 +583,12 @@ feature {NONE} -- Implementation
 
 	set_error (a_message: detachable READABLE_STRING_GENERAL)
 			-- Set error message
+		note
+			semantic_role: "[
+				Records an error message from a failed
+				operation.
+			]"
+			modifies: "last_error_message"
 		do
 			if attached a_message then
 				last_error_message := a_message.to_string_32
@@ -482,5 +604,13 @@ invariant
 	table_name_valid: not table_name.is_empty
 	similarity_exists: similarity /= Void
 	database_open: database.is_open
+
+note
+	copyright: "Copyright (c) 2025, Larry Rix"
+	license: "MIT License"
+	source: "[
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
+	]"
 
 end

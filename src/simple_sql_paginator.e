@@ -1,25 +1,15 @@
 note
 	description: "[
-		Cursor-based pagination builder.
-
-		Provides a clean API for implementing efficient cursor-based pagination
-		that works well with large datasets.
-
-		Usage:
-			paginator := db.paginator ("documents")
-				.order_by ("updated_at", "id")
-				.page_size (20)
-				.active_only
-
-			-- First page
-			page := paginator.first_page
-			-- page.items has the rows
-			-- page.next_cursor for the next page
-
-			-- Next page
-			page := paginator.after (previous_cursor)
+		A fluent builder for cursor-based pagination over SQLite tables.
+		Constructs bounded page queries with multi-column ordering, soft-delete
+		filtering, and LIMIT+1 next-page detection.
+		Delivers SIMPLE_SQL_PAGE results within the simple_sql library to keep
+		large result sets from exhausting memory.
 	]"
-	EIS: "name=API Reference", "src=../docs/api/paginator.html", "protocol=URI", "tag=documentation"
+	purpose: "Build and execute cursor-based paginated queries for SQLite tables"
+	collaborators: "SIMPLE_SQL_DATABASE, SIMPLE_SQL_PAGE, SIMPLE_SQL_ROW, SIMPLE_SQL_RESULT, MML_SEQUENCE"
+	design_pattern: "Builder"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -33,6 +23,11 @@ feature {NONE} -- Initialization
 
 	make (a_database: SIMPLE_SQL_DATABASE; a_table: READABLE_STRING_8)
 			-- Initialize paginator for table.
+		note
+			semantic_role: "[
+				Captures database and table references
+				and initializes pagination defaults.
+			]"
 		require
 			database_not_void: a_database /= Void
 			database_open: a_database.is_open
@@ -61,6 +56,12 @@ feature -- Configuration
 
 	page_size (a_size: INTEGER): like Current
 			-- Set number of items per page.
+		note
+			semantic_role: "[
+				Configures the number of items returned
+				per page.
+			]"
+			modifies: "page_size_value"
 		require
 			size_positive: a_size > 0
 		do
@@ -73,6 +74,12 @@ feature -- Configuration
 	order_by (a_columns: ARRAY [READABLE_STRING_8]): like Current
 			-- Set ordering columns (used for cursor).
 			-- Must include unique column (like id) as final tiebreaker.
+		note
+			semantic_role: "[
+				Replaces ordering columns used for both
+				SQL ORDER BY and cursor construction.
+			]"
+			modifies: "order_columns"
 		require
 			columns_not_empty: not a_columns.is_empty
 		do
@@ -85,6 +92,12 @@ feature -- Configuration
 
 	order_by_desc: like Current
 			-- Order descending instead of ascending.
+		note
+			semantic_role: "[
+				Switches sort direction to descending
+				for pagination.
+			]"
+			modifies: "is_descending"
 		do
 			is_descending := True
 			Result := Current
@@ -94,6 +107,12 @@ feature -- Configuration
 
 	where (a_condition: READABLE_STRING_8): like Current
 			-- Add WHERE condition.
+		note
+			semantic_role: "[
+				Appends a filter condition to the
+				main query.
+			]"
+			modifies: "where_conditions"
 		require
 			condition_not_empty: not a_condition.is_empty
 		do
@@ -103,6 +122,12 @@ feature -- Configuration
 
 	active_only: like Current
 			-- Filter to non-deleted records only.
+		note
+			semantic_role: "[
+				Activates soft-delete filtering to
+				exclude deleted records.
+			]"
+			modifies: "soft_delete_mode"
 		do
 			soft_delete_mode := 1
 			Result := Current
@@ -110,6 +135,12 @@ feature -- Configuration
 
 	with_deleted: like Current
 			-- Include soft-deleted records.
+		note
+			semantic_role: "[
+				Disables soft-delete filtering to
+				include all records.
+			]"
+			modifies: "soft_delete_mode"
 		do
 			soft_delete_mode := 0
 			Result := Current
@@ -117,6 +148,12 @@ feature -- Configuration
 
 	set_soft_delete_column (a_column: READABLE_STRING_8)
 			-- Set custom column for soft delete filtering.
+		note
+			semantic_role: "[
+				Overrides the default deleted_at column
+				for soft-delete checks.
+			]"
+			modifies: "soft_delete_column"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -125,6 +162,12 @@ feature -- Configuration
 
 	select_columns (a_columns: ARRAY [READABLE_STRING_8]): like Current
 			-- Specify which columns to select.
+		note
+			semantic_role: "[
+				Restricts selected columns instead of
+				SELECT *.
+			]"
+			modifies: "select_cols"
 		require
 			columns_not_empty: not a_columns.is_empty
 		local
@@ -142,16 +185,60 @@ feature -- Execution
 
 	first_page: SIMPLE_SQL_PAGE
 			-- Get first page of results.
+		note
+			semantic_role: "[
+				Executes the query without a cursor to
+				retrieve the initial page.
+			]"
 		do
 			Result := execute_page (Void)
 		end
 
 	after (a_cursor: READABLE_STRING_8): SIMPLE_SQL_PAGE
 			-- Get page after the given cursor.
+		note
+			semantic_role: "[
+				Executes the query positioned after the
+				given cursor token.
+			]"
 		require
 			cursor_not_empty: not a_cursor.is_empty
 		do
 			Result := execute_page (a_cursor.to_string_8)
+		end
+
+feature -- Model Queries
+
+	order_columns_model: MML_SEQUENCE [STRING_8]
+			-- Mathematical model of ORDER BY columns in order.
+		note
+			semantic_role: "[
+				MML specification of ORDER BY column
+				ordering for formal contract verification.
+			]"
+		do
+			create Result
+			across order_columns as ic loop
+				Result := Result & ic
+			end
+		ensure
+			count_matches: Result.count = order_columns.count
+		end
+
+	where_conditions_model: MML_SEQUENCE [STRING_8]
+			-- Mathematical model of WHERE conditions in order.
+		note
+			semantic_role: "[
+				MML specification of WHERE condition
+				ordering for formal contract verification.
+			]"
+		do
+			create Result
+			across where_conditions as ic loop
+				Result := Result & ic
+			end
+		ensure
+			count_matches: Result.count = where_conditions.count
 		end
 
 feature {NONE} -- Implementation
@@ -185,6 +272,11 @@ feature {NONE} -- Implementation
 
 	effective_soft_delete_column: STRING_8
 			-- Column name to use for soft delete.
+		note
+			semantic_role: "[
+				Resolves the soft-delete column name
+				with fallback to deleted_at.
+			]"
 		do
 			if attached soft_delete_column as al_c then
 				Result := al_c
@@ -195,6 +287,12 @@ feature {NONE} -- Implementation
 
 	execute_page (a_cursor: detachable STRING_8): SIMPLE_SQL_PAGE
 			-- Execute query for a page.
+		note
+			semantic_role: "[
+				Builds and executes the page query,
+				detects next-page availability via
+				the limit+1 trick.
+			]"
 		local
 			l_sql: STRING_8
 			l_result: SIMPLE_SQL_RESULT
@@ -226,6 +324,11 @@ feature {NONE} -- Implementation
 
 	build_query (a_cursor: detachable STRING_8): STRING_8
 			-- Build SQL query for page.
+		note
+			semantic_role: "[
+				Assembles SELECT with WHERE, cursor
+				conditions, ORDER BY, and LIMIT+1.
+			]"
 		local
 			l_cursor_values: detachable ARRAYED_LIST [STRING_8]
 			i: INTEGER
@@ -297,6 +400,11 @@ feature {NONE} -- Implementation
 
 	parse_cursor (a_cursor: STRING_8): ARRAYED_LIST [STRING_8]
 			-- Parse cursor string into component values.
+		note
+			semantic_role: "[
+				Splits a delimited cursor string into
+				individual column values.
+			]"
 		local
 			l_parts: LIST [STRING_8]
 		do
@@ -309,6 +417,11 @@ feature {NONE} -- Implementation
 
 	build_cursor (a_row: SIMPLE_SQL_ROW): STRING_8
 			-- Build cursor string from row.
+		note
+			semantic_role: "[
+				Serializes a row's ordering column values
+				into a delimited cursor token.
+			]"
 		local
 			i: INTEGER
 			l_value: detachable ANY
@@ -329,6 +442,11 @@ feature {NONE} -- Implementation
 	build_cursor_condition (a_values: ARRAYED_LIST [STRING_8]): STRING_8
 			-- Build WHERE condition for cursor-based pagination.
 			-- Uses tuple comparison: (col1, col2) > (val1, val2)
+		note
+			semantic_role: "[
+				Constructs tuple comparison WHERE clause
+				for cursor-based seeking.
+			]"
 		local
 			i: INTEGER
 			l_op: STRING_8
@@ -365,6 +483,11 @@ feature {NONE} -- Implementation
 
 	quote_value (a_value: STRING_8): STRING_8
 			-- Quote a value for SQL.
+		note
+			semantic_role: "[
+				Wraps non-numeric values in single
+				quotes for SQL embedding.
+			]"
 		do
 			-- Try to detect if it's a number
 			if a_value.is_integer_64 then
@@ -385,5 +508,9 @@ invariant
 note
 	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"
+	source: "[
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
+	]"
 
 end

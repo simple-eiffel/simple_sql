@@ -1,39 +1,14 @@
 note
 	description: "[
-		Streaming query processor for memory-efficient row-by-row handling.
-
-		Unlike SIMPLE_SQL_RESULT which loads all rows into memory, or
-		SIMPLE_SQL_CURSOR which buffers rows, SIMPLE_SQL_RESULT_STREAM
-		processes each row via a callback action, never holding more than
-		one row in memory at a time.
-
-		Use cases:
-			- Processing millions of rows without memory exhaustion
-			- ETL operations (extract, transform, load)
-			- Generating reports from large datasets
-			- Aggregating statistics row-by-row
-
-		Usage with action:
-			db.query_stream ("SELECT * FROM huge_table", agent process_row)
-
-			process_row (a_row: SIMPLE_SQL_ROW): BOOLEAN
-				do
-					-- process row
-					Result := False -- Continue (True to stop)
-				end
-
-		Usage with class:
-			stream := db.create_stream ("SELECT * FROM huge_table")
-			stream.for_each (agent process_row)
-
-		Advanced - stop early:
-			stream.for_each (agent (row: SIMPLE_SQL_ROW): BOOLEAN
-				do
-					if row.integer_value ("id") > 1000 then
-						Result := True -- Stop iteration
-					end
-				end)
+		A streaming query processor that delivers rows one at a time via callbacks.
+		Executes SQL through SQLITE_QUERY_STATEMENT and invokes a user-supplied
+		function or procedure agent for each row, supporting early termination
+		and bounded collection without buffering the entire result set.
+		Enables memory-efficient processing of large datasets in the simple_sql library.
 	]"
+	purpose: "Stream query rows one at a time through callback agents for memory-efficient processing"
+	collaborators: "SIMPLE_SQL_ROW, SQLITE_DATABASE, SQLITE_QUERY_STATEMENT, SQLITE_RESULT_ROW"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -47,6 +22,11 @@ feature {NONE} -- Initialization
 
 	make (a_sql: READABLE_STRING_8; a_database: SQLITE_DATABASE)
 			-- Create stream for query
+		note
+			semantic_role: "[
+				Captures query and database reference
+				for deferred streaming execution.
+			]"
 		require
 			sql_not_empty: not a_sql.is_empty
 			database_attached: a_database /= Void
@@ -83,6 +63,12 @@ feature -- Streaming operations
 	for_each (a_action: FUNCTION [SIMPLE_SQL_ROW, BOOLEAN])
 			-- Process each row with action
 			-- Action returns True to stop early, False to continue
+		note
+			semantic_role: "[
+				Streams rows through a boolean-returning
+				function for processing with early
+				termination.
+			]"
 		require
 			action_attached: a_action /= Void
 		local
@@ -98,6 +84,11 @@ feature -- Streaming operations
 
 	for_each_do (a_procedure: PROCEDURE [SIMPLE_SQL_ROW])
 			-- Process each row with procedure (processes all rows)
+		note
+			semantic_role: "[
+				Streams all rows through a procedure
+				agent without early termination.
+			]"
 		require
 			procedure_attached: a_procedure /= Void
 		local
@@ -113,6 +104,11 @@ feature -- Streaming operations
 
 	collect_first (a_count: INTEGER): ARRAYED_LIST [SIMPLE_SQL_ROW]
 			-- Collect first `a_count` rows (memory-bounded)
+		note
+			semantic_role: "[
+				Materializes a bounded prefix of the
+				result set into a list.
+			]"
 		require
 			positive_count: a_count > 0
 		local
@@ -132,6 +128,11 @@ feature -- Streaming operations
 
 	count_rows: INTEGER
 			-- Count total rows (processes all)
+		note
+			semantic_role: "[
+				Counts rows by streaming through the
+				entire result set.
+			]"
 		local
 			l_statement: SQLITE_QUERY_STATEMENT
 		do
@@ -144,6 +145,11 @@ feature -- Streaming operations
 
 	first_row: detachable SIMPLE_SQL_ROW
 			-- Get first row only
+		note
+			semantic_role: "[
+				Convenience accessor collecting and
+				returning just the first result row.
+			]"
 		local
 			l_result: ARRAYED_LIST [SIMPLE_SQL_ROW]
 		do
@@ -155,6 +161,11 @@ feature -- Streaming operations
 
 	exists: BOOLEAN
 			-- Does at least one row exist?
+		note
+			semantic_role: "[
+				Existence check delegating to first_row
+				for boolean result.
+			]"
 		do
 			Result := first_row /= Void
 		end
@@ -178,6 +189,12 @@ feature {NONE} -- Implementation
 
 	process_row (a_row: SQLITE_RESULT_ROW): BOOLEAN
 			-- Process single row via current action
+		note
+			semantic_role: "[
+				SQLite callback converting result row
+				and delegating to the user's function
+				agent.
+			]"
 		local
 			l_sql_row: SIMPLE_SQL_ROW
 		do
@@ -193,6 +210,12 @@ feature {NONE} -- Implementation
 
 	process_row_procedure (a_row: SQLITE_RESULT_ROW): BOOLEAN
 			-- Process single row via current procedure
+		note
+			semantic_role: "[
+				SQLite callback converting result row
+				and delegating to the user's procedure
+				agent.
+			]"
 		local
 			l_sql_row: SIMPLE_SQL_ROW
 		do
@@ -206,6 +229,11 @@ feature {NONE} -- Implementation
 
 	collect_row_limited (a_row: SQLITE_RESULT_ROW): BOOLEAN
 			-- Collect row if under limit
+		note
+			semantic_role: "[
+				SQLite callback collecting rows into a
+				bounded target list.
+			]"
 		local
 			l_sql_row: SIMPLE_SQL_ROW
 		do
@@ -225,6 +253,11 @@ feature {NONE} -- Implementation
 
 	count_row (a_row: SQLITE_RESULT_ROW): BOOLEAN
 			-- Just count the row
+		note
+			semantic_role: "[
+				SQLite callback that only increments
+				the row counter.
+			]"
 		do
 			rows_processed := rows_processed + 1
 			Result := False -- Continue
@@ -232,6 +265,11 @@ feature {NONE} -- Implementation
 
 	convert_row (a_row: SQLITE_RESULT_ROW): SIMPLE_SQL_ROW
 			-- Convert SQLite row to SIMPLE_SQL_ROW
+		note
+			semantic_role: "[
+				Maps low-level SQLITE_RESULT_ROW columns
+				into a SIMPLE_SQL_ROW.
+			]"
 		local
 			i: NATURAL
 			l_col_name: STRING_8
@@ -257,7 +295,8 @@ note
 	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"
 	source: "[
-		SIMPLE_SQL - High-level SQLite API for Eiffel
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
 	]"
 
 end

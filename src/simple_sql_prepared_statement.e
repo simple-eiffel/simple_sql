@@ -1,28 +1,15 @@
 note
 	description: "[
-		Prepared statement wrapper for SQLite with parameter binding.
-
-		Provides cached, parameterized queries for:
-			- Security: Prevents SQL injection via bound parameters
-			- Performance: Statement compiled once, executed many times
-			- Convenience: Named or indexed parameter binding
-
-		Usage (indexed parameters):
-			stmt := db.prepare ("INSERT INTO users (name, age) VALUES (?, ?)")
-			stmt.bind_text (1, "Alice")
-			stmt.bind_integer (2, 30)
-			stmt.execute
-			stmt.reset  -- Reuse with new values
-			stmt.bind_text (1, "Bob")
-			stmt.bind_integer (2, 25)
-			stmt.execute
-
-		Usage (named parameters):
-			stmt := db.prepare ("INSERT INTO users (name, age) VALUES (:name, :age)")
-			stmt.bind_text_by_name (":name", "Alice")
-			stmt.bind_integer_by_name (":age", 30)
-			stmt.execute
+		A reusable prepared-statement wrapper around SQLite with indexed and named
+		parameter binding.
+		Compiles SQL once, accepts typed bindings (integer, real, text, blob, null),
+		and executes as query or modification, returning results, cursors, or streams.
+		Prevents SQL injection and improves throughput for repeated operations in the
+		simple_sql library.
 	]"
+	purpose: "Bind parameters and execute reusable SQL statements against SQLite"
+	collaborators: "SQLITE_DATABASE, SIMPLE_SQL_RESULT, SIMPLE_SQL_ERROR, SIMPLE_SQL_CURSOR, SIMPLE_SQL_RESULT_STREAM, MANAGED_POINTER, MML_MAP"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -36,6 +23,11 @@ feature {NONE} -- Initialization
 
 	make (a_sql: READABLE_STRING_8; a_database: SQLITE_DATABASE)
 			-- Prepare statement for execution
+		note
+			semantic_role: "[
+				Compiles SQL text and initializes binding
+				storage for reusable execution.
+			]"
 		require
 			sql_not_empty: not a_sql.is_empty
 			database_attached: a_database /= Void
@@ -65,6 +57,11 @@ feature -- Access
 
 	parameter_count: INTEGER
 			-- Number of parameters in the statement
+		note
+			semantic_role: "[
+				Counts placeholder tokens in the
+				SQL text.
+			]"
 		do
 			Result := count_parameters
 		end
@@ -76,6 +73,11 @@ feature -- Status
 
 	has_error: BOOLEAN
 			-- Did last operation fail?
+		note
+			semantic_role: "[
+				Error state predicate checking for
+				presence of last_error.
+			]"
 		do
 			Result := last_error /= Void
 		end
@@ -87,6 +89,12 @@ feature -- Binding by index (1-based)
 
 	bind_integer (a_index: INTEGER; a_value: INTEGER_64)
 			-- Bind integer value at parameter index
+		note
+			semantic_role: "[
+				Stores an integer binding for the given
+				parameter position.
+			]"
+			modifies: "bindings"
 		require
 			valid_index: a_index >= 1
 		do
@@ -95,6 +103,12 @@ feature -- Binding by index (1-based)
 
 	bind_real (a_index: INTEGER; a_value: REAL_64)
 			-- Bind real value at parameter index
+		note
+			semantic_role: "[
+				Stores a real binding for the given
+				parameter position.
+			]"
+			modifies: "bindings"
 		require
 			valid_index: a_index >= 1
 		do
@@ -103,6 +117,12 @@ feature -- Binding by index (1-based)
 
 	bind_text (a_index: INTEGER; a_value: READABLE_STRING_GENERAL)
 			-- Bind text value at parameter index
+		note
+			semantic_role: "[
+				Stores a text binding for the given
+				parameter position.
+			]"
+			modifies: "bindings"
 		require
 			valid_index: a_index >= 1
 			value_not_void: a_value /= Void
@@ -112,6 +132,12 @@ feature -- Binding by index (1-based)
 
 	bind_blob (a_index: INTEGER; a_value: MANAGED_POINTER)
 			-- Bind blob value at parameter index
+		note
+			semantic_role: "[
+				Stores a binary data binding for the
+				given parameter position.
+			]"
+			modifies: "bindings"
 		require
 			valid_index: a_index >= 1
 			value_not_void: a_value /= Void
@@ -121,6 +147,12 @@ feature -- Binding by index (1-based)
 
 	bind_null (a_index: INTEGER)
 			-- Bind NULL at parameter index
+		note
+			semantic_role: "[
+				Stores a NULL binding for the given
+				parameter position.
+			]"
+			modifies: "bindings"
 		require
 			valid_index: a_index >= 1
 		do
@@ -131,6 +163,12 @@ feature -- Binding by name
 
 	bind_integer_by_name (a_name: STRING_8; a_value: INTEGER_64)
 			-- Bind integer value to named parameter
+		note
+			semantic_role: "[
+				Resolves named parameter to index and
+				stores integer binding.
+			]"
+			modifies: "bindings"
 		require
 			name_not_empty: not a_name.is_empty
 		local
@@ -144,6 +182,12 @@ feature -- Binding by name
 
 	bind_real_by_name (a_name: STRING_8; a_value: REAL_64)
 			-- Bind real value to named parameter
+		note
+			semantic_role: "[
+				Resolves named parameter to index and
+				stores real binding.
+			]"
+			modifies: "bindings"
 		require
 			name_not_empty: not a_name.is_empty
 		local
@@ -157,6 +201,12 @@ feature -- Binding by name
 
 	bind_text_by_name (a_name: STRING_8; a_value: READABLE_STRING_GENERAL)
 			-- Bind text value to named parameter
+		note
+			semantic_role: "[
+				Resolves named parameter to index and
+				stores text binding.
+			]"
+			modifies: "bindings"
 		require
 			name_not_empty: not a_name.is_empty
 			value_not_void: a_value /= Void
@@ -171,6 +221,12 @@ feature -- Binding by name
 
 	bind_blob_by_name (a_name: STRING_8; a_value: MANAGED_POINTER)
 			-- Bind BLOB (binary data) value to named parameter
+		note
+			semantic_role: "[
+				Resolves named parameter to index and
+				stores blob binding.
+			]"
+			modifies: "bindings"
 		require
 			name_not_empty: not a_name.is_empty
 			value_not_void: a_value /= Void
@@ -185,6 +241,12 @@ feature -- Binding by name
 
 	bind_null_by_name (a_name: STRING_8)
 			-- Bind NULL to named parameter
+		note
+			semantic_role: "[
+				Resolves named parameter to index and
+				stores NULL binding.
+			]"
+			modifies: "bindings"
 		require
 			name_not_empty: not a_name.is_empty
 		local
@@ -200,6 +262,12 @@ feature -- Execution
 
 	execute
 			-- Execute the prepared statement
+		note
+			semantic_role: "[
+				Substitutes bindings into SQL and
+				executes as query or modification.
+			]"
+			modifies: "last_error, last_result, has_executed"
 		local
 			l_sql_with_bindings: STRING_8
 		do
@@ -216,6 +284,11 @@ feature -- Execution
 
 	execute_returning_result: SIMPLE_SQL_RESULT
 			-- Execute query and return result
+		note
+			semantic_role: "[
+				Executes as query and returns the result,
+				creating empty result on failure.
+			]"
 		require
 			is_query: is_query
 		do
@@ -231,6 +304,11 @@ feature -- Execution
 
 	execute_cursor: SIMPLE_SQL_CURSOR
 			-- Execute query and return lazy cursor for row-by-row iteration
+		note
+			semantic_role: "[
+				Executes as query returning a lazy
+				cursor for streaming iteration.
+			]"
 		require
 			is_query: is_query
 		local
@@ -246,6 +324,11 @@ feature -- Execution
 
 	execute_stream: SIMPLE_SQL_RESULT_STREAM
 			-- Execute query and return stream for callback-based processing
+		note
+			semantic_role: "[
+				Executes as query returning a stream for
+				callback-based row processing.
+			]"
 		require
 			is_query: is_query
 		local
@@ -259,10 +342,35 @@ feature -- Execution
 			result_attached: Result /= Void
 		end
 
+feature -- Model Queries
+
+	bindings_model: MML_MAP [INTEGER, detachable ANY]
+			-- Mathematical model of parameter bindings.
+		note
+			semantic_role: "[
+				MML specification of parameter bindings
+				for formal contract verification.
+			]"
+		do
+			create Result
+			from bindings.start until bindings.after loop
+				Result := Result.updated (bindings.key_for_iteration, bindings.item_for_iteration)
+				bindings.forth
+			end
+		ensure
+			count_matches: Result.count = bindings.count
+		end
+
 feature -- Reset
 
 	reset
 			-- Clear bindings for reuse with new values
+		note
+			semantic_role: "[
+				Clears all bindings and error state
+				for statement reuse.
+			]"
+			modifies: "bindings, last_error, last_result"
 		do
 			bindings.wipe_out
 			last_error := Void
@@ -270,10 +378,16 @@ feature -- Reset
 		ensure
 			bindings_cleared: bindings.is_empty
 			no_error: not has_error
+			model_empty: bindings_model.is_empty
 		end
 
 	clear_bindings
 			-- Clear all parameter bindings (alias for reset)
+		note
+			semantic_role: "[
+				Alias for reset providing a more
+				descriptive name.
+			]"
 		do
 			reset
 		end
@@ -288,12 +402,22 @@ feature {NONE} -- Implementation
 
 	store_binding (a_index: INTEGER; a_value: detachable ANY)
 			-- Store binding value for parameter
+		note
+			semantic_role: "[
+				Inserts or replaces a parameter binding
+				in the index-keyed hash table.
+			]"
 		do
 			bindings.force (a_value, a_index)
 		end
 
 	count_parameters: INTEGER
 			-- Count ? placeholders in SQL
+		note
+			semantic_role: "[
+				Scans SQL text counting positional
+				parameter placeholders.
+			]"
 		local
 			i: INTEGER
 		do
@@ -316,6 +440,11 @@ feature {NONE} -- Implementation
 	parameter_index (a_name: STRING_8): INTEGER
 			-- Find index of named parameter (returns 0 if not found)
 			-- Handles :name, @name, $name formats
+		note
+			semantic_role: "[
+				Resolves named parameter to its
+				positional index within the SQL text.
+			]"
 		local
 			l_pos: INTEGER
 			l_param_num: INTEGER
@@ -332,6 +461,11 @@ feature {NONE} -- Implementation
 
 	count_parameters_before (a_position: INTEGER): INTEGER
 			-- Count parameters before given position
+		note
+			semantic_role: "[
+				Counts parameter tokens preceding a
+				given position for index resolution.
+			]"
 		local
 			i: INTEGER
 			c: CHARACTER_8
@@ -357,6 +491,11 @@ feature {NONE} -- Implementation
 			-- SQL with bound values substituted
 			-- NOTE: This is a simple implementation that substitutes values directly.
 			-- A production implementation would use actual SQLite parameter binding.
+		note
+			semantic_role: "[
+				Generates executable SQL by substituting
+				bound values into parameter positions.
+			]"
 		local
 			l_result: STRING_8
 			i, l_param_index: INTEGER
@@ -410,12 +549,22 @@ feature {NONE} -- Implementation
 
 	is_identifier_char (a_c: CHARACTER_8): BOOLEAN
 			-- Is character valid in identifier (alphanumeric or underscore)?
+		note
+			semantic_role: "[
+				Character classification for named
+				parameter boundary detection.
+			]"
 		do
 			Result := a_c.is_alpha_numeric or a_c = '_'
 		end
 
 	value_as_sql (a_value: detachable ANY): STRING_8
 			-- Convert value to SQL literal
+		note
+			semantic_role: "[
+				Type-dispatching converter for bound
+				values to SQL literal strings.
+			]"
 		do
 			if a_value = Void then
 				Result := "NULL"
@@ -440,6 +589,11 @@ feature {NONE} -- Implementation
 
 	blob_as_hex_literal (a_blob: MANAGED_POINTER): STRING_8
 			-- Convert BLOB to SQLite hex literal format: X'hexdigits'
+		note
+			semantic_role: "[
+				Encodes binary data as SQLite X'...'
+				hex literal for SQL embedding.
+			]"
 		require
 			blob_not_void: a_blob /= Void
 		local
@@ -464,6 +618,11 @@ feature {NONE} -- Implementation
 
 	byte_to_hex (a_byte: NATURAL_8): STRING_8
 			-- Convert byte to 2-character hex string
+		note
+			semantic_role: "[
+				Formats a single byte as two uppercase
+				hex digits.
+			]"
 		local
 			l_high, l_low: NATURAL_8
 		do
@@ -478,6 +637,11 @@ feature {NONE} -- Implementation
 
 	hex_digit (a_value: NATURAL_8): CHARACTER_8
 			-- Convert 0-15 to hex digit character
+		note
+			semantic_role: "[
+				Maps nibble value to its hex character
+				representation.
+			]"
 		require
 			valid_range: a_value >= 0 and a_value <= 15
 		do
@@ -492,6 +656,11 @@ feature {NONE} -- Implementation
 
 	escaped_string (a_string: READABLE_STRING_GENERAL): STRING_8
 			-- Escape string for SQL (single quotes)
+		note
+			semantic_role: "[
+				Doubles single quotes and wraps in
+				quote delimiters for SQL string literals.
+			]"
 		local
 			i: INTEGER
 			c: CHARACTER_32
@@ -522,6 +691,11 @@ feature {NONE} -- Implementation
 
 	execute_query (a_sql: STRING_8)
 			-- Execute as SELECT query
+		note
+			semantic_role: "[
+				Creates a SIMPLE_SQL_RESULT from the
+				bound SQL for query execution.
+			]"
 		local
 			l_sql: STRING_8
 		do
@@ -534,6 +708,11 @@ feature {NONE} -- Implementation
 
 	execute_modify (a_sql: STRING_8)
 			-- Execute as INSERT/UPDATE/DELETE
+		note
+			semantic_role: "[
+				Executes the bound SQL as a modification
+				statement via SQLITE_MODIFY_STATEMENT.
+			]"
 		local
 			l_statement: SQLITE_MODIFY_STATEMENT
 			l_sql: STRING_8
@@ -560,7 +739,8 @@ note
 	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"
 	source: "[
-		SIMPLE_SQL - High-level SQLite API for Eiffel
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
 	]"
 
 end

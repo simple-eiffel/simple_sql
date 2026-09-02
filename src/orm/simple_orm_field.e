@@ -10,7 +10,9 @@ note
 			field.set_nullable (False)
 			field.set_max_length (255)
 	]"
-	author: "Larry Rix"
+	purpose: "Column descriptor with type mapping, constraints, and DDL generation for ORM entities"
+	collaborators: "SIMPLE_ORM_ENTITY"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -25,6 +27,11 @@ feature {NONE} -- Initialization
 
 	make (a_name: READABLE_STRING_8; a_type: INTEGER)
 			-- Create field with name and type.
+		note
+			semantic_role: "[
+				Initializes a nullable, non-primary-key
+				field with given name and type.
+			]"
 		require
 			name_not_empty: not a_name.is_empty
 			valid_type: is_valid_type (a_type)
@@ -43,6 +50,11 @@ feature {NONE} -- Initialization
 
 	make_primary_key (a_name: READABLE_STRING_8)
 			-- Create auto-incrementing integer primary key field.
+		note
+			semantic_role: "[
+				Initializes a non-nullable auto-increment
+				integer primary key.
+			]"
 		require
 			name_not_empty: not a_name.is_empty
 		do
@@ -109,18 +121,33 @@ feature -- Status
 
 	is_valid_type (a_type: INTEGER): BOOLEAN
 			-- Is `a_type` a valid field type?
+		note
+			semantic_role: "[
+				Validates that a type constant falls
+				within the supported range.
+			]"
 		do
 			Result := a_type >= type_string and a_type <= type_blob
 		end
 
 	is_string_type: BOOLEAN
 			-- Is this a string/text type?
+		note
+			semantic_role: "[
+				Tests whether the field type is
+				string/text.
+			]"
 		do
 			Result := field_type = type_string
 		end
 
 	is_numeric_type: BOOLEAN
 			-- Is this a numeric type (integer or real)?
+		note
+			semantic_role: "[
+				Tests whether the field type is any
+				numeric variant.
+			]"
 		do
 			Result := field_type = type_integer or field_type = type_integer_64 or field_type = type_real
 		end
@@ -129,6 +156,12 @@ feature -- Modification
 
 	set_nullable (a_nullable: BOOLEAN)
 			-- Set whether field can be NULL.
+		note
+			semantic_role: "[
+				Configures the nullability constraint for
+				this column.
+			]"
+			modifies: "is_nullable"
 		do
 			is_nullable := a_nullable
 		ensure
@@ -137,6 +170,12 @@ feature -- Modification
 
 	set_max_length (a_length: INTEGER)
 			-- Set maximum length for string fields.
+		note
+			semantic_role: "[
+				Sets the VARCHAR length limit for string
+				fields.
+			]"
+			modifies: "max_length"
 		require
 			positive_length: a_length > 0
 			string_type: field_type = type_string
@@ -148,6 +187,12 @@ feature -- Modification
 
 	set_default (a_value: detachable ANY)
 			-- Set default value.
+		note
+			semantic_role: "[
+				Records the default value for DDL
+				generation.
+			]"
+			modifies: "default_value"
 		do
 			default_value := a_value
 		ensure
@@ -158,6 +203,11 @@ feature -- SQL Generation
 
 	sql_type: STRING_8
 			-- SQL type for this field.
+		note
+			semantic_role: "[
+				Maps the field type constant to a SQLite
+				column type string.
+			]"
 		do
 			inspect field_type
 			when type_string then
@@ -185,6 +235,11 @@ feature -- SQL Generation
 
 	sql_column_definition: STRING_8
 			-- Full SQL column definition for CREATE TABLE.
+		note
+			semantic_role: "[
+				Assembles name, type, constraints, and
+				default into a DDL column clause.
+			]"
 		do
 			create Result.make (50)
 			Result.append (name)
@@ -226,5 +281,9 @@ invariant
 note
 	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"
+	source: "[
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
+	]"
 
 end

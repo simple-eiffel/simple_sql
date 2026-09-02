@@ -1,5 +1,13 @@
 note
-	description: "Base class for database migrations"
+	description: "[
+		Abstract base class for a versioned, bidirectional database schema migration.
+		Encapsulates a version number and deferred up/down operations that concrete
+		heirs implement with DDL/DML statements.
+		Serves as the migration unit for simple_sql version-tracked schema evolution.
+	]"
+	purpose: "Define a single versioned schema change with upgrade and downgrade operations"
+	collaborators: "SIMPLE_SQL_MIGRATION_RUNNER, SIMPLE_SQL_DATABASE"
+	design_pattern: "Command"
 	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -38,5 +46,13 @@ feature -- Operations
 			database_open: a_database.is_open
 		deferred
 		end
+
+note
+	copyright: "Copyright (c) 2025, Larry Rix"
+	license: "MIT License"
+	source: "[
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
+	]"
 
 end

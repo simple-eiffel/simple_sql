@@ -1,35 +1,17 @@
-﻿note
+note
 	description: "[
-		Utilities for backing up SQLite databases between memory and filesystem.
-
-		Features:
-			- Simple copy operations (SQL-based)
-			- Online backup using SQLite Backup API (via online_backup)
-			- Export to CSV, JSON, SQL formats (via exporter)
-			- Import from CSV, JSON, SQL formats (via importer)
-
-		Usage:
-			backup := create {SIMPLE_SQL_BACKUP}
-
-			-- Simple copy (SQL-based)
-			backup.copy_memory_to_file (memory_db, "backup.db")
-			backup.copy_file_to_memory ("source.db", memory_db)
-
-			-- Online backup with progress
-			online := backup.online_backup (source_db, dest_db)
-			online.set_progress_callback (agent on_progress)
-			online.execute_incremental
-
-			-- Export
-			exp := backup.exporter (db)
-			exp.database_to_sql ("dump.sql")
-
-			-- Import
-			imp := backup.importer (db)
-			imp.sql_file ("dump.sql")
+		A unified backup facade for SQLite databases supporting copy, online backup,
+		export, and import operations.
+		Provides factory methods for online backup via the SQLite Backup API and
+		data exchange in CSV, JSON, and SQL formats.
+		Acts as the central backup and data-portability entry point for simple_sql.
 	]"
-	date: "$"
-	revision: "$"
+	purpose: "Provide backup, export, and import operations for SQLite databases"
+	collaborators: "SIMPLE_SQL_DATABASE, SIMPLE_SQL_ONLINE_BACKUP, SIMPLE_SQL_EXPORT, SIMPLE_SQL_IMPORT, SIMPLE_SQL_RESULT, SIMPLE_SQL_ROW"
+	design_pattern: "Facade"
+	author: "Jimmy J. Johnson"
+	date: "$Date$"
+	revision: "$Revision$"
 
 class
 	SIMPLE_SQL_BACKUP
@@ -38,6 +20,12 @@ feature -- Factory Methods
 
 	online_backup (a_source, a_destination: SIMPLE_SQL_DATABASE): SIMPLE_SQL_ONLINE_BACKUP
 			-- Create online backup operation from source to destination
+		note
+			semantic_role: "[
+				Creates an online backup operation
+				between two open databases via the
+				SQLite Backup API.
+			]"
 		require
 			source_attached: a_source /= Void
 			source_open: a_source.is_open
@@ -51,6 +39,11 @@ feature -- Factory Methods
 
 	online_backup_to_file (a_source: SIMPLE_SQL_DATABASE; a_destination_path: READABLE_STRING_GENERAL): SIMPLE_SQL_ONLINE_BACKUP
 			-- Create online backup from source to new file
+		note
+			semantic_role: "[
+				Creates an online backup from a source
+				database to a new file path.
+			]"
 		require
 			source_attached: a_source /= Void
 			source_open: a_source.is_open
@@ -63,6 +56,11 @@ feature -- Factory Methods
 
 	online_backup_from_file (a_source_path: READABLE_STRING_GENERAL; a_destination: SIMPLE_SQL_DATABASE): SIMPLE_SQL_ONLINE_BACKUP
 			-- Create online backup from file to destination
+		note
+			semantic_role: "[
+				Creates an online backup from a file
+				into a destination database.
+			]"
 		require
 			path_not_empty: not a_source_path.is_empty
 			file_exists: (create {RAW_FILE}.make_with_name (a_source_path)).exists
@@ -76,6 +74,11 @@ feature -- Factory Methods
 
 	exporter (a_database: SIMPLE_SQL_DATABASE): SIMPLE_SQL_EXPORT
 			-- Create exporter for CSV, JSON, SQL export
+		note
+			semantic_role: "[
+				Creates an export helper for CSV, JSON,
+				and SQL format output from a database.
+			]"
 		require
 			database_attached: a_database /= Void
 			database_open: a_database.is_open
@@ -87,6 +90,11 @@ feature -- Factory Methods
 
 	importer (a_database: SIMPLE_SQL_DATABASE): SIMPLE_SQL_IMPORT
 			-- Create importer for CSV, JSON, SQL import
+		note
+			semantic_role: "[
+				Creates an import helper for CSV, JSON,
+				and SQL format input into a database.
+			]"
 		require
 			database_attached: a_database /= Void
 			database_open: a_database.is_open
@@ -100,6 +108,11 @@ feature -- Simple Copy Operations
 
 	copy_memory_to_file (a_memory_db: SIMPLE_SQL_DATABASE; a_file_name: READABLE_STRING_GENERAL)
 			-- Copy in-memory database to file
+		note
+			semantic_role: "[
+				Copies an in-memory database to a file
+				via schema and data replication.
+			]"
 		require
 			memory_db_attached: a_memory_db /= Void
 			memory_db_open: a_memory_db.is_open
@@ -130,6 +143,11 @@ feature -- Simple Copy Operations
 
 	copy_file_to_memory (a_file_name: READABLE_STRING_GENERAL; a_memory_db: SIMPLE_SQL_DATABASE)
 			-- Copy file database to in-memory database
+		note
+			semantic_role: "[
+				Copies a file database into memory via
+				schema and data replication.
+			]"
 		require
 			memory_db_attached: a_memory_db /= Void
 			memory_db_open: a_memory_db.is_open
@@ -164,6 +182,12 @@ feature {NONE} -- Implementation
 	copy_table_data (a_source, a_destination: SIMPLE_SQL_DATABASE; a_table_name: STRING_32)
 			-- Copy all data from source table to destination table
 			-- Handles BLOB data using SQLite X'HEXDATA' syntax
+		note
+			semantic_role: "[
+				Replicates all rows from a source table
+				to a destination with type-aware SQL
+				generation including BLOB hex encoding.
+			]"
 		require
 			source_attached: a_source /= Void
 			destination_attached: a_destination /= Void
@@ -223,6 +247,12 @@ feature {NONE} -- Implementation
 
 	escape_string (a_string: READABLE_STRING_GENERAL): STRING_32
 			-- Escape single quotes for SQL
+		note
+			semantic_role: "[
+				Doubles single quotes for safe SQL
+				string embedding in generated INSERT
+				statements.
+			]"
 		local
 			i: INTEGER
 			c: CHARACTER_32
@@ -246,6 +276,12 @@ feature {NONE} -- Implementation
 
 	blob_to_hex (a_blob: MANAGED_POINTER): STRING_32
 			-- Convert BLOB to uppercase hexadecimal string
+		note
+			semantic_role: "[
+				Converts a MANAGED_POINTER blob to
+				uppercase hexadecimal string for
+				SQLite X'...' literal syntax.
+			]"
 		local
 			i: INTEGER
 			l_byte: NATURAL_8
@@ -262,6 +298,11 @@ feature {NONE} -- Implementation
 
 	byte_to_hex (a_byte: NATURAL_8): STRING_32
 			-- Convert single byte to two hex characters (uppercase)
+		note
+			semantic_role: "[
+				Converts a single byte to a two-char
+				uppercase hex representation.
+			]"
 		local
 			l_high, l_low: NATURAL_8
 		do
@@ -276,6 +317,11 @@ feature {NONE} -- Implementation
 
 	hex_char (a_nibble: NATURAL_8): CHARACTER_32
 			-- Convert nibble (0-15) to hex character
+		note
+			semantic_role: "[
+				Maps a nibble value (0-15) to its
+				hexadecimal character (0-9, A-F).
+			]"
 		require
 			valid_nibble: a_nibble <= 15
 		local
@@ -295,7 +341,8 @@ note
 	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"
 	source: "[
-		SIMPLE_SQL - High-level SQLite API for Eiffel
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
 	]"
 
 end

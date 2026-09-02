@@ -1,21 +1,13 @@
 note
 	description: "[
-		Online backup functionality using SQLite Online Backup API.
-
-		Allows backing up databases while they're in use, with progress monitoring
-		and optional incremental backup support.
-
-		Usage:
-			backup := create {SIMPLE_SQL_ONLINE_BACKUP}.make (source_db, destination_db)
-			backup.execute
-
-		With progress callback:
-			backup.set_progress_callback (agent my_progress_handler)
-			backup.execute_incremental (100)  -- 100 pages at a time
-
-		Direct file backup:
-			backup.backup_to_file (source_db, "backup.db")
+		An online backup controller wrapping the SQLite Backup API.
+		Copies source database pages to a destination incrementally or in one shot,
+		with optional progress callbacks and throttling.
+		Provides contract-driven hot-backup capability for the simple_sql library.
 	]"
+	purpose: "Perform live database backups with progress monitoring for SQLite databases"
+	collaborators: "SIMPLE_SQL_DATABASE, SQLITE_BACKUP_EXTERNALS"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -38,6 +30,11 @@ feature {NONE} -- Initialization
 
 	make (a_source, a_destination: SIMPLE_SQL_DATABASE)
 			-- Initialize backup from `a_source` to `a_destination`
+		note
+			semantic_role: "[
+				Captures source and destination database
+				references with default step configuration.
+			]"
 		require
 			source_attached: a_source /= Void
 			source_open: a_source.is_open
@@ -55,6 +52,11 @@ feature {NONE} -- Initialization
 
 	make_to_file (a_source: SIMPLE_SQL_DATABASE; a_destination_path: READABLE_STRING_GENERAL)
 			-- Initialize backup from `a_source` database to file at `a_destination_path`
+		note
+			semantic_role: "[
+				Opens a new file database as backup
+				destination and marks it as owned.
+			]"
 		require
 			source_attached: a_source /= Void
 			source_open: a_source.is_open
@@ -73,6 +75,11 @@ feature {NONE} -- Initialization
 
 	make_from_file (a_source_path: READABLE_STRING_GENERAL; a_destination: SIMPLE_SQL_DATABASE)
 			-- Initialize backup from file at `a_source_path` to `a_destination` database
+		note
+			semantic_role: "[
+				Opens a file database as backup source
+				and marks it as owned.
+			]"
 		require
 			path_not_empty: not a_source_path.is_empty
 			source_exists: (create {RAW_FILE}.make_with_name (a_source_path)).exists
@@ -109,6 +116,11 @@ feature -- Access
 
 	last_error_message: STRING_32
 			-- Human-readable error message
+		note
+			semantic_role: "[
+				Translates the last error code to a
+				human-readable message.
+			]"
 		do
 			create Result.make_from_string (error_message_for_code (last_error_code))
 		end
@@ -120,12 +132,22 @@ feature -- Status
 
 	had_error: BOOLEAN
 			-- Did the last operation encounter an error?
+		note
+			semantic_role: "[
+				Checks whether the last operation failed
+				with a non-success code.
+			]"
 		do
 			Result := last_error_code /= Backup_ok and last_error_code /= Backup_done
 		end
 
 	progress_percentage: REAL_64
 			-- Current progress as percentage (0.0 to 100.0)
+		note
+			semantic_role: "[
+				Computes backup progress as a percentage
+				from page counts.
+			]"
 		do
 			if total_pages > 0 then
 				Result := ((total_pages - pages_remaining) / total_pages) * 100.0
@@ -147,6 +169,12 @@ feature -- Configuration
 
 	set_pages_per_step (a_count: INTEGER)
 			-- Set number of pages to copy per incremental step
+		note
+			semantic_role: "[
+				Configures how many pages to copy per
+				incremental step.
+			]"
+			modifies: "pages_per_step"
 		require
 			positive_or_all: a_count > 0 or a_count = -1
 		do
@@ -157,6 +185,12 @@ feature -- Configuration
 
 	set_sleep_between_steps (a_ms: INTEGER)
 			-- Set milliseconds to sleep between incremental steps
+		note
+			semantic_role: "[
+				Configures throttle delay between
+				incremental steps.
+			]"
+			modifies: "sleep_ms_between_steps"
 		require
 			non_negative: a_ms >= 0
 		do
@@ -167,6 +201,12 @@ feature -- Configuration
 
 	set_progress_callback (a_callback: PROCEDURE [INTEGER, INTEGER])
 			-- Set progress callback that receives (pages_remaining, total_pages)
+		note
+			semantic_role: "[
+				Registers a callback agent for progress
+				notifications.
+			]"
+			modifies: "progress_callback"
 		do
 			progress_callback := a_callback
 		ensure
@@ -177,6 +217,11 @@ feature -- Operations
 
 	execute
 			-- Execute complete backup in one operation
+		note
+			semantic_role: "[
+				Performs a complete one-shot backup of
+				all pages.
+			]"
 		require
 			source_open: source.is_open
 			destination_open: destination.is_open
@@ -187,6 +232,11 @@ feature -- Operations
 	execute_incremental
 			-- Execute backup incrementally, `pages_per_step` pages at a time
 			-- Calls progress_callback after each step if set
+		note
+			semantic_role: "[
+				Performs backup in steps with optional
+				progress reporting and throttling.
+			]"
 		require
 			source_open: source.is_open
 			destination_open: destination.is_open
@@ -196,6 +246,10 @@ feature -- Operations
 
 	close
 			-- Clean up resources
+		note
+			semantic_role: "[
+				Releases owned database connections.
+			]"
 		do
 			if owns_source and then source.is_open then
 				source.close
@@ -209,6 +263,12 @@ feature {NONE} -- Implementation
 
 	execute_with_pages (a_pages: INTEGER)
 			-- Execute backup copying `a_pages` pages per step (-1 for all at once)
+		note
+			semantic_role: "[
+				Core backup loop using SQLite Backup API
+				with step-based page copying.
+			]"
+			modifies: "is_complete, last_error_code, pages_remaining, total_pages"
 		local
 			l_backup: POINTER
 			l_result: INTEGER
@@ -273,6 +333,12 @@ feature {NONE} -- Implementation
 
 	update_progress (a_backup: POINTER)
 			-- Update progress attributes from backup handle
+		note
+			semantic_role: "[
+				Refreshes page count attributes from
+				the backup handle.
+			]"
+			modifies: "pages_remaining, total_pages"
 		require
 			valid_backup: a_backup /= default_pointer
 		do
@@ -282,6 +348,11 @@ feature {NONE} -- Implementation
 
 	error_message_for_code (a_code: INTEGER): STRING_8
 			-- Human-readable message for error code
+		note
+			semantic_role: "[
+				Maps SQLite error codes to descriptive
+				messages.
+			]"
 		do
 			inspect a_code
 			when 0 then
@@ -318,7 +389,8 @@ note
 	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"
 	source: "[
-		SIMPLE_SQL - High-level SQLite API for Eiffel
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
 	]"
 
 end

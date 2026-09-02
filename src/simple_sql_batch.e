@@ -1,22 +1,13 @@
 note
 	description: "[
-		Batch operations for efficient bulk INSERT/UPDATE/DELETE.
-
-		Automatically wraps operations in transactions for performance.
-		Uses prepared statements internally for security and speed.
-
-		Usage:
-			create batch.make (db)
-			batch.begin
-			batch.insert ("users", <<"name", "age">>, <<"Alice", 30>>)
-			batch.insert ("users", <<"name", "age">>, <<"Bob", 25>>)
-			batch.insert ("users", <<"name", "age">>, <<"Carol", 35>>)
-			batch.commit  -- All inserts happen in one transaction
-
-		Or with execute_many for repeated operations:
-			batch.execute_many ("INSERT INTO users (name) VALUES (?)",
-			    <<<<"Alice">>, <<"Bob">>, <<"Carol">>>>)
+		A batch operations helper for efficient bulk INSERT, UPDATE, and DELETE execution.
+		Queues SQL statements and executes them within a single transaction, with
+		automatic commit/rollback and placeholder substitution.
+		Provides the high-throughput bulk-write path for the simple_sql library.
 	]"
+	purpose: "Execute bulk SQL operations efficiently within a single transaction"
+	collaborators: "SIMPLE_SQL_DATABASE, SIMPLE_SQL_ERROR, MML_SEQUENCE"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -30,6 +21,12 @@ feature {NONE} -- Initialization
 
 	make (a_database: SIMPLE_SQL_DATABASE)
 			-- Create batch operations helper for database
+		note
+			semantic_role: "[
+				Captures database reference and
+				initializes empty pending statement
+				queue for batch operations.
+			]"
 		require
 			database_attached: a_database /= Void
 			database_open: a_database.is_open
@@ -62,6 +59,11 @@ feature -- Status
 
 	has_error: BOOLEAN
 			-- Did last operation fail?
+		note
+			semantic_role: "[
+				Checks whether the last batch operation
+				recorded an error.
+			]"
 		do
 			Result := last_error /= Void
 		end
@@ -70,6 +72,12 @@ feature -- Batch control
 
 	begin
 			-- Start a new batch (begins transaction)
+		note
+			semantic_role: "[
+				Opens a database transaction and resets
+				batch state for new operations.
+			]"
+			modifies: "last_error, pending_statements, operations_count, is_active"
 		require
 			not_active: not is_active
 			database_open: database.is_open
@@ -86,6 +94,12 @@ feature -- Batch control
 
 	commit
 			-- Commit all batched operations
+		note
+			semantic_role: "[
+				Executes all pending statements and
+				commits or rolls back on error.
+			]"
+			modifies: "last_error, is_active, pending_statements"
 		require
 			is_active: is_active
 		do
@@ -104,6 +118,12 @@ feature -- Batch control
 
 	rollback
 			-- Cancel all batched operations
+		note
+			semantic_role: "[
+				Cancels the active batch discarding all
+				pending statements via rollback.
+			]"
+			modifies: "last_error, is_active, pending_statements, operations_count"
 		require
 			is_active: is_active
 		do
@@ -121,6 +141,12 @@ feature -- Batch operations
 
 	add (a_sql: READABLE_STRING_8)
 			-- Add SQL statement to batch
+		note
+			semantic_role: "[
+				Enqueues a raw SQL statement for later
+				batch execution within the transaction.
+			]"
+			modifies: "pending_statements, operations_count"
 		require
 			is_active: is_active
 			sql_not_empty: not a_sql.is_empty
@@ -133,6 +159,11 @@ feature -- Batch operations
 
 	insert (a_table: STRING_8; a_columns: ARRAY [STRING_8]; a_values: ARRAY [detachable ANY])
 			-- Add INSERT statement to batch
+		note
+			semantic_role: "[
+				Constructs and enqueues an INSERT
+				statement from column-value arrays.
+			]"
 		require
 			is_active: is_active
 			table_not_empty: not a_table.is_empty
@@ -173,6 +204,11 @@ feature -- Batch operations
 
 	update (a_table: STRING_8; a_set_columns: ARRAY [STRING_8]; a_set_values: ARRAY [detachable ANY]; a_where: STRING_8)
 			-- Add UPDATE statement to batch
+		note
+			semantic_role: "[
+				Constructs and enqueues an UPDATE SET
+				statement with WHERE clause.
+			]"
 		require
 			is_active: is_active
 			table_not_empty: not a_table.is_empty
@@ -207,6 +243,11 @@ feature -- Batch operations
 
 	delete (a_table: STRING_8; a_where: STRING_8)
 			-- Add DELETE statement to batch
+		note
+			semantic_role: "[
+				Constructs and enqueues a DELETE
+				statement with WHERE clause.
+			]"
 		require
 			is_active: is_active
 			table_not_empty: not a_table.is_empty
@@ -230,6 +271,11 @@ feature -- Convenience operations
 			-- Execute SQL template with multiple value sets
 			-- Template uses ? placeholders
 			-- Automatically wrapped in transaction if not already in batch
+		note
+			semantic_role: "[
+				Substitutes placeholders across multiple
+				value sets within auto-transaction.
+			]"
 		require
 			sql_not_empty: not a_sql_template.is_empty
 			value_sets_not_empty: not a_value_sets.is_empty
@@ -259,6 +305,11 @@ feature -- Convenience operations
 
 	insert_many (a_table: STRING_8; a_columns: ARRAY [STRING_8]; a_value_sets: ARRAY [ARRAY [detachable ANY]])
 			-- Insert multiple rows efficiently
+		note
+			semantic_role: "[
+				Inserts multiple rows by iterating
+				insert within auto-transaction.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 			columns_not_empty: not a_columns.is_empty
@@ -285,6 +336,25 @@ feature -- Convenience operations
 			end
 		end
 
+feature -- Model Queries
+
+	pending_statements_model: MML_SEQUENCE [STRING_8]
+			-- Mathematical model of queued statements in order.
+		note
+			semantic_role: "[
+				Materializes the pending statement queue
+				as an MML_SEQUENCE for contract-based
+				verification.
+			]"
+		do
+			create Result
+			across pending_statements as ic loop
+				Result := Result & ic
+			end
+		ensure
+			count_matches: Result.count = pending_statements.count
+		end
+
 feature {NONE} -- Implementation
 
 	pending_statements: ARRAYED_LIST [STRING_8]
@@ -292,6 +362,12 @@ feature {NONE} -- Implementation
 
 	execute_pending
 			-- Execute all pending statements
+		note
+			semantic_role: "[
+				Iterates and executes all queued SQL
+				statements against the database.
+			]"
+			modifies: "last_error"
 		local
 			l_sql: STRING_8
 		do
@@ -306,6 +382,12 @@ feature {NONE} -- Implementation
 
 	value_to_sql (a_value: detachable ANY): STRING_8
 			-- Convert value to SQL literal
+		note
+			semantic_role: "[
+				Converts an Eiffel value to its SQL
+				literal representation for statement
+				construction.
+			]"
 		do
 			if a_value = Void then
 				Result := "NULL"
@@ -334,6 +416,11 @@ feature {NONE} -- Implementation
 
 	escaped_string (a_string: READABLE_STRING_GENERAL): STRING_8
 			-- Escape string for SQL (wrap in quotes, escape internal quotes)
+		note
+			semantic_role: "[
+				Wraps a string in single quotes with
+				internal quote doubling for SQL safety.
+			]"
 		local
 			i: INTEGER
 			c: CHARACTER_32
@@ -360,6 +447,11 @@ feature {NONE} -- Implementation
 
 	substitute_placeholders (a_template: READABLE_STRING_8; a_values: ARRAY [detachable ANY]): STRING_8
 			-- Replace ? placeholders with values
+		note
+			semantic_role: "[
+				Replaces ? placeholders in a template
+				with SQL-escaped values from an array.
+			]"
 		local
 			i, l_value_index: INTEGER
 			c: CHARACTER_8
@@ -402,7 +494,8 @@ note
 	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"
 	source: "[
-		SIMPLE_SQL - High-level SQLite API for Eiffel
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
 	]"
 
 end

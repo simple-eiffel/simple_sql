@@ -1,23 +1,17 @@
 note
 	description: "[
-		Eager loading support to prevent N+1 query problems.
-
-		Provides a declarative way to specify related data to load in a single query
-		or with batched queries, rather than lazy loading each related entity.
-
-		Usage:
-			loader := db.eager_loader
-			loader.from_table ("documents")
-				.include ("comments", "document_id", "id")
-				.include ("tags", "document_tags", "document_id", "tag_id")
-				.where ("owner_id = 1")
-
-			results := loader.execute
-			-- results.main_rows has documents
-			-- results.related ("comments") has all comments for those documents
+		A declarative eager-loading builder that prevents N+1 query problems.
+		Collects relationship declarations (direct foreign key and many-to-many)
+		then executes batched IN-clause queries to load all related data in
+		minimal round trips.
+		Provides the primary N+1 prevention mechanism for the simple_sql library.
 	]"
+	purpose: "Batch-load related table data to prevent N+1 query performance problems"
+	collaborators: "SIMPLE_SQL_DATABASE, SIMPLE_SQL_EAGER_RESULT, SIMPLE_SQL_RESULT, MML_SEQUENCE"
+	design_pattern: "Builder"
 	EIS: "name=API Reference", "src=../docs/api/eager-loader.html", "protocol=URI", "tag=documentation"
 	EIS: "name=Eager Loading Tutorial", "src=../docs/tutorials/eager-loading.html", "protocol=URI", "tag=tutorial"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -31,6 +25,12 @@ feature {NONE} -- Initialization
 
 	make (a_database: SIMPLE_SQL_DATABASE)
 			-- Initialize with database connection
+		note
+			semantic_role: "[
+				Captures database reference and
+				initializes include and filter storage
+				for eager loading configuration.
+			]"
 		require
 			database_not_void: a_database /= Void
 			database_open: a_database.is_open
@@ -53,6 +53,12 @@ feature -- Configuration
 
 	from_table (a_table: READABLE_STRING_8): like Current
 			-- Set the main table to query
+		note
+			semantic_role: "[
+				Specifies the primary table whose rows
+				will have related data eagerly loaded.
+			]"
+			modifies: "main_table"
 		require
 			table_not_empty: not a_table.is_empty
 		do
@@ -67,6 +73,12 @@ feature -- Configuration
 			-- a_related_table: the table to include (e.g., "comments")
 			-- a_foreign_key: the foreign key column in related table (e.g., "document_id")
 			-- a_primary_key: the primary key column in main table (e.g., "id")
+		note
+			semantic_role: "[
+				Registers a one-to-many relationship
+				for batch loading via IN clause.
+			]"
+			modifies: "includes"
 		require
 			related_table_not_empty: not a_related_table.is_empty
 			foreign_key_not_empty: not a_foreign_key.is_empty
@@ -86,6 +98,13 @@ feature -- Configuration
 			-- a_join_table: the junction table (e.g., "document_tags")
 			-- a_main_fk: foreign key in join table to main table (e.g., "document_id")
 			-- a_related_fk: foreign key in join table to related table (e.g., "tag_id")
+		note
+			semantic_role: "[
+				Registers a many-to-many relationship
+				for batch loading via junction table
+				JOIN.
+			]"
+			modifies: "includes"
 		require
 			related_table_not_empty: not a_related_table.is_empty
 			join_table_not_empty: not a_join_table.is_empty
@@ -101,6 +120,12 @@ feature -- Configuration
 
 	where (a_condition: READABLE_STRING_8): like Current
 			-- Add WHERE condition for main table
+		note
+			semantic_role: "[
+				Appends a filter condition applied to
+				the main table query.
+			]"
+			modifies: "where_clauses"
 		require
 			condition_not_empty: not a_condition.is_empty
 		do
@@ -110,6 +135,12 @@ feature -- Configuration
 
 	limit (a_limit: INTEGER): like Current
 			-- Set LIMIT for main table query
+		note
+			semantic_role: "[
+				Caps the number of main table rows
+				to load.
+			]"
+			modifies: "limit_value"
 		require
 			limit_positive: a_limit > 0
 		do
@@ -121,6 +152,12 @@ feature -- Configuration
 
 	offset (a_offset: INTEGER): like Current
 			-- Set OFFSET for main table query
+		note
+			semantic_role: "[
+				Skips main table rows for pagination
+				support.
+			]"
+			modifies: "offset_value"
 		require
 			offset_non_negative: a_offset >= 0
 		do
@@ -132,6 +169,12 @@ feature -- Configuration
 
 	order_by (a_column: READABLE_STRING_8): like Current
 			-- Set ORDER BY for main table
+		note
+			semantic_role: "[
+				Sets the sort order for main table
+				rows.
+			]"
+			modifies: "order_by_column"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -139,10 +182,51 @@ feature -- Configuration
 			Result := Current
 		end
 
+feature -- Model Queries
+
+	includes_model: MML_SEQUENCE [TUPLE [table: STRING_8; foreign_key: STRING_8; primary_key: STRING_8; join_table: detachable STRING_8; join_fk: detachable STRING_8]]
+			-- Mathematical model of included related tables in order.
+		note
+			semantic_role: "[
+				Materializes the include declarations
+				as an MML_SEQUENCE for contract-based
+				verification.
+			]"
+		do
+			create Result
+			across includes as ic loop
+				Result := Result & ic
+			end
+		ensure
+			count_matches: Result.count = includes.count
+		end
+
+	where_clauses_model: MML_SEQUENCE [STRING_8]
+			-- Mathematical model of WHERE conditions in order.
+		note
+			semantic_role: "[
+				Materializes the WHERE clause list as
+				an MML_SEQUENCE for contract-based
+				verification.
+			]"
+		do
+			create Result
+			across where_clauses as ic loop
+				Result := Result & ic
+			end
+		ensure
+			count_matches: Result.count = where_clauses.count
+		end
+
 feature -- Status
 
 	has_main_table: BOOLEAN
 			-- Has a main table been configured?
+		note
+			semantic_role: "[
+				Configuration completeness predicate
+				guarding execute.
+			]"
 		do
 			Result := attached main_table as mt and then not mt.is_empty
 		end
@@ -152,6 +236,12 @@ feature -- Execution
 	execute: SIMPLE_SQL_EAGER_RESULT
 			-- Execute the eager loading query
 			-- Returns main rows plus all related data in a single result object
+		note
+			semantic_role: "[
+				Executes main query then batches related
+				queries using extracted IDs via IN
+				clauses.
+			]"
 		require
 			has_table: has_main_table
 		local
@@ -200,6 +290,11 @@ feature {NONE} -- Implementation
 
 	build_main_query: STRING_8
 			-- Build SQL for main table query
+		note
+			semantic_role: "[
+				Assembles SELECT * with WHERE, ORDER BY,
+				LIMIT, OFFSET for the main table.
+			]"
 		local
 			i: INTEGER
 		do
@@ -242,6 +337,11 @@ feature {NONE} -- Implementation
 
 	extract_ids (a_result: SIMPLE_SQL_RESULT; a_column: STRING_8): ARRAYED_LIST [INTEGER_64]
 			-- Extract ID values from result set
+		note
+			semantic_role: "[
+				Collects primary key values for use in
+				related query IN clauses.
+			]"
 		do
 			create Result.make (a_result.rows.count)
 			across a_result.rows as ic loop
@@ -251,6 +351,12 @@ feature {NONE} -- Implementation
 
 	execute_related_query (a_include: TUPLE [table: STRING_8; foreign_key: STRING_8; primary_key: STRING_8; join_table: detachable STRING_8; join_fk: detachable STRING_8]; a_ids: ARRAYED_LIST [INTEGER_64]): SIMPLE_SQL_RESULT
 			-- Execute query for related table using IN clause with IDs
+		note
+			semantic_role: "[
+				Builds and executes the batched related
+				query with _eager_fk column alias for
+				parent row matching.
+			]"
 		local
 			l_sql: STRING_8
 			l_in_clause: STRING_8
@@ -316,5 +422,9 @@ invariant
 note
 	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"
+	source: "[
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
+	]"
 
 end

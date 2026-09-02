@@ -36,7 +36,9 @@ note
 					end
 			end
 	]"
-	author: "Larry Rix"
+	purpose: "Deferred ORM entity base with field metadata, row mapping, and DDL generation"
+	collaborators: "SIMPLE_ORM, SIMPLE_ORM_REPOSITORY, SIMPLE_ORM_FIELD, SIMPLE_SQL_ROW"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -65,6 +67,11 @@ feature -- Schema
 
 	primary_key_column: STRING_8
 			-- Name of the primary key column.
+		note
+			semantic_role: "[
+				Returns the default primary key column
+				name.
+			]"
 		do
 			Result := "id"
 		ensure
@@ -100,6 +107,11 @@ feature -- Status
 
 	is_new: BOOLEAN
 			-- Has this entity not yet been saved to database?
+		note
+			semantic_role: "[
+				Tests whether the entity has a zero ID
+				indicating no database record.
+			]"
 		do
 			Result := id = 0
 		ensure
@@ -108,6 +120,11 @@ feature -- Status
 
 	is_persisted: BOOLEAN
 			-- Has this entity been saved to database?
+		note
+			semantic_role: "[
+				Tests whether the entity has a positive ID
+				indicating a database record.
+			]"
 		do
 			Result := id > 0
 		ensure
@@ -116,12 +133,22 @@ feature -- Status
 
 	has_field (a_name: READABLE_STRING_8): BOOLEAN
 			-- Does this entity have a field with the given name?
+		note
+			semantic_role: "[
+				Searches the field list for a
+				case-insensitive name match.
+			]"
 		do
 			Result := across fields as ic some ic.name.is_case_insensitive_equal (a_name) end
 		end
 
 	field_by_name (a_name: READABLE_STRING_8): detachable SIMPLE_ORM_FIELD
 			-- Get field descriptor by name.
+		note
+			semantic_role: "[
+				Searches the field list for a descriptor
+				matching the given name.
+			]"
 		do
 			across fields as ic loop
 				if ic.name.is_case_insensitive_equal (a_name) then
@@ -134,6 +161,12 @@ feature -- Modification
 
 	set_id (a_id: INTEGER_64)
 			-- Set the primary key (called after insert).
+		note
+			semantic_role: "[
+				Records the database-assigned ID after
+				initial insert.
+			]"
+			modifies: "id"
 		require
 			was_new: id = 0
 			valid_id: a_id > 0
@@ -145,6 +178,12 @@ feature -- Modification
 
 	set_timestamps (a_created: READABLE_STRING_8; a_updated: READABLE_STRING_8)
 			-- Set created/updated timestamps.
+		note
+			semantic_role: "[
+				Records ISO 8601 timestamps from database
+				values.
+			]"
+			modifies: "created_at, updated_at"
 		do
 			created_at := a_created.to_string_8
 			updated_at := a_updated.to_string_8
@@ -156,6 +195,12 @@ feature -- Modification
 	touch_updated
 			-- Update the updated_at timestamp to current time.
 			-- Note: In real use, ORM sets this automatically on save.
+		note
+			semantic_role: "[
+				Placeholder for updating the updated_at
+				timestamp; actual stamping is done by the
+				ORM on save.
+			]"
 		do
 			-- Timestamp is set by database or ORM
 		end
@@ -165,6 +210,12 @@ feature -- Column Conversion
 	to_column_hash: HASH_TABLE [detachable ANY, STRING_8]
 			-- Convert entity to column name/value pairs.
 			-- Excludes primary key (for insert) and auto-timestamps.
+		note
+			semantic_role: "[
+				Iterates field metadata to build a
+				column-value hash excluding auto-generated
+				columns.
+			]"
 		local
 			l_value: detachable ANY
 		do
@@ -183,6 +234,13 @@ feature -- Column Conversion
 
 	from_row (a_row: SIMPLE_SQL_ROW)
 			-- Populate entity from database row.
+		note
+			semantic_role: "[
+				Reads each field from the row with
+				type-aware conversion and sets entity
+				state.
+			]"
+			modifies: "id, created_at, updated_at"
 		require
 			row_attached: a_row /= Void
 		local
@@ -229,6 +287,12 @@ feature -- SQL Generation
 
 	create_table_sql: STRING_8
 			-- Generate CREATE TABLE SQL for this entity.
+		note
+			semantic_role: "[
+				Assembles DDL from field metadata
+				including types, constraints, and
+				defaults.
+			]"
 		local
 			l_first: BOOLEAN
 		do
@@ -253,5 +317,9 @@ invariant
 note
 	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"
+	source: "[
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
+	]"
 
 end

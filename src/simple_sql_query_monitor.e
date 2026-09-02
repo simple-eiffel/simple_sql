@@ -1,17 +1,13 @@
 note
 	description: "[
-		N+1 Query Detection Monitor.
-
-		Tracks query patterns and warns when potential N+1 problems are detected.
-		Enable during development/testing to catch performance issues early.
-
-		Usage:
-			db.enable_query_monitor
-			-- run your code
-			warnings := db.query_monitor.warnings
-			db.disable_query_monitor
+		A development-time monitor that detects N+1 query patterns.
+		Normalizes executed SQL into fingerprints, counts repeated patterns, and
+		emits warnings when a pattern exceeds a configurable threshold.
+		Provides early performance diagnostics for the simple_sql library.
 	]"
-	EIS: "name=API Reference", "src=../docs/api/query-monitor.html", "protocol=URI", "tag=documentation"
+	purpose: "Detect N+1 query patterns by fingerprinting and counting repeated SQL"
+	collaborators: "MML_SEQUENCE, MML_MAP"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -25,6 +21,11 @@ feature {NONE} -- Initialization
 
 	make
 			-- Initialize monitor.
+		note
+			semantic_role: "[
+				Initializes pattern tracking storage
+				and sets default detection threshold.
+			]"
 		do
 			create query_patterns.make (20)
 			create warnings.make (5)
@@ -32,6 +33,8 @@ feature {NONE} -- Initialization
 			is_enabled := True
 		ensure
 			enabled: is_enabled
+			empty_warnings: warnings_model.is_empty
+			empty_patterns: query_patterns_model.is_empty
 		end
 
 feature -- Access
@@ -45,10 +48,51 @@ feature -- Access
 	query_count: INTEGER
 			-- Total queries recorded.
 
+feature -- Model Queries
+
+	warnings_model: MML_SEQUENCE [STRING_8]
+			-- Mathematical model of collected warnings in order.
+		note
+			semantic_role: "[
+				MML specification of warning ordering
+				for formal contract verification.
+			]"
+		do
+			create Result
+			across warnings as ic loop
+				Result := Result & ic
+			end
+		ensure
+			count_matches: Result.count = warnings.count
+		end
+
+	query_patterns_model: MML_MAP [STRING_8, INTEGER]
+			-- Mathematical model of query pattern counts.
+		note
+			semantic_role: "[
+				MML specification of pattern counts
+				for formal contract verification.
+			]"
+		do
+			create Result
+			from query_patterns.start until query_patterns.after loop
+				Result := Result.updated (query_patterns.key_for_iteration, query_patterns.item_for_iteration)
+				query_patterns.forth
+			end
+		ensure
+			count_matches: Result.count = query_patterns.count
+		end
+
 feature -- Configuration
 
 	set_threshold (a_threshold: INTEGER)
 			-- Set threshold for N+1 detection.
+		note
+			semantic_role: "[
+				Adjusts how many repeated patterns
+				trigger an N+1 warning.
+			]"
+			modifies: "threshold"
 		require
 			threshold_positive: a_threshold > 1
 		do
@@ -59,6 +103,12 @@ feature -- Configuration
 
 	enable
 			-- Enable monitoring.
+		note
+			semantic_role: "[
+				Activates query recording and pattern
+				analysis.
+			]"
+			modifies: "is_enabled"
 		do
 			is_enabled := True
 		ensure
@@ -67,6 +117,12 @@ feature -- Configuration
 
 	disable
 			-- Disable monitoring.
+		note
+			semantic_role: "[
+				Suspends query recording without
+				clearing collected data.
+			]"
+			modifies: "is_enabled"
 		do
 			is_enabled := False
 		ensure
@@ -80,12 +136,22 @@ feature -- Status
 
 	has_warnings: BOOLEAN
 			-- Any N+1 warnings detected?
+		note
+			semantic_role: "[
+				Checks whether any repeated query
+				patterns exceeded the threshold.
+			]"
 		do
 			Result := not warnings.is_empty
 		end
 
 	warning_count: INTEGER
 			-- Number of warnings.
+		note
+			semantic_role: "[
+				Returns the count of detected N+1
+				pattern violations.
+			]"
 		do
 			Result := warnings.count
 		end
@@ -94,6 +160,12 @@ feature -- Operations
 
 	record_query (a_sql: READABLE_STRING_8)
 			-- Record a query and check for N+1 patterns.
+		note
+			semantic_role: "[
+				Normalizes SQL to a pattern, increments
+				its count, and flags threshold breaches.
+			]"
+			modifies: "query_count, query_patterns, warnings"
 		local
 			l_pattern: STRING_8
 			l_count: INTEGER
@@ -115,16 +187,29 @@ feature -- Operations
 
 	reset
 			-- Clear all recorded data.
+		note
+			semantic_role: "[
+				Clears all pattern counts, warnings,
+				and query statistics.
+			]"
+			modifies: "query_patterns, warnings, query_count"
 		do
 			query_patterns.wipe_out
 			warnings.wipe_out
 			query_count := 0
 		ensure
 			empty: query_count = 0 and warnings.is_empty
+			model_warnings_empty: warnings_model.is_empty
+			model_patterns_empty: query_patterns_model.is_empty
 		end
 
 	report: STRING_8
 			-- Generate summary report.
+		note
+			semantic_role: "[
+				Formats a human-readable report of
+				query statistics and N+1 warnings.
+			]"
 		local
 			l_sorted: ARRAYED_LIST [TUPLE [pattern: STRING_8; exec_count: INTEGER]]
 		do
@@ -181,6 +266,12 @@ feature {NONE} -- Implementation
 	extract_pattern (a_sql: READABLE_STRING_8): STRING_8
 			-- Extract normalized pattern from SQL.
 			-- Replaces literal values with ? placeholders.
+		note
+			semantic_role: "[
+				Normalizes SQL by replacing string
+				literals and numbers with ?
+				placeholders.
+			]"
 		local
 			i: INTEGER
 			c: CHARACTER
@@ -216,6 +307,12 @@ feature {NONE} -- Implementation
 
 	add_warning (a_pattern: STRING_8; a_count: INTEGER)
 			-- Add N+1 warning.
+		note
+			semantic_role: "[
+				Constructs and records a warning message
+				for a threshold-exceeding pattern.
+			]"
+			modifies: "warnings"
 		local
 			l_msg: STRING_8
 		do
@@ -229,6 +326,11 @@ feature {NONE} -- Implementation
 
 	sort_by_count (a_list: ARRAYED_LIST [TUPLE [pattern: STRING_8; exec_count: INTEGER]])
 			-- Sort list by exec_count descending (simple bubble sort).
+		note
+			semantic_role: "[
+				Orders pattern-count tuples by execution
+				count for report ranking.
+			]"
 		local
 			i, j: INTEGER
 			l_temp: TUPLE [pattern: STRING_8; exec_count: INTEGER]
@@ -249,9 +351,14 @@ feature {NONE} -- Implementation
 invariant
 	threshold_valid: threshold > 1
 	warnings_attached: warnings /= Void
+	model_warnings_count: warnings_model.count = warnings.count
 
 note
 	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"
+	source: "[
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
+	]"
 
 end

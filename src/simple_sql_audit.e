@@ -1,28 +1,14 @@
 note
 	description: "[
-		Automatic audit/change tracking for database tables.
-
-		Provides automatic change capture via triggers that record:
-		- Operation type (INSERT, UPDATE, DELETE)
-		- Timestamp of change
-		- Old and new values as JSON
-		- List of changed fields
-
-		Model Queries (for contracts):
-		- model_audit_trail: MML_SEQUENCE [AUDIT_ENTRY] -- chronological audit entries
-		- model_tables: MML_SET [STRING] -- audited tables
-		- model_record_changes: MML_MAP [INTEGER_64, MML_SEQUENCE [AUDIT_ENTRY]] -- record_id -> changes
-
-		Example:
-			audit := db.audit
-			audit.enable_for_table ("users")
-
-			-- Changes are now automatically tracked
-			db.execute ("UPDATE users SET age = 31 WHERE id = 1")
-
-			-- Query audit history
-			changes := audit.get_changes_for_record ("users", 1)
+		An automatic audit and change-tracking subsystem for database tables.
+		Creates SQLite triggers to capture INSERT, UPDATE, and DELETE operations
+		with JSON snapshots of old and new values, and provides MML model queries
+		for contract-driven verification of the audit trail.
+		Serves as the change-history backbone of the simple_sql library.
 	]"
+	purpose: "Provide trigger-based audit trail with JSON change capture for database tables"
+	collaborators: "SIMPLE_SQL_DATABASE, SIMPLE_SQL_RESULT, SIMPLE_SQL_ROW, SIMPLE_SQL_PREPARED_STATEMENT, SIMPLE_SQL_COLUMN_INFO, AUDIT_ENTRY, SIMPLE_JSON, MML_SEQUENCE, MML_SET, MML_MAP"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -36,6 +22,11 @@ feature {NONE} -- Initialization
 
 	make (a_database: SIMPLE_SQL_DATABASE)
 			-- Initialize with database connection
+		note
+			semantic_role: "[
+				Captures database reference for audit
+				trigger management and trail queries.
+			]"
 		require
 			database_open: a_database.is_open
 		do
@@ -54,6 +45,12 @@ feature -- Model Queries (for contracts)
 	model_audit_trail (a_table: STRING_8): MML_SEQUENCE [AUDIT_ENTRY]
 			-- Chronological sequence of all audit entries for table.
 			-- Entries are ordered by timestamp/audit_id (oldest first).
+		note
+			semantic_role: "[
+				Materializes the chronological audit
+				trail as an MML_SEQUENCE from the
+				audit shadow table.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 			has_audit: has_audit_table (a_table)
@@ -91,6 +88,11 @@ feature -- Model Queries (for contracts)
 
 	model_tables: MML_SET [STRING_8]
 			-- Set of all tables that have auditing enabled.
+		note
+			semantic_role: "[
+				Discovers all audited tables by scanning
+				sqlite_master for _audit suffixed tables.
+			]"
 		local
 			l_result: SIMPLE_SQL_RESULT
 			l_name: STRING_8
@@ -119,6 +121,12 @@ feature -- Model Queries (for contracts)
 
 	model_record_changes (a_table: STRING_8): MML_MAP [INTEGER_64, MML_SEQUENCE [AUDIT_ENTRY]]
 			-- Map from record_id to sequence of audit entries for that record.
+		note
+			semantic_role: "[
+				Groups audit entries by record_id into
+				an MML_MAP of MML_SEQUENCEs for
+				per-record change analysis.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 			has_audit: has_audit_table (a_table)
@@ -156,6 +164,11 @@ feature -- Model Queries (for contracts)
 
 	model_entry_count (a_table: STRING_8): INTEGER
 			-- Total number of audit entries for table.
+		note
+			semantic_role: "[
+				Returns the total audit entry count by
+				delegating to model_audit_trail.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 			has_audit: has_audit_table (a_table)
@@ -170,6 +183,12 @@ feature -- Model Helpers (for contracts)
 
 	is_chronological (a_seq: MML_SEQUENCE [AUDIT_ENTRY]): BOOLEAN
 			-- Are entries in `a_seq' ordered chronologically?
+		note
+			semantic_role: "[
+				Verifies that entries are ordered by
+				ascending timestamp for chronological
+				integrity checks.
+			]"
 		local
 			i: INTEGER
 		do
@@ -186,6 +205,12 @@ feature -- Model Helpers (for contracts)
 
 	model_entries_for_record (a_table: STRING_8; a_record_id: INTEGER_64): MML_SEQUENCE [AUDIT_ENTRY]
 			-- Sequence of audit entries for specific record.
+		note
+			semantic_role: "[
+				Filters the audit trail to entries
+				matching a specific record_id for
+				per-record history inspection.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 			has_audit: has_audit_table (a_table)
@@ -213,6 +238,12 @@ feature -- Status
 	is_enabled (a_table: STRING_8): BOOLEAN
 			-- Is auditing enabled for table?
 			-- Checks if INSERT/UPDATE/DELETE triggers exist
+		note
+			semantic_role: "[
+				Checks for the existence of all three
+				audit triggers on a table via schema
+				introspection.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 		local
@@ -233,6 +264,11 @@ feature -- Status
 
 	has_audit_table (a_table: STRING_8): BOOLEAN
 			-- Does audit table exist for given table?
+		note
+			semantic_role: "[
+				Checks whether the audit shadow table
+				exists via schema introspection.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 		do
@@ -241,6 +277,11 @@ feature -- Status
 
 	is_valid_operation (a_operation: STRING_8): BOOLEAN
 			-- Is operation one of INSERT, UPDATE, DELETE?
+		note
+			semantic_role: "[
+				Validates that an operation string is
+				one of INSERT, UPDATE, or DELETE.
+			]"
 		do
 			Result := a_operation.is_case_insensitive_equal ("INSERT") or
 			          a_operation.is_case_insensitive_equal ("UPDATE") or
@@ -252,6 +293,12 @@ feature -- Configuration
 	enable_for_table (a_table: STRING_8)
 			-- Enable auditing for table
 			-- Creates audit table and triggers if they don't exist
+		note
+			semantic_role: "[
+				Creates audit table and triggers if not
+				already present for the given table.
+			]"
+			modifies: "database schema (audit table and triggers)"
 		require
 			table_not_empty: not a_table.is_empty
 			table_exists: database.schema.table_exists (a_table)
@@ -271,6 +318,12 @@ feature -- Configuration
 	disable_for_table (a_table: STRING_8)
 			-- Disable auditing for table
 			-- Drops triggers but preserves audit table and history
+		note
+			semantic_role: "[
+				Drops audit triggers while preserving
+				the audit history table for the given
+				table.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 		do
@@ -282,6 +335,12 @@ feature -- Configuration
 	drop_audit_table (a_table: STRING_8)
 			-- Drop audit table and all triggers
 			-- WARNING: This permanently deletes all audit history
+		note
+			semantic_role: "[
+				Destroys both triggers and audit table
+				permanently for the given table.
+			]"
+			modifies: "database schema (drops audit table and triggers)"
 		require
 			table_not_empty: not a_table.is_empty
 		do
@@ -297,6 +356,11 @@ feature -- Querying
 	get_changes_for_record (a_table: STRING_8; a_record_id: INTEGER_64): SIMPLE_SQL_RESULT
 			-- Get all audit entries for specific record.
 			-- Returns entries in reverse chronological order (newest first).
+		note
+			semantic_role: "[
+				Queries audit entries for a specific
+				record in reverse chronological order.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 			has_audit: has_audit_table (a_table)
@@ -316,6 +380,12 @@ feature -- Querying
 			-- Get changes within time range.
 			-- Times should be in ISO 8601 format: "YYYY-MM-DD HH:MM:SS".
 			-- Returns entries in reverse chronological order (newest first).
+		note
+			semantic_role: "[
+				Queries audit entries within a time
+				window bounded by start and end
+				ISO 8601 timestamps.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 			has_audit: has_audit_table (a_table)
@@ -338,6 +408,11 @@ feature -- Querying
 	get_latest_changes (a_table: STRING_8; a_limit: INTEGER): SIMPLE_SQL_RESULT
 			-- Get most recent N changes.
 			-- Returns at most `a_limit' entries in reverse chronological order (newest first).
+		note
+			semantic_role: "[
+				Queries the most recent N audit entries
+				in reverse chronological order.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 			has_audit: has_audit_table (a_table)
@@ -359,6 +434,11 @@ feature -- Querying
 			-- Get changes by operation type.
 			-- a_operation: "INSERT", "UPDATE", or "DELETE".
 			-- Returns entries in reverse chronological order (newest first).
+		note
+			semantic_role: "[
+				Filters audit entries by operation type
+				(INSERT, UPDATE, or DELETE).
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 			has_audit: has_audit_table (a_table)
@@ -381,6 +461,12 @@ feature -- Analysis
 			-- Get list of fields that changed in this audit entry
 			-- Compares old_values and new_values JSON to determine changes
 			-- Returns empty array for INSERT/DELETE operations
+		note
+			semantic_role: "[
+				Compares old_values and new_values JSON
+				to identify changed field names for a
+				specific audit entry.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 			has_audit: has_audit_table (a_table)
@@ -470,6 +556,12 @@ feature {NONE} -- Implementation
 
 	audit_table_name (a_table: STRING_8): STRING_8
 			-- Generate audit table name for given table
+		note
+			semantic_role: "[
+				Derives the audit shadow table name by
+				appending _audit suffix to the source
+				table name.
+			]"
 		do
 			create Result.make_from_string (a_table)
 			Result.append ("_audit")
@@ -479,6 +571,12 @@ feature {NONE} -- Implementation
 
 	create_audit_table (a_table: STRING_8)
 			-- Create audit table for tracking changes
+		note
+			semantic_role: "[
+				Creates the audit shadow table with
+				indexes for record_id and timestamp
+				columns.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 		local
@@ -515,6 +613,12 @@ feature {NONE} -- Implementation
 	create_triggers (a_table: STRING_8)
 			-- Create INSERT, UPDATE, DELETE triggers for audit tracking
 			-- Each trigger creation uses check assertions to ensure success
+		note
+			semantic_role: "[
+				Orchestrates creation of all three
+				audit triggers (INSERT, UPDATE, DELETE)
+				for the given table.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 		do
@@ -525,6 +629,12 @@ feature {NONE} -- Implementation
 
 	create_insert_trigger (a_table: STRING_8)
 			-- Create INSERT trigger
+		note
+			semantic_role: "[
+				Creates AFTER INSERT trigger capturing
+				new row values as JSON in the audit
+				shadow table.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 		local
@@ -571,6 +681,12 @@ feature {NONE} -- Implementation
 	create_update_trigger (a_table: STRING_8)
 			-- Create UPDATE trigger with old and new values
 			-- Note: changed_fields is computed in Eiffel from JSON comparison
+		note
+			semantic_role: "[
+				Creates AFTER UPDATE trigger capturing
+				both old and new row values as JSON
+				in the audit shadow table.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 		local
@@ -619,6 +735,12 @@ feature {NONE} -- Implementation
 
 	create_delete_trigger (a_table: STRING_8)
 			-- Create DELETE trigger
+		note
+			semantic_role: "[
+				Creates AFTER DELETE trigger capturing
+				old row values as JSON in the audit
+				shadow table.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 		local
@@ -661,6 +783,11 @@ feature {NONE} -- Implementation
 
 	drop_triggers (a_table: STRING_8)
 			-- Drop all audit triggers for table
+		note
+			semantic_role: "[
+				Drops all three audit triggers for a
+				table while preserving audit history.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 		do
@@ -671,6 +798,11 @@ feature {NONE} -- Implementation
 
 	get_table_columns (a_table: STRING_8): ARRAY [SIMPLE_SQL_COLUMN_INFO]
 			-- Get column information for table
+		note
+			semantic_role: "[
+				Retrieves column metadata for trigger
+				generation via schema introspection.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 		local
@@ -693,6 +825,11 @@ feature {NONE} -- Implementation
 
 	get_primary_key (a_table: STRING_8): STRING_8
 			-- Get primary key column name (assumes first PK column)
+		note
+			semantic_role: "[
+				Identifies the primary key column for
+				record_id tracking in audit triggers.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 		local
@@ -729,8 +866,8 @@ note
 	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"
 	source: "[
-		SIMPLE_SQL - High-level SQLite API for Eiffel
-		Audit/Change Tracking
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
 	]"
 
 end

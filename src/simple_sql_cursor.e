@@ -1,31 +1,14 @@
 note
 	description: "[
-		Lazy cursor for iterating over SQLite query results row-by-row.
-
-		Unlike SIMPLE_SQL_RESULT which loads all rows into memory immediately,
-		SIMPLE_SQL_CURSOR fetches rows on demand, making it suitable for:
-			- Large result sets that won't fit in memory
-			- Early termination when only first N rows are needed
-			- Memory-efficient processing of streaming data
-
-		Usage:
-			cursor := db.query_cursor ("SELECT * FROM large_table")
-			from cursor.start until cursor.after loop
-				row := cursor.item
-				-- process row
-				cursor.forth
-			end
-			cursor.close
-
-		Or with across syntax:
-			across db.query_cursor ("SELECT * FROM large_table") as ic loop
-				print (ic.string_value ("name"))
-			end
-
-		IMPORTANT: Always close the cursor when done to release database resources.
-		The cursor will auto-close when exhausted, but early termination requires
-		explicit close.
+		A lazy cursor for iterating over SQLite query results row by row.
+		Fetches rows on demand from a buffered batch, supporting both explicit
+		start/forth iteration and Eiffel across-loop syntax via ITERABLE.
+		Provides memory-efficient result traversal for the simple_sql library.
 	]"
+	purpose: "Iterate over query results lazily without loading all rows into memory"
+	collaborators: "SIMPLE_SQL_ROW, SIMPLE_SQL_CURSOR_ITERATOR, SQLITE_DATABASE, MML_SEQUENCE"
+	design_pattern: "Iterator"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -42,6 +25,11 @@ feature {NONE} -- Initialization
 
 	make (a_sql: READABLE_STRING_8; a_database: SQLITE_DATABASE)
 			-- Create cursor for query execution
+		note
+			semantic_role: "[
+				Prepares cursor state and row buffer
+				without executing the query yet.
+			]"
 		require
 			sql_not_empty: not a_sql.is_empty
 			database_attached: a_database /= Void
@@ -72,6 +60,11 @@ feature -- Access
 
 	item: SIMPLE_SQL_ROW
 			-- Current row
+		note
+			semantic_role: "[
+				Returns the row at the current cursor
+				position in the result set.
+			]"
 		require
 			not_after: not after
 			started: is_started
@@ -81,6 +74,11 @@ feature -- Access
 
 	new_cursor: SIMPLE_SQL_CURSOR_ITERATOR
 			-- Fresh iterator for across loops
+		note
+			semantic_role: "[
+				Creates an ITERATION_CURSOR adapter for
+				Eiffel across-loop syntax.
+			]"
 		do
 			create Result.make (Current)
 		end
@@ -97,12 +95,22 @@ feature -- Status report
 
 	after: BOOLEAN
 			-- Are we past the last row?
+		note
+			semantic_role: "[
+				Termination predicate combining started
+				state with row availability.
+			]"
 		do
 			Result := is_started and then not has_valid_row
 		end
 
 	is_open: BOOLEAN
 			-- Is cursor still open for fetching?
+		note
+			semantic_role: "[
+				Liveness predicate indicating the cursor
+				can still produce rows.
+			]"
 		do
 			Result := is_started and then not is_closed
 		end
@@ -117,6 +125,11 @@ feature -- Cursor movement
 
 	start
 			-- Start iteration, fetch first row
+		note
+			semantic_role: "[
+				Triggers the initial batch fetch and
+				positions cursor on the first row.
+			]"
 		require
 			not_started: not is_started
 		do
@@ -129,6 +142,11 @@ feature -- Cursor movement
 
 	forth
 			-- Move to next row
+		note
+			semantic_role: "[
+				Advances cursor to the next available
+				row from the buffer.
+			]"
 		require
 			started: is_started
 			not_after: not after
@@ -136,17 +154,43 @@ feature -- Cursor movement
 			advance_to_next_row
 		end
 
+feature -- Model Queries
+
+	pending_rows_model: MML_SEQUENCE [SIMPLE_SQL_ROW]
+			-- Mathematical model of buffered rows awaiting consumption.
+		note
+			semantic_role: "[
+				Materializes the pending row buffer as
+				an MML_SEQUENCE for contract-based
+				verification.
+			]"
+		do
+			create Result
+			across pending_rows as ic loop
+				Result := Result & ic
+			end
+		ensure
+			count_matches: Result.count = pending_rows.count
+		end
+
 feature -- Cleanup
 
 	close
 			-- Close cursor and release resources
 			-- Safe to call multiple times
+		note
+			semantic_role: "[
+				Releases database resources and clears
+				the row buffer.
+			]"
+			modifies: "is_closed, is_exhausted, pending_rows"
 		do
 			is_closed := True
 			is_exhausted := True
 			pending_rows.wipe_out
 		ensure
 			closed: is_closed
+			buffer_empty: pending_rows_model.is_empty
 		end
 
 feature {NONE} -- Implementation
@@ -168,6 +212,11 @@ feature {NONE} -- Implementation
 
 	fetch_batch
 			-- Fetch next batch of rows into pending_rows buffer
+		note
+			semantic_role: "[
+				Executes the SQL query and fills the
+				pending row buffer for consumption.
+			]"
 		local
 			l_statement: SQLITE_QUERY_STATEMENT
 		do
@@ -187,6 +236,11 @@ feature {NONE} -- Implementation
 
 	collect_row_batch (a_row: SQLITE_RESULT_ROW): BOOLEAN
 			-- Collect row into pending buffer
+		note
+			semantic_role: "[
+				SQLite callback converting each result
+				row into SIMPLE_SQL_ROW for buffering.
+			]"
 		local
 			l_sql_row: SIMPLE_SQL_ROW
 			i: NATURAL
@@ -209,6 +263,11 @@ feature {NONE} -- Implementation
 
 	advance_to_next_row
 			-- Move to next available row
+		note
+			semantic_role: "[
+				Pops the next row from the buffer and
+				updates cursor validity state.
+			]"
 		do
 			if not pending_rows.is_empty then
 				current_row := pending_rows.first
@@ -235,7 +294,8 @@ note
 	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"
 	source: "[
-		SIMPLE_SQL - High-level SQLite API for Eiffel
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
 	]"
 
 end

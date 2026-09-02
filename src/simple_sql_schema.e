@@ -1,5 +1,20 @@
 note
-	description: "Schema introspection for SQLite databases"
+	description: "[
+		Schema introspection facade for SQLite databases, providing read access
+		to table definitions, column metadata, index structures, and foreign key
+		constraints via SQLite's PRAGMA system. Translates raw PRAGMA output rows
+		into structured SIMPLE_SQL_*_INFO objects.
+
+		Central to the simple_sql library's schema-awareness mission: applications
+		can discover database structure at runtime without parsing SQL. Also manages
+		PRAGMA user_version for migration version tracking.
+
+		All queries are live against the database — results reflect the current
+		schema state at the time of each call.
+	]"
+	purpose: "Runtime schema discovery and version management via SQLite PRAGMAs"
+	collaborators: "SIMPLE_SQL_DATABASE, SIMPLE_SQL_TABLE_INFO, SIMPLE_SQL_COLUMN_INFO, SIMPLE_SQL_INDEX_INFO, SIMPLE_SQL_FOREIGN_KEY_INFO, SIMPLE_SQL_RESULT, SIMPLE_SQL_ROW"
+	design_pattern: "Facade"
 	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -14,6 +29,11 @@ feature {NONE} -- Initialization
 
 	make (a_database: SIMPLE_SQL_DATABASE)
 			-- Create schema inspector for database
+		note
+			semantic_role: "[
+				Binds the inspector to a live database
+				connection for subsequent PRAGMA queries.
+			]"
 		require
 			database_open: a_database.is_open
 		do
@@ -31,6 +51,11 @@ feature -- Table Queries
 
 	tables: ARRAYED_LIST [STRING_8]
 			-- List of all table names (excluding sqlite_ internal tables)
+		note
+			semantic_role: "[
+				Enumerates user-defined tables for schema
+				discovery and migration planning.
+			]"
 		local
 			l_name: STRING_32
 		do
@@ -48,6 +73,11 @@ feature -- Table Queries
 
 	views: ARRAYED_LIST [STRING_8]
 			-- List of all view names
+		note
+			semantic_role: "[
+				Enumerates database views for schema
+				discovery.
+			]"
 		local
 			l_name: STRING_32
 		do
@@ -65,6 +95,11 @@ feature -- Table Queries
 
 	table_exists (a_name: READABLE_STRING_8): BOOLEAN
 			-- Does table exist?
+		note
+			semantic_role: "[
+				Table existence predicate for guarding DDL
+				operations and migration checks.
+			]"
 		require
 			name_not_empty: not a_name.is_empty
 		do
@@ -75,6 +110,11 @@ feature -- Table Queries
 
 	view_exists (a_name: READABLE_STRING_8): BOOLEAN
 			-- Does view exist?
+		note
+			semantic_role: "[
+				View existence predicate for guarding
+				view-dependent operations.
+			]"
 		require
 			name_not_empty: not a_name.is_empty
 		do
@@ -87,6 +127,12 @@ feature -- Table Info
 
 	table_info (a_table: READABLE_STRING_8): detachable SIMPLE_SQL_TABLE_INFO
 			-- Get detailed info about a table
+		note
+			semantic_role: "[
+				Assembles complete table metadata (columns,
+				indexes, foreign keys) into a single
+				introspection object.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 		local
@@ -122,6 +168,11 @@ feature -- Column Queries
 
 	columns (a_table: READABLE_STRING_8): ARRAYED_LIST [SIMPLE_SQL_COLUMN_INFO]
 			-- Get columns for a table
+		note
+			semantic_role: "[
+				Retrieves ordered column metadata via
+				PRAGMA table_info for schema inspection.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 		do
@@ -135,6 +186,11 @@ feature -- Column Queries
 
 	column_names (a_table: READABLE_STRING_8): ARRAYED_LIST [STRING_8]
 			-- Get column names for a table
+		note
+			semantic_role: "[
+				Lightweight column name enumeration without
+				full metadata, for display and validation.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 		local
@@ -156,6 +212,12 @@ feature -- Index Queries
 
 	indexes (a_table: READABLE_STRING_8): ARRAYED_LIST [SIMPLE_SQL_INDEX_INFO]
 			-- Get indexes for a table
+		note
+			semantic_role: "[
+				Retrieves index metadata via PRAGMA
+				index_list/index_info for performance
+				analysis.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 		local
@@ -193,6 +255,12 @@ feature -- Foreign Key Queries
 
 	foreign_keys (a_table: READABLE_STRING_8): ARRAYED_LIST [SIMPLE_SQL_FOREIGN_KEY_INFO]
 			-- Get foreign keys for a table
+		note
+			semantic_role: "[
+				Retrieves foreign key constraints via
+				PRAGMA foreign_key_list for relationship
+				discovery.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 		local
@@ -241,6 +309,12 @@ feature -- Schema Version
 
 	user_version: INTEGER
 			-- Get PRAGMA user_version (useful for migrations)
+		note
+			semantic_role: "[
+				Reads the database's migration version
+				stamp, the key input for
+				SIMPLE_SQL_MIGRATION_RUNNER.
+			]"
 		do
 			if attached database.query ("PRAGMA user_version") as al_l_result then
 				if not al_l_result.rows.is_empty and then attached al_l_result.rows.first as al_l_row then
@@ -251,6 +325,13 @@ feature -- Schema Version
 
 	set_user_version (a_version: INTEGER)
 			-- Set PRAGMA user_version
+		note
+			semantic_role: "[
+				Stamps the database with a migration
+				version after successful migration
+				application.
+			]"
+			modifies: "database PRAGMA user_version"
 		require
 			version_non_negative: a_version >= 0
 		do
@@ -259,6 +340,12 @@ feature -- Schema Version
 
 	schema_version: INTEGER
 			-- Get PRAGMA schema_version (internal SQLite version, changes on schema modification)
+		note
+			semantic_role: "[
+				Reads SQLite's internal schema change
+				counter for detecting external
+				modifications.
+			]"
 		do
 			if attached database.query ("PRAGMA schema_version") as al_l_result then
 				if not al_l_result.rows.is_empty and then attached al_l_result.rows.first as al_l_row then
@@ -271,6 +358,11 @@ feature {NONE} -- Implementation
 
 	load_columns (a_table_info: SIMPLE_SQL_TABLE_INFO)
 			-- Load columns into table info
+		note
+			semantic_role: "[
+				Populates a TABLE_INFO's column list from
+				PRAGMA table_info results.
+			]"
 		do
 			if attached database.query ("PRAGMA table_info('" + a_table_info.name + "')") as al_l_result then
 				across al_l_result.rows as ic loop
@@ -281,6 +373,11 @@ feature {NONE} -- Implementation
 
 	load_indexes (a_table_info: SIMPLE_SQL_TABLE_INFO)
 			-- Load indexes into table info
+		note
+			semantic_role: "[
+				Populates a TABLE_INFO's index list from
+				PRAGMA index_list results.
+			]"
 		local
 			l_index: SIMPLE_SQL_INDEX_INFO
 			l_name: STRING_32
@@ -312,6 +409,11 @@ feature {NONE} -- Implementation
 
 	load_index_columns (a_index: SIMPLE_SQL_INDEX_INFO)
 			-- Load column names into index info
+		note
+			semantic_role: "[
+				Populates an INDEX_INFO's column list from
+				PRAGMA index_info results.
+			]"
 		local
 			l_name: STRING_32
 		do
@@ -327,6 +429,11 @@ feature {NONE} -- Implementation
 
 	load_foreign_keys (a_table_info: SIMPLE_SQL_TABLE_INFO)
 			-- Load foreign keys into table info
+		note
+			semantic_role: "[
+				Populates a TABLE_INFO's foreign key list
+				from PRAGMA foreign_key_list results.
+			]"
 		local
 			l_fk: detachable SIMPLE_SQL_FOREIGN_KEY_INFO
 			l_current_id: INTEGER
@@ -368,6 +475,11 @@ feature {NONE} -- Implementation
 
 	row_to_column_info (a_row: SIMPLE_SQL_ROW): SIMPLE_SQL_COLUMN_INFO
 			-- Convert PRAGMA table_info row to SIMPLE_SQL_COLUMN_INFO
+		note
+			semantic_role: "[
+				Transforms a raw PRAGMA row into a
+				structured COLUMN_INFO object.
+			]"
 		local
 			l_name, l_type: STRING_8
 			l_default: detachable STRING_8
@@ -401,5 +513,13 @@ feature {NONE} -- Implementation
 
 invariant
 	database_attached: attached database
+
+note
+	copyright: "Copyright (c) 2025, Larry Rix"
+	license: "MIT License"
+	source: "[
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
+	]"
 
 end

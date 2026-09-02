@@ -1,8 +1,14 @@
 note
 	description: "[
-		Advanced JSON support using SQLite's JSON1 extension.
-		Provides validation, path queries, aggregation, and modification.
+		Facade over SQLite's JSON1 extension for in-database JSON operations.
+		Validates, extracts, modifies, creates, and aggregates JSON data
+		through prepared statements with typed parameter binding.
+		Provides the JSON manipulation layer for simple_sql databases.
 	]"
+	purpose: "Validate, query, modify, and aggregate JSON via SQLite JSON1 functions"
+	collaborators: "SIMPLE_SQL_DATABASE, SIMPLE_SQL_PREPARED_STATEMENT, SIMPLE_SQL_RESULT"
+	design_pattern: "Facade"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -16,6 +22,11 @@ feature {NONE} -- Initialization
 
 	make (a_database: SIMPLE_SQL_DATABASE)
 			-- Initialize with database connection
+		note
+			semantic_role: "[
+				Captures database reference for JSON1
+				extension operations.
+			]"
 		require
 			database_not_void: a_database /= Void
 			database_open: a_database.is_open
@@ -34,6 +45,11 @@ feature -- Status report
 
 	is_valid_json (a_json: STRING_8): BOOLEAN
 			-- Is string valid JSON?
+		note
+			semantic_role: "[
+				Validates JSON syntax via SQLite
+				json_valid() function.
+			]"
 		require
 			json_not_empty: not a_json.is_empty
 		local
@@ -53,6 +69,11 @@ feature -- Status report
 	json_type (a_json: STRING_8; a_path: detachable STRING_8): detachable STRING_32
 			-- Get JSON type at path (null, true, false, integer, real, text, array, object)
 			-- If a_path is Void, checks root type
+		note
+			semantic_role: "[
+				Queries the JSON data type at an
+				optional path via json_type().
+			]"
 		require
 			json_not_empty: not a_json.is_empty
 		local
@@ -83,6 +104,11 @@ feature -- JSON Path Queries
 	extract (a_json: STRING_8; a_path: STRING_8): detachable STRING_32
 			-- Extract value at JSON path
 			-- Example: extract('{"user":{"name":"Alice"}}', '$.user.name') => "Alice"
+		note
+			semantic_role: "[
+				Extracts a scalar value at a JSON path
+				via json_extract().
+			]"
 		require
 			json_not_empty: not a_json.is_empty
 			path_not_empty: not a_path.is_empty
@@ -102,6 +128,11 @@ feature -- JSON Path Queries
 	extract_multiple (a_json: STRING_8; a_paths: ARRAY [STRING_8]): SIMPLE_SQL_RESULT
 			-- Extract multiple paths at once
 			-- Returns result with columns for each path
+		note
+			semantic_role: "[
+				Extracts multiple JSON paths in a
+				single query.
+			]"
 		require
 			json_not_empty: not a_json.is_empty
 			paths_not_empty: not a_paths.is_empty
@@ -130,6 +161,11 @@ feature -- JSON Modification
 	json_set (a_json: STRING_8; a_path: STRING_8; a_value: detachable ANY): STRING_8
 			-- Set value at path, creating parent structures if needed
 			-- Example: json_set('{"a":1}', '$.b', 2) => '{"a":1,"b":2}'
+		note
+			semantic_role: "[
+				Sets or creates a value at a JSON path
+				via json_set().
+			]"
 		require
 			json_not_empty: not a_json.is_empty
 			path_not_empty: not a_path.is_empty
@@ -155,6 +191,11 @@ feature -- JSON Modification
 			-- Insert value at path (only if path doesn't exist)
 			-- Example: json_insert('{"a":1}', '$.b', 2) => '{"a":1,"b":2}'
 			-- Example: json_insert('{"a":1}', '$.a', 2) => '{"a":1}' (no change)
+		note
+			semantic_role: "[
+				Inserts a value only if the JSON path
+				does not already exist.
+			]"
 		require
 			json_not_empty: not a_json.is_empty
 			path_not_empty: not a_path.is_empty
@@ -180,6 +221,11 @@ feature -- JSON Modification
 			-- Replace value at path (only if path exists)
 			-- Example: json_replace('{"a":1}', '$.a', 2) => '{"a":2}'
 			-- Example: json_replace('{"a":1}', '$.b', 2) => '{"a":1}' (no change)
+		note
+			semantic_role: "[
+				Replaces a value only if the JSON path
+				already exists.
+			]"
 		require
 			json_not_empty: not a_json.is_empty
 			path_not_empty: not a_path.is_empty
@@ -204,6 +250,11 @@ feature -- JSON Modification
 	json_remove (a_json: STRING_8; a_path: STRING_8): STRING_8
 			-- Remove value at path
 			-- Example: json_remove('{"a":1,"b":2}', '$.b') => '{"a":1}'
+		note
+			semantic_role: "[
+				Removes the value at a JSON path via
+				json_remove().
+			]"
 		require
 			json_not_empty: not a_json.is_empty
 			path_not_empty: not a_path.is_empty
@@ -229,6 +280,11 @@ feature -- JSON Creation
 	json_array_from_values (a_values: ARRAY [detachable ANY]): STRING_8
 			-- Create JSON array from Eiffel values
 			-- Example: json_array_from_values(<<1, "two", 3.0>>) => '[1,"two",3.0]'
+		note
+			semantic_role: "[
+				Constructs a JSON array from Eiffel
+				values via json_array().
+			]"
 		require
 			values_not_empty: not a_values.is_empty
 		local
@@ -266,6 +322,11 @@ feature -- JSON Creation
 	json_object_from_pairs (a_pairs: ARRAY [TUPLE [key: STRING_8; value: detachable ANY]]): STRING_8
 			-- Create JSON object from key-value pairs
 			-- Example: json_object_from_pairs(<<["name", "Alice"], ["age", 30]>>) => '{"name":"Alice","age":30}'
+		note
+			semantic_role: "[
+				Constructs a JSON object from key-value
+				tuples via json_object().
+			]"
 		require
 			pairs_not_empty: not a_pairs.is_empty
 		local
@@ -309,6 +370,11 @@ feature -- JSON Aggregation
 	aggregate_to_array (a_table: STRING_8; a_column: STRING_8; a_where: detachable STRING_8): STRING_8
 			-- Aggregate column values into JSON array
 			-- Example: aggregate_to_array("users", "name", "age > 18") => '["Alice","Bob","Charlie"]'
+		note
+			semantic_role: "[
+				Aggregates column values into a JSON
+				array via json_group_array().
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 			column_not_empty: not a_column.is_empty
@@ -338,6 +404,11 @@ feature -- JSON Aggregation
 	aggregate_to_object (a_table: STRING_8; a_key_column: STRING_8; a_value_column: STRING_8; a_where: detachable STRING_8): STRING_8
 			-- Aggregate key-value pairs into JSON object
 			-- Example: aggregate_to_object("settings", "key", "value", Void) => '{"theme":"dark","lang":"en"}'
+		note
+			semantic_role: "[
+				Aggregates key-value pairs into a JSON
+				object via json_group_object().
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 			key_column_not_empty: not a_key_column.is_empty
@@ -371,6 +442,12 @@ feature {NONE} -- Implementation
 
 	bind_json_value (a_stmt: SIMPLE_SQL_PREPARED_STATEMENT; a_index: INTEGER; a_value: detachable ANY)
 			-- Bind value appropriate for JSON
+		note
+			semantic_role: "[
+				Binds an Eiffel value to a prepared
+				statement with JSON-appropriate type
+				mapping.
+			]"
 		require
 			statement_not_void: a_stmt /= Void
 			valid_index: a_index >= 1
@@ -400,8 +477,8 @@ note
 	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"
 	source: "[
-		SIMPLE_SQL - High-level SQLite API for Eiffel
-		JSON1 Extension Support
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
 	]"
 
 end

@@ -1,19 +1,14 @@
 note
 	description: "[
-		FTS5 Full-Text Search virtual table management.
-
-		Provides high-level API for creating and managing SQLite FTS5 virtual tables
-		for full-text search capabilities.
-
-		Usage:
-			fts := db.fts5
-			fts.create_table ("documents_fts", <<"title", "body", "author">>)
-			fts.insert ("documents_fts", <<"title", "body", "author">>, <<"My Title", "Content here", "John">>)
-
-			-- Search
-			results := fts.search ("documents_fts", "content")
-			results := fts.search_ranked ("documents_fts", "content", 10)
+		High-level manager for SQLite FTS5 full-text search virtual tables.
+		Creates, populates, searches, and maintains FTS5 tables with BM25 ranking
+		and snippet highlighting.
+		Acts as the full-text search facade for simple_sql database operations.
 	]"
+	purpose: "Manage FTS5 virtual table lifecycle and execute full-text searches"
+	collaborators: "SIMPLE_SQL_DATABASE, SIMPLE_SQL_FTS5_QUERY, SIMPLE_SQL_RESULT"
+	design_pattern: "Facade"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -27,6 +22,11 @@ feature {NONE} -- Initialization
 
 	make (a_database: SIMPLE_SQL_DATABASE)
 			-- Create FTS5 manager for database
+		note
+			semantic_role: "[
+				Captures database reference for all
+				FTS5 operations.
+			]"
 		require
 			database_open: a_database.is_open
 		do
@@ -44,6 +44,11 @@ feature -- Status
 
 	table_exists (a_table: READABLE_STRING_8): BOOLEAN
 			-- Does FTS5 virtual table exist?
+		note
+			semantic_role: "[
+				Queries sqlite_master for an FTS5
+				virtual table by name.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 		local
@@ -58,6 +63,11 @@ feature -- Status
 
 	is_fts5_available: BOOLEAN
 			-- Is FTS5 extension available in this SQLite build?
+		note
+			semantic_role: "[
+				Checks PRAGMA compile_options for
+				FTS5 support.
+			]"
 		require
 			database_open: database.is_open
 		local
@@ -82,6 +92,11 @@ feature -- Table Management
 
 	create_table (a_table: READABLE_STRING_8; a_columns: ARRAY [READABLE_STRING_8])
 			-- Create FTS5 virtual table with specified columns
+		note
+			semantic_role: "[
+				Generates and executes CREATE VIRTUAL
+				TABLE USING fts5() DDL.
+			]"
 		require
 			fts5_available: is_fts5_available
 			table_not_empty: not a_table.is_empty
@@ -113,6 +128,12 @@ feature -- Table Management
 	create_table_with_options (a_table: READABLE_STRING_8; a_columns: ARRAY [READABLE_STRING_8]; a_options: READABLE_STRING_8)
 			-- Create FTS5 virtual table with columns and additional options
 			-- Options can include: tokenize, prefix, content, content_rowid, columnsize, detail
+		note
+			semantic_role: "[
+				Generates CREATE VIRTUAL TABLE with
+				custom FTS5 options appended after
+				columns.
+			]"
 		require
 			fts5_available: is_fts5_available
 			table_not_empty: not a_table.is_empty
@@ -146,6 +167,11 @@ feature -- Table Management
 	create_external_content_table (a_table: READABLE_STRING_8; a_columns: ARRAY [READABLE_STRING_8]; a_content_table: READABLE_STRING_8; a_content_rowid: READABLE_STRING_8)
 			-- Create FTS5 table that indexes content from another table (external content)
 			-- This saves space by not duplicating the content
+		note
+			semantic_role: "[
+				Creates an FTS5 external content table
+				referencing another table's data.
+			]"
 		require
 			fts5_available: is_fts5_available
 			table_not_empty: not a_table.is_empty
@@ -180,6 +206,11 @@ feature -- Table Management
 
 	drop_table (a_table: READABLE_STRING_8)
 			-- Drop FTS5 virtual table
+		note
+			semantic_role: "[
+				Executes DROP TABLE IF EXISTS for an
+				FTS5 virtual table.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 		do
@@ -192,6 +223,11 @@ feature -- Data Operations
 
 	insert (a_table: READABLE_STRING_8; a_columns: ARRAY [READABLE_STRING_8]; a_values: ARRAY [detachable ANY])
 			-- Insert row into FTS5 table
+		note
+			semantic_role: "[
+				Builds and executes INSERT with
+				type-aware SQL literal conversion.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 			columns_not_empty: not a_columns.is_empty
@@ -229,6 +265,10 @@ feature -- Data Operations
 
 	delete (a_table: READABLE_STRING_8; a_rowid: INTEGER_64)
 			-- Delete row from FTS5 table by rowid
+		note
+			semantic_role: "[
+				Removes a single FTS5 row by rowid.
+			]"
 		require
 			table_not_empty: not a_table.is_empty
 		do
@@ -237,6 +277,11 @@ feature -- Data Operations
 
 	rebuild (a_table: READABLE_STRING_8)
 			-- Rebuild FTS5 index (useful after bulk operations or to optimize)
+		note
+			semantic_role: "[
+				Triggers FTS5 index rebuild via
+				special INSERT command.
+			]"
 		require
 			fts5_available: is_fts5_available
 			table_not_empty: not a_table.is_empty
@@ -246,6 +291,11 @@ feature -- Data Operations
 
 	optimize (a_table: READABLE_STRING_8)
 			-- Optimize FTS5 index (merge all b-tree segments)
+		note
+			semantic_role: "[
+				Triggers FTS5 segment merge via
+				special INSERT command.
+			]"
 		require
 			fts5_available: is_fts5_available
 			table_not_empty: not a_table.is_empty
@@ -257,6 +307,11 @@ feature -- Searching
 
 	search (a_table: READABLE_STRING_8; a_query: READABLE_STRING_8): SIMPLE_SQL_RESULT
 			-- Search FTS5 table with query, return all matching rows
+		note
+			semantic_role: "[
+				Executes a MATCH query against the
+				full FTS5 table.
+			]"
 		require
 			fts5_available: is_fts5_available
 			table_not_empty: not a_table.is_empty
@@ -270,6 +325,11 @@ feature -- Searching
 
 	search_ranked (a_table: READABLE_STRING_8; a_query: READABLE_STRING_8; a_limit: INTEGER): SIMPLE_SQL_RESULT
 			-- Search FTS5 table with BM25 ranking, return top results
+		note
+			semantic_role: "[
+				Executes a MATCH query with BM25
+				ranking and result limit.
+			]"
 		require
 			fts5_available: is_fts5_available
 			table_not_empty: not a_table.is_empty
@@ -285,6 +345,10 @@ feature -- Searching
 
 	search_column (a_table: READABLE_STRING_8; a_column: READABLE_STRING_8; a_query: READABLE_STRING_8): SIMPLE_SQL_RESULT
 			-- Search specific column in FTS5 table
+		note
+			semantic_role: "[
+				Executes a column-scoped MATCH query.
+			]"
 		require
 			fts5_available: is_fts5_available
 			table_not_empty: not a_table.is_empty
@@ -299,6 +363,11 @@ feature -- Searching
 
 	search_with_snippets (a_table: READABLE_STRING_8; a_query: READABLE_STRING_8; a_column: READABLE_STRING_8; a_limit: INTEGER): SIMPLE_SQL_RESULT
 			-- Search with highlighted snippets showing match context
+		note
+			semantic_role: "[
+				Executes a ranked search with snippet()
+				for match context highlighting.
+			]"
 		require
 			fts5_available: is_fts5_available
 			table_not_empty: not a_table.is_empty
@@ -317,6 +386,11 @@ feature -- Searching
 
 	count_matches (a_table: READABLE_STRING_8; a_query: READABLE_STRING_8): INTEGER
 			-- Count number of matching rows
+		note
+			semantic_role: "[
+				Returns the count of rows matching
+				an FTS5 query.
+			]"
 		require
 			fts5_available: is_fts5_available
 			table_not_empty: not a_table.is_empty
@@ -337,6 +411,11 @@ feature -- Query Builder
 
 	query_builder (a_table: READABLE_STRING_8): SIMPLE_SQL_FTS5_QUERY
 			-- Create fluent query builder for FTS5 searches
+		note
+			semantic_role: "[
+				Factory for fluent FTS5 query builder
+				instances.
+			]"
 		require
 			fts5_available: is_fts5_available
 			table_not_empty: not a_table.is_empty
@@ -351,6 +430,12 @@ feature {NONE} -- Implementation
 	escaped_fts_query (a_query: READABLE_STRING_8): STRING_8
 			-- Escape special characters in FTS5 query
 			-- For queries with apostrophes, wrap in double quotes for phrase matching
+		note
+			semantic_role: "[
+				Escapes apostrophes and special
+				characters for safe FTS5 MATCH
+				embedding.
+			]"
 		local
 			i: INTEGER
 			c: CHARACTER
@@ -402,6 +487,11 @@ feature {NONE} -- Implementation
 
 	value_to_sql (a_value: detachable ANY): STRING_8
 			-- Convert value to SQL literal
+		note
+			semantic_role: "[
+				Type-dispatches a value to its SQL
+				literal representation.
+			]"
 		do
 			if a_value = Void then
 				Result := "NULL"
@@ -420,6 +510,11 @@ feature {NONE} -- Implementation
 
 	escaped_string (a_string: READABLE_STRING_GENERAL): STRING_8
 			-- Escape string for SQL
+		note
+			semantic_role: "[
+				Doubles single quotes for safe SQL
+				string embedding.
+			]"
 		local
 			i: INTEGER
 			c: CHARACTER_32
@@ -438,6 +533,11 @@ feature {NONE} -- Implementation
 
 	column_index (a_table: READABLE_STRING_8; a_column: READABLE_STRING_8): INTEGER
 			-- Get 0-based index of column in FTS5 table
+		note
+			semantic_role: "[
+				Looks up column ordinal position via
+				PRAGMA table_info.
+			]"
 		local
 			l_result: SIMPLE_SQL_RESULT
 			l_name: STRING_32
@@ -457,5 +557,9 @@ invariant
 note
 	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"
+	source: "[
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
+	]"
 
 end

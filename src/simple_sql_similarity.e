@@ -20,6 +20,9 @@ note
 
 		For normalized vectors, cosine similarity equals dot product.
 	]"
+	purpose: "Vector distance and similarity metrics for embedding-based search and ranking"
+	collaborators: "SIMPLE_SQL_VECTOR, SIMPLE_SQL_VECTOR_STORE, SIMPLE_SORTER"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -33,6 +36,11 @@ feature {NONE} -- Initialization
 
 	make
 			-- Initialize similarity calculator
+		note
+			semantic_role: "[
+				No-op initialization for stateless metric
+				calculator.
+			]"
 		do
 			-- Nothing to initialize
 		end
@@ -43,6 +51,11 @@ feature -- Similarity Metrics
 			-- Cosine similarity between vectors
 			-- Range: -1.0 (opposite) to 1.0 (identical direction)
 			-- Returns 0.0 for zero vectors
+		note
+			semantic_role: "[
+				Computes the cosine of the angle between
+				two vectors with zero-vector guard.
+			]"
 		require
 			same_dimension: a_vec1.dimension = a_vec2.dimension
 		local
@@ -66,6 +79,11 @@ feature -- Similarity Metrics
 
 	euclidean_distance (a_vec1, a_vec2: SIMPLE_SQL_VECTOR): REAL_64
 			-- Euclidean (L2) distance between vectors
+		note
+			semantic_role: "[
+				Computes the straight-line distance
+				between two vectors.
+			]"
 		require
 			same_dimension: a_vec1.dimension = a_vec2.dimension
 		local
@@ -88,6 +106,11 @@ feature -- Similarity Metrics
 
 	manhattan_distance (a_vec1, a_vec2: SIMPLE_SQL_VECTOR): REAL_64
 			-- Manhattan (L1/taxicab) distance between vectors
+		note
+			semantic_role: "[
+				Computes the L1 taxicab distance between
+				two vectors.
+			]"
 		require
 			same_dimension: a_vec1.dimension = a_vec2.dimension
 		local
@@ -108,6 +131,11 @@ feature -- Similarity Metrics
 
 	dot_product (a_vec1, a_vec2: SIMPLE_SQL_VECTOR): REAL_64
 			-- Dot product (inner product) of vectors
+		note
+			semantic_role: "[
+				Delegates to the vector's dot_product for
+				inner product computation.
+			]"
 		require
 			same_dimension: a_vec1.dimension = a_vec2.dimension
 		do
@@ -121,6 +149,11 @@ feature -- Derived Metrics
 	angular_distance (a_vec1, a_vec2: SIMPLE_SQL_VECTOR): REAL_64
 			-- Angular distance: 1 - cosine_similarity
 			-- Range: 0.0 (identical) to 2.0 (opposite)
+		note
+			semantic_role: "[
+				Converts cosine similarity to a distance
+				metric via subtraction from 1.
+			]"
 		require
 			same_dimension: a_vec1.dimension = a_vec2.dimension
 		do
@@ -131,6 +164,11 @@ feature -- Derived Metrics
 
 	squared_euclidean_distance (a_vec1, a_vec2: SIMPLE_SQL_VECTOR): REAL_64
 			-- Squared Euclidean distance (faster, avoids sqrt)
+		note
+			semantic_role: "[
+				Computes L2 distance squared for
+				performance-sensitive comparisons.
+			]"
 		require
 			same_dimension: a_vec1.dimension = a_vec2.dimension
 		local
@@ -153,6 +191,11 @@ feature -- Batch Operations
 
 	pairwise_cosine_similarity (a_vectors: ARRAY [SIMPLE_SQL_VECTOR]): ARRAY2 [REAL_64]
 			-- Compute cosine similarity matrix for all pairs
+		note
+			semantic_role: "[
+				Builds a symmetric similarity matrix from
+				all vector pair combinations.
+			]"
 		require
 			not_empty: not a_vectors.is_empty
 			same_dimensions: across a_vectors as ic all ic.dimension = a_vectors [a_vectors.lower].dimension end
@@ -176,6 +219,11 @@ feature -- Batch Operations
 
 	rank_by_similarity (a_query: SIMPLE_SQL_VECTOR; a_candidates: ARRAY [SIMPLE_SQL_VECTOR]): ARRAY [TUPLE [index: INTEGER; score: REAL_64]]
 			-- Rank candidates by cosine similarity to query (highest first)
+		note
+			semantic_role: "[
+				Scores and sorts candidates by descending
+				similarity to a query vector.
+			]"
 		require
 			candidates_not_empty: not a_candidates.is_empty
 			same_dimension: across a_candidates as ic all ic.dimension = a_query.dimension end
@@ -199,6 +247,11 @@ feature -- Batch Operations
 
 	find_most_similar (a_query: SIMPLE_SQL_VECTOR; a_candidates: ARRAY [SIMPLE_SQL_VECTOR]): INTEGER
 			-- Index of most similar candidate (in original array bounds)
+		note
+			semantic_role: "[
+				Linear scans candidates to find the index
+				with highest cosine similarity.
+			]"
 		require
 			candidates_not_empty: not a_candidates.is_empty
 			same_dimension: across a_candidates as ic all ic.dimension = a_query.dimension end
@@ -223,6 +276,11 @@ feature -- Batch Operations
 
 	average_similarity (a_vectors: ARRAY [SIMPLE_SQL_VECTOR]): REAL_64
 			-- Average pairwise cosine similarity
+		note
+			semantic_role: "[
+				Computes the mean cosine similarity across
+				all unique vector pairs.
+			]"
 		require
 			at_least_two: a_vectors.count >= 2
 			same_dimensions: across a_vectors as ic all ic.dimension = a_vectors [a_vectors.lower].dimension end
@@ -247,6 +305,11 @@ feature -- Utility
 
 	is_similar (a_vec1, a_vec2: SIMPLE_SQL_VECTOR; a_threshold: REAL_64): BOOLEAN
 			-- Are vectors similar (cosine similarity >= threshold)?
+		note
+			semantic_role: "[
+				Threshold-based similarity predicate using
+				cosine similarity.
+			]"
 		require
 			same_dimension: a_vec1.dimension = a_vec2.dimension
 			valid_threshold: a_threshold >= -1.0 and a_threshold <= 1.0
@@ -259,6 +322,11 @@ feature -- Utility
 
 	is_near (a_vec1, a_vec2: SIMPLE_SQL_VECTOR; a_max_distance: REAL_64): BOOLEAN
 			-- Are vectors near (Euclidean distance <= max)?
+		note
+			semantic_role: "[
+				Distance-based proximity predicate using
+				Euclidean distance.
+			]"
 		require
 			same_dimension: a_vec1.dimension = a_vec2.dimension
 			positive_distance: a_max_distance >= 0.0
@@ -273,6 +341,11 @@ feature {NONE} -- Implementation
 
 	sort_scores_descending (a_list: ARRAYED_LIST [TUPLE [index: INTEGER; score: REAL_64]])
 			-- Sort in place by score descending.
+		note
+			semantic_role: "[
+				Delegates to SIMPLE_SORTER for descending
+				score ordering.
+			]"
 		local
 			l_sorter: SIMPLE_SORTER [TUPLE [index: INTEGER; score: REAL_64]]
 		do
@@ -284,6 +357,11 @@ feature {NONE} -- Implementation
 
 	similarity_score_key (a_item: TUPLE [index: INTEGER; score: REAL_64]): REAL_64
 			-- Extract score for sorting.
+		note
+			semantic_role: "[
+				Key extractor agent for score-based
+				sorting.
+			]"
 		do
 			Result := a_item.score
 		end
@@ -293,5 +371,13 @@ feature {NONE} -- Implementation
 
 invariant
 	tolerance_positive: Tolerance > 0.0
+
+note
+	copyright: "Copyright (c) 2025, Larry Rix"
+	license: "MIT License"
+	source: "[
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
+	]"
 
 end

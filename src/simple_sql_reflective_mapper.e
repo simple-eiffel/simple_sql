@@ -1,6 +1,14 @@
 note
-	description: "Reflection-based mapper for automatic object-to-row conversion"
-	author: "Larry Rix"
+	description: "[
+		A reflection-based mapper for bidirectional object-to-row conversion.
+		Converts Eiffel objects to column/value hash tables for INSERT/UPDATE
+		and populates object fields from SIMPLE_SQL_ROW data using runtime
+		reflection with optional snake_case column naming.
+		Provides lightweight ORM capability for the simple_sql library.
+	]"
+	purpose: "Map objects to database rows and back using runtime reflection"
+	collaborators: "SIMPLE_SQL_ROW, SIMPLE_SQL_RESULT, SIMPLE_REFLECTED_OBJECT, SIMPLE_FIELD_INFO"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -14,6 +22,11 @@ feature {NONE} -- Initialization
 
 	make
 			-- Create reflective mapper.
+		note
+			semantic_role: "[
+				Initializes mapper with snake_case
+				column naming enabled by default.
+			]"
 		do
 			snake_case_columns := True
 		ensure
@@ -28,6 +41,12 @@ feature -- Settings
 
 	set_snake_case_columns (a_value: BOOLEAN)
 			-- Set whether to use snake_case for column names.
+		note
+			semantic_role: "[
+				Configures the field-to-column naming
+				convention.
+			]"
+			modifies: "snake_case_columns"
 		do
 			snake_case_columns := a_value
 		ensure
@@ -39,6 +58,11 @@ feature -- Object to Row Mapping
 	object_to_hash (a_object: ANY): HASH_TABLE [detachable ANY, STRING]
 			-- Convert object fields to hash table for SQL operations.
 			-- Keys are column names, values are field values.
+		note
+			semantic_role: "[
+				Reflects object fields into a column-name
+				and value hash for SQL generation.
+			]"
 		require
 			object_exists: a_object /= Void
 		local
@@ -67,6 +91,11 @@ feature -- Object to Row Mapping
 
 	create_table_sql (a_prototype: ANY; a_table_name: STRING): STRING
 			-- Generate CREATE TABLE SQL from object fields.
+		note
+			semantic_role: "[
+				Generates DDL from reflected field types
+				with automatic type mapping.
+			]"
 		require
 			prototype_exists: a_prototype /= Void
 			table_name_not_empty: not a_table_name.is_empty
@@ -108,6 +137,11 @@ feature -- Row to Object Mapping
 	row_to_object (a_row: SIMPLE_SQL_ROW; a_prototype: ANY): ANY
 			-- Create new object from row data using prototype.
 			-- Sets fields that match column names.
+		note
+			semantic_role: "[
+				Clones prototype and populates fields
+				from matching database columns.
+			]"
 		require
 			row_exists: a_row /= Void
 			prototype_exists: a_prototype /= Void
@@ -143,6 +177,11 @@ feature -- Bulk Mapping
 
 	rows_to_objects (a_result: SIMPLE_SQL_RESULT; a_prototype: ANY): ARRAYED_LIST [ANY]
 			-- Convert all rows to objects.
+		note
+			semantic_role: "[
+				Maps each result row to an object via
+				row_to_object.
+			]"
 		require
 			result_exists: a_result /= Void
 			prototype_exists: a_prototype /= Void
@@ -160,6 +199,11 @@ feature {NONE} -- Implementation
 
 	field_to_column_name (a_field_name: STRING): STRING
 			-- Convert field name to column name.
+		note
+			semantic_role: "[
+				Applies snake_case conversion if
+				enabled, otherwise returns a copy.
+			]"
 		do
 			if snake_case_columns then
 				Result := to_snake_case (a_field_name)
@@ -172,6 +216,11 @@ feature {NONE} -- Implementation
 
 	to_snake_case (a_name: STRING): STRING
 			-- Convert camelCase or PascalCase to snake_case.
+		note
+			semantic_role: "[
+				Inserts underscores before uppercase
+				letters and lowercases the result.
+			]"
 		local
 			i: INTEGER
 			c: CHARACTER
@@ -199,6 +248,11 @@ feature {NONE} -- Implementation
 
 	sql_type_for_field (a_field: SIMPLE_FIELD_INFO): STRING
 			-- Determine SQL type for field based on its Eiffel type.
+		note
+			semantic_role: "[
+				Maps Eiffel type names to SQLite
+				column types.
+			]"
 		local
 			l_type_name: STRING
 			l_internal: INTERNAL
@@ -222,6 +276,11 @@ feature {NONE} -- Implementation
 
 	convert_to_sql_value (a_value: detachable ANY): detachable ANY
 			-- Convert Eiffel value to SQL-compatible value.
+		note
+			semantic_role: "[
+				Type-dispatches Eiffel values to
+				SQLite-compatible representations.
+			]"
 		do
 			if a_value = Void then
 				Result := Void
@@ -244,6 +303,11 @@ feature {NONE} -- Implementation
 	set_field_value (a_object: ANY; a_field: SIMPLE_FIELD_INFO; a_value: detachable ANY)
 			-- Set field value on object.
 			-- Note: Uses reflection to set values.
+		note
+			semantic_role: "[
+				Converts SQL value to appropriate type
+				and sets via reflection.
+			]"
 		local
 			l_converted: detachable ANY
 		do
@@ -255,6 +319,11 @@ feature {NONE} -- Implementation
 
 	convert_from_sql_value (a_value: detachable ANY; a_field: SIMPLE_FIELD_INFO): detachable ANY
 			-- Convert SQL value to appropriate Eiffel type for field.
+		note
+			semantic_role: "[
+				Reverse-maps SQLite values to Eiffel
+				types using field type metadata.
+			]"
 		local
 			l_type_name: STRING
 			l_internal: INTERNAL
@@ -299,7 +368,11 @@ feature {NONE} -- Implementation
 		end
 
 note
-	copyright: "Copyright (c) 2024-2025, Larry Rix"
+	copyright: "Copyright (c) 2025, Larry Rix"
 	license: "MIT License"
+	source: "[
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
+	]"
 
 end

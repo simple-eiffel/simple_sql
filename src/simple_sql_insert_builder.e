@@ -1,5 +1,13 @@
 note
-	description: "Fluent builder for INSERT statements"
+	description: "[
+		Fluent builder for SQL INSERT statements supporting single-row and multi-row inserts.
+		Accumulates columns and values via chained calls, then generates and optionally
+		executes the INSERT with returning-id support.
+		Provides the INSERT composition layer for simple_sql query building.
+	]"
+	purpose: "Build and execute INSERT statements with fluent column/value chaining"
+	collaborators: "SIMPLE_SQL_QUERY_BUILDER, SIMPLE_SQL_DATABASE"
+	design_pattern: "Builder"
 	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -18,6 +26,12 @@ feature {NONE} -- Initialization
 
 	make
 			-- Create empty insert builder
+		note
+			semantic_role: "[
+				Initializes empty column list and value
+				row storage for incremental INSERT
+				construction.
+			]"
 		do
 			create table_name.make_empty
 			create columns.make (10)
@@ -27,6 +41,12 @@ feature {NONE} -- Initialization
 
 	make_with_database (a_database: SIMPLE_SQL_DATABASE)
 			-- Create with database for execution
+		note
+			semantic_role: "[
+				Combines builder initialization with
+				database attachment for immediate
+				execution capability.
+			]"
 		require
 			database_open: a_database.is_open
 		do
@@ -40,6 +60,12 @@ feature -- Table
 
 	into (a_table: READABLE_STRING_8): like Current
 			-- Set the target table
+		note
+			semantic_role: "[
+				Specifies the INSERT INTO target table,
+				returning Current for fluent chaining.
+			]"
+			modifies: "table_name"
 		require
 			table_not_empty: not a_table.is_empty
 		do
@@ -53,6 +79,12 @@ feature -- Columns
 
 	column (a_column: READABLE_STRING_8): like Current
 			-- Add a column name
+		note
+			semantic_role: "[
+				Appends a single column to the INSERT
+				column list.
+			]"
+			modifies: "columns"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -64,6 +96,12 @@ feature -- Columns
 
 	columns_list (a_columns: ARRAY [READABLE_STRING_8]): like Current
 			-- Set multiple column names
+		note
+			semantic_role: "[
+				Replaces the column list with all
+				provided column names in one call.
+			]"
+			modifies: "columns"
 		require
 			columns_not_empty: not a_columns.is_empty
 		local
@@ -81,6 +119,12 @@ feature -- Values
 
 	value (a_value: detachable ANY): like Current
 			-- Add a value to the current row
+		note
+			semantic_role: "[
+				Appends a single value to the row being
+				built, paired positionally with columns.
+			]"
+			modifies: "current_values"
 		do
 			current_values.extend (a_value)
 			Result := Current
@@ -88,6 +132,12 @@ feature -- Values
 
 	values (a_values: ARRAY [detachable ANY]): like Current
 			-- Set all values for current row and finalize it
+		note
+			semantic_role: "[
+				Creates a complete value row from an
+				array and immediately finalizes it.
+			]"
+			modifies: "value_rows"
 		require
 			values_not_empty: not a_values.is_empty
 		local
@@ -105,6 +155,12 @@ feature -- Values
 
 	end_row: like Current
 			-- Finalize current row and start a new one
+		note
+			semantic_role: "[
+				Commits the accumulated current_values
+				as a complete row for multi-row inserts.
+			]"
+			modifies: "value_rows, current_values"
 		require
 			has_current_values: has_current_values
 		do
@@ -117,6 +173,13 @@ feature -- Values
 
 	set (a_column: READABLE_STRING_8; a_value: detachable ANY): like Current
 			-- Set a column-value pair (adds column if not present)
+		note
+			semantic_role: "[
+				Combined column-and-value setter for
+				convenience when building single-row
+				inserts.
+			]"
+			modifies: "columns, current_values"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -131,18 +194,33 @@ feature -- Status (for preconditions)
 
 	has_table: BOOLEAN
 			-- Has a table been specified?
+		note
+			semantic_role: "[
+				Table specification predicate guarding
+				INSERT execution.
+			]"
 		do
 			Result := not table_name.is_empty
 		end
 
 	has_values: BOOLEAN
 			-- Are there values to insert (either finalized rows or current values)?
+		note
+			semantic_role: "[
+				Value presence predicate ensuring at
+				least one row of data exists.
+			]"
 		do
 			Result := not value_rows.is_empty or not current_values.is_empty
 		end
 
 	has_current_values: BOOLEAN
 			-- Are there values in the current row being built?
+		note
+			semantic_role: "[
+				In-progress row detection for end_row
+				precondition.
+			]"
 		do
 			Result := not current_values.is_empty
 		end
@@ -151,6 +229,11 @@ feature -- Execution
 
 	execute: INTEGER
 			-- Execute insert and return number of rows affected
+		note
+			semantic_role: "[
+				Finalizes pending values, executes
+				INSERT, and returns affected row count.
+			]"
 		require
 			has_database: has_database
 			has_table: has_table
@@ -172,6 +255,12 @@ feature -- Execution
 
 	execute_returning_id: INTEGER_64
 			-- Execute insert and return the last inserted row ID
+		note
+			semantic_role: "[
+				Executes INSERT and retrieves SQLite
+				last_insert_rowid for auto-increment
+				keys.
+			]"
 		require
 			has_database: has_database
 			has_table: has_table
@@ -195,6 +284,12 @@ feature -- Reset
 
 	reset
 			-- Clear all builder state
+		note
+			semantic_role: "[
+				Returns builder to empty state for
+				reuse with a different INSERT.
+			]"
+			modifies: "table_name, columns, value_rows, current_values"
 		do
 			table_name.wipe_out
 			columns.wipe_out
@@ -210,6 +305,11 @@ feature -- Output
 
 	to_sql: STRING_8
 			-- Generate SQL INSERT statement
+		note
+			semantic_role: "[
+				Assembles INSERT INTO with column list
+				and VALUES rows from accumulated state.
+			]"
 		local
 			i, j: INTEGER
 			l_row: ARRAYED_LIST [detachable ANY]
@@ -261,6 +361,24 @@ feature -- Output
 			end
 		end
 
+feature -- Model Queries
+
+	columns_model: MML_SEQUENCE [STRING_8]
+			-- Mathematical model of column names in order.
+		note
+			semantic_role: "[
+				Provides an MML sequence model of
+				column names for contract verification.
+			]"
+		do
+			create Result
+			across columns as ic loop
+				Result := Result & ic
+			end
+		ensure
+			count_matches: Result.count = columns.count
+		end
+
 feature {NONE} -- Implementation
 
 	table_name: STRING_8
@@ -280,5 +398,13 @@ invariant
 	columns_attached: attached columns
 	value_rows_attached: attached value_rows
 	current_values_attached: attached current_values
+
+note
+	copyright: "Copyright (c) 2025, Larry Rix"
+	license: "MIT License"
+	source: "[
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
+	]"
 
 end

@@ -1,5 +1,17 @@
 note
-	description: "Fluent builder for SELECT queries with soft delete scopes"
+	description: "[
+		Fluent builder for SELECT queries with soft delete scopes. Supports
+		column selection, table joins (INNER, LEFT, CROSS), compound WHERE
+		clauses (AND/OR), GROUP BY with HAVING, ORDER BY, LIMIT/OFFSET,
+		and automatic soft-delete filtering via deleted_at column convention.
+
+		Execution returns SIMPLE_SQL_RESULT for eager loading, or
+		SIMPLE_SQL_CURSOR/SIMPLE_SQL_RESULT_STREAM for lazy streaming.
+		Convenience queries include count, exists, and first-row retrieval.
+	]"
+	purpose: "Fluent SELECT statement construction with joins, soft deletes, and streaming execution"
+	collaborators: "SIMPLE_SQL_QUERY_BUILDER, SIMPLE_SQL_DATABASE, SIMPLE_SQL_RESULT, SIMPLE_SQL_ROW, SIMPLE_SQL_CURSOR, SIMPLE_SQL_RESULT_STREAM"
+	design_pattern: "Builder"
 	EIS: "name=API Reference", "src=../docs/api/select-builder.html", "protocol=URI", "tag=documentation"
 	EIS: "name=Soft Deletes Tutorial", "src=../docs/tutorials/soft-deletes.html", "protocol=URI", "tag=tutorial"
 	author: "Jimmy J. Johnson"
@@ -20,6 +32,12 @@ feature {NONE} -- Initialization
 
 	make
 			-- Create empty select builder
+		note
+			semantic_role: "[
+				Initializes all clause storage lists and
+				default values for incremental SELECT
+				construction.
+			]"
 		do
 			create columns.make (10)
 			columns.compare_objects
@@ -40,6 +58,12 @@ feature {NONE} -- Initialization
 
 	make_with_database (a_database: SIMPLE_SQL_DATABASE)
 			-- Create with database for execution
+		note
+			semantic_role: "[
+				Combines builder initialization with
+				database attachment for immediate
+				execution capability.
+			]"
 		require
 			database_open: a_database.is_open
 		do
@@ -53,6 +77,12 @@ feature -- Column Selection
 
 	select_all: like Current
 			-- Select all columns (*)
+		note
+			semantic_role: "[
+				Replaces column list with wildcard for
+				selecting all columns.
+			]"
+			modifies: "columns"
 		do
 			columns.wipe_out
 			columns.extend ("*")
@@ -63,6 +93,12 @@ feature -- Column Selection
 
 	select_column (a_column: READABLE_STRING_8): like Current
 			-- Add a column to select
+		note
+			semantic_role: "[
+				Appends a single named column to the
+				SELECT projection.
+			]"
+			modifies: "columns"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -74,6 +110,12 @@ feature -- Column Selection
 
 	select_columns (a_columns: ARRAY [READABLE_STRING_8]): like Current
 			-- Add multiple columns to select
+		note
+			semantic_role: "[
+				Batch-appends multiple column names to the
+				SELECT projection.
+			]"
+			modifies: "columns"
 		require
 			columns_not_empty: not a_columns.is_empty
 		local
@@ -88,6 +130,12 @@ feature -- Column Selection
 
 	select_column_as (a_column: READABLE_STRING_8; a_alias: READABLE_STRING_8): like Current
 			-- Add a column with an alias
+		note
+			semantic_role: "[
+				Appends a column with AS alias using
+				identifier quoting on the alias.
+			]"
+			modifies: "columns"
 		require
 			column_not_empty: not a_column.is_empty
 			alias_not_empty: not a_alias.is_empty
@@ -98,6 +146,12 @@ feature -- Column Selection
 
 	distinct: like Current
 			-- Add DISTINCT modifier
+		note
+			semantic_role: "[
+				Enables SELECT DISTINCT to eliminate
+				duplicate rows from results.
+			]"
+			modifies: "is_distinct"
 		do
 			is_distinct := True
 			Result := Current
@@ -109,6 +163,12 @@ feature -- Table Selection
 
 	from_table (a_table: READABLE_STRING_8): like Current
 			-- Set the FROM table
+		note
+			semantic_role: "[
+				Specifies the primary FROM table, replacing
+				any previous table selection.
+			]"
+			modifies: "tables"
 		require
 			table_not_empty: not a_table.is_empty
 		do
@@ -121,6 +181,12 @@ feature -- Table Selection
 
 	from_table_as (a_table: READABLE_STRING_8; a_alias: READABLE_STRING_8): like Current
 			-- Set the FROM table with alias
+		note
+			semantic_role: "[
+				Specifies the FROM table with an AS alias
+				for use in joins and column references.
+			]"
+			modifies: "tables"
 		require
 			table_not_empty: not a_table.is_empty
 			alias_not_empty: not a_alias.is_empty
@@ -134,6 +200,12 @@ feature -- Joins
 
 	join (a_table: READABLE_STRING_8; a_condition: READABLE_STRING_8): like Current
 			-- Add an INNER JOIN
+		note
+			semantic_role: "[
+				Appends an implicit INNER JOIN clause
+				with ON condition.
+			]"
+			modifies: "joins"
 		require
 			table_not_empty: not a_table.is_empty
 			condition_not_empty: not a_condition.is_empty
@@ -144,6 +216,12 @@ feature -- Joins
 
 	inner_join (a_table: READABLE_STRING_8; a_condition: READABLE_STRING_8): like Current
 			-- Add an INNER JOIN (explicit)
+		note
+			semantic_role: "[
+				Appends an explicit INNER JOIN clause
+				with ON condition.
+			]"
+			modifies: "joins"
 		require
 			table_not_empty: not a_table.is_empty
 			condition_not_empty: not a_condition.is_empty
@@ -154,6 +232,12 @@ feature -- Joins
 
 	left_join (a_table: READABLE_STRING_8; a_condition: READABLE_STRING_8): like Current
 			-- Add a LEFT OUTER JOIN
+		note
+			semantic_role: "[
+				Appends a LEFT JOIN preserving all rows
+				from the primary table.
+			]"
+			modifies: "joins"
 		require
 			table_not_empty: not a_table.is_empty
 			condition_not_empty: not a_condition.is_empty
@@ -164,6 +248,12 @@ feature -- Joins
 
 	cross_join (a_table: READABLE_STRING_8): like Current
 			-- Add a CROSS JOIN
+		note
+			semantic_role: "[
+				Appends a CROSS JOIN producing the
+				Cartesian product of both tables.
+			]"
+			modifies: "joins"
 		require
 			table_not_empty: not a_table.is_empty
 		do
@@ -175,6 +265,12 @@ feature -- WHERE Clauses
 
 	where (a_condition: READABLE_STRING_8): like Current
 			-- Set the WHERE condition (replaces any existing)
+		note
+			semantic_role: "[
+				Sets the primary WHERE filter, replacing
+				any previous conditions.
+			]"
+			modifies: "where_clauses"
 		require
 			condition_not_empty: not a_condition.is_empty
 		do
@@ -185,6 +281,12 @@ feature -- WHERE Clauses
 
 	where_equals (a_column: READABLE_STRING_8; a_value: detachable ANY): like Current
 			-- Add WHERE column = value
+		note
+			semantic_role: "[
+				Convenience for single-column equality
+				filter replacing previous conditions.
+			]"
+			modifies: "where_clauses"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -195,6 +297,12 @@ feature -- WHERE Clauses
 
 	and_where (a_condition: READABLE_STRING_8): like Current
 			-- Add AND condition
+		note
+			semantic_role: "[
+				Appends an AND-connected condition to the
+				existing WHERE clause.
+			]"
+			modifies: "where_clauses"
 		require
 			condition_not_empty: not a_condition.is_empty
 		do
@@ -204,6 +312,12 @@ feature -- WHERE Clauses
 
 	and_where_equals (a_column: READABLE_STRING_8; a_value: detachable ANY): like Current
 			-- Add AND column = value
+		note
+			semantic_role: "[
+				Appends an AND-connected equality
+				condition.
+			]"
+			modifies: "where_clauses"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -213,6 +327,12 @@ feature -- WHERE Clauses
 
 	or_where (a_condition: READABLE_STRING_8): like Current
 			-- Add OR condition
+		note
+			semantic_role: "[
+				Appends an OR-connected condition to the
+				existing WHERE clause.
+			]"
+			modifies: "where_clauses"
 		require
 			condition_not_empty: not a_condition.is_empty
 		do
@@ -222,6 +342,12 @@ feature -- WHERE Clauses
 
 	or_where_equals (a_column: READABLE_STRING_8; a_value: detachable ANY): like Current
 			-- Add OR column = value
+		note
+			semantic_role: "[
+				Appends an OR-connected equality
+				condition.
+			]"
+			modifies: "where_clauses"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -231,6 +357,12 @@ feature -- WHERE Clauses
 
 	where_null (a_column: READABLE_STRING_8): like Current
 			-- Add WHERE column IS NULL
+		note
+			semantic_role: "[
+				NULL-testing filter replacing previous
+				conditions.
+			]"
+			modifies: "where_clauses"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -241,6 +373,12 @@ feature -- WHERE Clauses
 
 	where_not_null (a_column: READABLE_STRING_8): like Current
 			-- Add WHERE column IS NOT NULL
+		note
+			semantic_role: "[
+				Non-NULL testing filter replacing previous
+				conditions.
+			]"
+			modifies: "where_clauses"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -251,6 +389,12 @@ feature -- WHERE Clauses
 
 	where_in (a_column: READABLE_STRING_8; a_values: ARRAY [detachable ANY]): like Current
 			-- Add WHERE column IN (values)
+		note
+			semantic_role: "[
+				Set membership filter replacing previous
+				conditions.
+			]"
+			modifies: "where_clauses"
 		require
 			column_not_empty: not a_column.is_empty
 			values_not_empty: not a_values.is_empty
@@ -276,6 +420,12 @@ feature -- WHERE Clauses
 
 	where_between (a_column: READABLE_STRING_8; a_low: detachable ANY; a_high: detachable ANY): like Current
 			-- Add WHERE column BETWEEN low AND high
+		note
+			semantic_role: "[
+				Range filter replacing previous
+				conditions.
+			]"
+			modifies: "where_clauses"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -286,6 +436,12 @@ feature -- WHERE Clauses
 
 	where_like (a_column: READABLE_STRING_8; a_pattern: READABLE_STRING_8): like Current
 			-- Add WHERE column LIKE pattern
+		note
+			semantic_role: "[
+				Pattern matching filter using SQL LIKE
+				with escaped pattern string.
+			]"
+			modifies: "where_clauses"
 		require
 			column_not_empty: not a_column.is_empty
 			pattern_not_empty: not a_pattern.is_empty
@@ -299,6 +455,12 @@ feature -- Grouping
 
 	group_by (a_column: READABLE_STRING_8): like Current
 			-- Add GROUP BY column
+		note
+			semantic_role: "[
+				Appends a column to the GROUP BY clause
+				for aggregate queries.
+			]"
+			modifies: "group_columns"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -308,6 +470,12 @@ feature -- Grouping
 
 	group_by_columns (a_columns: ARRAY [READABLE_STRING_8]): like Current
 			-- Add multiple GROUP BY columns
+		note
+			semantic_role: "[
+				Batch-appends multiple columns to the
+				GROUP BY clause.
+			]"
+			modifies: "group_columns"
 		require
 			columns_not_empty: not a_columns.is_empty
 		local
@@ -322,6 +490,13 @@ feature -- Grouping
 
 	having (a_condition: READABLE_STRING_8): like Current
 			-- Add HAVING condition
+		note
+			semantic_role: "[
+				Sets the HAVING filter for aggregate
+				result filtering, replacing previous
+				HAVING conditions.
+			]"
+			modifies: "having_clauses"
 		require
 			condition_not_empty: not a_condition.is_empty
 		do
@@ -332,6 +507,12 @@ feature -- Grouping
 
 	and_having (a_condition: READABLE_STRING_8): like Current
 			-- Add AND HAVING condition
+		note
+			semantic_role: "[
+				Appends an AND-connected condition to the
+				existing HAVING clause.
+			]"
+			modifies: "having_clauses"
 		require
 			condition_not_empty: not a_condition.is_empty
 		do
@@ -343,6 +524,12 @@ feature -- Ordering
 
 	order_by (a_column: READABLE_STRING_8): like Current
 			-- Add ORDER BY column (ascending)
+		note
+			semantic_role: "[
+				Appends a column to ORDER BY with default
+				ascending sort.
+			]"
+			modifies: "order_columns"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -352,6 +539,12 @@ feature -- Ordering
 
 	order_by_desc (a_column: READABLE_STRING_8): like Current
 			-- Add ORDER BY column descending
+		note
+			semantic_role: "[
+				Appends a column to ORDER BY with explicit
+				DESC direction.
+			]"
+			modifies: "order_columns"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -361,6 +554,12 @@ feature -- Ordering
 
 	order_by_asc (a_column: READABLE_STRING_8): like Current
 			-- Add ORDER BY column ascending (explicit)
+		note
+			semantic_role: "[
+				Appends a column to ORDER BY with explicit
+				ASC direction.
+			]"
+			modifies: "order_columns"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -373,6 +572,13 @@ feature -- Soft Delete Scopes
 	active_only: like Current
 			-- Filter to only active (non-deleted) records.
 			-- Assumes table has `deleted_at` column (NULL = active).
+		note
+			semantic_role: "[
+				Scopes query to non-deleted records by
+				adding IS NULL filter on soft delete
+				column.
+			]"
+			modifies: "soft_delete_mode"
 		do
 			soft_delete_mode := Soft_delete_active_only
 			Result := Current
@@ -383,6 +589,13 @@ feature -- Soft Delete Scopes
 	deleted_only: like Current
 			-- Filter to only soft-deleted records.
 			-- Assumes table has `deleted_at` column (NOT NULL = deleted).
+		note
+			semantic_role: "[
+				Scopes query to soft-deleted records by
+				adding IS NOT NULL filter on soft delete
+				column.
+			]"
+			modifies: "soft_delete_mode"
 		do
 			soft_delete_mode := Soft_delete_deleted_only
 			Result := Current
@@ -392,6 +605,12 @@ feature -- Soft Delete Scopes
 
 	with_deleted: like Current
 			-- Include all records regardless of soft delete status.
+		note
+			semantic_role: "[
+				Removes soft delete filtering to include
+				both active and deleted records.
+			]"
+			modifies: "soft_delete_mode"
 		do
 			soft_delete_mode := Soft_delete_all
 			Result := Current
@@ -402,6 +621,12 @@ feature -- Soft Delete Scopes
 	set_soft_delete_column (a_column: READABLE_STRING_8)
 			-- Set custom column name for soft delete filtering.
 			-- Default is "deleted_at".
+		note
+			semantic_role: "[
+				Overrides the default deleted_at column
+				name for non-standard soft delete schemas.
+			]"
+			modifies: "soft_delete_column"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -414,6 +639,11 @@ feature -- Limiting
 
 	limit (a_limit: INTEGER): like Current
 			-- Set LIMIT value
+		note
+			semantic_role: "[
+				Caps the maximum number of rows returned.
+			]"
+			modifies: "limit_value"
 		require
 			limit_positive: a_limit >= 0
 		do
@@ -425,6 +655,12 @@ feature -- Limiting
 
 	offset (a_offset: INTEGER): like Current
 			-- Set OFFSET value
+		note
+			semantic_role: "[
+				Skips the first N rows for pagination
+				support.
+			]"
+			modifies: "offset_value"
 		require
 			offset_positive: a_offset >= 0
 		do
@@ -438,6 +674,11 @@ feature -- Status (for preconditions)
 
 	has_table: BOOLEAN
 			-- Has at least one table been specified?
+		note
+			semantic_role: "[
+				Table specification predicate guarding
+				SELECT execution.
+			]"
 		do
 			Result := not tables.is_empty
 		end
@@ -446,6 +687,11 @@ feature -- Execution
 
 	execute: detachable SIMPLE_SQL_RESULT
 			-- Execute query and return result
+		note
+			semantic_role: "[
+				Runs the assembled SELECT and returns an
+				eagerly-loaded result set.
+			]"
 		require
 			has_database: has_database
 			has_table: has_table
@@ -457,6 +703,12 @@ feature -- Execution
 
 	first: detachable SIMPLE_SQL_ROW
 			-- Execute query and return first row
+		note
+			semantic_role: "[
+				Executes with LIMIT 1 and returns the
+				single row, restoring original limit
+				afterward.
+			]"
 		require
 			has_database: has_database
 			has_table: has_table
@@ -473,6 +725,11 @@ feature -- Execution
 
 	count: INTEGER
 			-- Execute COUNT(*) query and return result
+		note
+			semantic_role: "[
+				Temporarily replaces columns with COUNT(*)
+				to return the matching row count.
+			]"
 		require
 			has_database: has_database
 			has_table: has_table
@@ -495,6 +752,11 @@ feature -- Execution
 
 	exists: BOOLEAN
 			-- Does at least one row match?
+		note
+			semantic_role: "[
+				Existence check delegating to count for
+				boolean result.
+			]"
 		require
 			has_database: has_database
 			has_table: has_table
@@ -507,6 +769,11 @@ feature -- Streaming Execution
 	execute_cursor: detachable SIMPLE_SQL_CURSOR
 			-- Execute query returning lazy cursor for row-by-row iteration
 			-- Use for large result sets to avoid loading all rows into memory
+		note
+			semantic_role: "[
+				Returns a lazy cursor for memory-efficient
+				row-by-row processing of large result sets.
+			]"
 		require
 			has_database: has_database
 			has_table: has_table
@@ -518,6 +785,11 @@ feature -- Streaming Execution
 
 	execute_stream: detachable SIMPLE_SQL_RESULT_STREAM
 			-- Execute query returning stream for callback-based processing
+		note
+			semantic_role: "[
+				Returns a stream for callback-based row
+				processing without full materialization.
+			]"
 		require
 			has_database: has_database
 			has_table: has_table
@@ -529,6 +801,11 @@ feature -- Streaming Execution
 
 	for_each (a_action: PROCEDURE [SIMPLE_SQL_ROW])
 			-- Execute query and process each row with action
+		note
+			semantic_role: "[
+				Streams rows through a callback agent for
+				functional-style row processing.
+			]"
 		require
 			has_database: has_database
 			has_table: has_table
@@ -543,6 +820,12 @@ feature -- Reset
 
 	reset
 			-- Clear all builder state
+		note
+			semantic_role: "[
+				Returns builder to empty state for reuse
+				with a different SELECT.
+			]"
+			modifies: "columns, tables, joins, where_clauses, group_columns, order_columns, having_clauses, is_distinct, limit_value, offset_value, soft_delete_mode, soft_delete_column"
 		do
 			columns.wipe_out
 			tables.wipe_out
@@ -566,6 +849,12 @@ feature -- Output
 
 	to_sql: STRING_8
 			-- Generate SQL SELECT statement
+		note
+			semantic_role: "[
+				Assembles complete SELECT from all clause
+				lists including soft delete scope
+				injection.
+			]"
 		local
 			i: INTEGER
 		do
@@ -688,6 +977,72 @@ feature -- Output
 			end
 		end
 
+feature -- Model Queries
+
+	columns_model: MML_SEQUENCE [STRING_8]
+			-- Mathematical model of selected columns in order.
+		note
+			semantic_role: "[
+				MML specification of selected columns for
+				formal postcondition verification.
+			]"
+		do
+			create Result
+			across columns as ic loop
+				Result := Result & ic
+			end
+		ensure
+			count_matches: Result.count = columns.count
+		end
+
+	tables_model: MML_SEQUENCE [STRING_8]
+			-- Mathematical model of FROM tables in order.
+		note
+			semantic_role: "[
+				MML specification of FROM tables for
+				formal postcondition verification.
+			]"
+		do
+			create Result
+			across tables as ic loop
+				Result := Result & ic
+			end
+		ensure
+			count_matches: Result.count = tables.count
+		end
+
+	where_clauses_model: MML_SEQUENCE [TUPLE [condition: STRING_8; connector: STRING_8]]
+			-- Mathematical model of WHERE conditions in order.
+		note
+			semantic_role: "[
+				MML specification of WHERE conditions for
+				formal postcondition verification.
+			]"
+		do
+			create Result
+			across where_clauses as ic loop
+				Result := Result & ic
+			end
+		ensure
+			count_matches: Result.count = where_clauses.count
+		end
+
+	order_columns_model: MML_SEQUENCE [STRING_8]
+			-- Mathematical model of ORDER BY columns in order.
+		note
+			semantic_role: "[
+				MML specification of ORDER BY columns for
+				formal postcondition verification.
+			]"
+		do
+			create Result
+			across order_columns as ic loop
+				Result := Result & ic
+			end
+		ensure
+			count_matches: Result.count = order_columns.count
+		end
+
 feature {NONE} -- Implementation
 
 	columns: ARRAYED_LIST [STRING_8]
@@ -737,6 +1092,11 @@ feature {NONE} -- Implementation
 
 	effective_soft_delete_column: STRING_8
 			-- Column name to use for soft delete filtering.
+		note
+			semantic_role: "[
+				Resolves the effective soft delete column
+				name with deleted_at as default.
+			]"
 		do
 			if attached soft_delete_column as al_c then
 				Result := al_c
@@ -748,5 +1108,13 @@ feature {NONE} -- Implementation
 invariant
 	limit_valid: limit_value >= -1
 	offset_valid: offset_value >= -1
+
+note
+	copyright: "Copyright (c) 2025, Larry Rix"
+	license: "MIT License"
+	source: "[
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
+	]"
 
 end

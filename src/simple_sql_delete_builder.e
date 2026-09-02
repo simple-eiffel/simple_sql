@@ -1,5 +1,15 @@
 note
-	description: "Fluent builder for DELETE statements"
+	description: "[
+		A fluent builder for constructing SQL DELETE statements with compound
+		WHERE clause filtering.
+		Supports equality, NULL, IN, BETWEEN, and AND/OR conditions with
+		optional execute_all for unconditional deletion and where_id for
+		primary key targeting.
+		Provides safe, composable DELETE construction for the simple_sql library.
+	]"
+	purpose: "Build and execute SQL DELETE statements with fluent WHERE clause composition"
+	collaborators: "SIMPLE_SQL_QUERY_BUILDER, SIMPLE_SQL_DATABASE, MML_SEQUENCE"
+	design_pattern: "Builder"
 	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
@@ -18,6 +28,11 @@ feature {NONE} -- Initialization
 
 	make
 			-- Create empty delete builder
+		note
+			semantic_role: "[
+				Initializes empty table name and WHERE
+				clause storage for builder use.
+			]"
 		do
 			create table_name.make_empty
 			create where_clauses.make (10)
@@ -25,6 +40,12 @@ feature {NONE} -- Initialization
 
 	make_with_database (a_database: SIMPLE_SQL_DATABASE)
 			-- Create with database for execution
+		note
+			semantic_role: "[
+				Combines builder initialization with
+				database attachment for immediate
+				execution capability.
+			]"
 		require
 			database_open: a_database.is_open
 		do
@@ -38,6 +59,12 @@ feature -- Table
 
 	from_table (a_table: READABLE_STRING_8): like Current
 			-- Set the target table
+		note
+			semantic_role: "[
+				Specifies the DELETE FROM target table,
+				returning Current for fluent chaining.
+			]"
+			modifies: "table_name"
 		require
 			table_not_empty: not a_table.is_empty
 		do
@@ -49,6 +76,13 @@ feature -- Table
 
 	delete_from (a_table: READABLE_STRING_8): like Current
 			-- Alias for from_table - more natural reading
+		note
+			semantic_role: "[
+				Natural-language alias for table
+				selection reading as
+				delete_from('users').
+			]"
+			modifies: "table_name"
 		require
 			table_not_empty: not a_table.is_empty
 		do
@@ -61,6 +95,12 @@ feature -- WHERE Clauses
 
 	where (a_condition: READABLE_STRING_8): like Current
 			-- Set the WHERE condition (replaces any existing)
+		note
+			semantic_role: "[
+				Sets the primary WHERE filter, replacing
+				any previous conditions.
+			]"
+			modifies: "where_clauses"
 		require
 			condition_not_empty: not a_condition.is_empty
 		do
@@ -71,6 +111,12 @@ feature -- WHERE Clauses
 
 	where_equals (a_column: READABLE_STRING_8; a_value: detachable ANY): like Current
 			-- Add WHERE column = value
+		note
+			semantic_role: "[
+				Convenience for single-column equality
+				filter replacing previous conditions.
+			]"
+			modifies: "where_clauses"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -81,12 +127,24 @@ feature -- WHERE Clauses
 
 	where_id (a_id: INTEGER_64): like Current
 			-- Convenience: WHERE id = value
+		note
+			semantic_role: "[
+				Primary key filter shortcut for the
+				common WHERE id = N pattern.
+			]"
+			modifies: "where_clauses"
 		do
 			Result := where_equals ("id", a_id)
 		end
 
 	and_where (a_condition: READABLE_STRING_8): like Current
 			-- Add AND condition
+		note
+			semantic_role: "[
+				Appends an AND-connected condition to
+				the existing WHERE clause.
+			]"
+			modifies: "where_clauses"
 		require
 			condition_not_empty: not a_condition.is_empty
 		do
@@ -96,6 +154,12 @@ feature -- WHERE Clauses
 
 	and_where_equals (a_column: READABLE_STRING_8; a_value: detachable ANY): like Current
 			-- Add AND column = value
+		note
+			semantic_role: "[
+				Appends an AND-connected equality
+				condition to the WHERE clause.
+			]"
+			modifies: "where_clauses"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -105,6 +169,12 @@ feature -- WHERE Clauses
 
 	or_where (a_condition: READABLE_STRING_8): like Current
 			-- Add OR condition
+		note
+			semantic_role: "[
+				Appends an OR-connected condition to
+				the existing WHERE clause.
+			]"
+			modifies: "where_clauses"
 		require
 			condition_not_empty: not a_condition.is_empty
 		do
@@ -114,6 +184,12 @@ feature -- WHERE Clauses
 
 	or_where_equals (a_column: READABLE_STRING_8; a_value: detachable ANY): like Current
 			-- Add OR column = value
+		note
+			semantic_role: "[
+				Appends an OR-connected equality
+				condition to the WHERE clause.
+			]"
+			modifies: "where_clauses"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -123,6 +199,12 @@ feature -- WHERE Clauses
 
 	where_null (a_column: READABLE_STRING_8): like Current
 			-- Add WHERE column IS NULL
+		note
+			semantic_role: "[
+				NULL-testing filter replacing previous
+				conditions.
+			]"
+			modifies: "where_clauses"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -133,6 +215,12 @@ feature -- WHERE Clauses
 
 	where_not_null (a_column: READABLE_STRING_8): like Current
 			-- Add WHERE column IS NOT NULL
+		note
+			semantic_role: "[
+				Non-NULL testing filter replacing
+				previous conditions.
+			]"
+			modifies: "where_clauses"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -143,6 +231,12 @@ feature -- WHERE Clauses
 
 	where_in (a_column: READABLE_STRING_8; a_values: ARRAY [detachable ANY]): like Current
 			-- Add WHERE column IN (values)
+		note
+			semantic_role: "[
+				Set membership filter replacing previous
+				conditions with IN clause.
+			]"
+			modifies: "where_clauses"
 		require
 			column_not_empty: not a_column.is_empty
 			values_not_empty: not a_values.is_empty
@@ -168,6 +262,12 @@ feature -- WHERE Clauses
 
 	where_between (a_column: READABLE_STRING_8; a_low: detachable ANY; a_high: detachable ANY): like Current
 			-- Add WHERE column BETWEEN low AND high
+		note
+			semantic_role: "[
+				Range filter replacing previous
+				conditions with BETWEEN clause.
+			]"
+			modifies: "where_clauses"
 		require
 			column_not_empty: not a_column.is_empty
 		do
@@ -180,6 +280,11 @@ feature -- Status (for preconditions)
 
 	has_table: BOOLEAN
 			-- Has a table been specified?
+		note
+			semantic_role: "[
+				Table specification predicate guarding
+				DELETE execution.
+			]"
 		do
 			Result := not table_name.is_empty
 		end
@@ -188,6 +293,11 @@ feature -- Execution
 
 	execute: INTEGER
 			-- Execute delete and return number of rows affected
+		note
+			semantic_role: "[
+				Executes the DELETE statement and
+				returns SQLite changes_count.
+			]"
 		require
 			has_database: has_database
 			has_table: has_table
@@ -203,6 +313,13 @@ feature -- Execution
 	execute_all: INTEGER
 			-- Delete all rows (no WHERE clause required)
 			-- Returns number of rows deleted
+		note
+			semantic_role: "[
+				Unconditional delete clearing all rows
+				by removing WHERE clause before
+				execution.
+			]"
+			modifies: "where_clauses"
 		require
 			has_database: has_database
 			has_table: has_table
@@ -216,6 +333,12 @@ feature -- Reset
 
 	reset
 			-- Clear all builder state
+		note
+			semantic_role: "[
+				Returns builder to empty state for
+				reuse with a different DELETE.
+			]"
+			modifies: "table_name, where_clauses"
 		do
 			table_name.wipe_out
 			where_clauses.wipe_out
@@ -228,6 +351,12 @@ feature -- Output
 
 	to_sql: STRING_8
 			-- Generate SQL DELETE statement
+		note
+			semantic_role: "[
+				Assembles DELETE FROM with optional
+				WHERE clause from accumulated
+				conditions.
+			]"
 		local
 			i: INTEGER
 		do
@@ -252,6 +381,25 @@ feature -- Output
 			end
 		end
 
+feature -- Model Queries
+
+	where_clauses_model: MML_SEQUENCE [TUPLE [condition: STRING_8; connector: STRING_8]]
+			-- Mathematical model of WHERE conditions in order.
+		note
+			semantic_role: "[
+				Materializes the WHERE clause list as
+				an MML_SEQUENCE for contract-based
+				verification.
+			]"
+		do
+			create Result
+			across where_clauses as ic loop
+				Result := Result & ic
+			end
+		ensure
+			count_matches: Result.count = where_clauses.count
+		end
+
 feature {NONE} -- Implementation
 
 	table_name: STRING_8
@@ -263,5 +411,13 @@ feature {NONE} -- Implementation
 invariant
 	table_name_attached: attached table_name
 	where_clauses_attached: attached where_clauses
+
+note
+	copyright: "Copyright (c) 2025, Larry Rix"
+	license: "MIT License"
+	source: "[
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
+	]"
 
 end

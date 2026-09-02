@@ -1,30 +1,15 @@
 note
 	description: "[
-		Generic repository pattern for database entities.
-
-		Provides common CRUD operations (Create, Read, Update, Delete) for
-		database entities. Subclasses must implement deferred features to
-		specify table name, primary key, and entity mapping.
-
-		Usage:
-			class USER_REPOSITORY inherit SIMPLE_SQL_REPOSITORY [USER]
-			feature
-				table_name: STRING_8 = "users"
-				primary_key_column: STRING_8 = "id"
-				row_to_entity (a_row): USER do ... end
-				entity_to_columns (a_entity): HASH_TABLE do ... end
-				entity_id (a_entity): INTEGER_64 do ... end
-			end
-
-			-- Then use:
-			repo := create {USER_REPOSITORY}.make (db)
-			all_users := repo.find_all
-			user := repo.find_by_id (42)
-			active_users := repo.find_where ("status = 'active'")
-			new_id := repo.insert (new_user)
-			repo.update (existing_user)
-			repo.delete (42)
+		A deferred generic repository providing CRUD operations for database entities.
+		Delegates table name, primary key, and entity-to-row mapping to concrete
+		descendants while implementing find, insert, update, delete, and save using
+		the simple_sql query builders.
+		Establishes the Repository pattern for entity persistence in the simple_sql library.
 	]"
+	purpose: "Provide generic CRUD operations for entity persistence via query builders"
+	collaborators: "SIMPLE_SQL_DATABASE, SIMPLE_SQL_RESULT, SIMPLE_SQL_ROW, SIMPLE_SQL_SELECT_BUILDER, SIMPLE_SQL_INSERT_BUILDER, SIMPLE_SQL_UPDATE_BUILDER, SIMPLE_SQL_DELETE_BUILDER"
+	design_pattern: "Repository"
+	author: "Jimmy J. Johnson"
 	date: "$Date$"
 	revision: "$Revision$"
 
@@ -35,6 +20,11 @@ feature {NONE} -- Initialization
 
 	make (a_database: SIMPLE_SQL_DATABASE)
 			-- Create repository with database connection
+		note
+			semantic_role: "[
+				Captures database reference for all
+				repository operations.
+			]"
 		require
 			database_open: a_database.is_open
 		do
@@ -66,6 +56,11 @@ feature -- Query: All
 
 	find_all: ARRAYED_LIST [G]
 			-- Return all entities from the table
+		note
+			semantic_role: "[
+				Selects all rows and maps each to an
+				entity via row_to_entity.
+			]"
 		local
 			l_result: SIMPLE_SQL_RESULT
 		do
@@ -83,6 +78,11 @@ feature -- Query: All
 
 	find_all_ordered (a_order_by: READABLE_STRING_8): ARRAYED_LIST [G]
 			-- Return all entities ordered by specified column(s)
+		note
+			semantic_role: "[
+				Selects all rows with ORDER BY and
+				maps to entities.
+			]"
 		require
 			order_not_empty: not a_order_by.is_empty
 		local
@@ -103,6 +103,11 @@ feature -- Query: All
 
 	find_all_limited (a_limit: INTEGER; a_offset: INTEGER): ARRAYED_LIST [G]
 			-- Return entities with pagination
+		note
+			semantic_role: "[
+				Selects a page of rows with LIMIT and
+				OFFSET and maps to entities.
+			]"
 		require
 			positive_limit: a_limit > 0
 			non_negative_offset: a_offset >= 0
@@ -132,6 +137,11 @@ feature -- Query: By ID
 
 	find_by_id (a_id: INTEGER_64): detachable G
 			-- Find entity by primary key, or Void if not found
+		note
+			semantic_role: "[
+				Queries a single row by primary key
+				and maps to entity.
+			]"
 		require
 			valid_id: a_id > 0
 		local
@@ -150,6 +160,11 @@ feature -- Query: By ID
 
 	exists (a_id: INTEGER_64): BOOLEAN
 			-- Does an entity with this ID exist?
+		note
+			semantic_role: "[
+				Checks for row existence by primary key
+				without loading data.
+			]"
 		require
 			valid_id: a_id > 0
 		local
@@ -169,6 +184,11 @@ feature -- Query: Conditional
 	find_where (a_conditions: READABLE_STRING_8): ARRAYED_LIST [G]
 			-- Find all entities matching conditions
 			-- Example: "status = 'active' AND age > 21"
+		note
+			semantic_role: "[
+				Selects rows matching a WHERE clause
+				and maps to entities.
+			]"
 		require
 			conditions_not_empty: not a_conditions.is_empty
 		local
@@ -189,6 +209,11 @@ feature -- Query: Conditional
 
 	find_where_ordered (a_conditions: READABLE_STRING_8; a_order_by: READABLE_STRING_8): ARRAYED_LIST [G]
 			-- Find all entities matching conditions with ordering
+		note
+			semantic_role: "[
+				Selects rows matching WHERE with
+				ORDER BY and maps to entities.
+			]"
 		require
 			conditions_not_empty: not a_conditions.is_empty
 			order_not_empty: not a_order_by.is_empty
@@ -211,6 +236,11 @@ feature -- Query: Conditional
 
 	find_first_where (a_conditions: READABLE_STRING_8): detachable G
 			-- Find first entity matching conditions, or Void if none
+		note
+			semantic_role: "[
+				Selects the first row matching WHERE
+				and maps to entity.
+			]"
 		require
 			conditions_not_empty: not a_conditions.is_empty
 		local
@@ -231,6 +261,11 @@ feature -- Query: Counting
 
 	count: INTEGER
 			-- Total number of entities in the table
+		note
+			semantic_role: "[
+				Returns the COUNT(*) of all rows in
+				the table.
+			]"
 		local
 			l_result: SIMPLE_SQL_RESULT
 		do
@@ -249,6 +284,11 @@ feature -- Query: Counting
 
 	count_where (a_conditions: READABLE_STRING_8): INTEGER
 			-- Number of entities matching conditions
+		note
+			semantic_role: "[
+				Returns the COUNT(*) of rows matching
+				a WHERE clause.
+			]"
 		require
 			conditions_not_empty: not a_conditions.is_empty
 		local
@@ -273,6 +313,12 @@ feature -- Command: Insert
 	insert (a_entity: G): INTEGER_64
 			-- Insert entity and return new primary key ID
 			-- Returns 0 if insert failed
+		note
+			semantic_role: "[
+				Maps entity to columns via
+				entity_to_columns and executes INSERT
+				returning the new row ID.
+			]"
 		local
 			l_columns: HASH_TABLE [detachable ANY, STRING_8]
 			l_builder: SIMPLE_SQL_INSERT_BUILDER
@@ -298,6 +344,11 @@ feature -- Command: Update
 	update (a_entity: G): BOOLEAN
 			-- Update entity by its primary key
 			-- Returns True if exactly one row was updated
+		note
+			semantic_role: "[
+				Maps entity to columns, excludes primary
+				key from SET, and executes UPDATE.
+			]"
 		local
 			l_columns: HASH_TABLE [detachable ANY, STRING_8]
 			l_builder: SIMPLE_SQL_UPDATE_BUILDER
@@ -329,6 +380,11 @@ feature -- Command: Update
 	update_where (a_columns: HASH_TABLE [detachable ANY, STRING_8]; a_conditions: READABLE_STRING_8): INTEGER
 			-- Update columns for all entities matching conditions
 			-- Returns number of rows affected
+		note
+			semantic_role: "[
+				Applies column updates to all rows
+				matching a WHERE clause.
+			]"
 		require
 			columns_not_empty: not a_columns.is_empty
 			conditions_not_empty: not a_conditions.is_empty
@@ -356,6 +412,11 @@ feature -- Command: Delete
 	delete (a_id: INTEGER_64): BOOLEAN
 			-- Delete entity by primary key
 			-- Returns True if exactly one row was deleted
+		note
+			semantic_role: "[
+				Executes DELETE by primary key via the
+				delete builder.
+			]"
 		require
 			valid_id: a_id > 0
 		local
@@ -373,6 +434,11 @@ feature -- Command: Delete
 	delete_where (a_conditions: READABLE_STRING_8): INTEGER
 			-- Delete all entities matching conditions
 			-- Returns number of rows deleted
+		note
+			semantic_role: "[
+				Executes DELETE for all rows matching
+				a WHERE clause.
+			]"
 		require
 			conditions_not_empty: not a_conditions.is_empty
 		do
@@ -387,6 +453,11 @@ feature -- Command: Delete
 	delete_all: INTEGER
 			-- Delete all entities from the table (use with caution!)
 			-- Returns number of rows deleted
+		note
+			semantic_role: "[
+				Removes all rows from the table via
+				raw DELETE.
+			]"
 		do
 			database.execute ("DELETE FROM " + table_name)
 			Result := database.changes_count
@@ -399,6 +470,11 @@ feature -- Command: Save (Insert or Update)
 	save (a_entity: G): INTEGER_64
 			-- Insert new entity or update existing
 			-- Returns entity ID (new or existing)
+		note
+			semantic_role: "[
+				Dispatches to insert or update based
+				on entity persistence state.
+			]"
 		local
 			l_id: INTEGER_64
 		do
@@ -416,12 +492,22 @@ feature -- Status
 
 	has_error: BOOLEAN
 			-- Did the last operation cause an error?
+		note
+			semantic_role: "[
+				Delegates error status check to the
+				database.
+			]"
 		do
 			Result := database.has_error
 		end
 
 	last_error_message: detachable STRING_32
 			-- Error message from last failed operation
+		note
+			semantic_role: "[
+				Delegates error message retrieval to
+				the database.
+			]"
 		do
 			Result := database.last_error_message
 		end
@@ -456,5 +542,13 @@ invariant
 	database_open: database.is_open
 	table_name_valid: not table_name.is_empty
 	primary_key_valid: not primary_key_column.is_empty
+
+note
+	copyright: "Copyright (c) 2025, Larry Rix"
+	license: "MIT License"
+	source: "[
+		simple_sql - High-level SQLite API for Eiffel
+		https://github.com/simple-eiffel/simple_sql
+	]"
 
 end
