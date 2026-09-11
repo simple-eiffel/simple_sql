@@ -441,6 +441,12 @@ feature {NONE} -- Implementation
 		end
 
 invariant
+	-- Per-element and model clauses were removed 2026-09-11: an
+	-- invariant runs on every feature call, so a clause that walks
+	-- the collection or builds its MML model makes every call O(n)
+	-- and a walk over the collection O(n^2) (simple_json read a
+	-- 1434-element array in 158 s under DBC). Models belong in
+	-- postconditions of the features that change them.
 	database_attached: attached database
 	schema_attached: attached schema
 	migrations_sorted: across 1 |..| (migrations.count - 1) as i all
@@ -448,7 +454,6 @@ invariant
 	end
 
 	-- Model consistency
-	model_migrations_count: migrations_model.count = migrations.count
 
 note
 	copyright: "Copyright (c) 2025, Larry Rix"

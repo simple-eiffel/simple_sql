@@ -478,13 +478,16 @@ feature {NONE} -- Constants
 			-- Relative tolerance for scaling with magnitude
 
 invariant
+	-- Per-element and model clauses were removed 2026-09-11: an
+	-- invariant runs on every feature call, so a clause that walks
+	-- the collection or builds its MML model makes every call O(n)
+	-- and a walk over the collection O(n^2) (simple_json read a
+	-- 1434-element array in 158 s under DBC). Models belong in
+	-- postconditions of the features that change them.
 	values_exist: values /= Void
 	positive_dimension: dimension > 0
 	one_based_array: values.lower = 1
 	consistent_upper_bound: values.upper = dimension
-	no_nan_values: across 1 |..| dimension as i all not values [i].is_nan end
-	no_infinite_values: across 1 |..| dimension as i all not values [i].is_positive_infinity and not values [i].is_negative_infinity end
-	model_count_consistent: values_model.count = dimension
 
 note
 	copyright: "Copyright (c) 2025, Larry Rix"

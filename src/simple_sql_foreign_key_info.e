@@ -191,12 +191,17 @@ feature -- Output
 		end
 
 invariant
+	-- Per-element and model clauses were removed 2026-09-11: an
+	-- invariant runs on every feature call, so a clause that walks
+	-- the collection or builds its MML model makes every call O(n)
+	-- and a walk over the collection O(n^2) (simple_json read a
+	-- 1434-element array in 158 s under DBC). Models belong in
+	-- postconditions of the features that change them.
 	from_table_not_empty: not from_table.is_empty
 	to_table_not_empty: not to_table.is_empty
 	column_mappings_attached: attached column_mappings
 	on_update_attached: attached on_update
 	on_delete_attached: attached on_delete
-	model_count_consistent: column_mappings_model.count = column_mappings.count
 
 note
 	copyright: "Copyright (c) 2025, Larry Rix"
