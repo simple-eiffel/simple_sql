@@ -66,6 +66,8 @@ feature {NONE} -- Test Runners
 			run_test (agent lib_tests.test_orm_repository_crud, "test_orm_repository_crud")
 			run_test (agent lib_tests.test_orm_repository_custom_queries, "test_orm_repository_custom_queries")
 			run_test (agent lib_tests.test_orm_repository_find_by_email, "test_orm_repository_find_by_email")
+			run_test (agent lib_tests.test_orm_roundtrip_utf8_text, "test_orm_roundtrip_utf8_text")
+			run_test (agent lib_tests.test_string_32_argument_utf8_roundtrip, "test_string_32_argument_utf8_roundtrip")
 			-- Integration tests (simple_factory, simple_encoding, simple_reflection)
 			run_test (agent lib_tests.test_database_pool, "test_database_pool")
 			run_test (agent lib_tests.test_database_pool_by_path, "test_database_pool_by_path")

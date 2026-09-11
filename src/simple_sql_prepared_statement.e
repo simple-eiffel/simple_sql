@@ -127,7 +127,7 @@ feature -- Binding by index (1-based)
 			valid_index: a_index >= 1
 			value_not_void: a_value /= Void
 		do
-			store_binding (a_index, a_value.to_string_32)
+			store_binding (a_index, a_value)
 		end
 
 	bind_blob (a_index: INTEGER; a_value: MANAGED_POINTER)
@@ -662,26 +662,33 @@ feature {NONE} -- Implementation
 				quote delimiters for SQL string literals.
 			]"
 		local
+			l_bytes: READABLE_STRING_8
+			l_utf: UTF_CONVERTER
 			i: INTEGER
-			c: CHARACTER_32
+			c: CHARACTER_8
 		do
-			create Result.make (a_string.count + 10)
+			if attached {READABLE_STRING_8} a_string as al_bytes then
+				l_bytes := al_bytes
+			else
+				l_bytes := l_utf.utf_32_string_to_utf_8_string_8 (a_string)
+			end
+			create Result.make (l_bytes.count + 10)
 			Result.append_character ('%'')
 			from
 				i := 1
 			until
-				i > a_string.count
+				i > l_bytes.count
 			loop
-				c := a_string.item (i)
+				c := l_bytes.item (i)
 				if c = '%'' then
 					Result.append_character ('%'')
 					Result.append_character ('%'')
 				else
-					Result.append_character (c.to_character_8)
+					Result.append_character (c)
 				end
 				i := i + 1
 			variant
-				a_string.count - i + 1
+				l_bytes.count - i + 1
 			end
 			Result.append_character ('%'')
 		ensure

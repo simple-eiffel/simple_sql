@@ -516,16 +516,23 @@ feature {NONE} -- Implementation
 				string embedding.
 			]"
 		local
+			l_bytes: READABLE_STRING_8
+			l_utf: UTF_CONVERTER
 			i: INTEGER
-			c: CHARACTER_32
+			c: CHARACTER_8
 		do
-			create Result.make (a_string.count + 10)
-			from i := 1 until i > a_string.count loop
-				c := a_string.item (i)
+			if attached {READABLE_STRING_8} a_string as al_bytes then
+				l_bytes := al_bytes
+			else
+				l_bytes := l_utf.utf_32_string_to_utf_8_string_8 (a_string)
+			end
+			create Result.make (l_bytes.count + 10)
+			from i := 1 until i > l_bytes.count loop
+				c := l_bytes.item (i)
 				if c = {CHARACTER_32} '%'' then
 					Result.append ("''")
 				else
-					Result.append_character (c.to_character_8)
+					Result.append_character (c)
 				end
 				i := i + 1
 			end

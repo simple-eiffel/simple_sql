@@ -569,6 +569,53 @@ feature -- Test: ORM Repository
 			db.close
 		end
 
+	test_orm_roundtrip_utf8_text
+			-- A UTF-8 name (STRING_8 bytes) must come back byte for byte through the ORM.
+		note
+			testing: "covers/{SIMPLE_ORM_ENTITY}.from_row"
+		local
+			db: SIMPLE_SQL_DATABASE
+			repo: SAMPLE_ORM_REPOSITORY
+			l_id: INTEGER_64
+			l_name: STRING_8
+		do
+			create db.make_memory
+			create repo.make (db)
+			repo.create_table
+			l_name := "Jos"
+			l_name.append_character ((0xC3).to_character_8)
+			l_name.append_character ((0xA9).to_character_8)
+			l_id := repo.insert (create {SAMPLE_ORM_ENTITY}.make (l_name, "jose@test.com", 41))
+			if attached repo.find_by_id (l_id) as l_found then
+				assert_strings_equal ("utf-8 bytes back", l_name, l_found.name)
+				assert_integers_equal ("five bytes", 5, l_found.name.count)
+			else
+				assert_true ("found", False)
+			end
+			db.close
+		end
+
+	test_string_32_argument_utf8_roundtrip
+			-- A STRING_32 argument with characters above 255 is stored as UTF-8 and decoded back.
+		note
+			testing: "covers/{SIMPLE_SQL_PREPARED_STATEMENT}.bind_text"
+		local
+			db: SIMPLE_SQL_DATABASE
+			l_text: STRING_32
+			l_rows: SIMPLE_SQL_RESULT
+		do
+			create db.make_memory
+			db.execute ("CREATE TABLE t (v TEXT)")
+			l_text := {STRING_32} "caf"
+			l_text.append_code (0xE9)
+			l_text.append_code (0x4E2D)
+			db.execute_with_args ("INSERT INTO t (v) VALUES (?)", <<l_text>>)
+			l_rows := db.query ("SELECT v FROM t")
+			assert_integers_equal ("one row", 1, l_rows.count)
+			assert_true ("decoded equal", l_rows.first.string_value ("v").same_string (l_text))
+			db.close
+		end
+
 feature -- Test: Database Pool (simple_factory integration)
 
 	test_database_pool

@@ -233,7 +233,8 @@ feature -- Column Conversion
 		end
 
 	from_row (a_row: SIMPLE_SQL_ROW)
-			-- Populate entity from database row.
+			-- Populate entity from database row. Text columns come back as
+			-- UTF-8 STRING_8, the same bytes that were stored.
 		note
 			semantic_role: "[
 				Reads each field from the row with
@@ -245,23 +246,24 @@ feature -- Column Conversion
 			row_attached: a_row /= Void
 		local
 			l_value: detachable ANY
+			l_utf: UTF_CONVERTER
 		do
 			across fields as ic loop
 				if ic.is_primary_key then
 					id := a_row.integer_64_value (ic.name)
 				elseif ic.name.is_case_insensitive_equal ("created_at") then
 					if not a_row.is_null ("created_at") then
-						created_at := a_row.string_value ("created_at").to_string_8
+						created_at := l_utf.utf_32_string_to_utf_8_string_8 (a_row.string_value ("created_at"))
 					end
 				elseif ic.name.is_case_insensitive_equal ("updated_at") then
 					if not a_row.is_null ("updated_at") then
-						updated_at := a_row.string_value ("updated_at").to_string_8
+						updated_at := l_utf.utf_32_string_to_utf_8_string_8 (a_row.string_value ("updated_at"))
 					end
 				else
 					if not a_row.is_null (ic.name) then
 						inspect ic.field_type
 						when {SIMPLE_ORM_FIELD}.type_string then
-							l_value := a_row.string_value (ic.name).to_string_8
+							l_value := l_utf.utf_32_string_to_utf_8_string_8 (a_row.string_value (ic.name))
 						when {SIMPLE_ORM_FIELD}.type_integer then
 							l_value := a_row.integer_value (ic.name)
 						when {SIMPLE_ORM_FIELD}.type_integer_64 then
@@ -271,9 +273,9 @@ feature -- Column Conversion
 						when {SIMPLE_ORM_FIELD}.type_boolean then
 							l_value := a_row.integer_value (ic.name) = 1
 						when {SIMPLE_ORM_FIELD}.type_datetime then
-							l_value := a_row.string_value (ic.name).to_string_8
+							l_value := l_utf.utf_32_string_to_utf_8_string_8 (a_row.string_value (ic.name))
 						else
-							l_value := a_row.string_value (ic.name).to_string_8
+							l_value := l_utf.utf_32_string_to_utf_8_string_8 (a_row.string_value (ic.name))
 						end
 						set_field_value (ic.name, l_value)
 					else
