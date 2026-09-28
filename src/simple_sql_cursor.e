@@ -227,6 +227,7 @@ feature {NONE} -- Implementation
 				-- The callback collects rows into pending_rows
 				batch_row_count := 0
 				l_statement.execute (agent collect_row_batch)
+				l_statement.cleanup
 				is_exhausted := True -- SQLite executes entire query
 			end
 		end

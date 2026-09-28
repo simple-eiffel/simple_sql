@@ -730,6 +730,7 @@ feature {NONE} -- Implementation
 			end
 			create l_statement.make (l_sql, database)
 			l_statement.execute
+			l_statement.cleanup
 		end
 
 feature {NONE} -- Constants

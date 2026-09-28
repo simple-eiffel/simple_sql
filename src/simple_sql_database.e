@@ -253,6 +253,7 @@ feature -- Basic operations
 			end
 			create l_statement.make (l_sql, internal_db)
 			l_statement.execute
+			l_statement.cleanup
 			check_and_set_error (a_sql)
 		rescue
 			set_error_from_exception (a_sql)

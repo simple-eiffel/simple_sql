@@ -79,6 +79,7 @@ feature -- Streaming operations
 			current_action := a_action
 			create l_statement.make (sql, database)
 			l_statement.execute (agent process_row)
+			l_statement.cleanup
 			current_action := Void
 		end
 
@@ -99,6 +100,7 @@ feature -- Streaming operations
 			current_procedure := a_procedure
 			create l_statement.make (sql, database)
 			l_statement.execute (agent process_row_procedure)
+			l_statement.cleanup
 			current_procedure := Void
 		end
 
@@ -121,6 +123,7 @@ feature -- Streaming operations
 			collect_limit := a_count
 			create l_statement.make (sql, database)
 			l_statement.execute (agent collect_row_limited)
+			l_statement.cleanup
 			collect_target := Void
 		ensure
 			result_bounded: Result.count <= a_count
@@ -140,6 +143,7 @@ feature -- Streaming operations
 			was_stopped_early := False
 			create l_statement.make (sql, database)
 			l_statement.execute (agent count_row)
+			l_statement.cleanup
 			Result := rows_processed
 		end
 

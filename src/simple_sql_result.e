@@ -38,6 +38,7 @@ feature {NONE} -- Initialization
 			create rows.make (Initial_capacity)
 			create l_statement.make (a_sql, a_database)
 			l_statement.execute (agent collect_row)
+			l_statement.cleanup
 		ensure
 			rows_attached: rows /= Void
 		end
