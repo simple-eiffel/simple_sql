@@ -488,9 +488,9 @@ feature {NONE} -- Implementation
 		end
 
 	sql_with_bound_values: STRING_8
-			-- SQL with bound values substituted
-			-- NOTE: This is a simple implementation that substitutes values directly.
-			-- A production implementation would use actual SQLite parameter binding.
+			-- SQL with bound values substituted as escaped literals.
+			-- NOTE: SQLite bind variables are not used: strings are quoted with quotes doubled,
+			-- BLOBs become X'..' literals, numbers their `out' text, Void becomes NULL.
 		note
 			semantic_role: "[
 				Generates executable SQL by substituting
@@ -711,6 +711,9 @@ feature {NONE} -- Implementation
 				l_sql.append_character (';')
 			end
 			create last_result.make (l_sql, database)
+			if not database.is_closed and then database.has_error and then attached database.last_exception as al_ex then
+				last_error := error_from_exception (al_ex, a_sql)
+			end
 		end
 
 	execute_modify (a_sql: STRING_8)
@@ -729,8 +732,32 @@ feature {NONE} -- Implementation
 				l_sql.append_character (';')
 			end
 			create l_statement.make (l_sql, database)
-			l_statement.execute
+			if l_statement.is_compiled then
+				l_statement.execute
+			end
+			if l_statement.has_error and then attached l_statement.last_exception as al_ex then
+				last_error := error_from_exception (al_ex, a_sql)
+			elseif database.has_error and then attached database.last_exception as al_db_ex then
+					-- A later statement of a multi-statement string failed.
+				last_error := error_from_exception (al_db_ex, a_sql)
+			end
 			l_statement.cleanup
+		end
+
+	error_from_exception (a_exception: SQLITE_EXCEPTION; a_sql: READABLE_STRING_GENERAL): SIMPLE_SQL_ERROR
+			-- Structured error with SQLite's code and message.
+		local
+			l_message: STRING_32
+		do
+				-- SQLITE_EXCEPTION carries sqlite3_errmsg in `tag'; `description' is usually Void.
+			if attached a_exception.tag as al_tag and then not al_tag.is_empty then
+				l_message := al_tag.to_string_32
+			elseif attached a_exception.description as al_desc and then not al_desc.is_empty then
+				l_message := al_desc.to_string_32
+			else
+				l_message := "Unknown error"
+			end
+			create Result.make_with_sql (a_exception.result_code, l_message, a_sql)
 		end
 
 feature {NONE} -- Constants

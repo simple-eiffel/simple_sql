@@ -105,10 +105,33 @@ Each mock application has its own test suite. When we add API improvements based
 - Automatic type conversion and escaping
 
 **Convenience Methods (NEW - from mock app development):**
-- `execute_with_args(sql, args)` - Execute with auto-bound parameters
-- `query_with_args(sql, args)` - Query with auto-bound parameters
+- `execute_with_args(sql, args)` - Execute with auto-substituted parameters
+- `query_with_args(sql, args)` - Query with auto-substituted parameters
 - Automatic type detection: INTEGER, INTEGER_64, REAL_64, STRING, BOOLEAN, MANAGED_POINTER, Void (NULL)
 - Eliminates manual prepared statement binding boilerplate
+- Values are escaped and substituted into the SQL text as literals (quotes doubled, BLOBs as `X'..'`);
+  SQLite bind variables are not used. Since 1.3.0 a failure is reported through `has_error` /
+  `last_error_message` like `execute` (it used to fail silently).
+
+**Error integrity (1.3.0):**
+- Inside a transaction, errors are **sticky**: once a statement fails, `has_error` stays True and
+  `is_transaction_failed` is True until the transaction ends; `transaction_error` holds the first error.
+- `commit` / `commit_transaction` on a failed transaction **roll it back** instead and keep the error. A
+  COMMIT that itself fails is reported; SQLite may keep the transaction open (`is_in_transaction`), so
+  retry `commit` or call `rollback`.
+- `rollback` / `rollback_transaction` keep the error the caller is about to read.
+- `atomic(agent)` commits only if every statement succeeded; any failed statement, an exception or a
+  failed COMMIT rolls everything back **before** any COMMIT. After the call, `has_error` means "rolled
+  back", and `last_error_message` says why.
+- A statement that fails to compile is reported and never stepped, and `close` still works afterwards.
+- Error messages carry SQLite's own text (for example `UNIQUE constraint failed: q.id`).
+
+**Read-only attachments (1.3.0):**
+- `attach_read_only(file, schema)` attaches an existing database file read-only, through a `file:` URI with
+  `mode=ro`. It works on a `make_read_only` connection (where `execute ("ATTACH ...")` cannot run, because
+  `execute` requires a writable connection) and on a read-write one; the attachment stays read-only
+  either way. A missing file is an error, never created.
+- `detach(schema)`, `is_attached(schema)`, `read_only_uri(file)`.
 
 **PRAGMA Configuration (NEW):**
 - Named configuration presets: `make_wal`, `make_performance`, `make_safe`
@@ -168,18 +191,20 @@ Each mock application has its own test suite. When we add API improvements based
 - **Automatic Audit/Change Tracking** with trigger-based change capture and JSON storage
 - **Repository Pattern** with generic CRUD operations, find_all, find_by_id, find_where, pagination
 - **Vector Embeddings** for ML/AI with similarity search, K-nearest neighbors, cosine/Euclidean distance
-- **Online Backup API** with progress callbacks, incremental backup, export/import (CSV, JSON, SQL)
+- **Online Backup API** with progress callbacks, incremental backup, export/import (CSV, JSON, SQL); a step
+  refused with SQLITE_BUSY or SQLITE_LOCKED is retried (`set_busy_retry`, default 200 retries 25 ms apart;
+  `set_busy_retry_callback`) instead of ending the backup (1.3.0)
 - **Eager Loading** to eliminate N+1 query problems with `.include()` API (NEW)
 - **Soft Delete Scopes** with `.active_only`, `.deleted_only`, `.with_deleted` (NEW)
 - **Pagination Builder** for cursor-based pagination (NEW)
 - **N+1 Query Detection** with runtime monitoring and warnings (NEW)
 - **Atomic Operations (Phase 6)** for concurrency-safe database updates (NEW)
-  - `atomic(agent)` - Transaction wrapper with auto-rollback on failure
+  - `atomic(agent)` - All-or-nothing transaction: any failed statement or exception rolls back (reported in `has_error`)
   - `update_versioned(table, id, version, set, args)` - Optimistic locking
   - `upsert(table, columns, values, conflict_cols)` - INSERT ON CONFLICT UPDATE
   - `decrement_if(table, col, amount, where, args)` - Conditional atomic decrement
   - `increment_if(table, col, amount, where, args)` - Conditional atomic increment
-- Comprehensive test suite with 500+ tests (100% passing)
+- Test suite: see **Status** below for the current, measured counts
 
 **Design Principles:**
 - Command-Query Separation throughout
@@ -1594,8 +1619,9 @@ Friction points identified by the WMS mock application:
 - Built-in retry support for transient conflicts
 
 **Atomic Operations** (F2)
-- `db.atomic(agent)` - Execute agent in transaction with automatic retry
-- Rollback on any failure, commit on success
+- `db.atomic(agent)` - Execute agent in one transaction (no automatic retry)
+- Rollback on any failure (failed statement, exception, failed COMMIT), commit on success;
+  `has_error` after the call tells which happened
 - Configurable retry count for optimistic lock conflicts
 
 **Upsert Pattern** (F4)
@@ -1658,7 +1684,9 @@ Friction points identified by the WMS mock application:
 ## Dependencies
 
 - EiffelStudio 25.02+ or Gobo Eiffel Compiler (gobo-25.09+)
-- **eiffel_sqlite_2025 v1.1.0+** - SQLite 3.53.4 wrapper with FTS5, JSON, and advanced features (earlier versions of this line said 3.51.1; eiffel_sqlite_2025 linked 3.31.1 until its 1.1.0)
+- **eiffel_sqlite_2025 v1.1.0+** - SQLite 3.53.4 wrapper with FTS5, JSON, and advanced features.
+  (Earlier versions of this README said 3.51.1; eiffel_sqlite_2025 linked 3.31.1 until its 1.1.0.)
+  After upgrading eiffel_sqlite_2025, rebuild simple_sql and every client with `-clean`.
 - SIMPLE_JSON library (for JSON integration)
 
 ## License
@@ -1716,11 +1744,15 @@ Contributions welcome! Please ensure:
 
 ## Status
 
-**Current Version:** 1.2
+**Current Version:** 1.3.0
 **Stability:** Production - Core API stable
 **Production Ready:** Phases 1-5 complete plus DMS-driven and WMS-driven improvements. All features production-ready: core CRUD, prepared statements, PRAGMA configuration, batch operations, fluent query builder, schema introspection, migrations, streaming, FTS5 full-text search, BLOB handling, JSON1 extension, audit tracking, repository pattern, vector embeddings, online backup, export/import, **eager loading**, **soft delete scopes**, **pagination builder**, and **N+1 detection**.
-**Test Coverage:** 485+ tests (100% passing) - includes edge case tests from code review + 5 comprehensive mock application test suites
-**SQLite Version:** 3.53.4 (via eiffel_sqlite_2025 v1.1.0; earlier versions of this line said 3.51.1, but the engine was 3.31.1 until eiffel_sqlite_2025 1.1.0)
+**Test Coverage:** the `simple_sql_tests` runner (`TEST_APP`) runs 77 tests, all passing on 2026-10-08. The
+`testing` folder's 22 test classes hold 419 argument-less tests; run all of them through EQA, 379 pass and 40
+fail, the same 40 that failed before 1.3.0 (schema introspection, audit, FTS5 column helpers, advanced backup,
+one JSON test). The earlier "485+ tests (100% passing)" line was not supported by any recorded run.
+**SQLite Version:** 3.53.4 (via eiffel_sqlite_2025 v1.1.0; earlier versions of this line said 3.51.1, but
+the engine was 3.31.1 until eiffel_sqlite_2025 1.1.0)
 **Mock Apps:** 5 (TODO, CPM, Habit Tracker, DMS, WMS) - demonstrating real-world usage patterns
 
 ---

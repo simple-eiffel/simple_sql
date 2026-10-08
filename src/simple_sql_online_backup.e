@@ -45,6 +45,8 @@ feature {NONE} -- Initialization
 			destination := a_destination
 			pages_per_step := Default_pages_per_step
 			sleep_ms_between_steps := 0
+			max_busy_retries := Default_max_busy_retries
+			busy_retry_delay_ms := Default_busy_retry_delay_ms
 		ensure
 			source_set: source = a_source
 			destination_set: destination = a_destination
@@ -67,6 +69,8 @@ feature {NONE} -- Initialization
 			owns_destination := True
 			pages_per_step := Default_pages_per_step
 			sleep_ms_between_steps := 0
+			max_busy_retries := Default_max_busy_retries
+			busy_retry_delay_ms := Default_busy_retry_delay_ms
 		ensure
 			source_set: source = a_source
 			destination_created: destination.is_open
@@ -91,6 +95,8 @@ feature {NONE} -- Initialization
 			destination := a_destination
 			pages_per_step := Default_pages_per_step
 			sleep_ms_between_steps := 0
+			max_busy_retries := Default_max_busy_retries
+			busy_retry_delay_ms := Default_busy_retry_delay_ms
 		ensure
 			source_created: source.is_open
 			destination_set: destination = a_destination
@@ -166,6 +172,49 @@ feature -- Configuration
 
 	progress_callback: detachable PROCEDURE [INTEGER, INTEGER]
 			-- Optional callback for progress updates: agent (remaining, total)
+
+	max_busy_retries: INTEGER
+			-- How many times one step is retried after SQLITE_BUSY or SQLITE_LOCKED before the
+			-- backup gives up (SQLite documents both as retryable, not permanent).
+
+	busy_retry_delay_ms: INTEGER
+			-- Milliseconds to wait before each retry of a busy or locked step.
+
+	busy_retry_callback: detachable PROCEDURE [INTEGER]
+			-- Optional callback called before each retry with the retry number (1, 2, ...).
+
+	busy_retries_done: INTEGER
+			-- Retries made during the last backup.
+
+	set_busy_retry (a_max_retries, a_delay_ms: INTEGER)
+			-- Retry a busy or locked step up to `a_max_retries' times, waiting `a_delay_ms' each time.
+		note
+			semantic_role: "[
+				Configures how long a backup keeps
+				retrying a busy or locked source or
+				destination.
+			]"
+			modifies: "max_busy_retries, busy_retry_delay_ms"
+		require
+			non_negative_retries: a_max_retries >= 0
+			non_negative_delay: a_delay_ms >= 0
+		do
+			max_busy_retries := a_max_retries
+			busy_retry_delay_ms := a_delay_ms
+		ensure
+			retries_set: max_busy_retries = a_max_retries
+			delay_set: busy_retry_delay_ms = a_delay_ms
+		end
+
+	set_busy_retry_callback (a_callback: detachable PROCEDURE [INTEGER])
+			-- Call `a_callback' (with the retry number) before each retry of a busy or locked step.
+		note
+			modifies: "busy_retry_callback"
+		do
+			busy_retry_callback := a_callback
+		ensure
+			callback_set: busy_retry_callback = a_callback
+		end
 
 	set_pages_per_step (a_count: INTEGER)
 			-- Set number of pages to copy per incremental step
@@ -276,6 +325,7 @@ feature {NONE} -- Implementation
 		do
 			is_complete := False
 			last_error_code := Backup_ok
+			busy_retries_done := 0
 
 			-- Initialize backup
 			l_backup := backup_init (
@@ -298,9 +348,9 @@ feature {NONE} -- Implementation
 					al_l_callback.call ([pages_remaining, total_pages])
 				end
 
-				-- Perform backup steps
+				-- Perform backup steps (each one retried while busy or locked)
 				from
-					l_result := backup_step (l_backup, a_pages)
+					l_result := retried_step (l_backup, a_pages)
 					update_progress (l_backup)
 				until
 					l_result = Backup_done or (l_result /= Backup_ok and l_result /= Backup_done)
@@ -316,7 +366,7 @@ feature {NONE} -- Implementation
 						l_env.sleep (sleep_ms_between_steps * 1_000_000) -- Convert ms to nanoseconds
 					end
 
-					l_result := backup_step (l_backup, a_pages)
+					l_result := retried_step (l_backup, a_pages)
 					update_progress (l_backup)
 				end
 
@@ -329,6 +379,46 @@ feature {NONE} -- Implementation
 					last_error_code := l_result
 				end
 			end
+		end
+
+	retried_step (a_backup: POINTER; a_pages: INTEGER): INTEGER
+			-- `backup_step', repeated after SQLITE_BUSY or SQLITE_LOCKED up to `max_busy_retries' times.
+		note
+			semantic_role: "[
+				Retries the retryable step results that
+				used to end a backup as a failure.
+			]"
+			modifies: "busy_retries_done"
+		require
+			valid_backup: a_backup /= default_pointer
+		local
+			l_tries: INTEGER
+			l_env: EXECUTION_ENVIRONMENT
+		do
+			from
+				Result := backup_step (a_backup, a_pages)
+			until
+				not is_busy_or_locked (Result) or l_tries >= max_busy_retries
+			loop
+				l_tries := l_tries + 1
+				busy_retries_done := busy_retries_done + 1
+				if attached busy_retry_callback as al_callback then
+					al_callback.call ([busy_retries_done])
+				end
+				if busy_retry_delay_ms > 0 then
+					create l_env
+					l_env.sleep (busy_retry_delay_ms.to_integer_64 * 1_000_000)
+				end
+				Result := backup_step (a_backup, a_pages)
+			variant
+				max_busy_retries - l_tries
+			end
+		end
+
+	is_busy_or_locked (a_code: INTEGER): BOOLEAN
+			-- Is `a_code' (possibly extended) SQLITE_BUSY or SQLITE_LOCKED?
+		do
+			Result := (a_code & 0xFF) = 5 or (a_code & 0xFF) = 6
 		end
 
 	update_progress (a_backup: POINTER)
@@ -384,6 +474,12 @@ feature -- Constants
 
 	Default_pages_per_step: INTEGER = 100
 			-- Default number of pages to copy per incremental step
+
+	Default_max_busy_retries: INTEGER = 200
+			-- Default retries of a busy or locked step (with the default delay: about 5 seconds)
+
+	Default_busy_retry_delay_ms: INTEGER = 25
+			-- Default wait before each retry of a busy or locked step
 
 note
 	copyright: "Copyright (c) 2025, Larry Rix"

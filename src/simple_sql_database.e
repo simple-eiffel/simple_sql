@@ -85,7 +85,12 @@ feature -- Access
 			-- Database file name or ":memory:"
 
 	last_structured_error: detachable SIMPLE_SQL_ERROR
-			-- Structured error from last failed operation
+			-- Structured error from last failed operation.
+			-- Inside a failed transaction this stays attached (sticky) until the transaction ends.
+
+	transaction_error: detachable SIMPLE_SQL_ERROR
+			-- First error raised by a statement inside the open transaction (Void when none).
+			-- A transaction with such an error is failed: `commit' rolls it back instead of committing.
 
 	last_error_message: detachable STRING_32
 			-- Error message from last failed operation
@@ -160,6 +165,20 @@ feature -- Access
 		end
 
 feature -- Status report
+
+	is_transaction_failed: BOOLEAN
+			-- Did a statement fail inside the open transaction?
+		note
+			semantic_role: "[
+				Failed-transaction predicate: once True, the
+				transaction can only be rolled back, and
+				has_error stays True until it ends.
+			]"
+		do
+			Result := transaction_error /= Void
+		ensure
+			definition: Result = (transaction_error /= Void)
+		end
 
 	is_open,
 	connected,
@@ -252,9 +271,17 @@ feature -- Basic operations
 				l_sql.append_character (';')
 			end
 			create l_statement.make (l_sql, internal_db)
-			l_statement.execute
+			if l_statement.is_compiled then
+				l_statement.execute
+			end
+			if l_statement.has_error and then attached l_statement.last_exception as al_ex then
+				record_error (error_from_sqlite_exception (al_ex, a_sql))
+			else
+				check_and_set_error (a_sql)
+			end
 			l_statement.cleanup
-			check_and_set_error (a_sql)
+		ensure
+			sticky_in_failed_transaction: is_transaction_failed implies has_error
 		rescue
 			set_error_from_exception (a_sql)
 		end
@@ -287,6 +314,8 @@ feature -- Basic operations
 			end
 			create Result.make (l_sql, internal_db)
 			check_and_set_error (a_sql)
+		ensure
+			sticky_in_failed_transaction: is_transaction_failed implies has_error
 		rescue
 			set_error_from_exception (a_sql)
 			create Result.make_empty
@@ -299,13 +328,16 @@ feature -- Parameterized Operations (convenience methods)
 	exec_with,
 	perform_with (a_sql: READABLE_STRING_8; a_args: ARRAY [detachable ANY])
 			-- Execute SQL with parameters. Use ? placeholders.
-			-- Supported types: INTEGER, INTEGER_64, REAL_64, STRING, BOOLEAN, Void (NULL)
+			-- Supported types: INTEGER, INTEGER_64, REAL_64, STRING, BOOLEAN, MANAGED_POINTER, Void (NULL)
 			-- Example: execute_with_args ("INSERT INTO t (a, b) VALUES (?, ?)", <<123, "text">>)
+			-- Note: the values are escaped and substituted into the SQL text as literals (strings quoted,
+			-- quotes doubled; BLOBs as X'..' literals); SQLite bind variables are not used.
+			-- A failure is reported through `has_error' and `last_error_message'.
 		note
 			semantic_role: "[
-				Parameterized command execution
-				preventing SQL injection via bind
-				variables.
+				Parameterized command execution with
+				escaped literal substitution; failures
+				reported like execute.
 			]"
 		require
 			is_open: is_open
@@ -317,6 +349,11 @@ feature -- Parameterized Operations (convenience methods)
 			l_stmt := prepare (a_sql)
 			bind_args (l_stmt, a_args)
 			l_stmt.execute
+			if attached l_stmt.last_error as al_err then
+				record_error (al_err)
+			end
+		ensure
+			statement_failure_reported: not has_error implies not is_transaction_failed
 		end
 
 	query_with_args,
@@ -341,6 +378,9 @@ feature -- Parameterized Operations (convenience methods)
 			l_stmt := prepare (a_sql)
 			bind_args (l_stmt, a_args)
 			Result := l_stmt.execute_returning_result
+			if attached l_stmt.last_error as al_err then
+				record_error (al_err)
+			end
 		end
 
 	begin_transaction
@@ -353,38 +393,53 @@ feature -- Parameterized Operations (convenience methods)
 		require
 			is_open: is_open
 		do
+			transaction_error := Void
 			clear_error
 			internal_db.begin_transaction (True)
+			check_and_set_error ("BEGIN")
+		ensure
+			fresh_transaction: not is_transaction_failed
+			begun_or_reported: not has_error implies is_in_transaction
 		end
 
 	commit
-			-- Commit current transaction
+			-- Commit current transaction.
+			-- A failed transaction (`is_transaction_failed') is rolled back instead, keeping its error.
+			-- A failed COMMIT is reported (`has_error'); SQLite may keep the transaction open
+			-- (`is_in_transaction'), in which case retry `commit' or call `rollback'.
 		note
 			semantic_role: "[
 				Makes all changes within the current
-				transaction permanent.
+				transaction permanent, or refuses to
+				when a statement in it failed.
 			]"
 		require
 			is_open: is_open
 			in_transaction: is_in_transaction
 		do
-			clear_error
-			internal_db.commit
+			commit_or_refuse
+		ensure
+			failed_transaction_not_committed: old is_transaction_failed implies has_error
+			open_transaction_reported: is_in_transaction implies has_error
+			clean_commit: not has_error implies not is_in_transaction
 		end
 
 	rollback
-			-- Rollback current transaction
+			-- Rollback current transaction.
+			-- The error that led the caller here (if any) is kept for the caller to read.
 		note
 			semantic_role: "[
 				Discards all changes within the current
-				transaction, restoring previous state.
+				transaction, keeping the error that
+				caused it.
 			]"
 		require
 			is_open: is_open
 			in_transaction: is_in_transaction
 		do
-			clear_error
-			internal_db.rollback
+			rollback_keeping_error
+		ensure
+			error_kept: old has_error implies has_error
 		end
 
 	close
@@ -396,8 +451,14 @@ feature -- Parameterized Operations (convenience methods)
 			]"
 		do
 			if not internal_db.is_closed then
+				if internal_db.is_in_transaction then
+						-- For example a COMMIT that failed: SQLite would roll back on close anyway,
+						-- but SQLITE_DATABASE.close requires no open transaction.
+					rollback_keeping_error
+				end
 				internal_db.close
 			end
+			transaction_error := Void
 		ensure
 			is_closed: not is_open
 		end
@@ -405,17 +466,105 @@ feature -- Parameterized Operations (convenience methods)
 feature {NONE} -- Error handling implementation
 
 	clear_error
-			-- Clear any previous error
+			-- Clear any previous error, except inside a failed transaction, where the
+			-- transaction's first error stays (errors are sticky until the transaction ends).
 		note
 			semantic_role: "[
 				Resets error state before each operation
-				so has_error reflects only the latest
-				operation.
+				so has_error reflects the latest operation,
+				or the failed transaction it belongs to.
 			]"
 		do
-			last_structured_error := Void
+			last_structured_error := transaction_error
 		ensure
-			no_error: not has_error
+			sticky: has_error = is_transaction_failed
+		end
+
+	record_error (a_error: SIMPLE_SQL_ERROR)
+			-- Make `a_error' the last error; inside a transaction, mark the transaction failed.
+		do
+			last_structured_error := a_error
+			if transaction_error = Void and then is_open and then internal_db.is_in_transaction then
+				transaction_error := a_error
+			end
+		ensure
+			has_error: has_error
+		end
+
+	error_from_sqlite_exception (a_exception: SQLITE_EXCEPTION; a_sql: READABLE_STRING_GENERAL): SIMPLE_SQL_ERROR
+			-- Structured error carrying SQLite's code and message from `a_exception'.
+		local
+			l_message: STRING_32
+		do
+				-- SQLITE_EXCEPTION carries sqlite3_errmsg in `tag'; `description' is usually Void.
+			if attached a_exception.tag as al_tag and then not al_tag.is_empty then
+				l_message := al_tag.to_string_32
+			elseif attached a_exception.description as al_desc and then not al_desc.is_empty then
+				l_message := al_desc.to_string_32
+			else
+				l_message := "Unknown error"
+			end
+			create Result.make_with_sql (a_exception.result_code, l_message, a_sql)
+		end
+
+	commit_or_refuse
+			-- COMMIT, or roll back a failed transaction; report the outcome.
+		require
+			is_open: is_open
+			in_transaction: is_in_transaction
+		do
+			if is_transaction_failed then
+				rollback_keeping_error
+			else
+				internal_db.commit
+				if internal_db.has_error and then attached internal_db.last_exception as al_ex then
+						-- Report the failed COMMIT without failing the transaction, so a retry is possible.
+					last_structured_error := error_from_sqlite_exception (al_ex, "COMMIT")
+				elseif internal_db.is_in_transaction then
+					create last_structured_error.make_with_sql (error_codes.error, "COMMIT did not end the transaction", "COMMIT")
+				else
+					last_structured_error := Void
+					transaction_error := Void
+				end
+			end
+		end
+
+	rollback_keeping_error
+			-- ROLLBACK; keep the error the caller is about to read, or report a failed ROLLBACK.
+		require
+			is_open: is_open
+		local
+			l_kept: like last_structured_error
+		do
+			l_kept := last_structured_error
+			if l_kept = Void then
+				l_kept := transaction_error
+			end
+			internal_db.rollback
+			if internal_db.is_in_transaction then
+				if l_kept = Void and then attached internal_db.last_exception as al_ex then
+					l_kept := error_from_sqlite_exception (al_ex, "ROLLBACK")
+				end
+			else
+				transaction_error := Void
+			end
+			last_structured_error := l_kept
+		ensure
+			error_kept: (old last_structured_error /= Void) implies has_error
+		end
+
+	exception_description: STRING_32
+			-- Text describing the exception being handled, for `atomic''s report.
+		do
+			create Result.make_from_string ("Operation raised an exception; transaction rolled back")
+			if attached {EXCEPTION_MANAGER_FACTORY}.exception_manager.last_exception as al_ex then
+				Result.append_string_general (": ")
+				Result.append_string_general (al_ex.generating_type.name)
+				if attached al_ex.description as al_desc then
+					Result.append_string_general (" ")
+					Result.append_string_general (al_desc)
+				end
+			end
 		end
 
 	check_and_set_error (a_sql: READABLE_STRING_GENERAL)
@@ -440,28 +589,151 @@ feature {NONE} -- Error handling implementation
 				structured error with code, message,
 				and SQL context.
 			]"
-		local
-			l_code: INTEGER
-			l_message: STRING_32
 		do
-			if attached internal_db.last_exception as al_l_exception then
-				l_code := al_l_exception.result_code
-				if attached al_l_exception.description as al_l_desc then
-					l_message := al_l_desc.to_string_32
-				else
-					l_message := "Unknown error"
-				end
-				create last_structured_error.make_with_sql (l_code, l_message, a_sql)
+			if is_open and then attached internal_db.last_exception as al_l_exception then
+				record_error (error_from_sqlite_exception (al_l_exception, a_sql))
 			else
 				-- Exception without details
-				create last_structured_error.make_with_sql (
+				record_error (create {SIMPLE_SQL_ERROR}.make_with_sql (
 					error_codes.error,
 					"Unknown database error",
 					a_sql
-				)
+				))
 			end
 		ensure
 			has_error: has_error
+		end
+
+feature -- Attached databases
+
+	attach_read_only (a_file_name: READABLE_STRING_GENERAL; a_schema: READABLE_STRING_8)
+			-- Attach the existing database file `a_file_name' as schema `a_schema', READ-ONLY.
+			-- Works on a read-only connection (`make_read_only') as well as a read-write one, and the
+			-- attachment stays read-only either way: it is opened through a "file:" URI with mode=ro.
+			-- A missing file is reported (`has_error'), never created.
+		note
+			semantic_role: "[
+				Supported read-only ATTACH, including on a
+				read-only connection, where execute cannot
+				run ATTACH.
+			]"
+		require
+			is_open: is_open
+			file_name_not_empty: not a_file_name.is_empty
+			valid_schema_name: is_valid_schema_name (a_schema)
+			not_yet_attached: not is_attached (a_schema)
+		do
+			clear_error
+			run_without_write_check ("ATTACH DATABASE '" + read_only_uri (a_file_name) + "' AS " + a_schema)
+		ensure
+			attached_on_success: not has_error implies is_attached (a_schema)
+		end
+
+	detach (a_schema: READABLE_STRING_8)
+			-- Detach the database attached as `a_schema'.
+		note
+			semantic_role: "[
+				Releases an attached database; works on
+				read-only connections too.
+			]"
+		require
+			is_open: is_open
+			valid_schema_name: is_valid_schema_name (a_schema)
+			is_attached: is_attached (a_schema)
+		do
+			clear_error
+			run_without_write_check ("DETACH DATABASE " + a_schema)
+		ensure
+			detached_on_success: not has_error implies not is_attached (a_schema)
+		end
+
+	is_attached (a_schema: READABLE_STRING_8): BOOLEAN
+			-- Is a database attached under schema name `a_schema' (case-insensitive)?
+		require
+			is_open: is_open
+		local
+			l_list: SIMPLE_SQL_RESULT
+		do
+			create l_list.make ("PRAGMA database_list;", internal_db)
+			across l_list.rows as ic loop
+				if attached {READABLE_STRING_GENERAL} ic.item (2) as al_name and then al_name.is_case_insensitive_equal (a_schema) then
+					Result := True
+				end
+			end
+		end
+
+	is_valid_schema_name (a_schema: READABLE_STRING_8): BOOLEAN
+			-- Is `a_schema' a plain identifier usable as an attachment name (not main or temp)?
+		local
+			i: INTEGER
+			c: CHARACTER_8
+		do
+			Result := not a_schema.is_empty and then (a_schema [1].is_alpha or a_schema [1] = '_')
+				and then not a_schema.is_case_insensitive_equal ("main")
+				and then not a_schema.is_case_insensitive_equal ("temp")
+			from i := 2 until not Result or i > a_schema.count loop
+				c := a_schema [i]
+				Result := c.is_alpha_numeric or c = '_'
+				i := i + 1
+			end
+		end
+
+	read_only_uri (a_file_name: READABLE_STRING_GENERAL): STRING_8
+			-- SQLite "file:" URI for `a_file_name' with mode=ro: UTF-8, '\' as '/', and every byte
+			-- other than letters, digits and - . _ ~ / : percent-encoded (so '?', '#', '%', ' ' and
+			-- quotes are safe). An absolute Windows path X:\... becomes file:///X:/...
+		local
+			l_utf: UTF_CONVERTER
+			l_path: STRING_8
+			i: INTEGER
+			c: CHARACTER_8
+		do
+			l_path := l_utf.utf_32_string_to_utf_8_string_8 (a_file_name.to_string_32)
+			l_path.replace_substring_all ("\", "/")
+			create Result.make (l_path.count + 20)
+			Result.append ("file:")
+			if l_path.count >= 2 and then l_path [1].is_alpha and then l_path [2] = ':' then
+				Result.append ("///")
+			elseif l_path.starts_with ("//") then
+				Result.append ("//")
+			end
+			from i := 1 until i > l_path.count loop
+				c := l_path [i]
+				if c.is_alpha_numeric or c = '-' or c = '.' or c = '_' or c = '~' or c = '/' or c = ':' then
+					Result.append_character (c)
+				else
+					Result.append_character ('%%')
+					Result.append_string (c.code.to_hex_string.substring (7, 8))
+				end
+				i := i + 1
+			end
+			Result.append ("?mode=ro")
+		ensure
+			is_uri: Result.starts_with ("file:")
+			read_only: Result.ends_with ("?mode=ro")
+			no_quote: not Result.has ('%'')
+		end
+
+feature {NONE} -- Attached databases implementation
+
+	run_without_write_check (a_sql: READABLE_STRING_8)
+			-- Run `a_sql' (ATTACH or DETACH) through a query statement, which, unlike a modify
+			-- statement, does not require a writable connection; report any failure.
+		require
+			is_open: is_open
+		local
+			l_statement: SQLITE_QUERY_STATEMENT
+		do
+			create l_statement.make (a_sql + ";", internal_db)
+			if l_statement.is_compiled then
+				l_statement.execute (agent (a_row: SQLITE_RESULT_ROW): BOOLEAN do Result := True end)
+			end
+			if l_statement.has_error and then attached l_statement.last_exception as al_ex then
+				record_error (error_from_sqlite_exception (al_ex, a_sql))
+			else
+				check_and_set_error (a_sql)
+			end
+			l_statement.cleanup
 		end
 
 feature -- Prepared Statements
@@ -793,8 +1065,11 @@ feature -- Additional Accessors
 			is_open: is_open
 			in_transaction: is_in_transaction
 		do
-			clear_error
-			internal_db.commit
+			commit_or_refuse
+		ensure
+			failed_transaction_not_committed: old is_transaction_failed implies has_error
+			open_transaction_reported: is_in_transaction implies has_error
+			clean_commit: not has_error implies not is_in_transaction
 		end
 
 	rollback_transaction
@@ -809,8 +1084,9 @@ feature -- Additional Accessors
 			is_open: is_open
 			in_transaction: is_in_transaction
 		do
-			clear_error
-			internal_db.rollback
+			rollback_keeping_error
+		ensure
+			error_kept: old has_error implies has_error
 		end
 
 feature -- Atomic Operations (Phase 6)
@@ -819,13 +1095,17 @@ feature -- Atomic Operations (Phase 6)
 	transaction,
 	within_transaction,
 	transact (a_operation: PROCEDURE)
-			-- Execute operation inside a transaction with automatic commit/rollback.
-			-- If operation raises exception, transaction is rolled back.
+			-- Execute operation inside a transaction: commit only if every statement succeeded.
+			-- If any statement inside fails, the operation raises an exception, or COMMIT fails, the
+			-- transaction is rolled back (before any COMMIT) and the failure stays in `has_error' /
+			-- `last_error_message'. So after the call: `has_error' = rolled back, not `has_error' =
+			-- committed.
 			-- Example: db.atomic (agent my_multi_table_operation)
 		note
 			semantic_role: "[
-				Agent-wrapped transaction execution
-				with automatic rollback on failure.
+				Agent-wrapped all-or-nothing transaction:
+				any failed statement rolls everything
+				back and is reported.
 			]"
 		require
 			is_open: is_open
@@ -836,12 +1116,26 @@ feature -- Atomic Operations (Phase 6)
 		do
 			if not l_failed then
 				begin_transaction
-				a_operation.call (Void)
-				commit
+				if not has_error and then is_in_transaction then
+					a_operation.call (Void)
+					if is_open and then is_in_transaction then
+						commit_or_refuse
+						if is_in_transaction then
+								-- COMMIT failed and SQLite kept the transaction open: give up the work.
+							rollback_keeping_error
+						end
+					end
+				end
 			end
+		ensure
+			nothing_left_open: is_open implies not is_in_transaction
 		rescue
-			if is_in_transaction then
-				rollback
+			if not has_error then
+				record_error (create {SIMPLE_SQL_ERROR}.make_with_sql (error_codes.error,
+					exception_description, "atomic"))
+			end
+			if is_open and then internal_db.is_in_transaction then
+				rollback_keeping_error
 			end
 			l_failed := True
 			retry
@@ -1135,7 +1429,9 @@ feature {NONE} -- Implementation
 				collection.
 			]"
 		do
-			if not internal_db.is_closed then
+				-- With a transaction left open (for example after a failed COMMIT), leave the
+				-- connection to SQLITE_DATABASE's own dispose: no SQL runs during collection.
+			if not internal_db.is_closed and then not internal_db.is_in_transaction then
 				internal_db.close
 			end
 		end

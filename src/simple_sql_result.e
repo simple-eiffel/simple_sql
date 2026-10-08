@@ -37,7 +37,11 @@ feature {NONE} -- Initialization
 		do
 			create rows.make (Initial_capacity)
 			create l_statement.make (a_sql, a_database)
-			l_statement.execute (agent collect_row)
+			if l_statement.is_compiled then
+					-- A statement that failed to compile is never stepped: its error stays on the
+					-- connection for the caller, and the connection is not left locked.
+				l_statement.execute (agent collect_row)
+			end
 			l_statement.cleanup
 		ensure
 			rows_attached: rows /= Void

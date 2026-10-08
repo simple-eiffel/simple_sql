@@ -375,7 +375,10 @@ feature {NONE} -- Implementation
 		end
 
 	apply_migration (a_migration: SIMPLE_SQL_MIGRATION): BOOLEAN
-			-- Apply a single migration
+			-- Apply a single migration: all of it, or nothing.
+			-- Any failed statement in `up' (not only the last), a failed version stamp, a failed COMMIT
+			-- or an exception rolls the migration back, leaves the version unchanged and keeps SQLite's
+			-- message in `last_error'.
 		note
 			semantic_role: "[
 				Transaction-wrapped single migration
@@ -385,25 +388,14 @@ feature {NONE} -- Implementation
 		require
 			migration_attached: attached a_migration
 		do
-			database.begin_transaction
-			a_migration.up (database)
-			if database.has_error then
-				database.rollback_transaction
-				if attached database.last_error_message as al_l_msg then
-					last_error := "Migration " + a_migration.version.out + " failed: " + al_l_msg.to_string_8
-				else
-					last_error := "Migration " + a_migration.version.out + " failed"
-				end
-				Result := False
-			else
-				schema.set_user_version (a_migration.version)
-				database.commit_transaction
-				Result := True
-			end
+			Result := run_in_transaction (agent a_migration.up, a_migration.version,
+				"Migration " + a_migration.version.out)
+		ensure
+			failure_reported: not Result implies has_error
 		end
 
 	revert_migration (a_migration: SIMPLE_SQL_MIGRATION): BOOLEAN
-			-- Revert a single migration
+			-- Revert a single migration: all of it, or nothing (same rules as `apply_migration').
 		note
 			semantic_role: "[
 				Transaction-wrapped single migration
@@ -422,22 +414,82 @@ feature {NONE} -- Implementation
 					l_previous_version := ic.version
 				end
 			end
+			Result := run_in_transaction (agent a_migration.down, l_previous_version,
+				"Rollback of migration " + a_migration.version.out)
+		ensure
+			failure_reported: not Result implies has_error
+		end
 
-			database.begin_transaction
-			a_migration.down (database)
-			if database.has_error then
-				database.rollback_transaction
-				if attached database.last_error_message as al_l_msg then
-					last_error := "Rollback of migration " + a_migration.version.out + " failed: " + al_l_msg.to_string_8
+	run_in_transaction (a_step: PROCEDURE [SIMPLE_SQL_DATABASE]; a_new_version: INTEGER; a_label: STRING_8): BOOLEAN
+			-- Run `a_step' on `database' and stamp `a_new_version' in one transaction; commit only if
+			-- every statement succeeded, else roll back and record "`a_label' failed: <SQLite message>".
+		require
+			version_non_negative: a_new_version >= 0
+		local
+			l_failed: BOOLEAN
+		do
+			if not l_failed then
+				database.begin_transaction
+				if database.has_error or not database.is_in_transaction then
+					record_failure (a_label)
 				else
-					last_error := "Rollback of migration " + a_migration.version.out + " failed"
+					a_step.call ([database])
+					if not database.is_transaction_failed and not database.has_error then
+						schema.set_user_version (a_new_version)
+					end
+					if database.is_transaction_failed or database.has_error then
+						record_failure (a_label)
+						database.rollback_transaction
+					else
+						database.commit_transaction
+						if database.has_error then
+							record_failure (a_label)
+							if database.is_in_transaction then
+								database.rollback_transaction
+							end
+						else
+							Result := True
+						end
+					end
 				end
-				Result := False
-			else
-				schema.set_user_version (l_previous_version)
-				database.commit_transaction
-				Result := True
 			end
+		ensure
+			failure_reported: not Result implies has_error
+			nothing_left_open: database.is_open implies not database.is_in_transaction
+		rescue
+			if last_error.is_empty then
+				record_failure (a_label)
+			end
+			if database.is_open and then database.is_in_transaction then
+				database.rollback_transaction
+			end
+			l_failed := True
+			retry
+		end
+
+	record_failure (a_label: STRING_8)
+			-- Set `last_error' to "`a_label' failed", with SQLite's message (or the exception) when known.
+		local
+			l_message: detachable STRING_32
+		do
+			if attached database.transaction_error as al_tx then
+				l_message := al_tx.message
+			elseif attached database.last_error_message as al_msg then
+				l_message := al_msg
+			elseif attached {EXCEPTION_MANAGER_FACTORY}.exception_manager.last_exception as al_ex then
+				l_message := al_ex.generating_type.name.to_string_32
+				if attached al_ex.description as al_desc then
+					l_message.append_string_general (" ")
+					l_message.append_string_general (al_desc)
+				end
+			end
+			if attached l_message as al_m and then not al_m.is_empty then
+				last_error := a_label + " failed: " + {UTF_CONVERTER}.string_32_to_utf_8_string_8 (al_m)
+			else
+				last_error := a_label + " failed"
+			end
+		ensure
+			has_error: has_error
 		end
 
 invariant

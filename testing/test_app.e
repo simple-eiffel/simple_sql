@@ -19,6 +19,7 @@ feature {NONE} -- Initialization
 
 			run_lib_tests
 			run_simple_sql_tests
+			run_integrity_tests
 
 			print ("%N========================%N")
 			print ("Results: " + passed.out + " passed, " + failed.out + " failed%N")
@@ -101,10 +102,39 @@ feature {NONE} -- Test Runners
 			run_test (agent sql_tests.test_query_with_args_integer_64, "test_query_with_args_integer_64")
 		end
 
+	run_integrity_tests
+		do
+			create integrity_tests
+			run_test (agent integrity_tests.test_execute_with_args_reports_failure, "test_execute_with_args_reports_failure")
+			run_test (agent integrity_tests.test_prepared_statement_execute_reports_failure, "test_prepared_statement_execute_reports_failure")
+			run_test (agent integrity_tests.test_errors_sticky_in_transaction, "test_errors_sticky_in_transaction")
+			run_test (agent integrity_tests.test_atomic_rolls_back_on_middle_failure, "test_atomic_rolls_back_on_middle_failure")
+			run_test (agent integrity_tests.test_atomic_rolls_back_execute_with_args_failure, "test_atomic_rolls_back_execute_with_args_failure")
+			run_test (agent integrity_tests.test_atomic_commits_when_clean, "test_atomic_commits_when_clean")
+			run_test (agent integrity_tests.test_atomic_rolls_back_on_exception, "test_atomic_rolls_back_on_exception")
+			run_test (agent integrity_tests.test_commit_of_failed_transaction_rolls_back, "test_commit_of_failed_transaction_rolls_back")
+			run_test (agent integrity_tests.test_commit_failure_reported, "test_commit_failure_reported")
+			run_test (agent integrity_tests.test_close_after_failed_commit, "test_close_after_failed_commit")
+			run_test (agent integrity_tests.test_rollback_keeps_error, "test_rollback_keeps_error")
+			run_test (agent integrity_tests.test_migration_middle_failure_rolled_back, "test_migration_middle_failure_rolled_back")
+			run_test (agent integrity_tests.test_migration_last_failure_keeps_message, "test_migration_last_failure_keeps_message")
+			run_test (agent integrity_tests.test_close_after_compile_failure, "test_close_after_compile_failure")
+			run_test (agent integrity_tests.test_backup_retries_busy_source, "test_backup_retries_busy_source")
+			run_test (agent integrity_tests.test_backup_gives_up_after_retry_budget, "test_backup_gives_up_after_retry_budget")
+			run_test (agent integrity_tests.test_attach_read_only_on_read_only_connection, "test_attach_read_only_on_read_only_connection")
+			run_test (agent integrity_tests.test_attach_read_only_on_writable_connection, "test_attach_read_only_on_writable_connection")
+			run_test (agent integrity_tests.test_attach_read_only_missing_file_errors, "test_attach_read_only_missing_file_errors")
+			run_test (agent integrity_tests.test_read_only_uri_encoding, "test_read_only_uri_encoding")
+			run_test (agent integrity_tests.test_raw_uri_attach_mode_ro_is_read_only, "test_raw_uri_attach_mode_ro_is_read_only")
+			run_test (agent integrity_tests.test_engine_is_3_53_4, "test_engine_is_3_53_4")
+			run_test (agent integrity_tests.test_foreign_key_check_reports_violation_with_parent_in_attachment, "test_foreign_key_check_reports_violation_with_parent_in_attachment")
+		end
+
 feature {NONE} -- Implementation
 
 	lib_tests: LIB_TESTS
 	sql_tests: TEST_SIMPLE_SQL
+	integrity_tests: TEST_SIMPLE_SQL_INTEGRITY
 
 	passed: INTEGER
 	failed: INTEGER
@@ -120,7 +150,11 @@ feature {NONE} -- Implementation
 				passed := passed + 1
 			end
 		rescue
-			print ("  FAIL: " + a_name + "%N")
+			print ("  FAIL: " + a_name)
+			if attached {EXCEPTION_MANAGER_FACTORY}.exception_manager.last_exception as l_ex and then attached l_ex.description as l_desc then
+				print (" [" + {UTF_CONVERTER}.string_32_to_utf_8_string_8 (l_desc) + "]")
+			end
+			print ("%N")
 			failed := failed + 1
 			l_retried := True
 			retry
