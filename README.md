@@ -1658,7 +1658,7 @@ Friction points identified by the WMS mock application:
 ## Dependencies
 
 - EiffelStudio 25.02+ or Gobo Eiffel Compiler (gobo-25.09+)
-- **eiffel_sqlite_2025 v1.0.0+** - Modern SQLite 3.51.1 wrapper with FTS5, JSON1, and advanced features
+- **eiffel_sqlite_2025 v1.1.0+** - SQLite 3.53.4 wrapper with FTS5, JSON, and advanced features (earlier versions of this line said 3.51.1; eiffel_sqlite_2025 linked 3.31.1 until its 1.1.0)
 - SIMPLE_JSON library (for JSON integration)
 
 ## License
@@ -1720,7 +1720,7 @@ Contributions welcome! Please ensure:
 **Stability:** Production - Core API stable
 **Production Ready:** Phases 1-5 complete plus DMS-driven and WMS-driven improvements. All features production-ready: core CRUD, prepared statements, PRAGMA configuration, batch operations, fluent query builder, schema introspection, migrations, streaming, FTS5 full-text search, BLOB handling, JSON1 extension, audit tracking, repository pattern, vector embeddings, online backup, export/import, **eager loading**, **soft delete scopes**, **pagination builder**, and **N+1 detection**.
 **Test Coverage:** 485+ tests (100% passing) - includes edge case tests from code review + 5 comprehensive mock application test suites
-**SQLite Version:** 3.51.1 (via eiffel_sqlite_2025 v1.0.0)
+**SQLite Version:** 3.53.4 (via eiffel_sqlite_2025 v1.1.0; earlier versions of this line said 3.51.1, but the engine was 3.31.1 until eiffel_sqlite_2025 1.1.0)
 **Mock Apps:** 5 (TODO, CPM, Habit Tracker, DMS, WMS) - demonstrating real-world usage patterns
 
 ---
