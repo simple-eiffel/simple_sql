@@ -117,7 +117,7 @@
 		<setting name="console_application" value="true"/>
 		<cluster name="wms_src" location=".\src\wms\" recursive="true">
 			<file_rule>
-				<exclude>/profile@</exclude>
+				<exclude>/profile$</exclude>
 			</file_rule>
 		</cluster>
 	</target>
