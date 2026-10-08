@@ -15,6 +15,12 @@ note
 class
 	TASK_DEPENDENCY
 
+inherit
+	ANY
+		redefine
+			out
+		end
+
 create
 	make,
 	make_new

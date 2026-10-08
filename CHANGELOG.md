@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.2] - 2026-10-08
+
+### Fixed
+- **`todo_app_tests` did not compile** (VMFN): `TASK_DEPENDENCY` defined `out` without redefining
+  `ANY.out`. It now inherits `ANY` with `redefine out`.
+- **`todo_app_tests` ran nothing:** its root `APPLICATION.make` was empty. It now runs all 36 tests of
+  `TEST_TODO_APP` and `TEST_TODO_APP_STRESS` through `EQA_TEST_EVALUATOR` and prints a summary.
+- **`TODO_REPOSITORY.mark_completed` / `mark_incomplete` left the item's state unchanged:** they set only
+  `is_completed`, while `TODO_ITEM` reads its state from the `status` column. Both now go through
+  `set_status` ("completed" / "pending"). The rename damage repaired in 1.3.1 had hidden this: with the
+  key misspelled as `"l_status"`, the row reader fell back to `is_completed`.
+- Result: `todo_app_tests` 36 passed, 0 failed.
+
+### Known
+- The `cpm_app_tests`, `habit_tracker_tests` and `dms_tests` roots (`APPLICATION.make`) are also empty and
+  `wms_tests` roots at `ANY.default_create`, so those mock-app tests do not run yet.
+
 ## [1.3.1] - 2026-10-08
 
 ### Fixed
@@ -100,5 +117,5 @@ that relied on partial commits or on silent failures will see different results.
 - Test suite with comprehensive coverage
 - Documentation and examples
 
-[1.3.1]: https://github.com/simple-eiffel/simple_sql/compare/v1.0.0...fix/debate-defects
+[1.3.2]: https://github.com/simple-eiffel/simple_sql/compare/v1.0.0...fix/debate-defects
 [1.0.0]: https://github.com/simple-eiffel/simple_sql/releases/tag/v1.0.0

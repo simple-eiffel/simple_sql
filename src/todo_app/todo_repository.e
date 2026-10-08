@@ -184,28 +184,22 @@ feature -- Command: Custom
 
 	mark_completed (a_id: INTEGER_64): BOOLEAN
 			-- Mark a todo as completed.
+			-- Sets `status' too (through `set_status'): the item reads its state from `status',
+			-- so setting only `is_completed' left it "pending".
 		require
 			valid_id: a_id > 0
-		local
-			l_columns: HASH_TABLE [detachable ANY, STRING_8]
 		do
-			create l_columns.make (2)
-			l_columns.put (1, "is_completed")
-			l_columns.put ("datetime('now')", "updated_at")
-			Result := update_where (l_columns, "id = " + a_id.out) = 1
+			Result := set_status (a_id, "completed")
 		end
 
 	mark_incomplete (a_id: INTEGER_64): BOOLEAN
 			-- Mark a todo as incomplete.
+			-- Sets `status' too (through `set_status'): the item reads its state from `status',
+			-- so setting only `is_completed' left it "completed".
 		require
 			valid_id: a_id > 0
-		local
-			l_columns: HASH_TABLE [detachable ANY, STRING_8]
 		do
-			create l_columns.make (2)
-			l_columns.put (0, "is_completed")
-			l_columns.put ("datetime('now')", "updated_at")
-			Result := update_where (l_columns, "id = " + a_id.out) = 1
+			Result := set_status (a_id, "pending")
 		end
 
 	delete_completed: INTEGER
