@@ -456,7 +456,7 @@ feature {NONE} -- Implementation: CPM Algorithm
 
 			-- Start with activities that have no predecessors
 			across a_activities as ic loop
-				if attached l_in_degree.item (ic.id) as l_deg and then l_deg = 0 then
+				if attached l_in_degree.item (ic.id) as al_deg and then al_deg = 0 then
 					l_queue.extend (ic)
 				end
 			end

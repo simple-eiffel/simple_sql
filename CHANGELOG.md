@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.3] - 2026-10-08
+
+### Fixed
+- **The mock-app test targets ran nothing.** `cpm_app_tests`, `habit_tracker_tests` and `dms_tests` rooted
+  at an empty `APPLICATION.make`, and `wms_tests` at `ANY.default_create`. Each now has an `APPLICATION`
+  runner (`testing/<app>/application.e`) that runs every test of its classes through `EQA_TEST_EVALUATOR`;
+  `wms_tests` roots at it (`simple_sql.ecf`). The mock-app clusters are not part of the `simple_sql`
+  library target. Results: cpm_app 27/0, habit_tracker 48/0, dms 64/0, wms 25/0 (todo_app 36/0 since
+  1.3.2).
+- **`cpm_app_tests` did not compile** (VUOT): in `CPM_APP.topological_sort` the 2026-02-06 rename made the
+  object-test local `l_deg`, the name of an existing local. It is `al_deg` again.
+
 ## [1.3.2] - 2026-10-08
 
 ### Fixed
@@ -20,7 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Known
 - The `cpm_app_tests`, `habit_tracker_tests` and `dms_tests` roots (`APPLICATION.make`) are also empty and
-  `wms_tests` roots at `ANY.default_create`, so those mock-app tests do not run yet.
+  `wms_tests` roots at `ANY.default_create`, so those mock-app tests do not run yet (fixed in 1.3.3).
 
 ## [1.3.1] - 2026-10-08
 
@@ -117,5 +129,5 @@ that relied on partial commits or on silent failures will see different results.
 - Test suite with comprehensive coverage
 - Documentation and examples
 
-[1.3.2]: https://github.com/simple-eiffel/simple_sql/compare/v1.0.0...fix/debate-defects
+[1.3.3]: https://github.com/simple-eiffel/simple_sql/compare/v1.0.0...fix/debate-defects
 [1.0.0]: https://github.com/simple-eiffel/simple_sql/releases/tag/v1.0.0
