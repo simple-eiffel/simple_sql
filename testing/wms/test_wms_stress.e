@@ -196,7 +196,7 @@ feature -- Test: Movement Audit Trail
 			l_prod: WMS_PRODUCT
 			l_loc1, l_loc2: WMS_LOCATION
 			l_movements: ARRAYED_LIST [WMS_MOVEMENT]
-			l_total_in, l_total_out: INTEGER
+			l_total_in: INTEGER
 			l_ignored: BOOLEAN
 		do
 			create l_app.make
@@ -263,7 +263,6 @@ feature -- Test: Edge Cases
 			l_wh: WMS_WAREHOUSE
 			l_prod: WMS_PRODUCT
 			l_loc: WMS_LOCATION
-			l_ignored: BOOLEAN
 		do
 			create l_app.make
 			l_wh := l_app.create_warehouse ("WH-ZERO", "Zero Test")

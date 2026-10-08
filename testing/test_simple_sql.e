@@ -250,7 +250,6 @@ feature -- Test routines: Edge Cases (Priority 3)
 			testing: "edge_case"
 		local
 			l_db: SIMPLE_SQL_DATABASE
-			l_result: SIMPLE_SQL_RESULT
 			l_rescued: BOOLEAN
 		do
 			if not l_rescued then
