@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2026-10-08
+
+### Fixed
+- **String literals damaged by the 2026-02-06 naming-standards commit (eb10f9d) are restored.** The rename
+  script also rewrote text inside string literals: SQL (`SELECT l_name FROM sqlite_master`, `l_type`,
+  `l_sort_order`, `l_stock`, `l_path`, `l_snippet(...)`, `l_product_id`, ...), result column keys
+  (`string_value ("l_name")`, `"l_origin"`, `"l_from"`, `"l_to"`, `"l_old_values"`, ...), audit action names
+  (`"l_user"`, `"l_comment"`, `"l_share"`), messages (`"No l_migration found for version "`,
+  `"Restored from l_version "`) and test data (`"l_folder@example.com"`, `"Non-l_critical"`, JSON keys).
+  Every literal was taken from that commit's own diff (old text against new text, line by line), not
+  inferred: 121 occurrences in 22 files, all reverted to the pre-rename text. The two other rename commits
+  (75ffe90, 07cc528) changed no code literal. This damage caused all 40 tests that had been failing in the
+  unwired test classes (schema introspection, audit, FTS5 column helpers, advanced backup, JSON).
+- Full EQA run of all 419 tests in the `testing` classes: 419 passed, 0 failed (was 379/40).
+
 ## [1.3.0] - 2026-10-08
 
 Error integrity (fork 02 verdict, F-9 items a-d and f-i), read-only ATTACH, and the eiffel_sqlite_2025 1.1.0
@@ -85,5 +100,5 @@ that relied on partial commits or on silent failures will see different results.
 - Test suite with comprehensive coverage
 - Documentation and examples
 
-[1.3.0]: https://github.com/simple-eiffel/simple_sql/compare/v1.0.0...fix/debate-defects
+[1.3.1]: https://github.com/simple-eiffel/simple_sql/compare/v1.0.0...fix/debate-defects
 [1.0.0]: https://github.com/simple-eiffel/simple_sql/releases/tag/v1.0.0

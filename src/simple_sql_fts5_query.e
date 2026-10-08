@@ -746,7 +746,7 @@ feature -- Implementation
 		do
 			l_result := database.query ("PRAGMA table_info('" + table_name + "')")
 			across l_result.rows as ic loop
-				l_name := ic.string_value ("l_name")
+				l_name := ic.string_value ("name")
 				if l_name.same_string (a_column.to_string_32) then
 					Result := ic.integer_value ("cid")
 				end

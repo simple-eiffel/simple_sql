@@ -67,8 +67,8 @@ feature -- Model Queries (for contracts)
 			)
 			from i := 1 until i > l_result.count loop
 				l_row := l_result [i]
-				l_old_values := l_row.string_value ("l_old_values")
-				l_new_values := l_row.string_value ("l_new_values")
+				l_old_values := l_row.string_value ("old_values")
+				l_new_values := l_row.string_value ("new_values")
 				create l_entry.make (
 					l_row.integer_64_value ("audit_id"),
 					l_row.integer_64_value ("record_id"),
@@ -101,11 +101,11 @@ feature -- Model Queries (for contracts)
 		do
 			create Result
 			l_result := database.query (
-				"SELECT l_name FROM sqlite_master WHERE type='table' AND l_name LIKE '%%_audit'"
+				"SELECT name FROM sqlite_master WHERE type='table' AND name LIKE '%%_audit'"
 			)
 			from i := 1 until i > l_result.count loop
 				l_row := l_result [i]
-				l_name := l_row.string_value ("l_name").to_string_8
+				l_name := l_row.string_value ("name").to_string_8
 				-- Extract original table name by removing "_audit" suffix
 				if l_name.count > 6 then
 					l_name := l_name.substring (1, l_name.count - 6)

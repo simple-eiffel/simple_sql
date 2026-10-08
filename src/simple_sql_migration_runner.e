@@ -295,7 +295,7 @@ feature -- Migration Operations
 				if attached l_migration as al_l_m then
 					Result := revert_migration (al_l_m)
 				else
-					last_error := "No l_migration found for version " + l_current.out
+					last_error := "No migration found for version " + l_current.out
 					Result := False
 				end
 			else

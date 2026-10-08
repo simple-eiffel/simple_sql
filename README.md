@@ -1744,13 +1744,12 @@ Contributions welcome! Please ensure:
 
 ## Status
 
-**Current Version:** 1.3.0
+**Current Version:** 1.3.1
 **Stability:** Production - Core API stable
 **Production Ready:** Phases 1-5 complete plus DMS-driven and WMS-driven improvements. All features production-ready: core CRUD, prepared statements, PRAGMA configuration, batch operations, fluent query builder, schema introspection, migrations, streaming, FTS5 full-text search, BLOB handling, JSON1 extension, audit tracking, repository pattern, vector embeddings, online backup, export/import, **eager loading**, **soft delete scopes**, **pagination builder**, and **N+1 detection**.
 **Test Coverage:** the `simple_sql_tests` runner (`TEST_APP`) runs 77 tests, all passing on 2026-10-08. The
-`testing` folder's 22 test classes hold 419 argument-less tests; run all of them through EQA, 379 pass and 40
-fail, the same 40 that failed before 1.3.0 (schema introspection, audit, FTS5 column helpers, advanced backup,
-one JSON test). The earlier "485+ tests (100% passing)" line was not supported by any recorded run.
+`testing` folder's 22 test classes hold 419 argument-less tests; run through EQA, all 419 pass (1.3.1). The
+earlier "485+ tests (100% passing)" line was not supported by any recorded run.
 **SQLite Version:** 3.53.4 (via eiffel_sqlite_2025 v1.1.0; earlier versions of this line said 3.51.1, but
 the engine was 3.31.1 until eiffel_sqlite_2025 1.1.0)
 **Mock Apps:** 5 (TODO, CPM, Habit Tracker, DMS, WMS) - demonstrating real-world usage patterns

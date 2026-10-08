@@ -61,9 +61,9 @@ feature -- Table Queries
 		do
 			create Result.make (20)
 			Result.compare_objects
-			if attached database.query ("SELECT l_name FROM sqlite_master WHERE type='table' AND l_name NOT LIKE 'sqlite_%' ORDER BY l_name") as al_l_result then
+			if attached database.query ("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name") as al_l_result then
 				across al_l_result.rows as ic loop
-					l_name := ic.string_value ("l_name")
+					l_name := ic.string_value ("name")
 					if not l_name.is_empty then
 						Result.extend (l_name.to_string_8)
 					end
@@ -83,9 +83,9 @@ feature -- Table Queries
 		do
 			create Result.make (10)
 			Result.compare_objects
-			if attached database.query ("SELECT l_name FROM sqlite_master WHERE type='view' ORDER BY l_name") as al_l_result then
+			if attached database.query ("SELECT name FROM sqlite_master WHERE type='view' ORDER BY name") as al_l_result then
 				across al_l_result.rows as ic loop
-					l_name := ic.string_value ("l_name")
+					l_name := ic.string_value ("name")
 					if not l_name.is_empty then
 						Result.extend (l_name.to_string_8)
 					end
@@ -141,9 +141,9 @@ feature -- Table Info
 			l_sql_str: STRING_32
 		do
 			-- Get table type
-			if attached database.query ("SELECT l_type, sql FROM sqlite_master WHERE name='" + a_table.to_string_8 + "'") as al_l_master then
+			if attached database.query ("SELECT type, sql FROM sqlite_master WHERE name='" + a_table.to_string_8 + "'") as al_l_master then
 				if not al_l_master.rows.is_empty and then attached al_l_master.rows.first as al_l_row then
-					l_type_str := al_l_row.string_value ("l_type")
+					l_type_str := al_l_row.string_value ("type")
 					if l_type_str.is_empty then
 						l_type := "table"
 					else
@@ -200,7 +200,7 @@ feature -- Column Queries
 			Result.compare_objects
 			if attached database.query ("PRAGMA table_info('" + a_table.to_string_8 + "')") as al_l_result then
 				across al_l_result.rows as ic loop
-					l_name := ic.string_value ("l_name")
+					l_name := ic.string_value ("name")
 					if not l_name.is_empty then
 						Result.extend (l_name.to_string_8)
 					end
@@ -229,9 +229,9 @@ feature -- Index Queries
 			create Result.make (5)
 			if attached database.query ("PRAGMA index_list('" + a_table.to_string_8 + "')") as al_l_result then
 				across al_l_result.rows as ic loop
-					l_name := ic.string_value ("l_name")
+					l_name := ic.string_value ("name")
 					if not l_name.is_empty then
-						l_origin := ic.string_value ("l_origin")
+						l_origin := ic.string_value ("origin")
 						if l_origin.is_empty then
 							l_origin_str := "c"
 						else
@@ -295,8 +295,8 @@ feature -- Foreign Key Queries
 					end
 					-- Add column mapping
 					if attached l_fk then
-						l_from := ic.string_value ("l_from")
-						l_to := ic.string_value ("l_to")
+						l_from := ic.string_value ("from")
+						l_to := ic.string_value ("to")
 						if not l_from.is_empty and not l_to.is_empty then
 							l_fk.add_column_mapping (l_from.to_string_8, l_to.to_string_8)
 						end
@@ -386,9 +386,9 @@ feature {NONE} -- Implementation
 		do
 			if attached database.query ("PRAGMA index_list('" + a_table_info.name + "')") as al_l_result then
 				across al_l_result.rows as ic loop
-					l_name := ic.string_value ("l_name")
+					l_name := ic.string_value ("name")
 					if not l_name.is_empty then
-						l_origin := ic.string_value ("l_origin")
+						l_origin := ic.string_value ("origin")
 						if l_origin.is_empty then
 							l_origin_str := "c"
 						else
@@ -419,7 +419,7 @@ feature {NONE} -- Implementation
 		do
 			if attached database.query ("PRAGMA index_info('" + a_index.name + "')") as al_l_result then
 				across al_l_result.rows as ic loop
-					l_name := ic.string_value ("l_name")
+					l_name := ic.string_value ("name")
 					if not l_name.is_empty then
 						a_index.add_column (l_name.to_string_8)
 					end
@@ -463,8 +463,8 @@ feature {NONE} -- Implementation
 						end
 					end
 					if attached l_fk then
-						l_from := ic.string_value ("l_from")
-						l_to := ic.string_value ("l_to")
+						l_from := ic.string_value ("from")
+						l_to := ic.string_value ("to")
 						if not l_from.is_empty and not l_to.is_empty then
 							l_fk.add_column_mapping (l_from.to_string_8, l_to.to_string_8)
 						end
@@ -485,13 +485,13 @@ feature {NONE} -- Implementation
 			l_default: detachable STRING_8
 			l_name_str, l_type_str, l_default_str: STRING_32
 		do
-			l_name_str := a_row.string_value ("l_name")
+			l_name_str := a_row.string_value ("name")
 			if l_name_str.is_empty then
 				l_name := ""
 			else
 				l_name := l_name_str.to_string_8
 			end
-			l_type_str := a_row.string_value ("l_type")
+			l_type_str := a_row.string_value ("type")
 			if l_type_str.is_empty then
 				l_type := ""
 			else
