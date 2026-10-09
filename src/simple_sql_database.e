@@ -1429,11 +1429,12 @@ feature {NONE} -- Implementation
 				collection.
 			]"
 		do
-				-- With a transaction left open (for example after a failed COMMIT), leave the
-				-- connection to SQLITE_DATABASE's own dispose: no SQL runs during collection.
-			if not internal_db.is_closed and then not internal_db.is_in_transaction then
-				internal_db.close
-			end
+				-- Nothing to do here: `internal_db' closes its own handle in its `dispose'.
+				-- This routine runs on whichever thread reclaims the object - under SCOOP
+				-- usually not the one that opened the connection - and SQLITE_DATABASE's
+				-- queries (`is_closed', `close') are bound to that thread: calling them from
+				-- here killed a SCOOP web server (bible_htmx, 2026-10-09, precondition
+				-- `is_accessible' violated inside `dispose').
 		end
 
 	bind_args (a_stmt: SIMPLE_SQL_PREPARED_STATEMENT; a_args: ARRAY [detachable ANY])

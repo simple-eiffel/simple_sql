@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- `SIMPLE_SQL_DATABASE.dispose` no longer calls `internal_db.is_closed` / `close`. Those queries are bound to the
+  thread that opened the connection, and `dispose` runs on whichever thread reclaims the object - under SCOOP
+  usually another processor. A SCOOP web server whose handlers left connections to the collector died there
+  (simple_scholar's bible_htmx, 2026-10-09: precondition `is_accessible` violated inside `dispose`, after 360
+  requests). SQLITE_DATABASE now closes its own handle from any thread (eiffel_sqlite_2025).
+- SCOOP proof `simple_sql_scoop_test`: connections opened, queried and dropped on a worker processor that is
+  itself dropped, on the root, and collected by a worker; each collection must leave none in memory (6 checks).
+
 ## [1.3.3] - 2026-10-08
 
 ### Fixed
