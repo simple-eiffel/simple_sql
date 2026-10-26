@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **`SIMPLE_SQL_CURSOR` was neither lazy nor linear** (2026-10-26). `start` ran the whole query into a list and
+  each `forth` removed that list's first item, so every row sat in memory and the walk was quadratic: 88,444
+  rows took 20.7 s in a lean build (40 times an eager `query`), found by simple_bible's concordance spike. The
+  cursor now steps the SQLite statement once per `forth` (`SQLITE_STATEMENT.execute_new`), holds only the
+  current row, and releases the statement when the rows run out or on `close`. `query_cursor`,
+  `SIMPLE_SQL_PREPARED_STATEMENT.execute_cursor` and `SIMPLE_SQL_FTS5_QUERY.execute_cursor` all benefit.
+  Before/after: `test_cursor_holds_one_row_at_a_time` (old: 4,999 rows buffered after `start`) and
+  `test_cursor_time_is_linear` (40,000 rows, contracts off; old: cursor 5,416 ms against eager 111 ms). The
+  test target now uses simple_datetime (monotonic clock). 79 pass.
 - `SIMPLE_SQL_DATABASE.dispose` no longer calls `internal_db.is_closed` / `close`. Those queries are bound to the
   thread that opened the connection, and `dispose` runs on whichever thread reclaims the object - under SCOOP
   usually another processor. A SCOOP web server whose handlers left connections to the collector died there
