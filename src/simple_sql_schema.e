@@ -11,6 +11,10 @@ note
 
 		All queries are live against the database — results reflect the current
 		schema state at the time of each call.
+
+		A query without a schema argument reads main only (SQLite's rule for an
+		unqualified name); an attached database is read through the features
+		that take `a_schema' (`table_exists_in', `user_version_of').
 	]"
 	purpose: "Runtime schema discovery and version management via SQLite PRAGMAs"
 	collaborators: "SIMPLE_SQL_DATABASE, SIMPLE_SQL_TABLE_INFO, SIMPLE_SQL_COLUMN_INFO, SIMPLE_SQL_INDEX_INFO, SIMPLE_SQL_FOREIGN_KEY_INFO, SIMPLE_SQL_RESULT, SIMPLE_SQL_ROW"
@@ -106,6 +110,23 @@ feature -- Table Queries
 			if attached database.query ("SELECT 1 FROM sqlite_master WHERE type='table' AND name='" + a_name.to_string_8 + "'") as al_l_result then
 				Result := not al_l_result.rows.is_empty
 			end
+		end
+
+	table_exists_in (a_schema, a_name: READABLE_STRING_8): BOOLEAN
+			-- Does table `a_name' exist in the database attached as `a_schema'?
+		note
+			semantic_role: "[
+				Table existence predicate for an attached
+				database, so a client can check a read-only
+				pack's tables when it attaches it.
+			]"
+		require
+			is_open: database.is_open
+			valid_schema_name: database.is_valid_schema_name (a_schema)
+			is_attached: database.is_attached (a_schema)
+			name_not_empty: not a_name.is_empty
+		do
+			Result := not database.query_with_args ("SELECT 1 FROM " + a_schema + ".sqlite_master WHERE type='table' AND name = ?", <<a_name.to_string_8>>).rows.is_empty
 		end
 
 	view_exists (a_name: READABLE_STRING_8): BOOLEAN
@@ -316,11 +337,7 @@ feature -- Schema Version
 				SIMPLE_SQL_MIGRATION_RUNNER.
 			]"
 		do
-			if attached database.query ("PRAGMA user_version") as al_l_result then
-				if not al_l_result.rows.is_empty and then attached al_l_result.rows.first as al_l_row then
-					Result := al_l_row.integer_value ("user_version")
-				end
-			end
+			Result := pragma_integer ("PRAGMA user_version", "user_version")
 		end
 
 	user_version_of (a_schema: READABLE_STRING_8): INTEGER
@@ -337,11 +354,7 @@ feature -- Schema Version
 			valid_schema_name: database.is_valid_schema_name (a_schema)
 			is_attached: database.is_attached (a_schema)
 		do
-			if attached database.query ("PRAGMA " + a_schema + ".user_version") as al_l_result then
-				if not al_l_result.rows.is_empty and then attached al_l_result.rows.first as al_l_row then
-					Result := al_l_row.integer_value ("user_version")
-				end
-			end
+			Result := pragma_integer ("PRAGMA " + a_schema + ".user_version", "user_version")
 		end
 
 	set_user_version (a_version: INTEGER)
@@ -368,14 +381,25 @@ feature -- Schema Version
 				modifications.
 			]"
 		do
-			if attached database.query ("PRAGMA schema_version") as al_l_result then
-				if not al_l_result.rows.is_empty and then attached al_l_result.rows.first as al_l_row then
-					Result := al_l_row.integer_value ("schema_version")
-				end
-			end
+			Result := pragma_integer ("PRAGMA schema_version", "schema_version")
 		end
 
 feature {NONE} -- Implementation
+
+	pragma_integer (a_sql, a_column: READABLE_STRING_8): INTEGER
+			-- Column `a_column' of the first row of `a_sql', or 0 when there is no row
+			-- (the query failed or returned nothing; `database.has_error' tells which, outside a failed
+			-- transaction, where the error is sticky).
+		require
+			sql_not_empty: not a_sql.is_empty
+			column_not_empty: not a_column.is_empty
+		do
+			if attached database.query (a_sql) as al_l_result then
+				if not al_l_result.rows.is_empty and then attached al_l_result.rows.first as al_l_row then
+					Result := al_l_row.integer_value (a_column.to_string_8)
+				end
+			end
+		end
 
 	load_columns (a_table_info: SIMPLE_SQL_TABLE_INFO)
 			-- Load columns into table info

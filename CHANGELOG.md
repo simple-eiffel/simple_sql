@@ -12,6 +12,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   unqualified `PRAGMA user_version`, which reads main and never an attachment, so a client checking a read-only pack
   got main's stamp (simple_bible Phase 2 review, finding 3.3). `test_user_version_of_attached_schema` (main 7, pack 3)
   failed on the code before it with `expected 3, got 7`.
+- `SIMPLE_SQL_SCHEMA.table_exists_in (a_schema, a_name)`: a table lookup in an attached database (bound parameter
+  for the name). Design scan 24 (`.eiffel-workflow/evidence/design-scan-since-5c987a1.md`, finding 1, narrowed): every
+  query without a schema argument reads main only, now said in the class note; `test_table_exists_in_attached_schema`
+  failed on the code before it (`pack_has_t`).
+
+### Changed
+- Design scan 24, finding 2: `user_version`, `user_version_of` and `schema_version` share one private
+  `pragma_integer`. Finding 3 (a failure signal) is stated in that helper's comment, not as a postcondition: `query`
+  keeps `has_error` set inside a failed transaction even after a good read, so `has_error implies Result = 0` would
+  be false. Findings 4-6 (LOW / design notes) left open.
 
 ### Fixed
 - **Design scan 22** (`.eiffel-workflow/evidence/design-scan-since-14c4f17.md`: 2 HIGH, 5 MEDIUM, 3 LOW) on the
