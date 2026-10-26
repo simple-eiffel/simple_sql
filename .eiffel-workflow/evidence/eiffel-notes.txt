@@ -1,5 +1,5 @@
 # Eiffel Notes Enrichment Report
-# Project: d:\prod\simple_sql
+# Project: simple_sql
 # Date: 2026-02-06
 # Mode: Retrofit (standalone analysis of existing library)
 

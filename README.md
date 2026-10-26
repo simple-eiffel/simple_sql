@@ -12,7 +12,7 @@ A production-quality, easy-to-use wrapper around the Eiffel SQLite3 library, pro
 
 Set the ecosystem environment variable (one-time setup for all simple_* libraries):
 ```
-SIMPLE_EIFFEL=D:\prod
+SIMPLE_EIFFEL=<the folder holding your simple_* libraries>
 ```
 
 Add to your ECF:
@@ -132,6 +132,9 @@ Each mock application has its own test suite. When we add API improvements based
   `execute` requires a writable connection) and on a read-write one; the attachment stays read-only
   either way. A missing file is an error, never created.
 - `detach(schema)`, `is_attached(schema)`, `read_only_uri(file)`.
+- `SIMPLE_SQL_SCHEMA.user_version_of(schema)` and `table_exists_in(schema, table)` read an attached database.
+  The schema queries without a schema argument read main only (SQLite's rule for an unqualified name), so
+  `user_version` never sees an attachment's stamp.
 
 **PRAGMA Configuration (NEW):**
 - Named configuration presets: `make_wal`, `make_performance`, `make_safe`
@@ -1267,12 +1270,14 @@ SIMPLE_SQL_DELETE_BUILDER     -- Fluent DELETE (NEW)
 
 SIMPLE_SQL_SCHEMA             -- Schema introspection (NEW)
     ├── tables() / views()     -- List names
-    ├── table_exists()         -- Check existence
+    ├── table_exists()         -- Check existence (main)
+    ├── table_exists_in()      -- Check existence in an attached schema
     ├── table_info()           -- Full table details
     ├── columns()              -- Column list
     ├── indexes()              -- Index list
     ├── foreign_keys()         -- FK list
-    └── user_version           -- Migration version
+    ├── user_version           -- Migration version (main)
+    └── user_version_of()      -- Version stamp of an attached schema
 
 SIMPLE_SQL_TABLE_INFO         -- Table metadata (NEW)
     ├── name / table_type

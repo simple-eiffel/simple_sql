@@ -26,3 +26,6 @@ Thumbs.db
 
 *.epr
 *.log
+
+# Local Claude Code settings (machine paths; never published)
+.claude/settings.local.json

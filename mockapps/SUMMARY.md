@@ -126,7 +126,7 @@
 ## Files Generated
 
 ```
-D:\prod\simple_sql\mockapps\
+simple_sql\mockapps\
 ├── 00-MARKETPLACE-RESEARCH.md      # Market analysis and candidate selection
 ├── 01-db-auditor/
 │   ├── CONCEPT.md                  # Business case and value proposition

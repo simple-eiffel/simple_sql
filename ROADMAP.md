@@ -8,7 +8,7 @@
 
 ### Session Startup
 
-1. **Read Eiffel reference docs**: `D:/prod/reference_docs/eiffel/CLAUDE_CONTEXT.md`
+1. **Read Eiffel reference docs**: `reference_docs/eiffel/CLAUDE_CONTEXT.md`
 2. **Review this roadmap** for project-specific context
 3. **Ask**: "What would you like to work on this session?"
 
@@ -16,20 +16,20 @@
 
 | File | Purpose |
 |------|---------|
-| `D:/prod/reference_docs/eiffel/CLAUDE_CONTEXT.md` | Generic Eiffel knowledge |
-| `D:/prod/reference_docs/eiffel/gotchas.md` | Generic Eiffel gotchas |
-| `D:/prod/reference_docs/eiffel/sqlite_gotchas.md` | SQLite-specific gotchas |
-| `D:/prod/reference_docs/eiffel/HATS.md` | Focused work modes |
-| `D:/prod/reference_docs/eiffel/patterns.md` | Verified code patterns |
+| `reference_docs/eiffel/CLAUDE_CONTEXT.md` | Generic Eiffel knowledge |
+| `reference_docs/eiffel/gotchas.md` | Generic Eiffel gotchas |
+| `reference_docs/eiffel/sqlite_gotchas.md` | SQLite-specific gotchas |
+| `reference_docs/eiffel/HATS.md` | Focused work modes |
+| `reference_docs/eiffel/patterns.md` | Verified code patterns |
 
 ### Build & Test Commands
 
 ```batch
 :: Compile
-ec.exe -batch -config "D:\prod\simple_sql\simple_sql.ecf" -target simple_sql_tests -c_compile -freeze
+ec.exe -batch -config simple_sql.ecf -target simple_sql_tests -c_compile -freeze
 
 :: Run tests
-ec.exe -batch -config "D:\prod\simple_sql\simple_sql.ecf" -target simple_sql_tests -tests
+ec.exe -batch -config simple_sql.ecf -target simple_sql_tests -tests
 ```
 
 ### Current Status
@@ -131,7 +131,7 @@ SIMPLE_SQL is developed using **Mock-Driven Development** - building realistic c
 
 **500+ tests (100% passing). Production-ready for all features. 5 mock applications demonstrate real-world usage.**
 
-Test expansion complete based on Grok code review (see `D:/prod/reference_docs/eiffel/SIMPLE_SQL_TEST_EXPANSION_PLAN.md`):
+Test expansion complete based on Grok code review (see `reference_docs/eiffel/SIMPLE_SQL_TEST_EXPANSION_PLAN.md`):
 - ✅ Priority 1: Backup/Import/Export Edge Cases (8 tests)
 - ✅ Priority 2: Vector Embeddings Edge Cases (8 tests)
 - ✅ Priority 3: Error Handling & Recovery (6 tests) - 2 removed (DBC enforces)

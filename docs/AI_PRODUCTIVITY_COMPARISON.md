@@ -687,7 +687,7 @@ SIMPLE_JSON started from scratch. This sprint built on an existing simple_sql fo
 
 ### 2. Reference Documentation System
 
-The `D:\prod\reference_docs\eiffel\` system captured lessons from prior sessions:
+The `reference_docs\eiffel\` system captured lessons from prior sessions:
 - `gotchas.md` - Known compiler behavior vs documentation conflicts
 - `CURRENT_WORK.md` - Session continuity
 - `CLAUDE_CONTEXT.md` - Project context
