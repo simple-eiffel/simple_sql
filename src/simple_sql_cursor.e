@@ -4,7 +4,11 @@ note
 		Each `forth' steps the SQLite statement once, so only the current row
 		exists in memory, supporting both explicit start/forth iteration and
 		Eiffel across-loop syntax via ITERABLE. The statement is released when
-		the rows run out or the cursor is closed.
+		the rows run out or the cursor is closed. A cursor left before its
+		last row keeps its statement, and SQLite's read lock, until `close'
+		or until the collector reclaims it: close a cursor you leave early.
+		A failing step or a query that does not compile ends the walk and
+		sets `has_error' / `last_error_message' (scan 22).
 		(2026-10-26: it used to run the whole query into a list and take rows
 		off its front - every row in memory, and quadratic: 20.7 s for 88,444
 		rows in a lean build.)
@@ -47,9 +51,7 @@ feature {NONE} -- Initialization
 			end
 			sql := l_sql
 			database := a_database
-			create pending_rows.make (0)
 			is_started := False
-			is_exhausted := False
 			rows_fetched := 0
 		ensure
 			sql_set: sql.same_string (a_sql) or sql.same_string (a_sql + ";")
@@ -125,6 +127,15 @@ feature -- Status report
 	has_valid_row: BOOLEAN
 			-- Is there a valid current row loaded?
 
+	has_error: BOOLEAN
+			-- Did the query fail to compile, or a step fail?
+		do
+			Result := last_error_message /= Void
+		end
+
+	last_error_message: detachable STRING_32
+			-- Why the walk ended early, if it did.
+
 feature -- Cursor movement
 
 	start
@@ -138,20 +149,27 @@ feature -- Cursor movement
 			not_started: not is_started
 		local
 			l_statement: SQLITE_QUERY_STATEMENT
+			l_failed: BOOLEAN
 		do
 			is_started := True
-			if not is_closed then
+			if not l_failed and not is_closed then
 				create l_statement.make (sql, database)
+				statement := l_statement
 				if l_statement.is_compiled then
-					statement := l_statement
 					steps := l_statement.execute_new
+				elseif attached l_statement.last_exception as al_e then
+					last_error_message := al_e.tag.to_string_32
 				else
-					l_statement.cleanup
+					last_error_message := {STRING_32} "the query did not compile"
 				end
+				take_current_step
 			end
-			take_current_step
 		ensure
 			started: is_started
+		rescue
+			l_failed := True
+			stop_on_failure
+			retry
 		end
 
 	forth
@@ -164,31 +182,19 @@ feature -- Cursor movement
 		require
 			started: is_started
 			not_after: not after
+		local
+			l_failed: BOOLEAN
 		do
-			if attached steps as al_steps then
-				al_steps.forth
+			if not l_failed then
+				if attached steps as al_steps then
+					al_steps.forth
+				end
+				take_current_step
 			end
-			take_current_step
-		end
-
-feature -- Model Queries
-
-	pending_rows_model: MML_SEQUENCE [SIMPLE_SQL_ROW]
-			-- Mathematical model of buffered rows awaiting consumption
-			-- (always empty since the cursor became lazy, 2026-10-26).
-		note
-			semantic_role: "[
-				Materializes the pending row buffer as
-				an MML_SEQUENCE for contract-based
-				verification.
-			]"
-		do
-			create Result
-			across pending_rows as ic loop
-				Result := Result & ic
-			end
-		ensure
-			count_matches: Result.count = pending_rows.count
+		rescue
+			l_failed := True
+			stop_on_failure
+			retry
 		end
 
 feature -- Cleanup
@@ -201,24 +207,21 @@ feature -- Cleanup
 				Releases database resources and clears
 				the row buffer.
 			]"
-			modifies: "is_closed, is_exhausted, pending_rows"
+			modifies: "is_closed, has_valid_row, statement"
 		do
 			is_closed := True
+			has_valid_row := False
 			finish
-			pending_rows.wipe_out
 		ensure
 			closed: is_closed
-			buffer_empty: pending_rows_model.is_empty
+			ended: is_started implies after
+			released: statement = Void
 		end
 
 feature {NONE} -- Implementation
 
 	database: SQLITE_DATABASE
 			-- Database connection
-
-	pending_rows: ARRAYED_LIST [SIMPLE_SQL_ROW]
-			-- Rows fetched but not yet consumed: none, since every step reads
-			-- one row (kept for `pending_rows_model').
 
 	current_row: SIMPLE_SQL_ROW
 			-- The current row being accessed
@@ -232,14 +235,11 @@ feature {NONE} -- Implementation
 	steps: detachable SQLITE_STATEMENT_ITERATION_CURSOR
 			-- `statement' stepped one row at a time.
 
-	is_exhausted: BOOLEAN
-			-- Has the statement been released?
-
 	take_current_step
 			-- Make the statement's current row `current_row', or finish.
 		do
 			if attached steps as al_steps and then not al_steps.after then
-				current_row := new_row (al_steps.item)
+				create current_row.make_from_sqlite (al_steps.item)
 				rows_fetched := rows_fetched + 1
 				has_valid_row := True
 			else
@@ -248,26 +248,9 @@ feature {NONE} -- Implementation
 			end
 		end
 
-	new_row (a_row: SQLITE_RESULT_ROW): SIMPLE_SQL_ROW
-			-- `a_row' as a SIMPLE_SQL_ROW.
-		local
-			i: NATURAL
-		do
-			create Result.make (a_row.count.to_integer_32)
-			from
-				i := 1
-			until
-				i > a_row.count
-			loop
-				Result.add_column (a_row.column_name (i).to_string_8, a_row [i])
-				i := i + 1
-			end
-		end
-
 	finish
 			-- Release the statement (the rows ran out, or `close').
 		do
-			is_exhausted := True
 			steps := Void
 			if attached statement as al_statement then
 				al_statement.cleanup
@@ -277,10 +260,29 @@ feature {NONE} -- Implementation
 			released: statement = Void and steps = Void
 		end
 
+	stop_on_failure
+			-- A step or the start raised: keep SQLite's reason, end the walk.
+		do
+			if attached database.last_exception as al_e then
+				last_error_message := al_e.tag.to_string_32
+			elseif attached {EXCEPTION_MANAGER_FACTORY}.exception_manager.last_exception as al_x
+				and then attached al_x.description as al_d
+			then
+				last_error_message := al_d.to_string_32
+			else
+				last_error_message := {STRING_32} "a step failed"
+			end
+			has_valid_row := False
+			finish
+		ensure
+			said: has_error
+			ended: not has_valid_row and statement = Void
+		end
+
 invariant
 	sql_attached: sql /= Void
 	database_attached: database /= Void
-	pending_rows_attached: pending_rows /= Void
+	released_when_closed: is_closed implies statement = Void
 
 note
 	copyright: "Copyright (c) 2025, Larry Rix"

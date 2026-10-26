@@ -274,20 +274,8 @@ feature {NONE} -- Implementation
 				Maps low-level SQLITE_RESULT_ROW columns
 				into a SIMPLE_SQL_ROW.
 			]"
-		local
-			i: NATURAL
-			l_col_name: STRING_8
 		do
-			create Result.make (a_row.count.to_integer_32)
-			from
-				i := 1
-			until
-				i > a_row.count
-			loop
-				l_col_name := a_row.column_name (i).to_string_8
-				Result.add_column (l_col_name, a_row [i])
-				i := i + 1
-			end
+			create Result.make_from_sqlite (a_row)
 		end
 
 invariant

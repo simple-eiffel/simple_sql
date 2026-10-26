@@ -171,20 +171,8 @@ feature {NONE} -- Implementation
 				SQLITE_RESULT_ROW into SIMPLE_SQL_ROW
 				instances during query execution.
 			]"
-		local
-			l_sql_row: SIMPLE_SQL_ROW
-			i: NATURAL
 		do
-			create l_sql_row.make (a_row.count.to_integer_32)
-			from
-				i := 1
-			until
-				i > a_row.count
-			loop
-				l_sql_row.add_column (a_row.column_name (i).to_string_8, a_row [i])
-				i := i + 1
-			end
-			rows.extend (l_sql_row)
+			rows.extend (create {SIMPLE_SQL_ROW}.make_from_sqlite (a_row))
 			Result := False -- Continue processing
 		end
 

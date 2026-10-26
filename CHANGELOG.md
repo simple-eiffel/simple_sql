@@ -8,6 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
+- **Design scan 22** (`.eiffel-workflow/evidence/design-scan-since-14c4f17.md`: 2 HIGH, 5 MEDIUM, 3 LOW) on the
+  lazy cursor. Each fix has a test that failed on the code before it:
+  - HIGH: a failing step (or start) raised out of `forth`, leaving the statement open, `after` False and a stale
+    row. The cursor now ends the walk, releases the statement and keeps SQLite's reason in the new `has_error` /
+    `last_error_message`; a query that does not compile reports the same way.
+    `test_cursor_reports_a_failing_row` (two rows, then the overflow at row 3; also the proof that the walk is lazy).
+  - HIGH: a cursor left early keeps its statement and SQLite's read lock until `close` or collection; no Eiffel
+    hook sees an `across` loop exit, so the class note now says to close a cursor you leave early.
+  - MEDIUM: `close` part way left `after` False. Now `after` holds and the statement is released
+    (`test_cursor_close_mid_walk`, which also drops the table to prove the release).
+  - MEDIUM: dead `pending_rows`, `pending_rows_model` and `is_exhausted` removed (no client in the fleet used them).
+  - The three copies of the SQLite-row loop (result, stream, cursor) are one `SIMPLE_SQL_ROW.make_from_sqlite`.
+  - 81 pass. Open (in the report): a second `across` over one cursor is empty; the prepared statement's
+    `execute_cursor` interpolates bound values into the SQL text; timing-test noise.
 - **`SIMPLE_SQL_CURSOR` was neither lazy nor linear** (2026-10-26). `start` ran the whole query into a list and
   each `forth` removed that list's first item, so every row sat in memory and the walk was quadratic: 88,444
   rows took 20.7 s in a lean build (40 times an eager `query`), found by simple_bible's concordance spike. The

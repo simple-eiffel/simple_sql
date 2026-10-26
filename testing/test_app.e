@@ -130,6 +130,8 @@ feature {NONE} -- Test Runners
 			run_test (agent integrity_tests.test_foreign_key_check_reports_violation_with_parent_in_attachment, "test_foreign_key_check_reports_violation_with_parent_in_attachment")
 			run_test (agent lib_tests.test_cursor_holds_one_row_at_a_time, "test_cursor_holds_one_row_at_a_time")
 			run_test (agent lib_tests.test_cursor_time_is_linear, "test_cursor_time_is_linear")
+			run_test (agent lib_tests.test_cursor_reports_a_failing_row, "test_cursor_reports_a_failing_row")
+			run_test (agent lib_tests.test_cursor_close_mid_walk, "test_cursor_close_mid_walk")
 		end
 
 feature {NONE} -- Implementation
