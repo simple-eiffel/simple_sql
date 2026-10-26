@@ -750,4 +750,92 @@ feature -- Test: Reflective Mapper (simple_reflection integration)
 			assert_true ("has table name", l_sql.has_substring ("users"))
 		end
 
+feature -- Test: Lazy cursor (2026-10-26)
+
+	test_cursor_holds_one_row_at_a_time
+			-- After `start' a cursor holds the current row only, and it yields
+			-- every row in order. Before 2026-10-26 it loaded the whole result
+			-- first (the simple_bible concordance spike: 88,444 rows waited in
+			-- its buffer).
+		note
+			testing: "covers/{SIMPLE_SQL_CURSOR}"
+		local
+			db: SIMPLE_SQL_DATABASE
+			l_cursor: SIMPLE_SQL_CURSOR
+			l_seen: INTEGER
+			l_in_order: BOOLEAN
+		do
+			db := numbers_database (5000)
+			l_cursor := db.query_cursor ("SELECT x FROM n ORDER BY x")
+			l_cursor.start
+			assert_integers_equal ("nothing waits in the buffer", 0, l_cursor.pending_rows_model.count)
+			l_in_order := True
+			from until l_cursor.after loop
+				l_seen := l_seen + 1
+				l_in_order := l_in_order and l_cursor.item.integer_value ("x") = l_seen
+				l_cursor.forth
+			end
+			assert_true ("in order", l_in_order)
+			assert_integers_equal ("every row", 5000, l_seen)
+			assert_integers_equal ("counted", 5000, l_cursor.rows_fetched)
+			db.close
+		end
+
+	test_cursor_time_is_linear
+			-- Walking 40,000 rows with a cursor costs about what an eager query
+			-- costs, timed with contracts off (timing trumps contracts). Before
+			-- 2026-10-26 each step removed the first item of a list holding every
+			-- remaining row: quadratic, 20.7 s for 88,444 rows in a lean build.
+		note
+			testing: "covers/{SIMPLE_SQL_CURSOR}"
+		local
+			db: SIMPLE_SQL_DATABASE
+		do
+			db := numbers_database (40000)
+			without_contracts (agent time_walks (db))
+			assert_integers_equal ("cursor saw every row", 40000, cursor_rows)
+			assert_true ("cursor within 3x eager: cursor " + (cursor_ns // 1_000_000).out + " ms, eager " + (eager_ns // 1_000_000).out + " ms",
+				cursor_ns <= 3 * eager_ns + 50_000_000)
+			db.close
+		end
+
+feature {NONE} -- Lazy cursor fixtures
+
+	numbers_database (a_count: INTEGER): SIMPLE_SQL_DATABASE
+			-- In-memory database with table n holding 1 .. `a_count'.
+		do
+			create Result.make_memory
+			Result.execute ("CREATE TABLE n (x INTEGER)")
+			Result.execute ("INSERT INTO n (x) WITH RECURSIVE c(v) AS (SELECT 1 UNION ALL SELECT v + 1 FROM c WHERE v < "
+				+ a_count.out + ") SELECT v FROM c")
+		end
+
+	clock: SIMPLE_MONOTONIC_CLOCK
+		once
+			create Result
+		end
+
+	eager_ns, cursor_ns: INTEGER_64
+	cursor_rows: INTEGER
+
+	time_walks (a_db: SIMPLE_SQL_DATABASE)
+			-- Walk table n eagerly, then with a cursor, timing each.
+		local
+			l_start: INTEGER_64
+			l_sum: INTEGER_64
+		do
+			l_start := clock.nanoseconds
+			across a_db.query ("SELECT x FROM n ORDER BY x").rows as ic_row loop
+				l_sum := l_sum + ic_row.integer_value ("x")
+			end
+			eager_ns := clock.elapsed_nanoseconds (l_start)
+			cursor_rows := 0
+			l_start := clock.nanoseconds
+			across a_db.query_cursor ("SELECT x FROM n ORDER BY x") as ic_row loop
+				l_sum := l_sum + ic_row.integer_value ("x")
+				cursor_rows := cursor_rows + 1
+			end
+			cursor_ns := clock.elapsed_nanoseconds (l_start)
+		end
+
 end

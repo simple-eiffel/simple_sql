@@ -128,6 +128,8 @@ feature {NONE} -- Test Runners
 			run_test (agent integrity_tests.test_raw_uri_attach_mode_ro_is_read_only, "test_raw_uri_attach_mode_ro_is_read_only")
 			run_test (agent integrity_tests.test_engine_is_3_53_4, "test_engine_is_3_53_4")
 			run_test (agent integrity_tests.test_foreign_key_check_reports_violation_with_parent_in_attachment, "test_foreign_key_check_reports_violation_with_parent_in_attachment")
+			run_test (agent lib_tests.test_cursor_holds_one_row_at_a_time, "test_cursor_holds_one_row_at_a_time")
+			run_test (agent lib_tests.test_cursor_time_is_linear, "test_cursor_time_is_linear")
 		end
 
 feature {NONE} -- Implementation

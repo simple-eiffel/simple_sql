@@ -1,9 +1,13 @@
 note
 	description: "[
 		A lazy cursor for iterating over SQLite query results row by row.
-		Fetches rows on demand from a buffered batch, supporting both explicit
-		start/forth iteration and Eiffel across-loop syntax via ITERABLE.
-		Provides memory-efficient result traversal for the simple_sql library.
+		Each `forth' steps the SQLite statement once, so only the current row
+		exists in memory, supporting both explicit start/forth iteration and
+		Eiffel across-loop syntax via ITERABLE. The statement is released when
+		the rows run out or the cursor is closed.
+		(2026-10-26: it used to run the whole query into a list and take rows
+		off its front - every row in memory, and quadratic: 20.7 s for 88,444
+		rows in a lean build.)
 	]"
 	purpose: "Iterate over query results lazily without loading all rows into memory"
 	collaborators: "SIMPLE_SQL_ROW, SIMPLE_SQL_CURSOR_ITERATOR, SQLITE_DATABASE, MML_SEQUENCE"
@@ -43,7 +47,7 @@ feature {NONE} -- Initialization
 			end
 			sql := l_sql
 			database := a_database
-			create pending_rows.make (Buffer_size)
+			create pending_rows.make (0)
 			is_started := False
 			is_exhausted := False
 			rows_fetched := 0
@@ -132,10 +136,20 @@ feature -- Cursor movement
 			]"
 		require
 			not_started: not is_started
+		local
+			l_statement: SQLITE_QUERY_STATEMENT
 		do
 			is_started := True
-			fetch_batch
-			advance_to_next_row
+			if not is_closed then
+				create l_statement.make (sql, database)
+				if l_statement.is_compiled then
+					statement := l_statement
+					steps := l_statement.execute_new
+				else
+					l_statement.cleanup
+				end
+			end
+			take_current_step
 		ensure
 			started: is_started
 		end
@@ -151,13 +165,17 @@ feature -- Cursor movement
 			started: is_started
 			not_after: not after
 		do
-			advance_to_next_row
+			if attached steps as al_steps then
+				al_steps.forth
+			end
+			take_current_step
 		end
 
 feature -- Model Queries
 
 	pending_rows_model: MML_SEQUENCE [SIMPLE_SQL_ROW]
-			-- Mathematical model of buffered rows awaiting consumption.
+			-- Mathematical model of buffered rows awaiting consumption
+			-- (always empty since the cursor became lazy, 2026-10-26).
 		note
 			semantic_role: "[
 				Materializes the pending row buffer as
@@ -186,7 +204,7 @@ feature -- Cleanup
 			modifies: "is_closed, is_exhausted, pending_rows"
 		do
 			is_closed := True
-			is_exhausted := True
+			finish
 			pending_rows.wipe_out
 		ensure
 			closed: is_closed
@@ -199,7 +217,8 @@ feature {NONE} -- Implementation
 			-- Database connection
 
 	pending_rows: ARRAYED_LIST [SIMPLE_SQL_ROW]
-			-- Buffer of fetched rows not yet consumed
+			-- Rows fetched but not yet consumed: none, since every step reads
+			-- one row (kept for `pending_rows_model').
 
 	current_row: SIMPLE_SQL_ROW
 			-- The current row being accessed
@@ -207,84 +226,56 @@ feature {NONE} -- Implementation
 			create Result.make (1)
 		end
 
-	is_exhausted: BOOLEAN
-			-- Have all rows been fetched from database?
+	statement: detachable SQLITE_QUERY_STATEMENT
+			-- The running statement, until the rows run out or `close'.
 
-	fetch_batch
-			-- Fetch next batch of rows into pending_rows buffer
-		note
-			semantic_role: "[
-				Executes the SQL query and fills the
-				pending row buffer for consumption.
-			]"
-		local
-			l_statement: SQLITE_QUERY_STATEMENT
+	steps: detachable SQLITE_STATEMENT_ITERATION_CURSOR
+			-- `statement' stepped one row at a time.
+
+	is_exhausted: BOOLEAN
+			-- Has the statement been released?
+
+	take_current_step
+			-- Make the statement's current row `current_row', or finish.
 		do
-			if not is_exhausted and not is_closed then
-				pending_rows.wipe_out
-				create l_statement.make (sql, database)
-				-- Execute and collect all rows (SQLite binding limitation)
-				-- The callback collects rows into pending_rows
-				batch_row_count := 0
-				l_statement.execute (agent collect_row_batch)
-				l_statement.cleanup
-				is_exhausted := True -- SQLite executes entire query
+			if attached steps as al_steps and then not al_steps.after then
+				current_row := new_row (al_steps.item)
+				rows_fetched := rows_fetched + 1
+				has_valid_row := True
+			else
+				has_valid_row := False
+				finish
 			end
 		end
 
-	batch_row_count: INTEGER
-			-- Count of rows collected in current batch
-
-	collect_row_batch (a_row: SQLITE_RESULT_ROW): BOOLEAN
-			-- Collect row into pending buffer
-		note
-			semantic_role: "[
-				SQLite callback converting each result
-				row into SIMPLE_SQL_ROW for buffering.
-			]"
+	new_row (a_row: SQLITE_RESULT_ROW): SIMPLE_SQL_ROW
+			-- `a_row' as a SIMPLE_SQL_ROW.
 		local
-			l_sql_row: SIMPLE_SQL_ROW
 			i: NATURAL
-			l_col_name: STRING_8
 		do
-			create l_sql_row.make (a_row.count.to_integer_32)
+			create Result.make (a_row.count.to_integer_32)
 			from
 				i := 1
 			until
 				i > a_row.count
 			loop
-				l_col_name := a_row.column_name (i).to_string_8
-				l_sql_row.add_column (l_col_name, a_row [i])
+				Result.add_column (a_row.column_name (i).to_string_8, a_row [i])
 				i := i + 1
 			end
-			pending_rows.extend (l_sql_row)
-			batch_row_count := batch_row_count + 1
-			Result := False -- Continue processing
 		end
 
-	advance_to_next_row
-			-- Move to next available row
-		note
-			semantic_role: "[
-				Pops the next row from the buffer and
-				updates cursor validity state.
-			]"
+	finish
+			-- Release the statement (the rows ran out, or `close').
 		do
-			if not pending_rows.is_empty then
-				current_row := pending_rows.first
-				pending_rows.start
-				pending_rows.remove
-				rows_fetched := rows_fetched + 1
-				has_valid_row := True
-			else
-				has_valid_row := False
+			is_exhausted := True
+			steps := Void
+			if attached statement as al_statement then
+				al_statement.cleanup
+				statement := Void
 			end
+		ensure
+			released: statement = Void and steps = Void
 		end
-
-feature {NONE} -- Constants
-
-	Buffer_size: INTEGER = 100
-			-- Initial buffer size for pending rows
 
 invariant
 	sql_attached: sql /= Void
