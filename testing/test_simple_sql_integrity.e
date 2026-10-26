@@ -375,6 +375,30 @@ feature -- Test: D4 / D7 read-only attach
 			assert_false ("not_created", (create {RAW_FILE}.make_with_name ("integrity_missing.db")).exists)
 		end
 
+	test_user_version_of_attached_schema
+			-- The version stamp of an attached database is read from that schema, not from main.
+			-- Before 2026-10-26 the only reader ran an unqualified PRAGMA and returned main's stamp
+			-- (simple_bible Phase 2 review, finding 3.3).
+		local
+			db, l_pack: SIMPLE_SQL_DATABASE
+			l_schema: SIMPLE_SQL_SCHEMA
+		do
+			make_fixture ("integrity_versioned_pack.db")
+			create l_pack.make ("integrity_versioned_pack.db")
+			l_pack.execute ("PRAGMA user_version = 3")
+			l_pack.close
+			db := fresh_memory
+			db.execute ("PRAGMA user_version = 7")
+			db.attach_read_only ("integrity_versioned_pack.db", "pack")
+			assert_false ("attached", db.has_error)
+			create l_schema.make (db)
+			assert_integers_equal ("main_version", 7, l_schema.user_version)
+			assert_integers_equal ("pack_version", 3, l_schema.user_version_of ("pack"))
+			assert_integers_equal ("main_version_unchanged", 7, l_schema.user_version)
+			db.close
+			delete_file ("integrity_versioned_pack.db")
+		end
+
 	test_read_only_uri_encoding
 			-- The URI is percent-encoded and Windows drive paths use file:///X:/...
 		local

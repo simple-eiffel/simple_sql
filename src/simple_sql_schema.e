@@ -323,6 +323,27 @@ feature -- Schema Version
 			end
 		end
 
+	user_version_of (a_schema: READABLE_STRING_8): INTEGER
+			-- PRAGMA user_version of the database attached as `a_schema'.
+			-- `user_version' reads main only: an unqualified PRAGMA never reaches an attachment.
+		note
+			semantic_role: "[
+				Reads an attached pack's version stamp, so a
+				client can check a read-only pack when it
+				attaches it.
+			]"
+		require
+			is_open: database.is_open
+			valid_schema_name: database.is_valid_schema_name (a_schema)
+			is_attached: database.is_attached (a_schema)
+		do
+			if attached database.query ("PRAGMA " + a_schema + ".user_version") as al_l_result then
+				if not al_l_result.rows.is_empty and then attached al_l_result.rows.first as al_l_row then
+					Result := al_l_row.integer_value ("user_version")
+				end
+			end
+		end
+
 	set_user_version (a_version: INTEGER)
 			-- Set PRAGMA user_version
 		note
