@@ -124,6 +124,7 @@ feature {NONE} -- Test Runners
 			run_test (agent integrity_tests.test_attach_read_only_on_read_only_connection, "test_attach_read_only_on_read_only_connection")
 			run_test (agent integrity_tests.test_attach_read_only_on_writable_connection, "test_attach_read_only_on_writable_connection")
 			run_test (agent integrity_tests.test_attach_read_only_missing_file_errors, "test_attach_read_only_missing_file_errors")
+			run_test (agent integrity_tests.test_user_version_of_attached_schema, "test_user_version_of_attached_schema")
 			run_test (agent integrity_tests.test_read_only_uri_encoding, "test_read_only_uri_encoding")
 			run_test (agent integrity_tests.test_raw_uri_attach_mode_ro_is_read_only, "test_raw_uri_attach_mode_ro_is_read_only")
 			run_test (agent integrity_tests.test_engine_is_3_53_4, "test_engine_is_3_53_4")

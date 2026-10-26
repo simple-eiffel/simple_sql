@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `SIMPLE_SQL_SCHEMA.user_version_of (a_schema)`: the version stamp of an attached database. `user_version` runs an
+  unqualified `PRAGMA user_version`, which reads main and never an attachment, so a client checking a read-only pack
+  got main's stamp (simple_bible Phase 2 review, finding 3.3). `test_user_version_of_attached_schema` (main 7, pack 3)
+  failed on the code before it with `expected 3, got 7`.
+
 ### Fixed
 - **Design scan 22** (`.eiffel-workflow/evidence/design-scan-since-14c4f17.md`: 2 HIGH, 5 MEDIUM, 3 LOW) on the
   lazy cursor. Each fix has a test that failed on the code before it:
