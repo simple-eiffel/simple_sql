@@ -753,10 +753,10 @@ feature -- Test: Reflective Mapper (simple_reflection integration)
 feature -- Test: Lazy cursor (2026-10-26)
 
 	test_cursor_holds_one_row_at_a_time
-			-- After `start' a cursor holds the current row only, and it yields
-			-- every row in order. Before 2026-10-26 it loaded the whole result
-			-- first (the simple_bible concordance spike: 88,444 rows waited in
-			-- its buffer).
+			-- A cursor yields every row in order. (Before 2026-10-26 it loaded the
+			-- whole result first: 4,999 rows waited in its buffer here. Scan 22
+			-- removed the buffer; `test_cursor_reports_a_failing_row' now proves
+			-- the walk is lazy.)
 		note
 			testing: "covers/{SIMPLE_SQL_CURSOR}"
 		local
@@ -767,10 +767,8 @@ feature -- Test: Lazy cursor (2026-10-26)
 		do
 			db := numbers_database (5000)
 			l_cursor := db.query_cursor ("SELECT x FROM n ORDER BY x")
-			l_cursor.start
-			assert_integers_equal ("nothing waits in the buffer", 0, l_cursor.pending_rows_model.count)
 			l_in_order := True
-			from until l_cursor.after loop
+			from l_cursor.start until l_cursor.after loop
 				l_seen := l_seen + 1
 				l_in_order := l_in_order and l_cursor.item.integer_value ("x") = l_seen
 				l_cursor.forth
@@ -796,6 +794,51 @@ feature -- Test: Lazy cursor (2026-10-26)
 			assert_integers_equal ("cursor saw every row", 40000, cursor_rows)
 			assert_true ("cursor within 3x eager: cursor " + (cursor_ns // 1_000_000).out + " ms, eager " + (eager_ns // 1_000_000).out + " ms",
 				cursor_ns <= 3 * eager_ns + 50_000_000)
+			db.close
+		end
+
+	test_cursor_reports_a_failing_row
+			-- A lazy cursor hands over the rows before a failing one, then ends
+			-- and says why (scan 22: the step's exception escaped `forth' and
+			-- left the statement open with `after' False). An eager cursor
+			-- would fail before the first row. (No ORDER BY: a sort computes every
+			-- row before the first step returns, so the failure would come first.)
+		note
+			testing: "covers/{SIMPLE_SQL_CURSOR}.forth"
+		local
+			db: SIMPLE_SQL_DATABASE
+			l_cursor: SIMPLE_SQL_CURSOR
+			l_seen: INTEGER
+		do
+			db := numbers_database (5)
+			l_cursor := db.query_cursor ("SELECT CASE WHEN x = 3 THEN abs (x - 9223372036854775807 - 4) ELSE x END AS v FROM n")
+			from l_cursor.start until l_cursor.after or l_seen > 10 loop
+				l_seen := l_seen + 1
+				l_cursor.forth
+			end
+			assert_integers_equal ("the rows before the failing one", 2, l_seen)
+			assert_true ({STRING_32} "and it says why: " + (if attached l_cursor.last_error_message as al_m then al_m else {STRING_32} "" end), l_cursor.has_error)
+			db.close
+		end
+
+	test_cursor_close_mid_walk
+			-- Closing a cursor part way ends the walk and releases the statement
+			-- (scan 22: `after' stayed False and `item' kept a stale row).
+		note
+			testing: "covers/{SIMPLE_SQL_CURSOR}.close"
+		local
+			db: SIMPLE_SQL_DATABASE
+			l_cursor: SIMPLE_SQL_CURSOR
+		do
+			db := numbers_database (100)
+			l_cursor := db.query_cursor ("SELECT x FROM n ORDER BY x")
+			l_cursor.start
+			l_cursor.forth
+			l_cursor.forth
+			l_cursor.close
+			assert_true ("after the close", l_cursor.after)
+			db.execute ("DROP TABLE n")
+			assert_false ({STRING_32} "the statement was released: " + (if attached db.last_error_message as al_m then al_m else {STRING_32} "" end), db.has_error)
 			db.close
 		end
 

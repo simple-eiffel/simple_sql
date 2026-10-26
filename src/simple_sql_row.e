@@ -26,7 +26,29 @@ class
 create
 	make
 
+create {SIMPLE_SQL_RESULT, SIMPLE_SQL_CURSOR, SIMPLE_SQL_RESULT_STREAM}
+	make_from_sqlite
+
 feature {NONE} -- Initialization
+
+	make_from_sqlite (a_row: SQLITE_RESULT_ROW)
+			-- Row holding every column of SQLite's `a_row', by name (scan 22: the
+			-- one copy of the loop the result, the stream and the cursor each had).
+		local
+			i: NATURAL
+		do
+			make (a_row.count.to_integer_32)
+			from
+				i := 1
+			until
+				i > a_row.count
+			loop
+				add_column (a_row.column_name (i).to_string_8, a_row [i])
+				i := i + 1
+			end
+		ensure
+			every_column: count = a_row.count.to_integer_32
+		end
 
 	make (a_capacity: INTEGER)
 			-- Create row with capacity
