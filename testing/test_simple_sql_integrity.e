@@ -399,6 +399,25 @@ feature -- Test: D4 / D7 read-only attach
 			delete_file ("integrity_versioned_pack.db")
 		end
 
+	test_table_exists_in_attached_schema
+			-- A table is looked up in the attached schema asked for, not in main.
+			-- Before 2026-10-26 the only lookup read main's sqlite_master (design scan 24, finding 1).
+		local
+			db: SIMPLE_SQL_DATABASE
+			l_schema: SIMPLE_SQL_SCHEMA
+		do
+			make_fixture ("integrity_tables_pack.db")
+			db := fresh_memory
+			db.attach_read_only ("integrity_tables_pack.db", "pack")
+			assert_false ("attached", db.has_error)
+			create l_schema.make (db)
+			assert_false ("main_has_no_t", l_schema.table_exists ("t"))
+			assert_true ("pack_has_t", l_schema.table_exists_in ("pack", "t"))
+			assert_false ("pack_has_no_q", l_schema.table_exists_in ("pack", "q"))
+			db.close
+			delete_file ("integrity_tables_pack.db")
+		end
+
 	test_read_only_uri_encoding
 			-- The URI is percent-encoded and Windows drive paths use file:///X:/...
 		local
