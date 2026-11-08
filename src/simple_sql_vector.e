@@ -155,14 +155,9 @@ feature -- Model Queries
 				MML specification of vector values for
 				formal postcondition verification.
 			]"
-		local
-			i: INTEGER
 		do
-			create Result
-			from i := 1 until i > dimension loop
-				Result := Result & values [i]
-				i := i + 1
-			end
+				-- One pass: building it with `&' copied the sequence once per element.
+			create Result.from_iterable (values)
 		ensure
 			count_matches: Result.count = dimension
 		end

@@ -59,12 +59,13 @@ feature -- Model Queries (for contracts)
 			l_entry: AUDIT_ENTRY
 			l_old_values, l_new_values: detachable STRING_32
 			l_row: SIMPLE_SQL_ROW
+			l_entries: ARRAYED_LIST [AUDIT_ENTRY]
 			i: INTEGER
 		do
-			create Result
 			l_result := database.query (
 				"SELECT * FROM " + audit_table_name (a_table) + " ORDER BY timestamp ASC, audit_id ASC"
 			)
+			create l_entries.make (l_result.count)
 			from i := 1 until i > l_result.count loop
 				l_row := l_result [i]
 				l_old_values := l_row.string_value ("old_values")
@@ -78,9 +79,11 @@ feature -- Model Queries (for contracts)
 					l_old_values,
 					l_new_values
 				)
-				Result := Result & l_entry
+				l_entries.extend (l_entry)
 				i := i + 1
 			end
+				-- One pass: building it with `&' copied the sequence once per entry.
+			create Result.from_iterable (l_entries)
 		ensure
 			chronological: is_chronological (Result)
 			all_valid_operations: Result.for_all (agent (idx: INTEGER; e: AUDIT_ENTRY): BOOLEAN do Result := e.is_valid_operation end)
@@ -97,9 +100,10 @@ feature -- Model Queries (for contracts)
 			l_result: SIMPLE_SQL_RESULT
 			l_name: STRING_8
 			l_row: SIMPLE_SQL_ROW
+			l_names: ARRAYED_LIST [STRING_8]
 			i: INTEGER
 		do
-			create Result
+			create l_names.make (0)
 			l_result := database.query (
 				"SELECT name FROM sqlite_master WHERE type='table' AND name LIKE '%%_audit'"
 			)
@@ -110,11 +114,12 @@ feature -- Model Queries (for contracts)
 				if l_name.count > 6 then
 					l_name := l_name.substring (1, l_name.count - 6)
 					if is_enabled (l_name) then
-						Result := Result & l_name
+						l_names.extend (l_name)
 					end
 				end
 				i := i + 1
 			end
+			create Result.from_iterable (l_names)
 		ensure
 			all_enabled: Result.for_all (agent is_enabled)
 		end
@@ -216,16 +221,18 @@ feature -- Model Helpers (for contracts)
 			has_audit: has_audit_table (a_table)
 		local
 			l_trail: MML_SEQUENCE [AUDIT_ENTRY]
+			l_entries: ARRAYED_LIST [AUDIT_ENTRY]
 			i: INTEGER
 		do
-			create Result
+			create l_entries.make (0)
 			l_trail := model_audit_trail (a_table)
 			from i := 1 until i > l_trail.count loop
 				if l_trail [i].record_id = a_record_id then
-					Result := Result & l_trail [i]
+					l_entries.extend (l_trail [i])
 				end
 				i := i + 1
 			end
+			create Result.from_iterable (l_entries)
 		ensure
 			all_for_record: Result.for_all (
 				agent (idx: INTEGER; e: AUDIT_ENTRY; rec_id: INTEGER_64): BOOLEAN
