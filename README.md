@@ -1466,7 +1466,17 @@ AGENT_PART_COMPARATOR [G]     -- Agent-based comparator wrapper
 
 ## Testing
 
-Comprehensive test suite using EiffelStudio AutoTest framework:
+Comprehensive test suite using EiffelStudio AutoTest framework.
+
+**What the gate runs:** six test targets, on Windows, Linux and macOS (port-coordination #17):
+- `simple_sql_tests`: `TEST_APP` runs the core tests, and through `AUTOTEST_SETS_RUNNER`
+  every AutoTest set beside them, each through AutoTest's own `EQA_TEST_EVALUATOR`
+  (prepare, test, clean);
+- `todo_app_tests`, `cpm_app_tests`, `habit_tracker_tests`, `dms_tests` and `wms_tests`:
+  each example application's own tests.
+
+A test set added to `testing/` must be added to `AUTOTEST_SETS_RUNNER` too, or no gate
+runs it.
 
 **Core Library Tests:**
 - `TEST_SIMPLE_SQL` - Core functionality (19 tests) - includes convenience method tests
